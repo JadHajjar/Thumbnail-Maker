@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThumbnailMaker", "ThumbnailMaker\ThumbnailMaker.csproj", "{D8DC2A43-5866-407C-BCBD-5A0CE4D3EE8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlickControls", "..\..\..\Desktop\Documents\Google Drive\Solutions\SlickControls\SlickControls\SlickControls.csproj", "{2C0E1D8A-6619-4116-98EE-3F9E6C937537}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions", "..\..\..\Desktop\Documents\Google Drive\Solutions\Extensions\Extensions\Extensions.csproj", "{50EA98FD-47B0-40BC-A51E-3DEFB2525F2C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D8DC2A43-5866-407C-BCBD-5A0CE4D3EE8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8DC2A43-5866-407C-BCBD-5A0CE4D3EE8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8DC2A43-5866-407C-BCBD-5A0CE4D3EE8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8DC2A43-5866-407C-BCBD-5A0CE4D3EE8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C0E1D8A-6619-4116-98EE-3F9E6C937537}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C0E1D8A-6619-4116-98EE-3F9E6C937537}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C0E1D8A-6619-4116-98EE-3F9E6C937537}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C0E1D8A-6619-4116-98EE-3F9E6C937537}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50EA98FD-47B0-40BC-A51E-3DEFB2525F2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50EA98FD-47B0-40BC-A51E-3DEFB2525F2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50EA98FD-47B0-40BC-A51E-3DEFB2525F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50EA98FD-47B0-40BC-A51E-3DEFB2525F2C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CED6E673-1CD6-4068-BA99-95D762448D55}
+	EndGlobalSection
+EndGlobal
