@@ -53,7 +53,7 @@ namespace ThumbnailMaker
 				Lanes = lanes
 			}.Draw();
 
-			label2.Text = "BR4 " + IsOneWay(lanes).Switch(string.Empty, (true, "1W ")) + lanes.Select(x => x.GetTitle()).WhereNotEmpty().ListStrings("+");
+			label2.Text = "BR4 " + IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle()).WhereNotEmpty().ListStrings("+");
 		}
 
 		private void RB_CheckedChanged(object sender, EventArgs e)
@@ -168,26 +168,29 @@ namespace ThumbnailMaker
 
 			foreach (var lane in lanes)
 			{
-				if (skip || lane.Type == LaneType.Pedestrian || (lane.Type < LaneType.Trees && lane.Lanes > 3))
+				if (skip || lane.Type == LaneType.Pedestrian)
 					continue;
 
 				var types = LaneInfo.GetLaneTypes(lane.Type).Select(x => x.ToString());
 				var name = types.Count() > 1 ? $"Shared {types.ListStrings(" & ")}" : types.First();
 				
 				if (lane.Type < LaneType.Trees)
-					laneDescriptors.Add("Median");
+					laneDescriptors.Add(lane.Lanes > 3 ? "Seperator" : "Median");
 				else if (lane.Direction == LaneDirection.Both)
 					laneDescriptors.Add($"2W {lane.Lanes}L {name}");
 				else if (lane.Lanes > 0)
-					laneDescriptors.Add($"{lane.Lanes}L {name}");
+					laneDescriptors.Add($"{lane.Lanes}L{lane.Direction.Switch(LaneDirection.Backwards, "B", LaneDirection.Forward, "F", "")} {name}");
 				else
 					laneDescriptors.Add(name);
 			}
 
-			Clipboard.SetText($"Blank {(asymetrical ? "Asymmetrical " : oneWay.Switch(string.Empty, (true, "One-Way "), (false, "Two-Way ")))}{lanes.Any(x => x.Type.HasFlag(LaneType.Bike)).If("Bike ")}Road.  " +
-				(TB_Size.Text.Length == 0 ? "" : $"{TB_Size.Text}m - ") +
-				laneDescriptors.WhereNotEmpty().ListStrings(", ") +
-				".  This road comes with no markings, use Intersection Marking Tool to mark it.");
+			var info = (TB_Size.Text.Length == 0 ? "" : $"{TB_Size.Text}m") +
+				(TB_SpeedLimit.Text.Length == 0 ? "" : $" - {TB_SpeedLimit.Text}{RB_USA.Checked.If("mph", "km/h")}");
+
+			Clipboard.SetText($"Blank {(asymetrical ? "Asymmetrical " : oneWay.Switch(true, "One-Way ", false, "Two-Way ", string.Empty))}{lanes.Any(x => x.Type.HasFlag(LaneType.Bike)).If("Bike ")}Road.  " +
+				laneDescriptors.WhereNotEmpty().ListStrings(" + ") +
+				info.IfEmpty("", $"  ({info})") +
+				"  This road comes with no markings, use Intersection Marking Tool to mark it.");
 		}
 
 		private bool? IsOneWay(List<LaneInfo> lanes)
