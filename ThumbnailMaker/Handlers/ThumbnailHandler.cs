@@ -62,10 +62,11 @@ namespace ThumbnailMaker.Handlers
 					}
 				}
 
-				var arrowHeight = ResourceManager.Arrow(Small).Size;
+				var arrowHeight = ResourceManager.Arrow(Small).Width;
+				var dualArrows = Lanes.Any(x => x.Lanes > 1 || x.Direction == LaneDirection.Both);
+				var maxWidth = Lanes.Max(x => x.Width);
 
-				if (Lanes.Any(x => x.Lanes > 1 || x.Direction == LaneDirection.Both))
-					arrowHeight = new Size(arrowHeight.Width * 3 / 4, arrowHeight.Height * 3 / 4);
+				arrowHeight = Math.Min(arrowHeight, (maxWidth - (dualArrows ? 2 : 1) * (Small ? 2 : 8)) / (dualArrows ? 2 : 1));
 
 				var arrowsHeight = GetArrowsHeight(arrowHeight);
 				var availableSpace = GetAvailableSpace(logo == null ? 0 : (logo.Height + 2)).Pad(0, arrowsHeight, 0, 0);
@@ -76,7 +77,7 @@ namespace ThumbnailMaker.Handlers
 					var lane = Lanes[i];
 					var rect = new Rectangle(xIndex, 0, lane.Width, Height);
 
-					DrawLane(lane, rect, availableSpace);
+					DrawLane(lane, rect, availableSpace, arrowsHeight);
 
 					xIndex += lane.Width;
 				}
@@ -88,7 +89,7 @@ namespace ThumbnailMaker.Handlers
 			}
 		}
 
-		private int GetArrowsHeight(Size arrowHeight)
+		private int GetArrowsHeight(int arrowHeight)
 		{
 			if (Lanes.Count == 0)
 				return 0;
@@ -96,12 +97,12 @@ namespace ThumbnailMaker.Handlers
 			var maxLanes = Lanes.Max(l => l.IsFiller || l.Direction == LaneDirection.None ? 0 : l.Lanes);
 
 			if (maxLanes % 2 == 1)
-				return arrowHeight.Height * maxLanes / 2 + arrowHeight.Height / 2 + 3;
+				return arrowHeight * maxLanes / 2 + arrowHeight / 2 + 3;
 
-			return arrowHeight.Height * maxLanes / 2 + 3;
+			return arrowHeight * maxLanes / 2 + 3;
 		}
 
-		private void DrawLane(LaneInfo lane, Rectangle rect, Rectangle availableSpace)
+		private void DrawLane(LaneInfo lane, Rectangle rect, Rectangle availableSpace, int arrowSize)
 		{
 			Graphics.FillRectangle(lane.Brush(Small), rect);
 
@@ -145,15 +146,12 @@ namespace ThumbnailMaker.Handlers
 			if (arrow == null)
 				return;
 
-			if (Lanes.Any(x => x.Lanes > 1 || x.Direction == LaneDirection.Both))
-				arrow = new Bitmap(arrow, new Size(arrow.Width * 3 / 4, arrow.Height * 3 / 4));
-
 			using (arrow)
 			{
 				if (lane.Direction == LaneDirection.Backwards || lane.Direction == LaneDirection.Both)
 					arrow.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
-				foreach (var arrowRect in GetDirectionArrowRects(lane, new Rectangle(rect.X, 0, rect.Width, rect.Center(0, icons.Sum(i => i.Height)).Y), arrow.Size))
+				foreach (var arrowRect in GetDirectionArrowRects(lane, new Rectangle(rect.X, 0, rect.Width, rect.Center(0, icons.Sum(i => i.Height)).Y), arrowSize))
 				{
 					Graphics.DrawImage(arrow, arrowRect);
 
@@ -163,32 +161,32 @@ namespace ThumbnailMaker.Handlers
 			}
 		}
 
-		private IEnumerable<Rectangle> GetDirectionArrowRects(LaneInfo lane, Rectangle rect, Size iconSize)
+		private IEnumerable<Rectangle> GetDirectionArrowRects(LaneInfo lane, Rectangle rect, int iconSize)
 		{
 			var mainIconSize = Small ? 16 : 96;
 
 			for (var i = 1; i <= lane.Lanes / 2; i++)
 			{
 				yield return new Rectangle(
-					rect.X + (rect.Width / 2 - iconSize.Width) / 2,
-					rect.Height - iconSize.Height * i - 3,
-					iconSize.Width,
-					iconSize.Height);
+					rect.X + (rect.Width / 2 - iconSize) / 2,
+					rect.Height - iconSize * i - 3,
+					iconSize,
+					iconSize);
 
 				yield return new Rectangle(
-					rect.X + rect.Width / 2 + (rect.Width / 2 - iconSize.Width) / 2,
-					rect.Height - iconSize.Height * i - 3,
-					iconSize.Width,
-					iconSize.Height);
+					rect.X + rect.Width / 2 + (rect.Width / 2 - iconSize) / 2,
+					rect.Height - iconSize * i - 3,
+					iconSize,
+					iconSize);
 			}
 
 			if (lane.Lanes % 2 == 1)
 			{
 				yield return new Rectangle(
-					rect.X + (rect.Width - iconSize.Width) / 2,
-					rect.Height - iconSize.Height * lane.Lanes / 2 - iconSize.Height / 2 - 3,
-					iconSize.Width,
-					iconSize.Height);
+					rect.X + (rect.Width - iconSize) / 2,
+					rect.Height - iconSize * lane.Lanes / 2 - iconSize / 2 - 3,
+					iconSize,
+					iconSize);
 			}
 		}
 
