@@ -63,10 +63,10 @@ namespace ThumbnailMaker.Handlers
 				}
 
 				var arrowHeight = ResourceManager.Arrow(Small).Width;
-				var dualArrows = Lanes.Any(x => x.Lanes > 1 || x.Direction == LaneDirection.Both);
-				var maxWidth = Lanes.Max(x => x.Width);
+				var dualArrows = Lanes.Any(x => !x.IsFiller && (x.Lanes > 1 || x.Direction == LaneDirection.Both));
+				var maxWidth = Lanes.Any() ? Lanes.Max(x => x.Width) : 50;
 
-				arrowHeight = Math.Min(arrowHeight, (maxWidth - (dualArrows ? 2 : 1) * (Small ? 2 : 8)) / (dualArrows ? 2 : 1));
+				arrowHeight = Math.Min(arrowHeight, (maxWidth - (dualArrows ? -1 : 1) * (Small ? 2 : 8)) / (dualArrows ? 2 : 1));
 
 				var arrowsHeight = GetArrowsHeight(arrowHeight);
 				var availableSpace = GetAvailableSpace(logo == null ? 0 : (logo.Height + 2)).Pad(0, arrowsHeight, 0, 0);
@@ -77,7 +77,7 @@ namespace ThumbnailMaker.Handlers
 					var lane = Lanes[i];
 					var rect = new Rectangle(xIndex, 0, lane.Width, Height);
 
-					DrawLane(lane, rect, availableSpace, arrowsHeight);
+					DrawLane(lane, rect, availableSpace, arrowHeight);
 
 					xIndex += lane.Width;
 				}
@@ -141,7 +141,6 @@ namespace ThumbnailMaker.Handlers
 				return;
 
 			//rect = rect.Pad(0, (icon.Width - icon.Height), 0, 0);
-
 
 			if (arrow == null)
 				return;
@@ -221,13 +220,13 @@ namespace ThumbnailMaker.Handlers
 				DrawRoadWidth(new Rectangle(0, Height - (Small ? 30 : 120), Width, (Small ? 30 : 120)));
 
 			if (custom)
-				DrawCustomText(new Rectangle(0, Height - (Small ? 30 : 120), size ?( (Width - roadSizeWidth) / 2- (Small ? 3 : 24)) : speed ? ((Width - speedWidth) / 2- (Small ? 3 : 24)) : Width, (Small ? 30 : 120)), !speed &&!size);
+				DrawCustomText(new Rectangle(0, Height - (Small ? 30 : 120), size ? ((Width - roadSizeWidth) / 2 - (Small ? 3 : 24)) : speed ? ((Width - speedWidth) / 2 - (Small ? 3 : 24)) : Width, (Small ? 30 : 120)), !speed && !size);
 		}
 
 		private void DrawCustomText(Rectangle containerRect, bool center)
 		{
-			Graphics.DrawString(CustomText, new Font("Segoe UI", Small ? 9F : 38F, FontStyle.Bold), new SolidBrush(Color.FromArgb(180, 0, 0, 0)), containerRect.Pad(0, Small ? 3 : 10, Small ? -1 : -3, Small ? -1 : -3), new StringFormat { Alignment = center? StringAlignment.Center: StringAlignment.Far, LineAlignment = StringAlignment.Center });
-			Graphics.DrawString(CustomText, new Font("Segoe UI", Small ? 9F : 38F, FontStyle.Bold), Brushes.White, containerRect.Pad(0, Small ? 3 : 10, 0, 0), new StringFormat { Alignment = center? StringAlignment.Center: StringAlignment.Far, LineAlignment = StringAlignment.Center });
+			Graphics.DrawString(CustomText, new Font("Segoe UI", Small ? 9F : 38F, FontStyle.Bold), new SolidBrush(Color.FromArgb(180, 0, 0, 0)), containerRect.Pad(0, Small ? 3 : 10, Small ? -1 : -3, Small ? -1 : -3), new StringFormat { Alignment = center ? StringAlignment.Center : StringAlignment.Far, LineAlignment = StringAlignment.Center });
+			Graphics.DrawString(CustomText, new Font("Segoe UI", Small ? 9F : 38F, FontStyle.Bold), Brushes.White, containerRect.Pad(0, Small ? 3 : 10, 0, 0), new StringFormat { Alignment = center ? StringAlignment.Center : StringAlignment.Far, LineAlignment = StringAlignment.Center });
 		}
 
 		private int GetRoadSizeWidth()

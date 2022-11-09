@@ -175,10 +175,10 @@ namespace ThumbnailMaker
 				var name = types.Count() > 1 ? $"Shared {types.ListStrings(" & ")}" : types.First();
 				
 				if (lane.Type < LaneType.Trees)
-					laneDescriptors.Add(lane.Lanes > 3 ? "Seperator" : "Median");
-				else if (lane.Direction == LaneDirection.Both)
+					laneDescriptors.Add(lane.Lanes > 3 ? "Separator" : "Median");
+				else if (lane.Direction == LaneDirection.Both && lane.Type != LaneType.Parking)
 					laneDescriptors.Add($"2W {lane.Lanes}L {name}");
-				else if (lane.Lanes > 0)
+				else if (lane.Lanes > 0 && lane.Type != LaneType.Parking)
 					laneDescriptors.Add($"{lane.Lanes}L{lane.Direction.Switch(LaneDirection.Backwards, "B", LaneDirection.Forward, "F", "")} {name}");
 				else
 					laneDescriptors.Add(name);
