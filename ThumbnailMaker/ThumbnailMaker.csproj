@@ -67,6 +67,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Domain\LaneIdentity.cs" />
+    <Compile Include="Domain\RoadInfo.cs" />
     <Compile Include="Handlers\ThumbnailHandler.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -209,6 +210,8 @@
     <Content Include="Resources\512_Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\Icon_Diagonal.png" />
+    <None Include="Resources\Icon_Vertical.png" />
     <Content Include="Resources\tooltip.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -38,18 +38,18 @@ namespace ThumbnailMaker
 		{
 			e.Graphics.Clear(Color.Black);
 
-			var lanes = GetLanes(RB_100.Checked);
+			var lanes = GetLanes(false);
 
 			new ThumbnailHandler(e.Graphics)
 			{
-				RoadSize = TB_Size.Text,
+				RoadSize = TB_Size.Text.IfEmpty(CalculateRoadSize(lanes)),
 				CustomText = TB_CustomText.Text,
-				Small = RB_100.Checked,
+				Small = false,
 				HighWay = RB_Highway.Checked,
 				Europe = RB_Europe.Checked,
 				USA = RB_USA.Checked,
 				Canada = RB_Canada.Checked,
-				Speed = TB_SpeedLimit.Text,
+				Speed = TB_SpeedLimit.Text.IfEmpty(DefaultSpeedSign(lanes)),
 				Lanes = lanes
 			}.Draw();
 
@@ -58,10 +58,10 @@ namespace ThumbnailMaker
 
 		private void RB_CheckedChanged(object sender, EventArgs e)
 		{
-			PB.Size = RB_100.Checked ? new Size(109, 100) : new Size(512, 512);
+			PB.Size = new Size(512, 512);
 			PB.Invalidate();
 
-			foreach (var item in panel2.Controls.OfType<RoadLane>())
+			foreach (var item in P_Lanes.Controls.OfType<RoadLane>())
 				item.Invalidate();
 		}
 
@@ -70,7 +70,14 @@ namespace ThumbnailMaker
 			PB.Invalidate();
 		}
 
-		private List<LaneInfo> GetLanes(bool small) => panel2.Controls.OfType<RoadLane>().Reverse().Select(x => new LaneInfo
+		private void B_Clear_Click(object sender, EventArgs e)
+		{
+			P_Lanes.Controls.Clear(true);
+
+			PB.Invalidate();
+		}
+
+		private List<LaneInfo> GetLanes(bool small) => P_Lanes.Controls.OfType<RoadLane>().Reverse().Select(x => new LaneInfo
 		{
 			Type = x.LaneType,
 			Direction = x.LaneDirection,
@@ -80,6 +87,7 @@ namespace ThumbnailMaker
 
 		private void B_Save_Click(object sender, EventArgs e)
 		{
+			var folder = Clipboard.ContainsText() && Directory.Exists(Clipboard.GetText()) ? Clipboard.GetText() : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 			var matched = false;
 			var files = new List<(string, bool)>
 			{
@@ -89,15 +97,15 @@ namespace ThumbnailMaker
 				("thumbnail.png", false),
 			};
 
-			if (File.Exists(Path.Combine(TB_Path.Text, "tooltip.png")))
-				File.Copy("Resources\\tooltip.png", Path.Combine(TB_Path.Text, "tooltip.png"), true);
+			if (File.Exists(Path.Combine(folder, "tooltip.png")))
+				File.Copy("Resources\\tooltip.png", Path.Combine(folder, "tooltip.png"), true);
 
-			if (File.Exists(Path.Combine(TB_Path.Text, "asset_tooltip.png")))
-				File.Copy("Resources\\tooltip.png", Path.Combine(TB_Path.Text, "asset_tooltip.png"), true);
+			if (File.Exists(Path.Combine(folder, "asset_tooltip.png")))
+				File.Copy("Resources\\tooltip.png", Path.Combine(folder, "asset_tooltip.png"), true);
 
 			foreach (var item in files)
 			{
-				if (File.Exists(Path.Combine(TB_Path.Text, item.Item1)))
+				if (File.Exists(Path.Combine(folder, item.Item1)))
 				{
 					save(item.Item1, item.Item2);
 
@@ -106,35 +114,88 @@ namespace ThumbnailMaker
 			}
 
 			if (!matched)
-				save(GetLanes(RB_100.Checked).ListStrings(" + ") + ".png", RB_100.Checked);
+				save(GetLanes(false).ListStrings(" + ") + ".png", false);
 
 			void save(string filename, bool small)
 			{
 				var width = small ? 109 : 512;
 				var height = small ? 100 : 512;
 
+				var lanes = GetLanes(small);
+
 				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 				using (var g = Graphics.FromImage(img))
 				{
 					new ThumbnailHandler(g)
 					{
-						RoadSize = TB_Size.Text,
+						RoadSize = TB_Size.Text.IfEmpty(CalculateRoadSize(lanes)),
 						CustomText = TB_CustomText.Text,
 						Small = small,
 						HighWay = RB_Highway.Checked,
 						Europe = RB_Europe.Checked,
 						USA = RB_USA.Checked,
 						Canada = RB_Canada.Checked,
-						Speed = TB_SpeedLimit.Text,
-						Lanes = GetLanes(small)
+						Speed = TB_SpeedLimit.Text.IfEmpty(DefaultSpeedSign(lanes)),
+						Lanes = lanes
 					}.Draw();
 
-					img.Save(Path.Combine(TB_Path.Text, filename), System.Drawing.Imaging.ImageFormat.Png);
+					img.Save(Path.Combine(folder, filename), System.Drawing.Imaging.ImageFormat.Png);
 				}
 			}
 		}
 
-		private void slickButton1_Click(object sender, EventArgs e)
+		private string DefaultSpeedSign(List<LaneInfo> lanes)
+		{
+			if (lanes.Any(x => (x.Type & (LaneType.Car | LaneType.Bus | LaneType.Highway)) != 0))
+				return RB_USA.Checked ? "25" : "40";
+
+			return string.Empty;
+		}
+
+		private string CalculateRoadSize(List<LaneInfo> lanes)
+		{
+			if (lanes.Count == 0)
+				return string.Empty;
+
+			var size = (TB_BufferSize.Text.SmartParseF() * 2 + lanes.Sum(x => LaneInfo.GetLaneTypes(x.Type).Max(y => GetLaneWidth(y, x))));
+
+			return (Math.Ceiling(size * 2) / 2F).ToString("0.#");
+		}
+
+		private static float GetLaneWidth(LaneType type, LaneInfo lane)
+		{
+			switch (type)
+			{
+				case LaneType.Empty:
+				case LaneType.Grass:
+				case LaneType.Pavement:
+				case LaneType.Gravel:
+					return 0.03F * lane.FillerSize;
+
+				case LaneType.Trees:
+					return 0.04F * lane.FillerSize;
+
+				case LaneType.Tram:
+				case LaneType.Car:
+				case LaneType.Trolley:
+				case LaneType.Emergency:
+					return 3F;
+
+				case LaneType.Pedestrian:
+				case LaneType.Parking:
+				case LaneType.Bike:
+					return 2F;
+
+				case LaneType.Highway:
+				case LaneType.Bus:
+				case LaneType.Train:
+					return 4F;
+			}
+
+			return 3F;
+		}
+
+		private void B_Add_Click(object sender, EventArgs e)
 		{
 			var ctrl = new RoadLane(() => RB_Highway.Checked)
 			{
@@ -143,7 +204,7 @@ namespace ThumbnailMaker
 
 			ctrl.RoadLaneChanged += TB_Name_TextChanged;
 
-			panel2.Controls.Add(ctrl);
+			P_Lanes.Controls.Add(ctrl);
 
 			ctrl.BringToFront();
 
@@ -152,7 +213,7 @@ namespace ThumbnailMaker
 			frm.FormClosed += (s, _) => PB.Invalidate();
 		}
 
-		private void slickButton2_Click(object sender, EventArgs e)
+		private void B_Options_Click(object sender, EventArgs e)
 		{
 			Form.PushPanel<PC_Options>(null);
 		}
@@ -226,6 +287,67 @@ namespace ThumbnailMaker
 		private void slickButton3_Click(object sender, EventArgs e)
 		{
 			Clipboard.SetText(label2.Text);
+		}
+
+		private void B_Export_Click(object sender, EventArgs e)
+		{
+			var appdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+				, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads");
+
+			Directory.CreateDirectory(appdata);
+
+			var lanes = GetLanes(false);
+
+			if (lanes.Count == 0)				
+				return;
+
+			if (!RB_Highway.Checked)
+			{
+				if (lanes[0].Type == LaneType.Pedestrian)
+					lanes.RemoveAt(0);
+
+				if (lanes.Count > 0 && lanes[lanes.Count - 1].Type == LaneType.Pedestrian)
+					lanes.RemoveAt(lanes.Count - 1);
+			}
+
+			if (lanes.Count == 0)
+				return;
+
+			foreach (var item in lanes.Where(x => x.Type == LaneType.Pedestrian && x.Direction == LaneDirection.None))
+				item.Direction = LaneDirection.Both;
+
+			for (var i = 0; i < lanes.Count; i++)
+			{
+				if (lanes[i].IsFiller || lanes[i].Lanes <= 1)
+					continue;
+
+				var bi = lanes[i].Direction == LaneDirection.Both;
+
+				lanes[i].Lanes--;
+
+				if (bi && lanes[i].Lanes == 1)
+					lanes[i].Direction = LaneDirection.Forward;
+
+				lanes.Insert(i, new LaneInfo
+				{
+					Type = lanes[i].Type,
+					Direction = bi ? LaneDirection.Backwards : lanes[i].Direction
+				});
+			}
+
+			var roadInfo = new RoadInfo
+			{
+				BufferSize = TB_BufferSize.Text.SmartParseF(0.25f),
+				Width = TB_Size.Text.SmartParseF(),
+				Highway = RB_Highway.Checked,
+				SpeedLimit = TB_SpeedLimit.Text.SmartParseF() * (RB_USA.Checked ? 1.609F : 1F),
+				Lanes = lanes
+			};
+
+			var xML = new System.Xml.Serialization.XmlSerializer(typeof(RoadInfo));
+
+			using (var stream = File.Create(Path.Combine(appdata, "road.xml")))
+				xML.Serialize(stream, roadInfo);
 		}
 	}
 }

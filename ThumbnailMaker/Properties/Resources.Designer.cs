@@ -93,6 +93,16 @@ namespace ThumbnailMaker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap I_Diagonal {
+            get {
+                object obj = ResourceManager.GetObject("I_Diagonal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap I_Grabber {
             get {
                 object obj = ResourceManager.GetObject("I_Grabber", resourceCulture);
@@ -106,6 +116,16 @@ namespace ThumbnailMaker.Properties {
         internal static System.Drawing.Bitmap I_Unavailable {
             get {
                 object obj = ResourceManager.GetObject("I_Unavailable", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap I_Vertical {
+            get {
+                object obj = ResourceManager.GetObject("I_Vertical", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

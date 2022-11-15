@@ -62,7 +62,7 @@ namespace ThumbnailMaker.Handlers
 					}
 				}
 
-				var arrowHeight = ResourceManager.Arrow(Small).Width;
+				var arrowHeight = ResourceManager.Arrow(Small).Height;
 				var dualArrows = Lanes.Any(x => !x.IsFiller && (x.Lanes > 1 || x.Direction == LaneDirection.Both));
 				var maxWidth = Lanes.Any() ? Lanes.Max(x => x.Width) : 50;
 
@@ -156,6 +156,11 @@ namespace ThumbnailMaker.Handlers
 
 					if (lane.Direction == LaneDirection.Both)
 						arrow.RotateFlip(RotateFlipType.RotateNoneFlipY);
+
+					if (lane.Direction == LaneDirection.Both && lane.Lanes == 1)
+					{
+						Graphics.DrawImage(arrow, new Rectangle(arrowRect.X, arrowRect.Y - (int)(arrowRect.Height * 1.0), arrowRect.Width, arrowRect.Height));
+					}
 				}
 			}
 		}

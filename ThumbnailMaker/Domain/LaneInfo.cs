@@ -1,21 +1,29 @@
 ﻿using Extensions;
 
+using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace ThumbnailMaker.Domain
 {
 	public class LaneInfo
 	{
 		public LaneDirection Direction { get; set; }
-		public bool IsFiller => GetLaneTypes(Type).All(x => x < LaneType.Car);
-		public int Lanes { get; set; }
 		public LaneType Type { get; set; }
+		public int FillerSize { get => IsFiller ? 10 * (10 - Math.Min(Lanes, 9)) : 0; set { } }
+		public float? Elevation { get; set; }
+		public float CustomWidth { get; set; }
+		[XmlIgnore]
 		public int Width { get; set; }
+		[XmlIgnore]
+		public int Lanes { get; set; }
+		[XmlIgnore]
 		public Color Color
 		{
 			get
@@ -24,11 +32,13 @@ namespace ThumbnailMaker.Domain
 				var color = GetColor(types[0]);
 
 				for (var i = 1; i < types.Count; i++)
-					color = color.MergeColor(GetColor(types[i]));
+					color = color.MergeColor(GetColor(types[i]), 35);
 
 				return color;
 			}
 		}
+		[XmlIgnore]
+		public bool IsFiller => GetLaneTypes(Type).All(x => x < LaneType.Car);
 
 		public static Color GetColor(LaneType laneType)
 		{
