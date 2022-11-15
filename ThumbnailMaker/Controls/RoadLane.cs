@@ -287,7 +287,8 @@ namespace ThumbnailMaker.Controls
 							Lanes = 0;
 							break;
 						case LaneDirection.Both:
-							Lanes = Math.Max(2, Lanes);
+							Lanes = Math.Max((LaneType != LaneType.Parking && LaneType != LaneType.Pedestrian)
+								? 2 : 1, Lanes);
 							break;
 						case LaneDirection.Forward:
 						case LaneDirection.Backwards:

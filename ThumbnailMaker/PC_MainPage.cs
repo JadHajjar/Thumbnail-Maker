@@ -301,6 +301,13 @@ namespace ThumbnailMaker
 			if (lanes.Count == 0)				
 				return;
 
+			if (lanes.Any(x => !x.IsFiller && x.Direction == LaneDirection.None))
+			{
+				ShowPrompt("You need to specify the direction of all non-filler lanes before you can export this road.", PromptButtons.OK, PromptIcons.Hand);
+
+				return;
+			}
+
 			if (!RB_Highway.Checked)
 			{
 				if (lanes[0].Type == LaneType.Pedestrian)
