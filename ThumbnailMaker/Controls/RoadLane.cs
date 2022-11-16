@@ -107,7 +107,7 @@ namespace ThumbnailMaker.Controls
 				for (var i = 3; i >= 0; i--)
 				{
 					var direction = (LaneDirection)i;
-					directionRects[direction] = new Rectangle(Width - 6 - 32 - (32 * (6-i + 1) - 16), (Height - 32 - 7) / 2, 32, 32);
+					directionRects[direction] = new Rectangle(Width - 6 - 32 - (32 * (6-i + 2) - 16), (Height - 32 - 7) / 2, 32, 32);
 
 					if (directionRects[direction].Contains(cursor))
 						e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), directionRects[direction], 4);
@@ -133,13 +133,22 @@ namespace ThumbnailMaker.Controls
 				}
 
 				var icon_ = Properties.Resources.I_Vertical;
-				var diagonalRect = new Rectangle(Width - 24 - 32 - (32 * 2) + 10, (Height - 32 - 7) / 2, 32, 32);
+				var diagonalRect = new Rectangle(Width - 24 - 32 - (32 * 3) + 10, (Height - 32 - 7) / 2, 32, 32);
 
 				if (diagonalRect.Contains(cursor))
 					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), diagonalRect, 4);
 
 				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes == 0 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
+				sizeRects[0] = diagonalRect;
 
+				icon_ = Properties.Resources.Icon_Horizontal;
+				diagonalRect.X += 32;
+
+				if (diagonalRect.Contains(cursor))
+					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), diagonalRect, 4);
+
+				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes == 1 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
+				sizeRects[1] = diagonalRect;
 
 				icon_ = Properties.Resources.I_Diagonal;
 				diagonalRect.X += 32;
@@ -147,10 +156,11 @@ namespace ThumbnailMaker.Controls
 				if (diagonalRect.Contains(cursor))
 					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), diagonalRect, 4);
 
-				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes != 0 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
+				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes > 1 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
+				sizeRects[2] = diagonalRect;
 
-				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 24 - 32 - (32 * 2)+6, 6, Width - 24 - 32 - (32 * 2)+6, Height - 13);
-				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 25 - 32 - (32 * 6), 6, Width - 25 - 32 - (32 * 6), Height - 13);
+				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 24 - 32 - (32 * 3)+6, 6, Width - 24 - 32 - (32 * 3)+6, Height - 13);
+				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 25 - 32 - (32 * 7), 6, Width - 25 - 32 - (32 * 7), Height - 13);
 				
 				e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(FormDesign.Design.AccentColor), new Rectangle(iconX + 8, 0, (Width - 6 - 32 - (32 * (6) - 16)) - iconX - 8, Height - 4).CenterR(10, 5));
 
@@ -284,15 +294,17 @@ namespace ThumbnailMaker.Controls
 					switch (LaneDirection)
 					{
 						case LaneDirection.None:
-							Lanes = 0;
+							if (LaneType != LaneType.Parking)
+								Lanes = 0;
 							break;
 						case LaneDirection.Both:
-							Lanes = Math.Max((LaneType != LaneType.Parking && LaneType != LaneType.Pedestrian)
-								? 2 : 1, Lanes);
+							if (LaneType != LaneType.Parking)
+								Lanes = Math.Max(LaneType != LaneType.Pedestrian ? 2 : 1, Lanes);
 							break;
 						case LaneDirection.Forward:
 						case LaneDirection.Backwards:
-							Lanes = Math.Max(1, Lanes);
+							if (LaneType != LaneType.Parking)
+								Lanes = Math.Max(1, Lanes);
 							break;
 					}
 

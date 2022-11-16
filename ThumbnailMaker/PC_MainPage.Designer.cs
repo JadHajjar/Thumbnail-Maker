@@ -33,7 +33,7 @@
 			this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_CopyDesc = new SlickControls.SlickButton();
 			this.slickButton3 = new SlickControls.SlickButton();
-			this.label2 = new System.Windows.Forms.Label();
+			this.L_RoadName = new System.Windows.Forms.Label();
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickGroupBox1 = new SlickControls.SlickGroupBox();
 			this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
@@ -117,7 +117,7 @@
 			this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel8.Controls.Add(this.B_CopyDesc, 2, 0);
 			this.tableLayoutPanel8.Controls.Add(this.slickButton3, 1, 0);
-			this.tableLayoutPanel8.Controls.Add(this.label2, 0, 0);
+			this.tableLayoutPanel8.Controls.Add(this.L_RoadName, 0, 0);
 			this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel8.Location = new System.Drawing.Point(629, 0);
 			this.tableLayoutPanel8.Margin = new System.Windows.Forms.Padding(0);
@@ -161,14 +161,14 @@
 			// 
 			// label2
 			// 
-			this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(15, 11);
-			this.label2.Margin = new System.Windows.Forms.Padding(15, 0, 3, 0);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(36, 13);
-			this.label2.TabIndex = 14;
-			this.label2.Text = "Lanes";
+			this.L_RoadName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.L_RoadName.AutoSize = true;
+			this.L_RoadName.Location = new System.Drawing.Point(15, 11);
+			this.L_RoadName.Margin = new System.Windows.Forms.Padding(15, 0, 3, 0);
+			this.L_RoadName.Name = "label2";
+			this.L_RoadName.Size = new System.Drawing.Size(36, 13);
+			this.L_RoadName.TabIndex = 14;
+			this.L_RoadName.Text = "Lanes";
 			// 
 			// tableLayoutPanel6
 			// 
@@ -757,7 +757,7 @@
 		private SlickControls.SlickButton B_CopyDesc;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
 		private SlickControls.SlickButton slickButton3;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label L_RoadName;
 		private SlickControls.SlickButton slickButton4;
 		private SlickControls.SlickTextBox TB_BufferSize;
 		private SlickControls.SlickButton slickButton5;

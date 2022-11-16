@@ -16,9 +16,13 @@ namespace ThumbnailMaker.Domain
 	{
 		public LaneDirection Direction { get; set; }
 		public LaneType Type { get; set; }
-		public int FillerSize { get => IsFiller ? 10 * (10 - Math.Min(Lanes, 9)) : 0; set { } }
 		public float? Elevation { get; set; }
 		public float CustomWidth { get; set; }
+
+		public int FillerSize { get => IsFiller ? 10 * (10 - Math.Min(Lanes, 9)) : 0; set { } }
+		public bool DiagonalParking { get => Type == LaneType.Parking && Lanes > 1; set { } }
+		public bool HorizontalParking { get => Type == LaneType.Parking && Lanes == 1; set { } }
+
 		[XmlIgnore]
 		public int Width { get; set; }
 		[XmlIgnore]
@@ -122,6 +126,9 @@ namespace ThumbnailMaker.Domain
 		{
 			if (Type == LaneType.Pedestrian)
 				return string.Empty;
+
+			if (Type == LaneType.Parking)
+				return Lanes == 0 ? "P" : Lanes == 1 ? "HP" : "DP";
 
 			var laneNames = GetLaneTypes(Type).Select(GetLaneAbbreviation).OrderBy(y => y).ToList();
 

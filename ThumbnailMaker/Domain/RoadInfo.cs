@@ -14,5 +14,9 @@ namespace ThumbnailMaker.Domain
 		public float SpeedLimit { get; set; }
 		public bool Highway { get; set; }
 		public float Elevation { get; set; } = -0.3F;
+		public string Name { get; set; }
+		public string Description { get; set; }
+		public byte[] SmallThumbnail { get; set; }
+		public byte[] LargeThumbnail { get; set; }
 	}
 }

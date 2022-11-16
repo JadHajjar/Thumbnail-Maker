@@ -31,7 +31,7 @@ namespace ThumbnailMaker
 			base.UIChanged();
 
 			label1.Font = UI.Font(9.75F, FontStyle.Bold);
-			label2.Font = UI.Font(9.75F, FontStyle.Bold);
+			L_RoadName.Font = UI.Font(9.75F, FontStyle.Bold);
 		}
 
 		private void PB_Paint(object sender, PaintEventArgs e)
@@ -53,7 +53,7 @@ namespace ThumbnailMaker
 				Lanes = lanes
 			}.Draw();
 
-			label2.Text = "BR4 " + IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle()).WhereNotEmpty().ListStrings("+");
+			L_RoadName.Text = "BR4 " + IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle()).WhereNotEmpty().ListStrings("+");
 		}
 
 		private void RB_CheckedChanged(object sender, EventArgs e)
@@ -179,20 +179,22 @@ namespace ThumbnailMaker
 				case LaneType.Car:
 				case LaneType.Trolley:
 				case LaneType.Emergency:
-					return 3F;
+					return 3F * lane.Lanes;
 
 				case LaneType.Pedestrian:
-				case LaneType.Parking:
 				case LaneType.Bike:
-					return 2F;
+					return 2F * lane.Lanes;
+
+				case LaneType.Parking:
+					return lane.DiagonalParking ? 3.5F : lane.HorizontalParking ? 5F : 2F;
 
 				case LaneType.Highway:
 				case LaneType.Bus:
 				case LaneType.Train:
-					return 4F;
+					return 4F * lane.Lanes;
 			}
 
-			return 3F;
+			return 3F * lane.Lanes;
 		}
 
 		private void B_Add_Click(object sender, EventArgs e)
@@ -220,6 +222,13 @@ namespace ThumbnailMaker
 
 		private void B_CopyDesc_Click(object sender, EventArgs e)
 		{
+			var desc = GetRoadDescription();
+
+			Clipboard.SetText(desc);
+		}
+
+		private string GetRoadDescription()
+		{
 			var lanes = GetLanes(true);
 
 			var skip = false;
@@ -234,7 +243,7 @@ namespace ThumbnailMaker
 
 				var types = LaneInfo.GetLaneTypes(lane.Type).Select(x => x.ToString());
 				var name = types.Count() > 1 ? $"Shared {types.ListStrings(" & ")}" : types.First();
-				
+
 				if (lane.Type < LaneType.Trees)
 					laneDescriptors.Add(lane.Lanes > 3 ? "Separator" : "Median");
 				else if (lane.Direction == LaneDirection.Both && lane.Type != LaneType.Parking)
@@ -248,10 +257,11 @@ namespace ThumbnailMaker
 			var info = (TB_Size.Text.Length == 0 ? "" : $"{TB_Size.Text}m") +
 				(TB_SpeedLimit.Text.Length == 0 ? "" : $" - {TB_SpeedLimit.Text}{RB_USA.Checked.If("mph", "km/h")}");
 
-			Clipboard.SetText($"Blank {(asymetrical ? "Asymmetrical " : oneWay.Switch(true, "One-Way ", false, "Two-Way ", string.Empty))}{lanes.Any(x => x.Type.HasFlag(LaneType.Bike)).If("Bike ")}Road.  " +
+			var desc = $"Blank {(asymetrical ? "Asymmetrical " : oneWay.Switch(true, "One-Way ", false, "Two-Way ", string.Empty))}{lanes.Any(x => x.Type.HasFlag(LaneType.Bike)).If("Bike ")}Road.  " +
 				laneDescriptors.WhereNotEmpty().ListStrings(" + ") +
 				info.IfEmpty("", $"  ({info})") +
-				"  This road comes with no markings, use Intersection Marking Tool to mark it.");
+				"  This road comes with no markings, use Intersection Marking Tool to mark it.";
+			return desc;
 		}
 
 		private bool? IsOneWay(List<LaneInfo> lanes)
@@ -286,7 +296,7 @@ namespace ThumbnailMaker
 
 		private void slickButton3_Click(object sender, EventArgs e)
 		{
-			Clipboard.SetText(label2.Text);
+			Clipboard.SetText(L_RoadName.Text);
 		}
 
 		private void B_Export_Click(object sender, EventArgs e)
@@ -320,12 +330,9 @@ namespace ThumbnailMaker
 			if (lanes.Count == 0)
 				return;
 
-			foreach (var item in lanes.Where(x => x.Type == LaneType.Pedestrian && x.Direction == LaneDirection.None))
-				item.Direction = LaneDirection.Both;
-
 			for (var i = 0; i < lanes.Count; i++)
 			{
-				if (lanes[i].IsFiller || lanes[i].Lanes <= 1)
+				if (lanes[i].IsFiller || lanes[i].Type == LaneType.Parking || lanes[i].Lanes <= 1)
 					continue;
 
 				var bi = lanes[i].Direction == LaneDirection.Both;
@@ -344,6 +351,10 @@ namespace ThumbnailMaker
 
 			var roadInfo = new RoadInfo
 			{
+				Name = L_RoadName.Text,
+				Description = GetRoadDescription(),
+				SmallThumbnail = getImage(true),
+				LargeThumbnail = getImage(false),
 				BufferSize = TB_BufferSize.Text.SmartParseF(0.25f),
 				Width = TB_Size.Text.SmartParseF(),
 				Highway = RB_Highway.Checked,
@@ -355,6 +366,34 @@ namespace ThumbnailMaker
 
 			using (var stream = File.Create(Path.Combine(appdata, "road.xml")))
 				xML.Serialize(stream, roadInfo);
+
+			byte[] getImage(bool small)
+			{
+				var width = small ? 109 : 512;
+				var height = small ? 100 : 512;
+
+				var _lanes = GetLanes(small);
+
+				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+				using (var g = Graphics.FromImage(img))
+				{
+					new ThumbnailHandler(g)
+					{
+						RoadSize = TB_Size.Text.IfEmpty(CalculateRoadSize(_lanes)),
+						CustomText = TB_CustomText.Text,
+						Small = small,
+						HighWay = RB_Highway.Checked,
+						Europe = RB_Europe.Checked,
+						USA = RB_USA.Checked,
+						Canada = RB_Canada.Checked,
+						Speed = TB_SpeedLimit.Text.IfEmpty(DefaultSpeedSign(_lanes)),
+						Lanes = _lanes
+					}.Draw();
+
+					var converter = new ImageConverter();
+					return (byte[])converter.ConvertTo(img, typeof(byte[]));
+				}
+			}
 		}
 	}
 }

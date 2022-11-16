@@ -63,7 +63,7 @@ namespace ThumbnailMaker.Handlers
 				}
 
 				var arrowHeight = ResourceManager.Arrow(Small).Height;
-				var dualArrows = Lanes.Any(x => !x.IsFiller && (x.Lanes > 1 || x.Direction == LaneDirection.Both));
+				var dualArrows = Lanes.Any(x => !x.IsFiller && x.Type != LaneType.Parking && (x.Lanes > 1 || x.Direction == LaneDirection.Both));
 				var maxWidth = Lanes.Any() ? Lanes.Max(x => x.Width) : 50;
 
 				arrowHeight = Math.Min(arrowHeight, (maxWidth - (dualArrows ? -1 : 1) * (Small ? 2 : 8)) / (dualArrows ? 2 : 1));
@@ -94,7 +94,7 @@ namespace ThumbnailMaker.Handlers
 			if (Lanes.Count == 0)
 				return 0;
 
-			var maxLanes = Lanes.Max(l => l.IsFiller || l.Direction == LaneDirection.None ? 0 : l.Lanes);
+			var maxLanes = Lanes.Max(l => l.IsFiller || l.Type == LaneType.Parking || l.Direction == LaneDirection.None ? 0 : l.Lanes);
 
 			if (maxLanes % 2 == 1)
 				return arrowHeight * maxLanes / 2 + arrowHeight / 2 + 3;
@@ -132,7 +132,13 @@ namespace ThumbnailMaker.Handlers
 				if (lane.Type == LaneType.Highway && lane.Direction == LaneDirection.Backwards)
 					icon.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
-				Graphics.DrawImage(icon, new Rectangle(new Point(rect.X + (rect.Width - icon.Width) / 2, y), icon.Size));
+				if (lane.Type == LaneType.Parking && lane.Lanes == 1)
+					icon.RotateFlip(lane.Direction == LaneDirection.Backwards ? RotateFlipType.Rotate270FlipNone : RotateFlipType.Rotate90FlipNone);
+
+				if (lane.Type == LaneType.Parking && lane.Lanes > 1)
+					DrawFlippedIcon(lane, rect, y, icon);
+				else
+					Graphics.DrawImage(icon, new Rectangle(new Point(rect.X + (rect.Width - icon.Width) / 2, y), icon.Size));
 
 				y += icon.Height;
 			}
@@ -142,7 +148,7 @@ namespace ThumbnailMaker.Handlers
 
 			//rect = rect.Pad(0, (icon.Width - icon.Height), 0, 0);
 
-			if (arrow == null)
+			if (arrow == null || lane.Type == LaneType.Parking)
 				return;
 
 			using (arrow)
@@ -163,6 +169,20 @@ namespace ThumbnailMaker.Handlers
 					}
 				}
 			}
+		}
+
+		private void DrawFlippedIcon(LaneInfo lane, Rectangle rect, int y, Image icon)
+		{
+			//if(lane.Direction == LaneDirection.Backwards)
+			//	icon.RotateFlip(RotateFlipType.Rotate270FlipNone);
+
+			var translate = lane.Direction == LaneDirection.Backwards ? new Point(rect.X + -(rect.Width - icon.Width) / 4, y + icon.Height / 2)
+				: new Point(rect.X + (rect.Width - icon.Width) / 2 + (icon.Width / 2), y - icon.Height / 4);
+			Graphics.TranslateTransform(translate.X, translate.Y);
+			Graphics.RotateTransform(lane.Direction == LaneDirection.Backwards ? -45F : 45F);
+			Graphics.DrawImage(icon, new Rectangle(Point.Empty, icon.Size));
+			Graphics.RotateTransform(lane.Direction == LaneDirection.Backwards ? 45F : -45F);
+			Graphics.TranslateTransform(-translate.X, -translate.Y);
 		}
 
 		private IEnumerable<Rectangle> GetDirectionArrowRects(LaneInfo lane, Rectangle rect, int iconSize)
