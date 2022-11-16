@@ -94,7 +94,9 @@ namespace ThumbnailMaker.Handlers
 			if (Lanes.Count == 0)
 				return 0;
 
-			var maxLanes = Lanes.Max(l => l.IsFiller || l.Type == LaneType.Parking || l.Direction == LaneDirection.None ? 0 : l.Lanes);
+			var maxLanes = Lanes.Max(l => l.IsFiller || l.Direction == LaneDirection.None ? 0 
+			: l.Type == LaneType.Parking ? (l.Lanes > 1 ? 1 : 0) 
+			: l.Lanes);
 
 			if (maxLanes % 2 == 1)
 				return arrowHeight * maxLanes / 2 + arrowHeight / 2 + 3;
@@ -132,13 +134,7 @@ namespace ThumbnailMaker.Handlers
 				if (lane.Type == LaneType.Highway && lane.Direction == LaneDirection.Backwards)
 					icon.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
-				if (lane.Type == LaneType.Parking && lane.Lanes == 1)
-					icon.RotateFlip(lane.Direction == LaneDirection.Backwards ? RotateFlipType.Rotate270FlipNone : RotateFlipType.Rotate90FlipNone);
-
-				if (lane.Type == LaneType.Parking && lane.Lanes > 1)
-					DrawFlippedIcon(lane, rect, y, icon);
-				else
-					Graphics.DrawImage(icon, new Rectangle(new Point(rect.X + (rect.Width - icon.Width) / 2, y), icon.Size));
+				Graphics.DrawImage(icon, new Rectangle(new Point(rect.X + (rect.Width - icon.Width) / 2, y), icon.Size));
 
 				y += icon.Height;
 			}
@@ -148,17 +144,23 @@ namespace ThumbnailMaker.Handlers
 
 			//rect = rect.Pad(0, (icon.Width - icon.Height), 0, 0);
 
-			if (arrow == null || lane.Type == LaneType.Parking)
+			if (arrow == null || (lane.Type == LaneType.Parking && lane.Lanes <= 1 && lane.Direction != LaneDirection.Both))
 				return;
 
 			using (arrow)
 			{
-				if (lane.Direction == LaneDirection.Backwards || lane.Direction == LaneDirection.Both)
+				if (lane.Type == LaneType.Parking && lane.Lanes == 2)
+					arrow.RotateFlip(lane.Direction == LaneDirection.Backwards ? RotateFlipType.Rotate270FlipNone : RotateFlipType.Rotate90FlipNone);
+
+				if (lane.Type != LaneType.Parking && (lane.Direction == LaneDirection.Backwards || lane.Direction == LaneDirection.Both))
 					arrow.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
 				foreach (var arrowRect in GetDirectionArrowRects(lane, new Rectangle(rect.X, 0, rect.Width, rect.Center(0, icons.Sum(i => i.Height)).Y), arrowSize))
 				{
-					Graphics.DrawImage(arrow, arrowRect);
+					if (lane.Type == LaneType.Parking && lane.Lanes > 2)
+						DrawFlippedIcon(lane, arrowRect, arrow);
+					else
+						Graphics.DrawImage(arrow, arrowRect);
 
 					if (lane.Direction == LaneDirection.Both)
 						arrow.RotateFlip(RotateFlipType.RotateNoneFlipY);
@@ -171,13 +173,13 @@ namespace ThumbnailMaker.Handlers
 			}
 		}
 
-		private void DrawFlippedIcon(LaneInfo lane, Rectangle rect, int y, Image icon)
+		private void DrawFlippedIcon(LaneInfo lane, Rectangle rect, Image icon)
 		{
-			//if(lane.Direction == LaneDirection.Backwards)
-			//	icon.RotateFlip(RotateFlipType.Rotate270FlipNone);
+			if (lane.Direction == LaneDirection.Backwards)
+				icon.RotateFlip(RotateFlipType.Rotate270FlipNone);
 
-			var translate = lane.Direction == LaneDirection.Backwards ? new Point(rect.X + -(rect.Width - icon.Width) / 4, y + icon.Height / 2)
-				: new Point(rect.X + (rect.Width - icon.Width) / 2 + (icon.Width / 2), y - icon.Height / 4);
+			var translate = lane.Direction == LaneDirection.Backwards ? new Point(rect.X - icon .Width / 4, rect.Y + icon.Height / 2)
+				: new Point(rect.X + (rect.Width - icon.Width) / 2 + (icon.Width / 2), rect.Y - icon.Height / 4);
 			Graphics.TranslateTransform(translate.X, translate.Y);
 			Graphics.RotateTransform(lane.Direction == LaneDirection.Backwards ? -45F : 45F);
 			Graphics.DrawImage(icon, new Rectangle(Point.Empty, icon.Size));
@@ -187,9 +189,10 @@ namespace ThumbnailMaker.Handlers
 
 		private IEnumerable<Rectangle> GetDirectionArrowRects(LaneInfo lane, Rectangle rect, int iconSize)
 		{
-			var mainIconSize = Small ? 16 : 96;
+			var lanes = lane.Type != LaneType.Parking ? lane.Lanes
+				: (lane.Direction == LaneDirection.None ? 0 : 1);
 
-			for (var i = 1; i <= lane.Lanes / 2; i++)
+			for (var i = 1; i <= lanes / 2; i++)
 			{
 				yield return new Rectangle(
 					rect.X + (rect.Width / 2 - iconSize) / 2,
@@ -204,11 +207,11 @@ namespace ThumbnailMaker.Handlers
 					iconSize);
 			}
 
-			if (lane.Lanes % 2 == 1)
+			if (lanes % 2 == 1)
 			{
 				yield return new Rectangle(
 					rect.X + (rect.Width - iconSize) / 2,
-					rect.Height - iconSize * lane.Lanes / 2 - iconSize / 2 - 3,
+					rect.Height - iconSize * lanes / 2 - iconSize / 2 - 3,
 					iconSize,
 					iconSize);
 			}

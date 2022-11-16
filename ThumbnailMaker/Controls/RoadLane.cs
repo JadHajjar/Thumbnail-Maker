@@ -4,12 +4,9 @@ using SlickControls;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
@@ -107,7 +104,11 @@ namespace ThumbnailMaker.Controls
 				for (var i = 3; i >= 0; i--)
 				{
 					var direction = (LaneDirection)i;
-					directionRects[direction] = new Rectangle(Width - 6 - 32 - (32 * (6-i + 2) - 16), (Height - 32 - 7) / 2, 32, 32);
+
+					if (direction == LaneDirection.Both)
+						continue;
+
+					directionRects[direction] = new Rectangle(Width - 6 - 32 - (32 * (5 - Math.Max(0, i - 1) + 2) - 16), (Height - 32 - 7) / 2, 32, 32);
 
 					if (directionRects[direction].Contains(cursor))
 						e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), directionRects[direction], 4);
@@ -138,8 +139,8 @@ namespace ThumbnailMaker.Controls
 				if (diagonalRect.Contains(cursor))
 					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), diagonalRect, 4);
 
-				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes == 0 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
-				sizeRects[0] = diagonalRect;
+				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes <= 1 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
+				sizeRects[1] = diagonalRect;
 
 				icon_ = Properties.Resources.Icon_Horizontal;
 				diagonalRect.X += 32;
@@ -147,8 +148,8 @@ namespace ThumbnailMaker.Controls
 				if (diagonalRect.Contains(cursor))
 					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), diagonalRect, 4);
 
-				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes == 1 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
-				sizeRects[1] = diagonalRect;
+				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes == 2 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
+				sizeRects[2] = diagonalRect;
 
 				icon_ = Properties.Resources.I_Diagonal;
 				diagonalRect.X += 32;
@@ -156,12 +157,12 @@ namespace ThumbnailMaker.Controls
 				if (diagonalRect.Contains(cursor))
 					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), diagonalRect, 4);
 
-				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes > 1 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
-				sizeRects[2] = diagonalRect;
+				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes > 2 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
+				sizeRects[3] = diagonalRect;
 
-				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 24 - 32 - (32 * 3)+6, 6, Width - 24 - 32 - (32 * 3)+6, Height - 13);
-				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 25 - 32 - (32 * 7), 6, Width - 25 - 32 - (32 * 7), Height - 13);
-				
+				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 24 - 32 - (32 * 3) + 6, 6, Width - 24 - 32 - (32 * 3) + 6, Height - 13);
+				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 25 - 32 - (32 * 6), 6, Width - 25 - 32 - (32 * 6), Height - 13);
+
 				e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(FormDesign.Design.AccentColor), new Rectangle(iconX + 8, 0, (Width - 6 - 32 - (32 * (6) - 16)) - iconX - 8, Height - 4).CenterR(10, 5));
 
 				return;
@@ -281,6 +282,17 @@ namespace ThumbnailMaker.Controls
 					Lanes = item.Key;
 					RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 					Invalidate();
+
+					if (LaneType == LaneType.Parking)
+					{
+						foreach (var rl in Parent.Controls.OfType<RoadLane>().Where(x => x != this && x.LaneType == LaneType.Parking))
+						{
+							rl.Lanes = item.Key;
+							rl.RoadLaneChanged?.Invoke(this, EventArgs.Empty);
+							rl.Invalidate();
+						}
+					}
+
 					return;
 				}
 			}

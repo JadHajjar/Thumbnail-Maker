@@ -20,8 +20,8 @@ namespace ThumbnailMaker.Domain
 		public float CustomWidth { get; set; }
 
 		public int FillerSize { get => IsFiller ? 10 * (10 - Math.Min(Lanes, 9)) : 0; set { } }
-		public bool DiagonalParking { get => Type == LaneType.Parking && Lanes > 1; set { } }
-		public bool HorizontalParking { get => Type == LaneType.Parking && Lanes == 1; set { } }
+		public bool DiagonalParking { get => Type == LaneType.Parking && Lanes > 2; set { } }
+		public bool HorizontalParking { get => Type == LaneType.Parking && Lanes == 2; set { } }
 
 		[XmlIgnore]
 		public int Width { get; set; }
