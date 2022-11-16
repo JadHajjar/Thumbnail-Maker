@@ -186,7 +186,7 @@ namespace ThumbnailMaker
 					return 2F * lane.Lanes;
 
 				case LaneType.Parking:
-					return lane.DiagonalParking ? 3.5F : lane.HorizontalParking ? 5F : 2F;
+					return lane.DiagonalParking ? 4F : lane.HorizontalParking ? 5F : 2F;
 
 				case LaneType.Highway:
 				case LaneType.Bus:

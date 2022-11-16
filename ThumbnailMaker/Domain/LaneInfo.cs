@@ -128,7 +128,7 @@ namespace ThumbnailMaker.Domain
 				return string.Empty;
 
 			if (Type == LaneType.Parking)
-				return Lanes == 0 ? "P" : Lanes == 1 ? "HP" : "DP";
+				return Lanes == 0 ? "P" : Lanes > 1 ? "HP" : "DP";
 
 			var laneNames = GetLaneTypes(Type).Select(GetLaneAbbreviation).OrderBy(y => y).ToList();
 
