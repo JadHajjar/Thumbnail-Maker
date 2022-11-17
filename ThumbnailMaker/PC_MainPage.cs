@@ -34,6 +34,8 @@ namespace ThumbnailMaker
 			L_RoadName.Font = UI.Font(9.75F, FontStyle.Bold);
 		}
 
+		private List<LaneInfo> GetLanes(bool small) => P_Lanes.Controls.OfType<RoadLane>().Reverse().Select(x => x.GetLane(small)).ToList();
+
 		private void PB_Paint(object sender, PaintEventArgs e)
 		{
 			e.Graphics.Clear(Color.Black);
@@ -42,18 +44,19 @@ namespace ThumbnailMaker
 
 			new ThumbnailHandler(e.Graphics)
 			{
-				RoadSize = TB_Size.Text.IfEmpty(CalculateRoadSize(lanes)),
+				RoadSize = TB_Size.Text.IfEmpty(Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text)),
 				CustomText = TB_CustomText.Text,
 				Small = false,
 				HighWay = RB_Highway.Checked,
 				Europe = RB_Europe.Checked,
 				USA = RB_USA.Checked,
 				Canada = RB_Canada.Checked,
-				Speed = TB_SpeedLimit.Text.IfEmpty(DefaultSpeedSign(lanes)),
+				Speed = TB_SpeedLimit.Text.IfEmpty(Utilities.DefaultSpeedSign(lanes, RB_USA.Checked)),
 				Lanes = lanes
 			}.Draw();
 
-			L_RoadName.Text = "BR4 " + IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle()).WhereNotEmpty().ListStrings("+");
+			L_RoadName.Text = "BR4 " + Utilities.IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle()).WhereNotEmpty().ListStrings("+");
+			L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
 		}
 
 		private void RB_CheckedChanged(object sender, EventArgs e)
@@ -76,14 +79,6 @@ namespace ThumbnailMaker
 
 			PB.Invalidate();
 		}
-
-		private List<LaneInfo> GetLanes(bool small) => P_Lanes.Controls.OfType<RoadLane>().Reverse().Select(x => new LaneInfo
-		{
-			Type = x.LaneType,
-			Direction = x.LaneDirection,
-			Lanes = x.Lanes,
-			Width = (x.LaneType < LaneType.Car ? (10 - Math.Min(x.Lanes, 9)) : 10) * (small ? 2 : 10)
-		}).ToList();
 
 		private void B_Save_Click(object sender, EventArgs e)
 		{
@@ -128,73 +123,20 @@ namespace ThumbnailMaker
 				{
 					new ThumbnailHandler(g)
 					{
-						RoadSize = TB_Size.Text.IfEmpty(CalculateRoadSize(lanes)),
+						RoadSize = TB_Size.Text.IfEmpty(Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text)),
 						CustomText = TB_CustomText.Text,
 						Small = small,
 						HighWay = RB_Highway.Checked,
 						Europe = RB_Europe.Checked,
 						USA = RB_USA.Checked,
 						Canada = RB_Canada.Checked,
-						Speed = TB_SpeedLimit.Text.IfEmpty(DefaultSpeedSign(lanes)),
+						Speed = TB_SpeedLimit.Text.IfEmpty(Utilities.DefaultSpeedSign(lanes, RB_USA.Checked)),
 						Lanes = lanes
 					}.Draw();
 
 					img.Save(Path.Combine(folder, filename), System.Drawing.Imaging.ImageFormat.Png);
 				}
 			}
-		}
-
-		private string DefaultSpeedSign(List<LaneInfo> lanes)
-		{
-			if (lanes.Any(x => (x.Type & (LaneType.Car | LaneType.Bus | LaneType.Highway)) != 0))
-				return RB_USA.Checked ? "25" : "40";
-
-			return string.Empty;
-		}
-
-		private string CalculateRoadSize(List<LaneInfo> lanes)
-		{
-			if (lanes.Count == 0)
-				return string.Empty;
-
-			var size = (TB_BufferSize.Text.SmartParseF() * 2 + lanes.Sum(x => LaneInfo.GetLaneTypes(x.Type).Max(y => GetLaneWidth(y, x))));
-
-			return (Math.Ceiling(size * 2) / 2F).ToString("0.#");
-		}
-
-		private static float GetLaneWidth(LaneType type, LaneInfo lane)
-		{
-			switch (type)
-			{
-				case LaneType.Empty:
-				case LaneType.Grass:
-				case LaneType.Pavement:
-				case LaneType.Gravel:
-					return 0.03F * lane.FillerSize;
-
-				case LaneType.Trees:
-					return 0.04F * lane.FillerSize;
-
-				case LaneType.Tram:
-				case LaneType.Car:
-				case LaneType.Trolley:
-				case LaneType.Emergency:
-					return 3F * lane.Lanes;
-
-				case LaneType.Pedestrian:
-				case LaneType.Bike:
-					return 2F * lane.Lanes;
-
-				case LaneType.Parking:
-					return lane.DiagonalParking ? 4F : lane.HorizontalParking ? 5F : 2F;
-
-				case LaneType.Highway:
-				case LaneType.Bus:
-				case LaneType.Train:
-					return 4F * lane.Lanes;
-			}
-
-			return 3F * lane.Lanes;
 		}
 
 		private void B_Add_Click(object sender, EventArgs e)
@@ -222,79 +164,12 @@ namespace ThumbnailMaker
 
 		private void B_CopyDesc_Click(object sender, EventArgs e)
 		{
-			var desc = GetRoadDescription();
+			var desc = Utilities.GetRoadDescription(GetLanes(false), TB_Size.Text, TB_BufferSize.Text, TB_SpeedLimit.Text, RB_USA.Checked);
 
 			Clipboard.SetText(desc);
 		}
 
-		private string GetRoadDescription()
-		{
-			var lanes = GetLanes(true);
-
-			var skip = false;
-			var oneWay = IsOneWay(lanes);
-			var asymetrical = lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards).Sum(x => x.Lanes) != lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Forward).Sum(x => x.Lanes) && lanes.Any(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards && x.Lanes > 0);
-			var laneDescriptors = new List<string>();
-
-			foreach (var lane in lanes)
-			{
-				if (skip || lane.Type == LaneType.Pedestrian)
-					continue;
-
-				var types = LaneInfo.GetLaneTypes(lane.Type).Select(x => x.ToString());
-				var name = types.Count() > 1 ? $"Shared {types.ListStrings(" & ")}" : types.First();
-
-				if (lane.Type < LaneType.Trees)
-					laneDescriptors.Add(lane.Lanes > 3 ? "Separator" : "Median");
-				else if (lane.Direction == LaneDirection.Both && lane.Type != LaneType.Parking)
-					laneDescriptors.Add($"2W {lane.Lanes}L {name}");
-				else if (lane.Lanes > 0 && lane.Type != LaneType.Parking)
-					laneDescriptors.Add($"{lane.Lanes}L{lane.Direction.Switch(LaneDirection.Backwards, "B", LaneDirection.Forward, "F", "")} {name}");
-				else
-					laneDescriptors.Add(name);
-			}
-
-			var info = (TB_Size.Text.Length == 0 ? "" : $"{TB_Size.Text}m") +
-				(TB_SpeedLimit.Text.Length == 0 ? "" : $" - {TB_SpeedLimit.Text}{RB_USA.Checked.If("mph", "km/h")}");
-
-			var desc = $"Blank {(asymetrical ? "Asymmetrical " : oneWay.Switch(true, "One-Way ", false, "Two-Way ", string.Empty))}{lanes.Any(x => x.Type.HasFlag(LaneType.Bike)).If("Bike ")}Road.  " +
-				laneDescriptors.WhereNotEmpty().ListStrings(" + ") +
-				info.IfEmpty("", $"  ({info})") +
-				"  This road comes with no markings, use Intersection Marking Tool to mark it.";
-			return desc;
-		}
-
-		private bool? IsOneWay(List<LaneInfo> lanes)
-		{
-			var car = lanes.FirstOrDefault(x => x.Type.HasFlag(LaneType.Car));
-			var bus = lanes.FirstOrDefault(x => x.Type.HasFlag(LaneType.Bus));
-			var bike = lanes.FirstOrDefault(x => x.Type.HasFlag(LaneType.Bike));
-
-			if (car != null)
-			{
-				return car.Direction != LaneDirection.Both && lanes
-					.Where(x => x.Type.HasFlag(LaneType.Car))
-					.All(x => x.Direction == car.Direction);
-			}
-
-			if (bus != null)
-			{
-				return bus.Direction != LaneDirection.Both && lanes
-					.Where(x => x.Type.HasFlag(LaneType.Bus))
-					.All(x => x.Direction == bus.Direction);
-			}
-
-			if (bike != null)
-			{
-				return bike.Direction != LaneDirection.Both && lanes
-					.Where(x => x.Type.HasFlag(LaneType.Bike))
-					.All(x => x.Direction == bike.Direction);
-			}
-
-			return null;
-		}
-
-		private void slickButton3_Click(object sender, EventArgs e)
+		private void B_CopyRoadName_Click(object sender, EventArgs e)
 		{
 			Clipboard.SetText(L_RoadName.Text);
 		}
@@ -352,7 +227,7 @@ namespace ThumbnailMaker
 			var roadInfo = new RoadInfo
 			{
 				Name = L_RoadName.Text,
-				Description = GetRoadDescription(),
+				Description = Utilities.GetRoadDescription(GetLanes(false), TB_Size.Text, TB_BufferSize.Text, TB_SpeedLimit.Text, RB_USA.Checked),
 				SmallThumbnail = getImage(true),
 				LargeThumbnail = getImage(false),
 				BufferSize = TB_BufferSize.Text.SmartParseF(0.25f),
@@ -379,14 +254,14 @@ namespace ThumbnailMaker
 				{
 					new ThumbnailHandler(g)
 					{
-						RoadSize = TB_Size.Text.IfEmpty(CalculateRoadSize(_lanes)),
+						RoadSize = TB_Size.Text.IfEmpty(Utilities.CalculateRoadSize(_lanes, TB_BufferSize.Text)),
 						CustomText = TB_CustomText.Text,
 						Small = small,
 						HighWay = RB_Highway.Checked,
 						Europe = RB_Europe.Checked,
 						USA = RB_USA.Checked,
 						Canada = RB_Canada.Checked,
-						Speed = TB_SpeedLimit.Text.IfEmpty(DefaultSpeedSign(_lanes)),
+						Speed = TB_SpeedLimit.Text.IfEmpty(Utilities.DefaultSpeedSign(_lanes, RB_USA.Checked)),
 						Lanes = _lanes
 					}.Draw();
 

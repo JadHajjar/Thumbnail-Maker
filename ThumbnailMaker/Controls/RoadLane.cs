@@ -30,6 +30,8 @@ namespace ThumbnailMaker.Controls
 		public LaneDirection LaneDirection { get; private set; }
 		public int Lanes { get; private set; }
 		public Func<bool> IsHighWay { get; }
+		public float CustomLaneWidth { get; set; } = -1F;
+		public float CustomVerticalOffset { get; set; } = -1F;
 
 		public void SetLaneType(LaneType laneType)
 		{
@@ -48,7 +50,9 @@ namespace ThumbnailMaker.Controls
 
 		private Rectangle iconRectangle;
 		private Rectangle deleteRectangle;
+		private Rectangle grabberRectangle;
 		private LaneType _laneType;
+		private Rectangle editRectangle;
 		private readonly Dictionary<int, Rectangle> sizeRects = new Dictionary<int, Rectangle>();
 		private readonly Dictionary<LaneDirection, Rectangle> directionRects = new Dictionary<LaneDirection, Rectangle>();
 
@@ -96,6 +100,17 @@ namespace ThumbnailMaker.Controls
 			e.Graphics.DrawImage(Properties.Resources.I_X.Color(deleteRectangle.Contains(cursor) ? FormDesign.Design.RedColor : FormDesign.Design.IconColor), deleteRectangle.CenterR(16, 16));
 
 			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 34, 6, Width - 34, Height - 13);
+
+			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), iconX + 8, 6, iconX + 8, Height - 13);
+
+			editRectangle = new Rectangle(iconX + 8+4, (Height - 32 - 7) / 2, 32, 32);
+
+			e.Graphics.DrawImage(Properties.Resources.I_Edit.Color(FormDesign.Design.IconColor), editRectangle.CenterR(16, 16));
+
+			if (editRectangle.Contains(cursor))
+				DrawFocus(e.Graphics, editRectangle.Pad(0, 1, 0, 1), HoverState.Focused, 4);
+
+			iconX += 40;
 
 			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), iconX + 8, 6, iconX + 8, Height - 13);
 
@@ -163,7 +178,8 @@ namespace ThumbnailMaker.Controls
 				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 24 - 32 - (32 * 3) + 6, 6, Width - 24 - 32 - (32 * 3) + 6, Height - 13);
 				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 25 - 32 - (32 * 6), 6, Width - 25 - 32 - (32 * 6), Height - 13);
 
-				e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(FormDesign.Design.AccentColor), new Rectangle(iconX + 8, 0, (Width - 6 - 32 - (32 * (6) - 16)) - iconX - 8, Height - 4).CenterR(10, 5));
+				grabberRectangle = new Rectangle(iconX + 8, 0, (Width - 6 - 32 - (32 * (6) - 16)) - iconX - 8, Height - 4);
+				e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), grabberRectangle.CenterR(10, 5));
 
 				return;
 			}
@@ -184,16 +200,17 @@ namespace ThumbnailMaker.Controls
 
 				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 6 - 8 - 32 - (32 * 10), 6, Width - 6 - 8 - 32 - (32 * 10), Height - 13);
 
-				e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(FormDesign.Design.AccentColor), new Rectangle(iconX + 8, 0, Width - 6 - 8 - 32 - (32 * 10) - iconX - 8, Height - 4).CenterR(10, 5));
+				grabberRectangle = new Rectangle(iconX + 8, 0, Width - 6 - 8 - 32 - (32 * 10) - iconX - 8, Height - 4);
+				e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), grabberRectangle.CenterR(10, 5));
 
 				return;
 			}
 
 			e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.AccentBackColor), new Rectangle(Width - 6 - 32 - (32 * 8), (Height - 32 - 7) / 2, 32 * 8, 32), 4);
 
-			for (var i = 7; i >= 0; i--)
+			for (var i = 8; i >= 0; i--)
 			{
-				sizeRects[i] = new Rectangle(Width - 6 - 32 - (32 * (7 - i + 1)), (Height - 32 - 7) / 2, 32, 32);
+				sizeRects[i] = new Rectangle(Width - 6 - 32 - (32 * (8 - i + 1)), (Height - 32 - 7) / 2, 32, 32);
 
 				if (sizeRects[i].Contains(cursor))
 					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), sizeRects[i], 4);
@@ -204,17 +221,18 @@ namespace ThumbnailMaker.Controls
 					e.Graphics.DrawString($"{i}L", new Font(UI.FontFamily, 8.25F), new SolidBrush(sizeRects[i].Contains(cursor) ? FormDesign.Design.ActiveForeColor : i == Lanes ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), sizeRects[i], new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 			}
 
-			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 6 - 8 - 32 - (32 * 8), 6, Width - 6 - 8 - 32 - (32 * 8), Height - 13);
-			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 6 - 8 - 16 - 32 - (32 * 12), 6, Width - 6 - 16 - 8 - 32 - (32 * 12), Height - 13);
+			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 6 - 8 - 32 - (32 * 9), 6, Width - 6 - 8 - 32 - (32 * 9), Height - 13);
+			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 6 - 8 - 16 - 32 - (32 * 13), 6, Width - 6 - 16 - 8 - 32 - (32 * 13), Height - 13);
 
-			e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(FormDesign.Design.AccentColor), new Rectangle(iconX + 8, 0, Width - 6 - 8 - 16 - 32 - (32 * 12) - iconX - 8, Height - 4).CenterR(10, 5));
+			grabberRectangle = new Rectangle(iconX + 8, 0, Width - 6 - 8 - 16 - 32 - (32 * 13) - iconX - 8, Height - 4);
+			e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(grabberRectangle.Contains(cursor)? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), grabberRectangle.CenterR(10, 5));
 
-			e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.AccentBackColor), new Rectangle(Width - 6 - 32 - (32 * 12) - 16, (Height - 32 - 7) / 2, 32 * 4, 32), 4);
+			e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.AccentBackColor), new Rectangle(Width - 6 - 32 - (32 * 13) - 16, (Height - 32 - 7) / 2, 32 * 4, 32), 4);
 
 			for (var i = 3; i >= 0; i--)
 			{
 				var direction = (LaneDirection)i;
-				directionRects[direction] = new Rectangle(Width - 6 - 32 - (32 * (12 - i + 1) - 16), (Height - 32 - 7) / 2, 32, 32);
+				directionRects[direction] = new Rectangle(Width - 6 - 32 - (32 * (13 - i + 1) - 16), (Height - 32 - 7) / 2, 32, 32);
 
 				if (directionRects[direction].Contains(cursor))
 					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), directionRects[direction], 4);
@@ -242,7 +260,7 @@ namespace ThumbnailMaker.Controls
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left && !iconRectangle.Contains(e.Location) && !deleteRectangle.Contains(e.Location) && !sizeRects.Any(x => x.Value.Contains(e.Location)) && !directionRects.Any(x => x.Value.Contains(e.Location)))
+			if (e.Button == MouseButtons.Left && !iconRectangle.Contains(e.Location) && !editRectangle.Contains(e.Location) && !deleteRectangle.Contains(e.Location) && !sizeRects.Any(x => x.Value.Contains(e.Location)) && !directionRects.Any(x => x.Value.Contains(e.Location)))
 			{
 				_dragDropActive = true;
 
@@ -266,6 +284,19 @@ namespace ThumbnailMaker.Controls
 			if (iconRectangle.Contains(e.Location))
 			{
 				new RoadTypeSelector(this);
+
+				RoadLaneChanged?.Invoke(this, EventArgs.Empty);
+
+				return;
+			}
+
+			if (editRectangle.Contains(e.Location))
+			{
+				new RoadOptionsEditor(this);
+
+				RoadLaneChanged?.Invoke(this, EventArgs.Empty);
+
+				return;
 			}
 
 			if (deleteRectangle.Contains(e.Location))
@@ -273,6 +304,8 @@ namespace ThumbnailMaker.Controls
 				Dispose();
 
 				RoadLaneChanged?.Invoke(this, EventArgs.Empty);
+
+				return;
 			}
 
 			foreach (var item in sizeRects)
@@ -331,13 +364,13 @@ namespace ThumbnailMaker.Controls
 		{
 			base.OnMouseMove(e);
 
-			if (iconRectangle.Contains(e.Location) || deleteRectangle.Contains(e.Location) || sizeRects.Any(x => x.Value.Contains(e.Location)) || directionRects.Any(x => x.Value.Contains(e.Location)))
+			if (iconRectangle.Contains(e.Location) || editRectangle.Contains(e.Location) || deleteRectangle.Contains(e.Location) || sizeRects.Any(x => x.Value.Contains(e.Location)) || directionRects.Any(x => x.Value.Contains(e.Location)))
 			{
 				Cursor = Cursors.Hand;
 				return;
 			}
 
-			Cursor = Cursors.Default;
+			Cursor = grabberRectangle.Contains(e.Location) ? Cursors.SizeAll : Cursors.Default;
 		}
 
 		protected override void OnDragDrop(DragEventArgs drgevent)
@@ -374,6 +407,19 @@ namespace ThumbnailMaker.Controls
 
 			item.Parent.Controls.SetChildIndex(item, calculatedIndex);
 			item.RoadLaneChanged?.Invoke(item, EventArgs.Empty);
+		}
+
+		public LaneInfo GetLane(bool small)
+		{
+			return new LaneInfo
+			{
+				Type = LaneType,
+				Direction = LaneDirection,
+				Lanes = Lanes,
+				CustomWidth = CustomLaneWidth == -1 ? 0 : CustomLaneWidth,
+				Elevation = CustomVerticalOffset == -1 ? (float?)null : CustomVerticalOffset,
+				Width = (LaneType < LaneType.Car ? (10 - Math.Min(Lanes, 9)) : 10) * (small ? 2 : 10)
+			};
 		}
 	}
 }

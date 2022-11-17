@@ -36,7 +36,7 @@ namespace ThumbnailMaker.Domain
 				var color = GetColor(types[0]);
 
 				for (var i = 1; i < types.Count; i++)
-					color = color.MergeColor(GetColor(types[i]), 35);
+					color = color.MergeColor(GetColor(types[i]), 30);
 
 				return color;
 			}
@@ -134,7 +134,7 @@ namespace ThumbnailMaker.Domain
 
 			if (Direction == LaneDirection.Both)
 			{
-				if (laneNames.Count() > 1)
+				if (laneNames.Count() > 1 || Lanes == 1)
 					return $"2W " + laneNames.ListStrings("/");
 
 				return laneNames[0] + "+" + laneNames[0];

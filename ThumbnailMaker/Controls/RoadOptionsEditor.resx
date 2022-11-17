@@ -117,35 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Icon_Horizontal" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Icon_Horizontal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="I_1WB" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\I_1WB.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="I_1WF" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\I_1WF.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="I_2W" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\I_2W.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="I_Diagonal" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Icon_Diagonal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="I_Edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\I_Edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="I_Grabber" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\I_Grabber.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="I_Unavailable" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\I_Unavailable.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="I_Vertical" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Icon_Vertical.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="I_X" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\I_X.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="B_Apply.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEVSURBVDhPpdPNLkNBGMbxLpSFoN2WuAhL8ZGWhQtwCSet
+        ZRNuRCSCvYi0VyDciAUl4iPUmo34P/K+J2+PkZzo4pd555k550xnppWt7WwsqXAdfbzi3doe1vBrfuxM
+        4BjXaGMedWs7uMchqki+4AQXmA5ZVMMV9JE890LLvsGM9f8yiwFWPfOBc2jZ3i/SA7tW7+DM6vwFT1jw
+        sGATD1iy/qL1f8Z90icmrd7DitX68jP0E33uFD687+EjtNuqdVx6qIsXNOHzJLmC4h608IaNkLnkHmjJ
+        OgXtsmepE9H4LZY9i4MHuMRcyCK/B/shG3mBbtgR7qCb14BytfEm6sbmz+VFoB0/hS7MF4Yo9V/4l2RY
+        Xlb5Bi3NLgcFsDkYAAAAAElFTkSuQmCC
+</value>
   </data>
 </root>

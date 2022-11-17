@@ -53,14 +53,14 @@
 			this.button1 = new SlickControls.SlickButton();
 			this.PB = new System.Windows.Forms.PictureBox();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.slickScroll1 = new SlickControls.SlickScroll();
-			this.P_Lanes = new ThumbnailMaker.Controls.RoadLaneContainer();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickButton5 = new SlickControls.SlickButton();
 			this.slickButton1 = new SlickControls.SlickButton();
 			this.label1 = new System.Windows.Forms.Label();
 			this.pictureBox1 = new SlickControls.SlickIcon();
+			this.slickScroll1 = new SlickControls.SlickScroll();
+			this.P_Lanes = new ThumbnailMaker.Controls.RoadLaneContainer();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel8.SuspendLayout();
 			this.tableLayoutPanel6.SuspendLayout();
@@ -157,15 +157,15 @@
 			this.slickButton3.SpaceTriggersClick = true;
 			this.slickButton3.TabIndex = 14;
 			this.slickButton3.Text = "Copy Title";
-			this.slickButton3.Click += new System.EventHandler(this.slickButton3_Click);
+			this.slickButton3.Click += new System.EventHandler(this.B_CopyRoadName_Click);
 			// 
-			// label2
+			// L_RoadName
 			// 
 			this.L_RoadName.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.L_RoadName.AutoSize = true;
 			this.L_RoadName.Location = new System.Drawing.Point(15, 11);
 			this.L_RoadName.Margin = new System.Windows.Forms.Padding(15, 0, 3, 0);
-			this.L_RoadName.Name = "label2";
+			this.L_RoadName.Name = "L_RoadName";
 			this.L_RoadName.Size = new System.Drawing.Size(36, 13);
 			this.L_RoadName.TabIndex = 14;
 			this.L_RoadName.Text = "Lanes";
@@ -417,7 +417,7 @@
 			this.TB_SpeedLimit.Size = new System.Drawing.Size(160, 35);
 			this.TB_SpeedLimit.TabIndex = 2;
 			this.TB_SpeedLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.TB_SpeedLimit.Validation = SlickControls.ValidationType.None;
+			this.TB_SpeedLimit.Validation = SlickControls.ValidationType.Number;
 			this.TB_SpeedLimit.ValidationCustom = null;
 			this.TB_SpeedLimit.ValidationRegex = "";
 			this.TB_SpeedLimit.TextChanged += new System.EventHandler(this.TB_Name_TextChanged);
@@ -447,7 +447,7 @@
 			this.TB_Size.Size = new System.Drawing.Size(160, 35);
 			this.TB_Size.TabIndex = 2;
 			this.TB_Size.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.TB_Size.Validation = SlickControls.ValidationType.None;
+			this.TB_Size.Validation = SlickControls.ValidationType.Decimal;
 			this.TB_Size.ValidationCustom = null;
 			this.TB_Size.ValidationRegex = "";
 			this.TB_Size.TextChanged += new System.EventHandler(this.TB_Name_TextChanged);
@@ -524,7 +524,7 @@
 			this.TB_BufferSize.TabIndex = 2;
 			this.TB_BufferSize.Text = "0.25";
 			this.TB_BufferSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.TB_BufferSize.Validation = SlickControls.ValidationType.None;
+			this.TB_BufferSize.Validation = SlickControls.ValidationType.Decimal;
 			this.TB_BufferSize.ValidationCustom = null;
 			this.TB_BufferSize.ValidationRegex = "";
 			this.TB_BufferSize.TextChanged += new System.EventHandler(this.TB_Name_TextChanged);
@@ -570,29 +570,6 @@
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(614, 386);
 			this.panel1.TabIndex = 8;
-			// 
-			// slickScroll1
-			// 
-			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
-			this.slickScroll1.LinkedControl = this.P_Lanes;
-			this.slickScroll1.Location = new System.Drawing.Point(599, 0);
-			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(15, 386);
-			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
-			this.slickScroll1.TabIndex = 1;
-			this.slickScroll1.TabStop = false;
-			this.slickScroll1.Text = "slickScroll1";
-			// 
-			// P_Lanes
-			// 
-			this.P_Lanes.AllowDrop = true;
-			this.P_Lanes.AutoSize = true;
-			this.P_Lanes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.P_Lanes.Location = new System.Drawing.Point(0, 0);
-			this.P_Lanes.MinimumSize = new System.Drawing.Size(0, 22);
-			this.P_Lanes.Name = "P_Lanes";
-			this.P_Lanes.Size = new System.Drawing.Size(0, 22);
-			this.P_Lanes.TabIndex = 0;
 			// 
 			// slickSpacer1
 			// 
@@ -692,6 +669,29 @@
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.pictureBox1.TabIndex = 15;
 			this.pictureBox1.TabStop = false;
+			// 
+			// slickScroll1
+			// 
+			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
+			this.slickScroll1.LinkedControl = this.P_Lanes;
+			this.slickScroll1.Location = new System.Drawing.Point(609, 0);
+			this.slickScroll1.Name = "slickScroll1";
+			this.slickScroll1.Size = new System.Drawing.Size(5, 386);
+			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
+			this.slickScroll1.TabIndex = 1;
+			this.slickScroll1.TabStop = false;
+			this.slickScroll1.Text = "slickScroll1";
+			// 
+			// P_Lanes
+			// 
+			this.P_Lanes.AllowDrop = true;
+			this.P_Lanes.AutoSize = true;
+			this.P_Lanes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.P_Lanes.Location = new System.Drawing.Point(0, 0);
+			this.P_Lanes.MinimumSize = new System.Drawing.Size(0, 22);
+			this.P_Lanes.Name = "P_Lanes";
+			this.P_Lanes.Size = new System.Drawing.Size(0, 22);
+			this.P_Lanes.TabIndex = 0;
 			// 
 			// PC_MainPage
 			// 
