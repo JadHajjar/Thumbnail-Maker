@@ -53,14 +53,14 @@
 			this.button1 = new SlickControls.SlickButton();
 			this.PB = new System.Windows.Forms.PictureBox();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.slickScroll1 = new SlickControls.SlickScroll();
+			this.P_Lanes = new ThumbnailMaker.Controls.RoadLaneContainer();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickButton5 = new SlickControls.SlickButton();
 			this.slickButton1 = new SlickControls.SlickButton();
 			this.label1 = new System.Windows.Forms.Label();
 			this.pictureBox1 = new SlickControls.SlickIcon();
-			this.slickScroll1 = new SlickControls.SlickScroll();
-			this.P_Lanes = new ThumbnailMaker.Controls.RoadLaneContainer();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel8.SuspendLayout();
 			this.tableLayoutPanel6.SuspendLayout();
@@ -571,6 +571,29 @@
 			this.panel1.Size = new System.Drawing.Size(614, 386);
 			this.panel1.TabIndex = 8;
 			// 
+			// slickScroll1
+			// 
+			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
+			this.slickScroll1.LinkedControl = this.P_Lanes;
+			this.slickScroll1.Location = new System.Drawing.Point(608, 0);
+			this.slickScroll1.Name = "slickScroll1";
+			this.slickScroll1.Size = new System.Drawing.Size(6, 386);
+			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
+			this.slickScroll1.TabIndex = 1;
+			this.slickScroll1.TabStop = false;
+			this.slickScroll1.Text = "slickScroll1";
+			// 
+			// P_Lanes
+			// 
+			this.P_Lanes.AllowDrop = true;
+			this.P_Lanes.AutoSize = true;
+			this.P_Lanes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.P_Lanes.Location = new System.Drawing.Point(0, 0);
+			this.P_Lanes.MinimumSize = new System.Drawing.Size(0, 22);
+			this.P_Lanes.Name = "P_Lanes";
+			this.P_Lanes.Size = new System.Drawing.Size(0, 22);
+			this.P_Lanes.TabIndex = 0;
+			// 
 			// slickSpacer1
 			// 
 			this.tableLayoutPanel1.SetColumnSpan(this.slickSpacer1, 3);
@@ -669,29 +692,6 @@
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.pictureBox1.TabIndex = 15;
 			this.pictureBox1.TabStop = false;
-			// 
-			// slickScroll1
-			// 
-			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
-			this.slickScroll1.LinkedControl = this.P_Lanes;
-			this.slickScroll1.Location = new System.Drawing.Point(609, 0);
-			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(5, 386);
-			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
-			this.slickScroll1.TabIndex = 1;
-			this.slickScroll1.TabStop = false;
-			this.slickScroll1.Text = "slickScroll1";
-			// 
-			// P_Lanes
-			// 
-			this.P_Lanes.AllowDrop = true;
-			this.P_Lanes.AutoSize = true;
-			this.P_Lanes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.P_Lanes.Location = new System.Drawing.Point(0, 0);
-			this.P_Lanes.MinimumSize = new System.Drawing.Size(0, 22);
-			this.P_Lanes.Name = "P_Lanes";
-			this.P_Lanes.Size = new System.Drawing.Size(0, 22);
-			this.P_Lanes.TabIndex = 0;
 			// 
 			// PC_MainPage
 			// 
