@@ -43,6 +43,8 @@ namespace ThumbnailMaker
 
 			DD_Font.FontDropdown = true;
 			DD_Font.SelectedItem = Options.Current.SizeFont;
+
+			TB_ExportFolder.Text = Options.Current.ExportFolder;
 		}
 
 
@@ -57,6 +59,7 @@ namespace ThumbnailMaker
 		{
 			if (new Font(DD_Font.Text, 8.25F).FontFamily.Name.Equals(DD_Font.Text, StringComparison.CurrentCultureIgnoreCase))
 			{
+				Options.Current.ExportFolder = TB_ExportFolder.Text;
 				Options.Current.SizeFont = DD_Font.Text;
 				Options.Save();
 			}

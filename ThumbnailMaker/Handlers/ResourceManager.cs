@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ThumbnailMaker.Domain;
+using ThumbnailMaker.Handlers;
 
 namespace ThumbnailMaker
 {
@@ -29,7 +30,7 @@ namespace ThumbnailMaker
 		{
 			try
 			{
-				var fileName = $"Resources\\{(small ? 100 : 512)}_{name}.png";
+				var fileName = $"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{name}.png";
 
 				if (!File.Exists(fileName))
 				{
@@ -60,11 +61,11 @@ namespace ThumbnailMaker
 
 			if (string.IsNullOrWhiteSpace(fileName) || !File.Exists(fileName))
 			{
-				if (File.Exists($"Resources\\{(small ? 100 : 512)}_{attribute.Id}.png"))
-					File.Delete($"Resources\\{(small ? 100 : 512)}_{attribute.Id}.png");
+				if (File.Exists($"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{attribute.Id}.png"))
+					File.Delete($"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{attribute.Id}.png");
 			}
 			else
-				File.Copy(fileName, $"Resources\\{(small ? 100 : 512)}_{attribute.Id}.png", true);
+				File.Copy(fileName, $"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{attribute.Id}.png", true);
 		}
 	}
 }

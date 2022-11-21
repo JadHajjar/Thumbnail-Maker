@@ -18,6 +18,7 @@ namespace ThumbnailMaker.Domain
 		public LaneType Type { get; set; }
 		public float? Elevation { get; set; }
 		public float CustomWidth { get; set; }
+		public float? SpeedLimit { get; set; }
 
 		public int FillerSize { get => IsFiller ? 10 * (10 - Math.Min(Lanes, 9)) : 0; set { } }
 		public bool DiagonalParking { get => Type == LaneType.Parking && Lanes > 2; set { } }
@@ -32,6 +33,9 @@ namespace ThumbnailMaker.Domain
 		{
 			get
 			{
+				if (Type == (LaneType.Car | LaneType.Tram) && !Options.Current.LaneColors.ContainsKey(LaneType.Car) && !Options.Current.LaneColors.ContainsKey(LaneType.Tram))
+					return Color.FromArgb(66, 185, 212);
+
 				var types = GetLaneTypes(Type);
 				var color = GetColor(types[0]);
 

@@ -24,14 +24,16 @@ namespace ThumbnailMaker.Controls
 			IsHighWay = highwayCheck;
 			Height = 42;
 			AllowDrop = true;
+			Dock = DockStyle.Top;
 		}
 
-		public LaneType LaneType { get => _laneType == LaneType.Car && IsHighWay() ? LaneType.Highway : _laneType; private set => _laneType = value; }
-		public LaneDirection LaneDirection { get; private set; }
-		public int Lanes { get; private set; }
+		public LaneType LaneType { get => _laneType == LaneType.Car && IsHighWay() ? LaneType.Highway : _laneType; set => _laneType = value; }
+		public LaneDirection LaneDirection { get; set; }
+		public int Lanes { get; set; }
 		public Func<bool> IsHighWay { get; }
 		public float CustomLaneWidth { get; set; } = -1F;
 		public float CustomVerticalOffset { get; set; } = -1F;
+		public float CustomSpeedLimit { get; set; } = -1F;
 
 		public void SetLaneType(LaneType laneType)
 		{
@@ -418,7 +420,21 @@ namespace ThumbnailMaker.Controls
 				Lanes = Lanes,
 				CustomWidth = CustomLaneWidth == -1 ? 0 : CustomLaneWidth,
 				Elevation = CustomVerticalOffset == -1 ? (float?)null : CustomVerticalOffset,
+				SpeedLimit = CustomSpeedLimit == -1 ? (float?)null : CustomSpeedLimit,
 				Width = (LaneType < LaneType.Car ? (10 - Math.Min(Lanes, 9)) : 10) * (small ? 2 : 10)
+			};
+		}
+
+		public RoadLane Duplicate()
+		{
+			return new RoadLane(IsHighWay)
+			{
+				LaneType = LaneType,
+				LaneDirection = LaneDirection,
+				Lanes = Lanes,
+				CustomLaneWidth = CustomLaneWidth,
+				CustomVerticalOffset = CustomVerticalOffset,
+				CustomSpeedLimit = CustomSpeedLimit,
 			};
 		}
 	}

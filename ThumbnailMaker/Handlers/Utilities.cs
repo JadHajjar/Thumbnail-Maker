@@ -2,9 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
 
@@ -12,6 +14,8 @@ namespace ThumbnailMaker.Handlers
 {
 	public static class Utilities
 	{
+		public static string Folder => Directory.GetParent(Application.ExecutablePath).FullName;
+
 		public static string GetRoadDescription(List<LaneInfo> lanes, string size, string bufferSize, string speedLimit, bool usa)
 		{
 			var skip = false;
@@ -63,6 +67,14 @@ namespace ThumbnailMaker.Handlers
 
 		public static string CalculateRoadSize(List<LaneInfo> lanes, string bufferSize)
 		{
+			lanes = new List<LaneInfo>(lanes);
+
+			if (lanes.Count > 0 && lanes[0].Type == LaneType.Pedestrian)
+				lanes.RemoveAt(0);
+
+			if (lanes.Count > 0 && lanes[lanes.Count - 1].Type == LaneType.Pedestrian)
+				lanes.RemoveAt(lanes.Count - 1);
+
 			if (lanes.Count == 0)
 				return string.Empty;
 

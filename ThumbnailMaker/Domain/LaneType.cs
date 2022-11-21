@@ -33,7 +33,7 @@ namespace ThumbnailMaker.Domain
 		[LaneIdentity(8, "B", 74, 205, 151)]
 		Bike = 128,
 
-		[LaneIdentity(9, "T", 172, 122, 230)]
+		[LaneIdentity(9, "T", 230, 210, 122)]
 		Tram = 256,
 
 		[LaneIdentity(10, "Bus", 170, 62, 48)]

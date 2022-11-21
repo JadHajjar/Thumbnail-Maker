@@ -1,4 +1,7 @@
-﻿namespace ThumbnailMaker
+﻿
+using System.Security.Cryptography;
+
+namespace ThumbnailMaker
 {
 	partial class PC_MainPage
 	{
@@ -30,10 +33,15 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PC_MainPage));
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			this.slickSpacer2 = new SlickControls.SlickSpacer();
 			this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
+			this.PB = new System.Windows.Forms.PictureBox();
+			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_CopyDesc = new SlickControls.SlickButton();
-			this.slickButton3 = new SlickControls.SlickButton();
+			this.slickButton4 = new SlickControls.SlickButton();
+			this.button1 = new SlickControls.SlickButton();
 			this.L_RoadName = new System.Windows.Forms.Label();
+			this.slickButton3 = new SlickControls.SlickButton();
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickGroupBox1 = new SlickControls.SlickGroupBox();
 			this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
@@ -42,36 +50,36 @@
 			this.RB_USA = new SlickControls.SlickRadioButton();
 			this.groupBox2 = new SlickControls.SlickGroupBox();
 			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+			this.RB_Pedestrian = new SlickControls.SlickRadioButton();
 			this.RB_Road = new SlickControls.SlickRadioButton();
 			this.RB_Highway = new SlickControls.SlickRadioButton();
-			this.slickButton2 = new SlickControls.SlickButton();
-			this.TB_SpeedLimit = new SlickControls.SlickTextBox();
 			this.TB_Size = new SlickControls.SlickTextBox();
-			this.slickButton4 = new SlickControls.SlickButton();
-			this.TB_CustomText = new SlickControls.SlickTextBox();
 			this.TB_BufferSize = new SlickControls.SlickTextBox();
-			this.button1 = new SlickControls.SlickButton();
-			this.PB = new System.Windows.Forms.PictureBox();
+			this.TB_SpeedLimit = new SlickControls.SlickTextBox();
+			this.TB_CustomText = new SlickControls.SlickTextBox();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.slickScroll1 = new SlickControls.SlickScroll();
-			this.P_Lanes = new ThumbnailMaker.Controls.RoadLaneContainer();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-			this.slickButton5 = new SlickControls.SlickButton();
+			this.slickSpacer3 = new SlickControls.SlickSpacer();
+			this.B_FlipLanes = new SlickControls.SlickButton();
+			this.B_DuplicateFlip = new SlickControls.SlickButton();
 			this.slickButton1 = new SlickControls.SlickButton();
-			this.label1 = new System.Windows.Forms.Label();
-			this.pictureBox1 = new SlickControls.SlickIcon();
+			this.slickButton5 = new SlickControls.SlickButton();
+			this.slickButton2 = new SlickControls.SlickButton();
+			this.RCC = new ThumbnailMaker.Controls.RoadConfigContainer();
+			this.slickScroll1 = new SlickControls.SlickScroll();
+			this.P_Lanes = new ThumbnailMaker.Controls.RoadLaneContainer();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel8.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.PB)).BeginInit();
+			this.tableLayoutPanel2.SuspendLayout();
 			this.tableLayoutPanel6.SuspendLayout();
 			this.slickGroupBox1.SuspendLayout();
 			this.tableLayoutPanel5.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tableLayoutPanel3.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.PB)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// base_Text
@@ -81,14 +89,15 @@
 			// 
 			// tableLayoutPanel1
 			// 
-			this.tableLayoutPanel1.ColumnCount = 4;
+			this.tableLayoutPanel1.ColumnCount = 5;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 532F));
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel8, 1, 0);
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 276F));
+			this.tableLayoutPanel1.Controls.Add(this.slickSpacer2, 3, 0);
+			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel8, 4, 0);
 			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel6, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.PB, 3, 1);
 			this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 4);
 			this.tableLayoutPanel1.Controls.Add(this.slickSpacer1, 0, 3);
 			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 0, 2);
@@ -96,7 +105,7 @@
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 30);
 			this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(15, 0, 15, 0);
+			this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
 			this.tableLayoutPanel1.RowCount = 5;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -107,68 +116,150 @@
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(1176, 569);
 			this.tableLayoutPanel1.TabIndex = 8;
 			// 
+			// slickSpacer2
+			// 
+			this.slickSpacer2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+			this.slickSpacer2.Location = new System.Drawing.Point(894, 3);
+			this.slickSpacer2.Name = "slickSpacer2";
+			this.tableLayoutPanel1.SetRowSpan(this.slickSpacer2, 5);
+			this.slickSpacer2.Size = new System.Drawing.Size(1, 563);
+			this.slickSpacer2.TabIndex = 18;
+			this.slickSpacer2.TabStop = false;
+			this.slickSpacer2.Text = "slickSpacer2";
+			// 
 			// tableLayoutPanel8
 			// 
-			this.tableLayoutPanel8.AutoSize = true;
-			this.tableLayoutPanel8.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanel8.ColumnCount = 3;
+			this.tableLayoutPanel8.ColumnCount = 2;
+			this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel8.Controls.Add(this.B_CopyDesc, 2, 0);
-			this.tableLayoutPanel8.Controls.Add(this.slickButton3, 1, 0);
-			this.tableLayoutPanel8.Controls.Add(this.L_RoadName, 0, 0);
+			this.tableLayoutPanel8.Controls.Add(this.RCC, 0, 4);
+			this.tableLayoutPanel8.Controls.Add(this.PB, 0, 2);
+			this.tableLayoutPanel8.Controls.Add(this.tableLayoutPanel2, 0, 3);
+			this.tableLayoutPanel8.Controls.Add(this.L_RoadName, 1, 0);
+			this.tableLayoutPanel8.Controls.Add(this.slickButton3, 0, 0);
 			this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel8.Location = new System.Drawing.Point(629, 0);
+			this.tableLayoutPanel8.Location = new System.Drawing.Point(900, 0);
 			this.tableLayoutPanel8.Margin = new System.Windows.Forms.Padding(0);
 			this.tableLayoutPanel8.Name = "tableLayoutPanel8";
-			this.tableLayoutPanel8.RowCount = 1;
+			this.tableLayoutPanel8.RowCount = 5;
+			this.tableLayoutPanel1.SetRowSpan(this.tableLayoutPanel8, 5);
+			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel8.Size = new System.Drawing.Size(532, 36);
+			this.tableLayoutPanel8.Size = new System.Drawing.Size(276, 569);
 			this.tableLayoutPanel8.TabIndex = 17;
+			// 
+			// PB
+			// 
+			this.PB.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.tableLayoutPanel8.SetColumnSpan(this.PB, 2);
+			this.PB.Location = new System.Drawing.Point(15, 46);
+			this.PB.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
+			this.PB.Name = "PB";
+			this.PB.Size = new System.Drawing.Size(256, 167);
+			this.PB.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.PB.TabIndex = 2;
+			this.PB.TabStop = false;
+			this.PB.MouseEnter += new System.EventHandler(this.TB_Name_TextChanged);
+			this.PB.MouseLeave += new System.EventHandler(this.TB_Name_TextChanged);
+			// 
+			// tableLayoutPanel2
+			// 
+			this.tableLayoutPanel2.AutoSize = true;
+			this.tableLayoutPanel2.ColumnCount = 2;
+			this.tableLayoutPanel8.SetColumnSpan(this.tableLayoutPanel2, 2);
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.Controls.Add(this.B_CopyDesc, 0, 0);
+			this.tableLayoutPanel2.Controls.Add(this.slickButton4, 0, 1);
+			this.tableLayoutPanel2.Controls.Add(this.button1, 1, 0);
+			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 216);
+			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+			this.tableLayoutPanel2.RowCount = 2;
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(270, 66);
+			this.tableLayoutPanel2.TabIndex = 15;
 			// 
 			// B_CopyDesc
 			// 
-			this.B_CopyDesc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.B_CopyDesc.ColorShade = null;
 			this.B_CopyDesc.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.B_CopyDesc.IconSize = 16;
 			this.B_CopyDesc.Image = ((System.Drawing.Image)(resources.GetObject("B_CopyDesc.Image")));
-			this.B_CopyDesc.Location = new System.Drawing.Point(404, 6);
+			this.B_CopyDesc.Location = new System.Drawing.Point(3, 3);
 			this.B_CopyDesc.Name = "B_CopyDesc";
-			this.B_CopyDesc.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_CopyDesc.Padding = new System.Windows.Forms.Padding(10, 5, 5, 5);
 			this.B_CopyDesc.Size = new System.Drawing.Size(125, 27);
 			this.B_CopyDesc.SpaceTriggersClick = true;
 			this.B_CopyDesc.TabIndex = 6;
-			this.B_CopyDesc.Text = "Copy Description";
+			this.B_CopyDesc.Text = "Copy Desc.";
 			this.B_CopyDesc.Click += new System.EventHandler(this.B_CopyDesc_Click);
 			// 
-			// slickButton3
+			// slickButton4
 			// 
-			this.slickButton3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.slickButton3.ColorShade = null;
-			this.slickButton3.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.slickButton3.IconSize = 16;
-			this.slickButton3.Image = ((System.Drawing.Image)(resources.GetObject("slickButton3.Image")));
-			this.slickButton3.Location = new System.Drawing.Point(368, 3);
-			this.slickButton3.Name = "slickButton3";
-			this.slickButton3.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.slickButton3.Size = new System.Drawing.Size(30, 30);
-			this.slickButton3.SpaceTriggersClick = true;
-			this.slickButton3.TabIndex = 14;
-			this.slickButton3.Text = "Copy Title";
-			this.slickButton3.Click += new System.EventHandler(this.B_CopyRoadName_Click);
+			this.slickButton4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.slickButton4.ColorShade = null;
+			this.tableLayoutPanel2.SetColumnSpan(this.slickButton4, 2);
+			this.slickButton4.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.slickButton4.IconSize = 16;
+			this.slickButton4.Image = ((System.Drawing.Image)(resources.GetObject("slickButton4.Image")));
+			this.slickButton4.Location = new System.Drawing.Point(3, 36);
+			this.slickButton4.Name = "slickButton4";
+			this.slickButton4.Padding = new System.Windows.Forms.Padding(10, 5, 5, 5);
+			this.slickButton4.Size = new System.Drawing.Size(264, 27);
+			this.slickButton4.SpaceTriggersClick = true;
+			this.slickButton4.TabIndex = 5;
+			this.slickButton4.Text = "Export configuration to Road Builder";
+			this.slickButton4.Click += new System.EventHandler(this.B_Export_Click);
+			// 
+			// button1
+			// 
+			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button1.ColorShade = null;
+			this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.button1.IconSize = 16;
+			this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
+			this.button1.Location = new System.Drawing.Point(167, 3);
+			this.button1.Name = "button1";
+			this.button1.Padding = new System.Windows.Forms.Padding(10, 5, 5, 5);
+			this.button1.Size = new System.Drawing.Size(100, 27);
+			this.button1.SpaceTriggersClick = true;
+			this.button1.TabIndex = 5;
+			this.button1.Text = "Save Thumb.";
+			this.button1.Click += new System.EventHandler(this.B_Save_Click);
 			// 
 			// L_RoadName
 			// 
 			this.L_RoadName.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.L_RoadName.AutoSize = true;
-			this.L_RoadName.Location = new System.Drawing.Point(15, 11);
-			this.L_RoadName.Margin = new System.Windows.Forms.Padding(15, 0, 3, 0);
+			this.L_RoadName.Location = new System.Drawing.Point(46, 11);
+			this.L_RoadName.Margin = new System.Windows.Forms.Padding(10, 0, 3, 0);
 			this.L_RoadName.Name = "L_RoadName";
 			this.L_RoadName.Size = new System.Drawing.Size(36, 13);
 			this.L_RoadName.TabIndex = 14;
 			this.L_RoadName.Text = "Lanes";
+			// 
+			// slickButton3
+			// 
+			this.slickButton3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.slickButton3.ColorShade = null;
+			this.slickButton3.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.slickButton3.HandleUiScale = false;
+			this.slickButton3.IconSize = 16;
+			this.slickButton3.Image = ((System.Drawing.Image)(resources.GetObject("slickButton3.Image")));
+			this.slickButton3.Location = new System.Drawing.Point(3, 3);
+			this.slickButton3.Name = "slickButton3";
+			this.slickButton3.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.slickButton3.Size = new System.Drawing.Size(30, 30);
+			this.slickButton3.SpaceTriggersClick = true;
+			this.slickButton3.TabIndex = 14;
+			this.slickButton3.Click += new System.EventHandler(this.B_CopyRoadName_Click);
 			// 
 			// tableLayoutPanel6
 			// 
@@ -182,13 +273,10 @@
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.77778F));
 			this.tableLayoutPanel6.Controls.Add(this.slickGroupBox1, 1, 0);
 			this.tableLayoutPanel6.Controls.Add(this.groupBox2, 0, 0);
-			this.tableLayoutPanel6.Controls.Add(this.slickButton2, 0, 2);
-			this.tableLayoutPanel6.Controls.Add(this.TB_SpeedLimit, 2, 2);
-			this.tableLayoutPanel6.Controls.Add(this.TB_Size, 2, 1);
-			this.tableLayoutPanel6.Controls.Add(this.slickButton4, 2, 0);
-			this.tableLayoutPanel6.Controls.Add(this.TB_CustomText, 3, 2);
-			this.tableLayoutPanel6.Controls.Add(this.TB_BufferSize, 3, 1);
-			this.tableLayoutPanel6.Controls.Add(this.button1, 3, 0);
+			this.tableLayoutPanel6.Controls.Add(this.TB_Size, 2, 0);
+			this.tableLayoutPanel6.Controls.Add(this.TB_BufferSize, 3, 0);
+			this.tableLayoutPanel6.Controls.Add(this.TB_SpeedLimit, 2, 1);
+			this.tableLayoutPanel6.Controls.Add(this.TB_CustomText, 3, 1);
 			this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Top;
 			this.tableLayoutPanel6.Location = new System.Drawing.Point(15, 0);
 			this.tableLayoutPanel6.Margin = new System.Windows.Forms.Padding(0);
@@ -198,7 +286,7 @@
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel6.Size = new System.Drawing.Size(614, 129);
+			this.tableLayoutPanel6.Size = new System.Drawing.Size(875, 123);
 			this.tableLayoutPanel6.TabIndex = 13;
 			// 
 			// slickGroupBox1
@@ -207,12 +295,11 @@
 			this.slickGroupBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.slickGroupBox1.Controls.Add(this.tableLayoutPanel5);
 			this.slickGroupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.slickGroupBox1.Icon = ((System.Drawing.Image)(resources.GetObject("slickGroupBox1.Icon")));
-			this.slickGroupBox1.Location = new System.Drawing.Point(139, 3);
+			this.slickGroupBox1.Location = new System.Drawing.Point(197, 3);
 			this.slickGroupBox1.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
 			this.slickGroupBox1.Name = "slickGroupBox1";
 			this.tableLayoutPanel6.SetRowSpan(this.slickGroupBox1, 3);
-			this.slickGroupBox1.Size = new System.Drawing.Size(123, 117);
+			this.slickGroupBox1.Size = new System.Drawing.Size(181, 117);
 			this.slickGroupBox1.TabIndex = 16;
 			this.slickGroupBox1.TabStop = false;
 			this.slickGroupBox1.Text = "Region";
@@ -234,7 +321,7 @@
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel5.Size = new System.Drawing.Size(117, 96);
+			this.tableLayoutPanel5.Size = new System.Drawing.Size(175, 96);
 			this.tableLayoutPanel5.TabIndex = 2;
 			// 
 			// RB_Canada
@@ -306,12 +393,11 @@
 			this.groupBox2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.groupBox2.Controls.Add(this.tableLayoutPanel3);
 			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox2.Icon = ((System.Drawing.Image)(resources.GetObject("groupBox2.Icon")));
 			this.groupBox2.Location = new System.Drawing.Point(3, 3);
 			this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
 			this.groupBox2.Name = "groupBox2";
-			this.tableLayoutPanel6.SetRowSpan(this.groupBox2, 2);
-			this.groupBox2.Size = new System.Drawing.Size(123, 85);
+			this.tableLayoutPanel6.SetRowSpan(this.groupBox2, 3);
+			this.groupBox2.Size = new System.Drawing.Size(181, 117);
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Type";
@@ -322,17 +408,39 @@
 			this.tableLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.tableLayoutPanel3.ColumnCount = 1;
 			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel3.Controls.Add(this.RB_Pedestrian, 0, 2);
 			this.tableLayoutPanel3.Controls.Add(this.RB_Road, 0, 0);
 			this.tableLayoutPanel3.Controls.Add(this.RB_Highway, 0, 1);
 			this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
 			this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 18);
 			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-			this.tableLayoutPanel3.RowCount = 1;
+			this.tableLayoutPanel3.RowCount = 3;
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(117, 64);
+			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(175, 96);
 			this.tableLayoutPanel3.TabIndex = 2;
+			// 
+			// RB_Pedestrian
+			// 
+			this.RB_Pedestrian.ActiveColor = null;
+			this.RB_Pedestrian.AutoSize = true;
+			this.RB_Pedestrian.Center = false;
+			this.RB_Pedestrian.Checked = false;
+			this.RB_Pedestrian.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.RB_Pedestrian.Data = null;
+			this.RB_Pedestrian.Enabled = false;
+			this.RB_Pedestrian.EnterTriggersClick = false;
+			this.RB_Pedestrian.HideText = false;
+			this.RB_Pedestrian.IconSize = 16;
+			this.RB_Pedestrian.Image = ((System.Drawing.Image)(resources.GetObject("RB_Pedestrian.Image")));
+			this.RB_Pedestrian.Location = new System.Drawing.Point(3, 67);
+			this.RB_Pedestrian.Name = "RB_Pedestrian";
+			this.RB_Pedestrian.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
+			this.RB_Pedestrian.Size = new System.Drawing.Size(96, 26);
+			this.RB_Pedestrian.SpaceTriggersClick = true;
+			this.RB_Pedestrian.TabIndex = 2;
+			this.RB_Pedestrian.Text = "Pedestrian";
 			// 
 			// RB_Road
 			// 
@@ -363,6 +471,7 @@
 			this.RB_Highway.Checked = false;
 			this.RB_Highway.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.RB_Highway.Data = null;
+			this.RB_Highway.Enabled = false;
 			this.RB_Highway.EnterTriggersClick = false;
 			this.RB_Highway.HideText = false;
 			this.RB_Highway.IconSize = 16;
@@ -376,21 +485,66 @@
 			this.RB_Highway.Text = "Highway";
 			this.RB_Highway.CheckChanged += new System.EventHandler(this.RB_CheckedChanged);
 			// 
-			// slickButton2
+			// TB_Size
 			// 
-			this.slickButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.slickButton2.ColorShade = null;
-			this.slickButton2.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.slickButton2.IconSize = 16;
-			this.slickButton2.Image = ((System.Drawing.Image)(resources.GetObject("slickButton2.Image")));
-			this.slickButton2.Location = new System.Drawing.Point(3, 99);
-			this.slickButton2.Name = "slickButton2";
-			this.slickButton2.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.slickButton2.Size = new System.Drawing.Size(85, 27);
-			this.slickButton2.SpaceTriggersClick = true;
-			this.slickButton2.TabIndex = 13;
-			this.slickButton2.Text = "Options";
-			this.slickButton2.Click += new System.EventHandler(this.B_Options_Click);
+			this.TB_Size.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TB_Size.EnterTriggersClick = false;
+			this.TB_Size.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TB_Size.Image = ((System.Drawing.Image)(resources.GetObject("TB_Size.Image")));
+			this.TB_Size.LabelText = "Road Size (m)";
+			this.TB_Size.Location = new System.Drawing.Point(388, 10);
+			this.TB_Size.Margin = new System.Windows.Forms.Padding(0, 10, 10, 15);
+			this.TB_Size.MaximumSize = new System.Drawing.Size(9999, 0);
+			this.TB_Size.MaxLength = 32767;
+			this.TB_Size.MinimumSize = new System.Drawing.Size(50, 0);
+			this.TB_Size.Name = "TB_Size";
+			this.TB_Size.Password = false;
+			this.TB_Size.Placeholder = "Size including buffer";
+			this.TB_Size.ReadOnly = false;
+			this.TB_Size.Required = false;
+			this.TB_Size.SelectAllOnFocus = false;
+			this.TB_Size.SelectedText = "";
+			this.TB_Size.SelectionLength = 0;
+			this.TB_Size.SelectionStart = 0;
+			this.TB_Size.Size = new System.Drawing.Size(233, 35);
+			this.TB_Size.TabIndex = 2;
+			this.TB_Size.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+			this.TB_Size.Validation = SlickControls.ValidationType.Decimal;
+			this.TB_Size.ValidationCustom = null;
+			this.TB_Size.ValidationRegex = "";
+			this.TB_Size.TextChanged += new System.EventHandler(this.TB_Name_TextChanged);
+			// 
+			// TB_BufferSize
+			// 
+			this.TB_BufferSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TB_BufferSize.EnterTriggersClick = false;
+			this.TB_BufferSize.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TB_BufferSize.Image = ((System.Drawing.Image)(resources.GetObject("TB_BufferSize.Image")));
+			this.TB_BufferSize.LabelText = "Buffer Size (m)";
+			this.TB_BufferSize.Location = new System.Drawing.Point(631, 10);
+			this.TB_BufferSize.Margin = new System.Windows.Forms.Padding(0, 10, 10, 15);
+			this.TB_BufferSize.MaximumSize = new System.Drawing.Size(9999, 0);
+			this.TB_BufferSize.MaxLength = 32767;
+			this.TB_BufferSize.MinimumSize = new System.Drawing.Size(50, 0);
+			this.TB_BufferSize.Name = "TB_BufferSize";
+			this.TB_BufferSize.Password = false;
+			this.TB_BufferSize.Placeholder = "Space from the curb";
+			this.TB_BufferSize.ReadOnly = false;
+			this.TB_BufferSize.Required = false;
+			this.TB_BufferSize.SelectAllOnFocus = false;
+			this.TB_BufferSize.SelectedText = "";
+			this.TB_BufferSize.SelectionLength = 0;
+			this.TB_BufferSize.SelectionStart = 0;
+			this.TB_BufferSize.Size = new System.Drawing.Size(234, 35);
+			this.TB_BufferSize.TabIndex = 2;
+			this.TB_BufferSize.Text = "0.25";
+			this.TB_BufferSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+			this.TB_BufferSize.Validation = SlickControls.ValidationType.Decimal;
+			this.TB_BufferSize.ValidationCustom = null;
+			this.TB_BufferSize.ValidationRegex = "";
+			this.TB_BufferSize.TextChanged += new System.EventHandler(this.TB_Name_TextChanged);
 			// 
 			// TB_SpeedLimit
 			// 
@@ -400,7 +554,7 @@
 			this.TB_SpeedLimit.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_SpeedLimit.Image = ((System.Drawing.Image)(resources.GetObject("TB_SpeedLimit.Image")));
 			this.TB_SpeedLimit.LabelText = "Speed Limit";
-			this.TB_SpeedLimit.Location = new System.Drawing.Point(272, 91);
+			this.TB_SpeedLimit.Location = new System.Drawing.Point(388, 60);
 			this.TB_SpeedLimit.Margin = new System.Windows.Forms.Padding(0, 0, 10, 3);
 			this.TB_SpeedLimit.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.TB_SpeedLimit.MaxLength = 32767;
@@ -414,59 +568,13 @@
 			this.TB_SpeedLimit.SelectedText = "";
 			this.TB_SpeedLimit.SelectionLength = 0;
 			this.TB_SpeedLimit.SelectionStart = 0;
-			this.TB_SpeedLimit.Size = new System.Drawing.Size(160, 35);
+			this.TB_SpeedLimit.Size = new System.Drawing.Size(233, 35);
 			this.TB_SpeedLimit.TabIndex = 2;
 			this.TB_SpeedLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			this.TB_SpeedLimit.Validation = SlickControls.ValidationType.Number;
 			this.TB_SpeedLimit.ValidationCustom = null;
 			this.TB_SpeedLimit.ValidationRegex = "";
 			this.TB_SpeedLimit.TextChanged += new System.EventHandler(this.TB_Name_TextChanged);
-			// 
-			// TB_Size
-			// 
-			this.TB_Size.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TB_Size.EnterTriggersClick = false;
-			this.TB_Size.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TB_Size.Image = ((System.Drawing.Image)(resources.GetObject("TB_Size.Image")));
-			this.TB_Size.LabelText = "Road Size (m)";
-			this.TB_Size.Location = new System.Drawing.Point(272, 43);
-			this.TB_Size.Margin = new System.Windows.Forms.Padding(0, 10, 10, 3);
-			this.TB_Size.MaximumSize = new System.Drawing.Size(9999, 0);
-			this.TB_Size.MaxLength = 32767;
-			this.TB_Size.MinimumSize = new System.Drawing.Size(50, 0);
-			this.TB_Size.Name = "TB_Size";
-			this.TB_Size.Password = false;
-			this.TB_Size.Placeholder = "Size including buffer";
-			this.TB_Size.ReadOnly = false;
-			this.TB_Size.Required = false;
-			this.TB_Size.SelectAllOnFocus = false;
-			this.TB_Size.SelectedText = "";
-			this.TB_Size.SelectionLength = 0;
-			this.TB_Size.SelectionStart = 0;
-			this.TB_Size.Size = new System.Drawing.Size(160, 35);
-			this.TB_Size.TabIndex = 2;
-			this.TB_Size.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.TB_Size.Validation = SlickControls.ValidationType.Decimal;
-			this.TB_Size.ValidationCustom = null;
-			this.TB_Size.ValidationRegex = "";
-			this.TB_Size.TextChanged += new System.EventHandler(this.TB_Name_TextChanged);
-			// 
-			// slickButton4
-			// 
-			this.slickButton4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.slickButton4.ColorShade = null;
-			this.slickButton4.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.slickButton4.IconSize = 16;
-			this.slickButton4.Image = ((System.Drawing.Image)(resources.GetObject("slickButton4.Image")));
-			this.slickButton4.Location = new System.Drawing.Point(339, 3);
-			this.slickButton4.Name = "slickButton4";
-			this.slickButton4.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.slickButton4.Size = new System.Drawing.Size(100, 27);
-			this.slickButton4.SpaceTriggersClick = true;
-			this.slickButton4.TabIndex = 5;
-			this.slickButton4.Text = "Export Road";
-			this.slickButton4.Click += new System.EventHandler(this.B_Export_Click);
 			// 
 			// TB_CustomText
 			// 
@@ -476,7 +584,7 @@
 			this.TB_CustomText.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_CustomText.Image = ((System.Drawing.Image)(resources.GetObject("TB_CustomText.Image")));
 			this.TB_CustomText.LabelText = "Text";
-			this.TB_CustomText.Location = new System.Drawing.Point(442, 91);
+			this.TB_CustomText.Location = new System.Drawing.Point(631, 60);
 			this.TB_CustomText.Margin = new System.Windows.Forms.Padding(0, 0, 10, 3);
 			this.TB_CustomText.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.TB_CustomText.MaxLength = 32767;
@@ -490,74 +598,13 @@
 			this.TB_CustomText.SelectedText = "";
 			this.TB_CustomText.SelectionLength = 0;
 			this.TB_CustomText.SelectionStart = 0;
-			this.TB_CustomText.Size = new System.Drawing.Size(162, 35);
+			this.TB_CustomText.Size = new System.Drawing.Size(234, 35);
 			this.TB_CustomText.TabIndex = 2;
 			this.TB_CustomText.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			this.TB_CustomText.Validation = SlickControls.ValidationType.None;
 			this.TB_CustomText.ValidationCustom = null;
 			this.TB_CustomText.ValidationRegex = "";
 			this.TB_CustomText.TextChanged += new System.EventHandler(this.TB_Name_TextChanged);
-			// 
-			// TB_BufferSize
-			// 
-			this.TB_BufferSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TB_BufferSize.EnterTriggersClick = false;
-			this.TB_BufferSize.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TB_BufferSize.Image = ((System.Drawing.Image)(resources.GetObject("TB_BufferSize.Image")));
-			this.TB_BufferSize.LabelText = "Buffer Size (m)";
-			this.TB_BufferSize.Location = new System.Drawing.Point(442, 43);
-			this.TB_BufferSize.Margin = new System.Windows.Forms.Padding(0, 10, 10, 3);
-			this.TB_BufferSize.MaximumSize = new System.Drawing.Size(9999, 0);
-			this.TB_BufferSize.MaxLength = 32767;
-			this.TB_BufferSize.MinimumSize = new System.Drawing.Size(50, 0);
-			this.TB_BufferSize.Name = "TB_BufferSize";
-			this.TB_BufferSize.Password = false;
-			this.TB_BufferSize.Placeholder = "Space from the curb";
-			this.TB_BufferSize.ReadOnly = false;
-			this.TB_BufferSize.Required = false;
-			this.TB_BufferSize.SelectAllOnFocus = false;
-			this.TB_BufferSize.SelectedText = "";
-			this.TB_BufferSize.SelectionLength = 0;
-			this.TB_BufferSize.SelectionStart = 0;
-			this.TB_BufferSize.Size = new System.Drawing.Size(162, 35);
-			this.TB_BufferSize.TabIndex = 2;
-			this.TB_BufferSize.Text = "0.25";
-			this.TB_BufferSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.TB_BufferSize.Validation = SlickControls.ValidationType.Decimal;
-			this.TB_BufferSize.ValidationCustom = null;
-			this.TB_BufferSize.ValidationRegex = "";
-			this.TB_BufferSize.TextChanged += new System.EventHandler(this.TB_Name_TextChanged);
-			// 
-			// button1
-			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.button1.ColorShade = null;
-			this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.button1.IconSize = 16;
-			this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
-			this.button1.Location = new System.Drawing.Point(445, 3);
-			this.button1.Name = "button1";
-			this.button1.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.button1.Size = new System.Drawing.Size(100, 27);
-			this.button1.SpaceTriggersClick = true;
-			this.button1.TabIndex = 5;
-			this.button1.Text = "Save Thumbnail";
-			this.button1.Click += new System.EventHandler(this.B_Save_Click);
-			// 
-			// PB
-			// 
-			this.PB.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.PB.Location = new System.Drawing.Point(644, 46);
-			this.PB.Margin = new System.Windows.Forms.Padding(10, 10, 0, 0);
-			this.PB.Name = "PB";
-			this.tableLayoutPanel1.SetRowSpan(this.PB, 4);
-			this.PB.Size = new System.Drawing.Size(512, 512);
-			this.PB.TabIndex = 2;
-			this.PB.TabStop = false;
-			this.PB.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_Paint);
-			this.PB.MouseEnter += new System.EventHandler(this.TB_Name_TextChanged);
-			this.PB.MouseLeave += new System.EventHandler(this.TB_Name_TextChanged);
 			// 
 			// panel1
 			// 
@@ -566,16 +613,168 @@
 			this.panel1.Controls.Add(this.P_Lanes);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(15, 183);
-			this.panel1.Margin = new System.Windows.Forms.Padding(0);
+			this.panel1.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(614, 386);
+			this.panel1.Size = new System.Drawing.Size(875, 386);
 			this.panel1.TabIndex = 8;
+			// 
+			// slickSpacer1
+			// 
+			this.tableLayoutPanel1.SetColumnSpan(this.slickSpacer1, 3);
+			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.slickSpacer1.Location = new System.Drawing.Point(18, 171);
+			this.slickSpacer1.Name = "slickSpacer1";
+			this.slickSpacer1.Size = new System.Drawing.Size(869, 1);
+			this.slickSpacer1.TabIndex = 9;
+			this.slickSpacer1.TabStop = false;
+			this.slickSpacer1.Text = "slickSpacer1";
+			// 
+			// tableLayoutPanel4
+			// 
+			this.tableLayoutPanel4.AutoSize = true;
+			this.tableLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tableLayoutPanel4.ColumnCount = 7;
+			this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel4, 3);
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel4.Controls.Add(this.slickSpacer3, 3, 0);
+			this.tableLayoutPanel4.Controls.Add(this.B_FlipLanes, 5, 0);
+			this.tableLayoutPanel4.Controls.Add(this.B_DuplicateFlip, 4, 0);
+			this.tableLayoutPanel4.Controls.Add(this.slickButton1, 6, 0);
+			this.tableLayoutPanel4.Controls.Add(this.slickButton5, 2, 0);
+			this.tableLayoutPanel4.Controls.Add(this.slickButton2, 0, 0);
+			this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel4.Location = new System.Drawing.Point(15, 130);
+			this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0, 7, 0, 5);
+			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+			this.tableLayoutPanel4.RowCount = 1;
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(875, 33);
+			this.tableLayoutPanel4.TabIndex = 2;
+			// 
+			// slickSpacer3
+			// 
+			this.slickSpacer3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+			this.slickSpacer3.Location = new System.Drawing.Point(585, 3);
+			this.slickSpacer3.Name = "slickSpacer3";
+			this.slickSpacer3.Size = new System.Drawing.Size(1, 27);
+			this.slickSpacer3.TabIndex = 19;
+			this.slickSpacer3.TabStop = false;
+			this.slickSpacer3.Text = "slickSpacer3";
+			// 
+			// B_FlipLanes
+			// 
+			this.B_FlipLanes.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.B_FlipLanes.ColorShade = null;
+			this.B_FlipLanes.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_FlipLanes.IconSize = 16;
+			this.B_FlipLanes.Image = global::ThumbnailMaker.Properties.Resources.I_2W;
+			this.B_FlipLanes.Location = new System.Drawing.Point(690, 3);
+			this.B_FlipLanes.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
+			this.B_FlipLanes.Name = "B_FlipLanes";
+			this.B_FlipLanes.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_FlipLanes.Size = new System.Drawing.Size(81, 27);
+			this.B_FlipLanes.SpaceTriggersClick = true;
+			this.B_FlipLanes.TabIndex = 18;
+			this.B_FlipLanes.Text = "Flip Lanes";
+			this.B_FlipLanes.Click += new System.EventHandler(this.B_FlipLanes_Click);
+			// 
+			// B_DuplicateFlip
+			// 
+			this.B_DuplicateFlip.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.B_DuplicateFlip.ColorShade = null;
+			this.B_DuplicateFlip.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_DuplicateFlip.IconSize = 16;
+			this.B_DuplicateFlip.Image = ((System.Drawing.Image)(resources.GetObject("B_DuplicateFlip.Image")));
+			this.B_DuplicateFlip.Location = new System.Drawing.Point(596, 3);
+			this.B_DuplicateFlip.Margin = new System.Windows.Forms.Padding(5, 3, 10, 3);
+			this.B_DuplicateFlip.Name = "B_DuplicateFlip";
+			this.B_DuplicateFlip.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_DuplicateFlip.Size = new System.Drawing.Size(81, 27);
+			this.B_DuplicateFlip.SpaceTriggersClick = true;
+			this.B_DuplicateFlip.TabIndex = 17;
+			this.B_DuplicateFlip.Text = "Duplicate Flip Lanes";
+			this.B_DuplicateFlip.Click += new System.EventHandler(this.B_DuplicateFlip_Click);
+			// 
+			// slickButton1
+			// 
+			this.slickButton1.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.slickButton1.ColorShade = null;
+			this.slickButton1.ColorStyle = Extensions.ColorStyle.Green;
+			this.slickButton1.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.slickButton1.IconSize = 16;
+			this.slickButton1.Image = ((System.Drawing.Image)(resources.GetObject("slickButton1.Image")));
+			this.slickButton1.Location = new System.Drawing.Point(784, 3);
+			this.slickButton1.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
+			this.slickButton1.Name = "slickButton1";
+			this.slickButton1.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.slickButton1.Size = new System.Drawing.Size(81, 27);
+			this.slickButton1.SpaceTriggersClick = true;
+			this.slickButton1.TabIndex = 13;
+			this.slickButton1.Text = "Add Lane";
+			this.slickButton1.Click += new System.EventHandler(this.B_Add_Click);
+			// 
+			// slickButton5
+			// 
+			this.slickButton5.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.slickButton5.ColorShade = null;
+			this.slickButton5.ColorStyle = Extensions.ColorStyle.Red;
+			this.slickButton5.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.slickButton5.IconSize = 16;
+			this.slickButton5.Image = ((System.Drawing.Image)(resources.GetObject("slickButton5.Image")));
+			this.slickButton5.Location = new System.Drawing.Point(495, 3);
+			this.slickButton5.Margin = new System.Windows.Forms.Padding(3, 3, 5, 3);
+			this.slickButton5.Name = "slickButton5";
+			this.slickButton5.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.slickButton5.Size = new System.Drawing.Size(81, 27);
+			this.slickButton5.SpaceTriggersClick = true;
+			this.slickButton5.TabIndex = 16;
+			this.slickButton5.Text = "Clear Lanes";
+			this.slickButton5.Click += new System.EventHandler(this.B_Clear_Click);
+			// 
+			// slickButton2
+			// 
+			this.slickButton2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.slickButton2.ColorShade = null;
+			this.slickButton2.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.slickButton2.IconSize = 16;
+			this.slickButton2.Image = ((System.Drawing.Image)(resources.GetObject("slickButton2.Image")));
+			this.slickButton2.Location = new System.Drawing.Point(3, 3);
+			this.slickButton2.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
+			this.slickButton2.Name = "slickButton2";
+			this.slickButton2.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.slickButton2.Size = new System.Drawing.Size(85, 27);
+			this.slickButton2.SpaceTriggersClick = true;
+			this.slickButton2.TabIndex = 13;
+			this.slickButton2.Text = "Options";
+			this.slickButton2.Click += new System.EventHandler(this.B_Options_Click);
+			// 
+			// RCC
+			// 
+			this.RCC.AutoSize = true;
+			this.tableLayoutPanel8.SetColumnSpan(this.RCC, 2);
+			this.RCC.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.RCC.Location = new System.Drawing.Point(0, 285);
+			this.RCC.Margin = new System.Windows.Forms.Padding(0);
+			this.RCC.Name = "RCC";
+			this.RCC.Size = new System.Drawing.Size(276, 284);
+			this.RCC.TabIndex = 16;
+			this.RCC.LoadConfiguration += new System.EventHandler<ThumbnailMaker.Domain.RoadInfo>(this.RCC_LoadConfiguration);
 			// 
 			// slickScroll1
 			// 
 			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
 			this.slickScroll1.LinkedControl = this.P_Lanes;
-			this.slickScroll1.Location = new System.Drawing.Point(608, 0);
+			this.slickScroll1.Location = new System.Drawing.Point(869, 0);
 			this.slickScroll1.Name = "slickScroll1";
 			this.slickScroll1.Size = new System.Drawing.Size(6, 386);
 			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
@@ -594,105 +793,6 @@
 			this.P_Lanes.Size = new System.Drawing.Size(0, 22);
 			this.P_Lanes.TabIndex = 0;
 			// 
-			// slickSpacer1
-			// 
-			this.tableLayoutPanel1.SetColumnSpan(this.slickSpacer1, 3);
-			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.slickSpacer1.Location = new System.Drawing.Point(18, 179);
-			this.slickSpacer1.Name = "slickSpacer1";
-			this.slickSpacer1.Size = new System.Drawing.Size(608, 1);
-			this.slickSpacer1.TabIndex = 9;
-			this.slickSpacer1.TabStop = false;
-			this.slickSpacer1.Text = "slickSpacer1";
-			// 
-			// tableLayoutPanel4
-			// 
-			this.tableLayoutPanel4.AutoSize = true;
-			this.tableLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanel4.ColumnCount = 5;
-			this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel4, 3);
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel4.Controls.Add(this.slickButton5, 3, 0);
-			this.tableLayoutPanel4.Controls.Add(this.slickButton1, 4, 0);
-			this.tableLayoutPanel4.Controls.Add(this.label1, 1, 0);
-			this.tableLayoutPanel4.Controls.Add(this.pictureBox1, 0, 0);
-			this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel4.Location = new System.Drawing.Point(15, 136);
-			this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0, 7, 0, 7);
-			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-			this.tableLayoutPanel4.RowCount = 1;
-			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(614, 33);
-			this.tableLayoutPanel4.TabIndex = 2;
-			// 
-			// slickButton5
-			// 
-			this.slickButton5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.slickButton5.ColorShade = null;
-			this.slickButton5.ColorStyle = Extensions.ColorStyle.Red;
-			this.slickButton5.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.slickButton5.IconSize = 16;
-			this.slickButton5.Image = ((System.Drawing.Image)(resources.GetObject("slickButton5.Image")));
-			this.slickButton5.Location = new System.Drawing.Point(429, 3);
-			this.slickButton5.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
-			this.slickButton5.Name = "slickButton5";
-			this.slickButton5.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.slickButton5.Size = new System.Drawing.Size(81, 27);
-			this.slickButton5.SpaceTriggersClick = true;
-			this.slickButton5.TabIndex = 16;
-			this.slickButton5.Text = "Clear Lanes";
-			this.slickButton5.Click += new System.EventHandler(this.B_Clear_Click);
-			// 
-			// slickButton1
-			// 
-			this.slickButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.slickButton1.ColorShade = null;
-			this.slickButton1.ColorStyle = Extensions.ColorStyle.Green;
-			this.slickButton1.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.slickButton1.IconSize = 16;
-			this.slickButton1.Image = ((System.Drawing.Image)(resources.GetObject("slickButton1.Image")));
-			this.slickButton1.Location = new System.Drawing.Point(523, 3);
-			this.slickButton1.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
-			this.slickButton1.Name = "slickButton1";
-			this.slickButton1.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.slickButton1.Size = new System.Drawing.Size(81, 27);
-			this.slickButton1.SpaceTriggersClick = true;
-			this.slickButton1.TabIndex = 13;
-			this.slickButton1.Text = "Add Lane";
-			this.slickButton1.Click += new System.EventHandler(this.B_Add_Click);
-			// 
-			// label1
-			// 
-			this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(33, 10);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(36, 13);
-			this.label1.TabIndex = 14;
-			this.label1.Text = "Lanes";
-			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.ActiveColor = null;
-			this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.pictureBox1.ColorStyle = Extensions.ColorStyle.Text;
-			this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.Location = new System.Drawing.Point(3, 3);
-			this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
-			this.pictureBox1.MinimumIconSize = 18;
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(24, 24);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-			this.pictureBox1.TabIndex = 15;
-			this.pictureBox1.TabStop = false;
-			// 
 			// PC_MainPage
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -707,6 +807,8 @@
 			this.tableLayoutPanel1.PerformLayout();
 			this.tableLayoutPanel8.ResumeLayout(false);
 			this.tableLayoutPanel8.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.PB)).EndInit();
+			this.tableLayoutPanel2.ResumeLayout(false);
 			this.tableLayoutPanel6.ResumeLayout(false);
 			this.tableLayoutPanel6.PerformLayout();
 			this.slickGroupBox1.ResumeLayout(false);
@@ -717,12 +819,9 @@
 			this.groupBox2.PerformLayout();
 			this.tableLayoutPanel3.ResumeLayout(false);
 			this.tableLayoutPanel3.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.PB)).EndInit();
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
 			this.tableLayoutPanel4.ResumeLayout(false);
-			this.tableLayoutPanel4.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -737,8 +836,6 @@
 		private ThumbnailMaker.Controls.RoadLaneContainer P_Lanes;
 		private SlickControls.SlickButton slickButton1;
 		private SlickControls.SlickSpacer slickSpacer1;
-		private System.Windows.Forms.Label label1;
-		private SlickControls.SlickIcon pictureBox1;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
 		private SlickControls.SlickButton slickButton2;
 		private SlickControls.SlickGroupBox groupBox2;
@@ -758,8 +855,15 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
 		private SlickControls.SlickButton slickButton3;
 		private System.Windows.Forms.Label L_RoadName;
-		private SlickControls.SlickButton slickButton4;
 		private SlickControls.SlickTextBox TB_BufferSize;
 		private SlickControls.SlickButton slickButton5;
+		private SlickControls.SlickButton B_FlipLanes;
+		private SlickControls.SlickButton B_DuplicateFlip;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+		private SlickControls.SlickSpacer slickSpacer2;
+		private SlickControls.SlickButton slickButton4;
+		private SlickControls.SlickRadioButton RB_Pedestrian;
+		private SlickControls.SlickSpacer slickSpacer3;
+		private Controls.RoadConfigContainer RCC;
 	}
 }

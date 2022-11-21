@@ -33,6 +33,7 @@
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.TB_Vertical = new SlickControls.SlickTextBox();
 			this.B_Apply = new SlickControls.SlickButton();
+			this.TB_Speed = new SlickControls.SlickTextBox();
 			this.base_P_Content.SuspendLayout();
 			this.base_P_Container.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.base_PB_Icon)).BeginInit();
@@ -42,12 +43,14 @@
 			// base_P_Content
 			// 
 			this.base_P_Content.Controls.Add(this.tableLayoutPanel1);
-			this.base_P_Content.Size = new System.Drawing.Size(345, 184);
+			this.base_P_Content.Location = new System.Drawing.Point(1, 30);
+			this.base_P_Content.Size = new System.Drawing.Size(345, 214);
 			// 
 			// base_P_Controls
 			// 
 			this.base_P_Controls.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(63)))), ((int)(((byte)(79)))));
 			this.base_P_Controls.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(202)))), ((int)(((byte)(218)))));
+			this.base_P_Controls.Location = new System.Drawing.Point(1, 30);
 			// 
 			// base_P_Top_Spacer
 			// 
@@ -56,7 +59,7 @@
 			// 
 			// base_P_Container
 			// 
-			this.base_P_Container.Size = new System.Drawing.Size(347, 210);
+			this.base_P_Container.Size = new System.Drawing.Size(347, 245);
 			// 
 			// base_PB_Icon
 			// 
@@ -84,7 +87,7 @@
 			this.TB_LaneWidth.SelectedText = "";
 			this.TB_LaneWidth.SelectionLength = 0;
 			this.TB_LaneWidth.SelectionStart = 0;
-			this.TB_LaneWidth.Size = new System.Drawing.Size(315, 47);
+			this.TB_LaneWidth.Size = new System.Drawing.Size(315, 37);
 			this.TB_LaneWidth.TabIndex = 0;
 			this.TB_LaneWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			this.TB_LaneWidth.Validation = SlickControls.ValidationType.Decimal;
@@ -95,17 +98,19 @@
 			// 
 			this.tableLayoutPanel1.ColumnCount = 1;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.Controls.Add(this.TB_Speed, 0, 2);
 			this.tableLayoutPanel1.Controls.Add(this.TB_LaneWidth, 0, 0);
 			this.tableLayoutPanel1.Controls.Add(this.TB_Vertical, 0, 1);
-			this.tableLayoutPanel1.Controls.Add(this.B_Apply, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.B_Apply, 0, 3);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 3;
+			this.tableLayoutPanel1.RowCount = 4;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(345, 184);
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(345, 214);
 			this.tableLayoutPanel1.TabIndex = 1;
 			// 
 			// TB_Vertical
@@ -116,21 +121,21 @@
 			this.TB_Vertical.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_Vertical.Image = null;
 			this.TB_Vertical.LabelText = "Lane Vertical Offset";
-			this.TB_Vertical.Location = new System.Drawing.Point(15, 77);
+			this.TB_Vertical.Location = new System.Drawing.Point(15, 67);
 			this.TB_Vertical.Margin = new System.Windows.Forms.Padding(15, 0, 15, 15);
 			this.TB_Vertical.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.TB_Vertical.MaxLength = 32767;
 			this.TB_Vertical.MinimumSize = new System.Drawing.Size(50, 0);
 			this.TB_Vertical.Name = "TB_Vertical";
 			this.TB_Vertical.Password = false;
-			this.TB_Vertical.Placeholder = "Default offset is  -0.3";
+			this.TB_Vertical.Placeholder = "Default offset is  -0.3 for normal roads, 0 for the rest";
 			this.TB_Vertical.ReadOnly = false;
 			this.TB_Vertical.Required = false;
 			this.TB_Vertical.SelectAllOnFocus = false;
 			this.TB_Vertical.SelectedText = "";
 			this.TB_Vertical.SelectionLength = 0;
 			this.TB_Vertical.SelectionStart = 0;
-			this.TB_Vertical.Size = new System.Drawing.Size(315, 44);
+			this.TB_Vertical.Size = new System.Drawing.Size(315, 38);
 			this.TB_Vertical.TabIndex = 0;
 			this.TB_Vertical.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			this.TB_Vertical.Validation = SlickControls.ValidationType.Decimal;
@@ -144,21 +149,50 @@
 			this.B_Apply.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.B_Apply.IconSize = 16;
 			this.B_Apply.Image = ((System.Drawing.Image)(resources.GetObject("B_Apply.Image")));
-			this.B_Apply.Location = new System.Drawing.Point(122, 148);
+			this.B_Apply.Location = new System.Drawing.Point(122, 183);
 			this.B_Apply.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
 			this.B_Apply.Name = "B_Apply";
 			this.B_Apply.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.B_Apply.Size = new System.Drawing.Size(100, 30);
+			this.B_Apply.Size = new System.Drawing.Size(100, 28);
 			this.B_Apply.SpaceTriggersClick = true;
 			this.B_Apply.TabIndex = 1;
 			this.B_Apply.Text = "Apply";
 			this.B_Apply.Click += new System.EventHandler(this.B_Apply_Click);
 			// 
+			// TB_Speed
+			// 
+			this.TB_Speed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TB_Speed.EnterTriggersClick = false;
+			this.TB_Speed.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TB_Speed.Image = null;
+			this.TB_Speed.LabelText = "Lane Speed Limit";
+			this.TB_Speed.Location = new System.Drawing.Point(15, 120);
+			this.TB_Speed.Margin = new System.Windows.Forms.Padding(15, 0, 15, 15);
+			this.TB_Speed.MaximumSize = new System.Drawing.Size(9999, 0);
+			this.TB_Speed.MaxLength = 32767;
+			this.TB_Speed.MinimumSize = new System.Drawing.Size(50, 0);
+			this.TB_Speed.Name = "TB_Speed";
+			this.TB_Speed.Password = false;
+			this.TB_Speed.Placeholder = "Default speed is based on the global value";
+			this.TB_Speed.ReadOnly = false;
+			this.TB_Speed.Required = false;
+			this.TB_Speed.SelectAllOnFocus = false;
+			this.TB_Speed.SelectedText = "";
+			this.TB_Speed.SelectionLength = 0;
+			this.TB_Speed.SelectionStart = 0;
+			this.TB_Speed.Size = new System.Drawing.Size(315, 38);
+			this.TB_Speed.TabIndex = 2;
+			this.TB_Speed.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+			this.TB_Speed.Validation = SlickControls.ValidationType.Decimal;
+			this.TB_Speed.ValidationCustom = null;
+			this.TB_Speed.ValidationRegex = "";
+			// 
 			// RoadOptionsEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(358, 221);
+			this.ClientSize = new System.Drawing.Size(358, 256);
 			this.FormIcon = global::ThumbnailMaker.Properties.Resources.I_Edit;
 			this.MaximizeBox = false;
 			this.MaximizedBounds = new System.Drawing.Rectangle(0, 0, 1920, 1032);
@@ -180,5 +214,6 @@
 		private SlickControls.SlickTextBox TB_Vertical;
 		private SlickControls.SlickTextBox TB_LaneWidth;
 		private SlickControls.SlickButton B_Apply;
+		private SlickControls.SlickTextBox TB_Speed;
 	}
 }

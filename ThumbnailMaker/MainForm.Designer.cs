@@ -36,15 +36,16 @@
 			// 
 			// base_P_Content
 			// 
-			this.base_P_Content.Size = new System.Drawing.Size(1287, 612);
+			this.base_P_Content.Size = new System.Drawing.Size(1137, 612);
 			// 
 			// base_P_SideControls
 			// 
 			this.base_P_SideControls.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(114)))), ((int)(((byte)(129)))), ((int)(((byte)(150)))));
+			this.base_P_SideControls.Location = new System.Drawing.Point(0, 342);
 			// 
 			// base_P_Container
 			// 
-			this.base_P_Container.Size = new System.Drawing.Size(1289, 614);
+			this.base_P_Container.Size = new System.Drawing.Size(1139, 614);
 			// 
 			// panelItem1
 			// 
@@ -69,12 +70,12 @@
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(1300, 625);
+			this.ClientSize = new System.Drawing.Size(1150, 625);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(58)))), ((int)(((byte)(69)))));
 			this.FormIcon = ((System.Drawing.Image)(resources.GetObject("$this.FormIcon")));
 			this.HideMenu = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.IconBounds = new System.Drawing.Rectangle(3, 14, 14, 42);
+			this.IconBounds = new System.Drawing.Rectangle(3, 21, 14, 42);
 			this.MaximizeBox = true;
 			this.MaximizedBounds = new System.Drawing.Rectangle(0, 0, 1920, 1032);
 			this.MinimizeBox = true;

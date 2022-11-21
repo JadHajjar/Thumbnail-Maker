@@ -35,6 +35,8 @@ namespace ThumbnailMaker.Controls
 				TB_LaneWidth.Text = _roadLane.CustomLaneWidth.ToString();
 			if (_roadLane.CustomVerticalOffset != -1)
 				TB_Vertical.Text = _roadLane.CustomVerticalOffset.ToString();
+			if (_roadLane.CustomSpeedLimit != -1)
+				TB_Vertical.Text = _roadLane.CustomSpeedLimit.ToString();
 
 			Show(roadLane.FindForm());
 		}
@@ -43,6 +45,7 @@ namespace ThumbnailMaker.Controls
 		{
 			_roadLane.CustomLaneWidth = TB_LaneWidth.Text.SmartParseF(-1);
 			_roadLane.CustomVerticalOffset = TB_Vertical.Text.SmartParseF(-1);
+			_roadLane.CustomSpeedLimit = TB_Vertical.Text.SmartParseF(-1);
 
 			Close();
 		}
