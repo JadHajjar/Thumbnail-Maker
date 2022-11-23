@@ -28,5 +28,15 @@ namespace ThumbnailMaker.Domain
 		public float CustomLaneWidth { get; set; }
 		public float CustomVerticalOffset { get; set; }
 		public float CustomSpeedLimit { get; set; }
+
+		public static explicit operator LaneInfo(TmLane l) => new LaneInfo
+		{
+			Type = l.LaneType,
+			Direction = l.LaneDirection,
+			Lanes = l.Lanes,
+			CustomWidth = l.CustomLaneWidth == -1 ? 0 : l.CustomLaneWidth,
+			Elevation = l.CustomVerticalOffset == -1 ? (float?)null : l.CustomLaneWidth,
+			SpeedLimit = l.CustomSpeedLimit == -1 ? (float?)null : l.CustomSpeedLimit
+		};
 	}
 }

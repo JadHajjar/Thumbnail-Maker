@@ -27,6 +27,8 @@ namespace ThumbnailMaker
 		public PC_MainPage()
 		{
 			InitializeComponent();
+
+			TB_BufferSize.Text = 0.25F.ToString();
 		}
 
 		protected override void UIChanged()
@@ -47,32 +49,33 @@ namespace ThumbnailMaker
 
 		private void RefreshPreview()
 		{
-			var lanes = GetLanes(false);
-
-			var img = new Bitmap(512, 512, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-			using (var g = Graphics.FromImage(img))
+			try
 			{
-				DrawThumbnail(g, lanes, false);
+				var lanes = GetLanes(false);
 
-				PB.Image = img;
+				var img = new Bitmap(512, 512, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+				using (var g = Graphics.FromImage(img))
+				{
+					DrawThumbnail(g, lanes, false);
+
+					PB.Image = img;
+				}
+
+				L_RoadName.Text = "BR4 " + Utilities.IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle()).WhereNotEmpty().ListStrings("+");
+				L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
 			}
-
-			L_RoadName.Text = "BR4 " + Utilities.IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle()).WhereNotEmpty().ListStrings("+");
-			L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
+			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 		}
 
 		private void DrawThumbnail(Graphics graphics, List<LaneInfo> lanes, bool small)
 		{
-			new ThumbnailHandler(graphics)
+			new ThumbnailHandler(graphics, small)
 			{
 				RoadSize = TB_Size.Text.IfEmpty(Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text)),
 				CustomText = TB_CustomText.Text,
-				Small = small,
-				HighWay = RB_Highway.Checked,
-				Europe = RB_Europe.Checked,
-				USA = RB_USA.Checked,
-				Canada = RB_Canada.Checked,
+				RegionType = GetRegion(),
+				RoadType = GetRoadType(),
 				Speed = TB_SpeedLimit.Text.IfEmpty(Utilities.DefaultSpeedSign(lanes, RB_USA.Checked)),
 				Lanes = lanes
 			}.Draw();
@@ -155,53 +158,57 @@ namespace ThumbnailMaker
 
 		private void B_Save_Click(object sender, EventArgs e)
 		{
-			var folder = Clipboard.ContainsText() && Directory.Exists(Clipboard.GetText()) ? Clipboard.GetText() : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-			var matched = false;
-			var files = new List<(string, bool)>
+			try
 			{
-				("asset_thumb.png", true),
-				("PreviewImage.png", false),
-				("snapshot.png", false),
-				("thumbnail.png", false),
-			};
-
-			if (File.Exists(Path.Combine(folder, "tooltip.png")))
-				File.Copy($"{Utilities.Folder}\\Resources\\tooltip.png", Path.Combine(folder, "tooltip.png"), true);
-
-			if (File.Exists(Path.Combine(folder, "asset_tooltip.png")))
-				File.Copy($"{Utilities.Folder}\\Resources\\tooltip.png", Path.Combine(folder, "asset_tooltip.png"), true);
-
-			foreach (var item in files)
-			{
-				if (File.Exists(Path.Combine(folder, item.Item1)))
+				var folder = Clipboard.ContainsText() && Directory.Exists(Clipboard.GetText()) ? Clipboard.GetText() : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+				var matched = false;
+				var files = new List<(string, bool)>
 				{
-					save(item.Item1, item.Item2);
+					("asset_thumb.png", true),
+					("PreviewImage.png", false),
+					("snapshot.png", false),
+					("thumbnail.png", false),
+				};
 
-					matched = true;
+				if (File.Exists(Path.Combine(folder, "tooltip.png")))
+					File.Copy($"{Utilities.Folder}\\Resources\\tooltip.png", Path.Combine(folder, "tooltip.png"), true);
+
+				if (File.Exists(Path.Combine(folder, "asset_tooltip.png")))
+					File.Copy($"{Utilities.Folder}\\Resources\\tooltip.png", Path.Combine(folder, "asset_tooltip.png"), true);
+
+				foreach (var item in files)
+				{
+					if (File.Exists(Path.Combine(folder, item.Item1)))
+					{
+						save(item.Item1, item.Item2);
+
+						matched = true;
+					}
+				}
+
+				if (!matched)
+					save(GetLanes(false).ListStrings(" + ") + ".png", false);
+
+				void save(string filename, bool small)
+				{
+					var width = small ? 109 : 512;
+					var height = small ? 100 : 512;
+
+					var lanes = GetLanes(small);
+
+					using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+					using (var g = Graphics.FromImage(img))
+					{
+						DrawThumbnail(g, lanes, small);
+
+						img.Save(Path.Combine(folder, filename), System.Drawing.Imaging.ImageFormat.Png);
+
+						Notification.Create("Thumbnail Saved", "Your thumbnail was saved at:\n" + Path.Combine(folder, filename), PromptIcons.Info, null)
+							.Show(Form, 15);
+					}
 				}
 			}
-
-			if (!matched)
-				save(GetLanes(false).ListStrings(" + ") + ".png", false);
-
-			void save(string filename, bool small)
-			{
-				var width = small ? 109 : 512;
-				var height = small ? 100 : 512;
-
-				var lanes = GetLanes(small);
-
-				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
-				using (var g = Graphics.FromImage(img))
-				{
-					DrawThumbnail(g, lanes, small);
-
-					img.Save(Path.Combine(folder, filename), System.Drawing.Imaging.ImageFormat.Png);
-
-					Notification.Create("Thumbnail Saved", "Your thumbnail was saved at:\n" + Path.Combine(folder, filename), PromptIcons.Info, null)
-						.Show(Form, 15);
-				}
-			}
+			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 		}
 
 		private void B_CopyDesc_Click(object sender, EventArgs e)
@@ -226,7 +233,15 @@ namespace ThumbnailMaker
 				Directory.CreateDirectory(appdata);
 
 				var lanes = GetLanes(false);
-				var _lanes = GetLanes(false);
+
+				if (!RB_Highway.Checked)
+				{
+					if (lanes.Count > 0 && lanes[0].Type == LaneType.Pedestrian)
+						lanes.RemoveAt(0);
+
+					if (lanes.Count > 0 && lanes[lanes.Count - 1].Type == LaneType.Pedestrian)
+						lanes.RemoveAt(lanes.Count - 1);
+				}
 
 				if (lanes.Count == 0)
 					return;
@@ -238,17 +253,7 @@ namespace ThumbnailMaker
 					return;
 				}
 
-				if (!RB_Highway.Checked)
-				{
-					if (lanes[0].Type == LaneType.Pedestrian)
-						lanes.RemoveAt(0);
-
-					if (lanes.Count > 0 && lanes[lanes.Count - 1].Type == LaneType.Pedestrian)
-						lanes.RemoveAt(lanes.Count - 1);
-				}
-
-				if (lanes.Count == 0)
-					return;
+				var _lanes = GetLanes(false);
 
 				for (var i = 0; i < lanes.Count; i++)
 				{
@@ -291,11 +296,10 @@ namespace ThumbnailMaker
 
 				using (var stream = File.Create(Path.Combine(appdata, $"BR4 {_lanes.ListStrings("+")}.xml")))
 					xML.Serialize(stream, roadInfo);
+
+				RCC.RefreshConfigs();
 			}
-			catch (Exception ex)
-			{
-				ShowPrompt(ex.ToString(), "Error", PromptButtons.OK, PromptIcons.Error);
-			}
+			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 
 			byte[] getImage(bool small)
 			{

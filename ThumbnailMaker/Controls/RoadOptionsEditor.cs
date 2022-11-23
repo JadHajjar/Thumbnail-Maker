@@ -46,6 +46,7 @@ namespace ThumbnailMaker.Controls
 			_roadLane.CustomLaneWidth = TB_LaneWidth.Text.SmartParseF(-1);
 			_roadLane.CustomVerticalOffset = TB_Vertical.Text.SmartParseF(-1);
 			_roadLane.CustomSpeedLimit = TB_Vertical.Text.SmartParseF(-1);
+			_roadLane.RefreshRoad();
 
 			Close();
 		}

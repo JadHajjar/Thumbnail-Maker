@@ -32,8 +32,11 @@ namespace ThumbnailMaker
 
 				var ctrl = new LaneOptionControl(laneType);
 
-				tableLayoutPanel1.Controls.Add(ctrl);
+				TLP.Controls.Add(ctrl);
 			}
+
+			TLP.Controls.Add(new LaneOptionControl("Arrow"));
+			TLP.Controls.Add(new LaneOptionControl("Logo"));
 
 			using (var fontsCollection = new InstalledFontCollection())
 			{

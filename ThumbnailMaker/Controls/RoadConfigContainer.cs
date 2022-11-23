@@ -38,7 +38,7 @@ namespace ThumbnailMaker.Controls
 			RefreshConfigs();
 		}
 
-		private void RefreshConfigs()
+		public void RefreshConfigs()
 		{
 			var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
 				, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"));
@@ -71,7 +71,7 @@ namespace ThumbnailMaker.Controls
 					ctrl.BringToFront();
 				}
 
-				P_Configs.OrderByDescending(x => (x as RoadConfigControl).FileName);
+				P_Configs.OrderBy(x => (x as RoadConfigControl).TimeSaved);
 			});
 		}
 

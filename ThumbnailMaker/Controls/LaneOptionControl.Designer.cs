@@ -80,7 +80,6 @@
 			// 
 			this.PB_100.Anchor = System.Windows.Forms.AnchorStyles.Right;
 			this.PB_100.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.PB_100.Image = null;
 			this.PB_100.Location = new System.Drawing.Point(308, 27);
 			this.PB_100.Margin = new System.Windows.Forms.Padding(10);
 			this.PB_100.Name = "PB_100";
@@ -95,7 +94,6 @@
 			// 
 			this.PB_512.Anchor = System.Windows.Forms.AnchorStyles.Right;
 			this.PB_512.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.PB_512.Image = null;
 			this.PB_512.Location = new System.Drawing.Point(345, 11);
 			this.PB_512.Margin = new System.Windows.Forms.Padding(10, 3, 10, 3);
 			this.PB_512.Name = "PB_512";

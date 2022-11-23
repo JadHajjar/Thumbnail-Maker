@@ -26,7 +26,7 @@ namespace ThumbnailMaker
 			return GetImage(attribute.Id.ToString(), small);
 		}
 
-		private static Image GetImage(string name, bool small)
+		public static Image GetImage(string name, bool small)
 		{
 			try
 			{
@@ -59,13 +59,22 @@ namespace ThumbnailMaker
 
 			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
 
+			SetImage(attribute.Id.ToString(), small, fileName);
+		}
+
+		public static void SetLogo(LaneType lane, bool small, string fileName) => SetImage(nameof(Logo), small, fileName);
+
+		public static void SetArrow(LaneType lane, bool small, string fileName) => SetImage(nameof(Arrow), small, fileName);
+
+		public static void SetImage(string name, bool small, string fileName)
+		{
 			if (string.IsNullOrWhiteSpace(fileName) || !File.Exists(fileName))
 			{
-				if (File.Exists($"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{attribute.Id}.png"))
-					File.Delete($"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{attribute.Id}.png");
+				if (File.Exists($"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{name}.png"))
+					File.Delete($"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{name}.png");
 			}
 			else
-				File.Copy(fileName, $"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{attribute.Id}.png", true);
+				File.Copy(fileName, $"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{name}.png", true);
 		}
 	}
 }

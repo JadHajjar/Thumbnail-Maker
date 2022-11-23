@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 using ThumbnailMaker.Domain;
 
@@ -26,11 +27,27 @@ namespace ThumbnailMaker.Controls
 
 			label1.Text = LaneType.ToString().FormatWords();
 			pictureBox1.BackColor = LaneInfo.GetColor(LaneType);
-			PB_100.Image =  ResourceManager.GetImage(LaneType, true)?.Color(FormDesign.Design.IconColor);
+			PB_100.Image = ResourceManager.GetImage(LaneType, true)?.Color(FormDesign.Design.IconColor);
 			PB_512.Image = ResourceManager.GetImage(LaneType, false)?.Color(FormDesign.Design.IconColor);
 		}
 
+		public LaneOptionControl(string name)
+		{
+			InitializeComponent();
+			LaneType = (LaneType)-1;
+
+			label1.Text = name;
+			pictureBox1.Visible = false;
+			PB_100.Image = ResourceManager.GetImage(name, true)?.Color(FormDesign.Design.IconColor);
+			PB_512.Image = ResourceManager.GetImage(name, false)?.Color(FormDesign.Design.IconColor);
+			PropertyName = name;
+
+			if (PropertyName == "Logo")
+				PB_100.SizeMode = PB_512.SizeMode = PictureBoxSizeMode.Zoom;
+		}
+
 		public LaneType LaneType { get; }
+		public string PropertyName { get; }
 
 		protected override void DesignChanged(FormDesign design)
 		{
@@ -65,7 +82,11 @@ namespace ThumbnailMaker.Controls
 
 			e.Graphics.Clear(tableLayoutPanel1.BackColor);
 			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-			e.Graphics.DrawImage(new Bitmap(PB.Image, new Size(PB.Image.Width * 48 / PB.Image.Height, 48)).Color(PB.HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor : FormDesign.Design.IconColor), new Rectangle(Point.Empty, new Size(48, 48)).CenterR(new Size(PB.Image.Width * 48 / PB.Image.Height, 48)));
+
+			if (PropertyName == "Logo")
+				e.Graphics.DrawImage(new Bitmap(PB.Image).Color(PB.HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor : FormDesign.Design.IconColor), new Rectangle(Point.Empty, new Size(48, 48)).CenterR(new Size(48, PB.Image.Height * 48 / PB.Image.Width)));
+			else
+				e.Graphics.DrawImage(new Bitmap(PB.Image, new Size(PB.Image.Width * 48 / PB.Image.Height, 48)).Color(PB.HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor : FormDesign.Design.IconColor), new Rectangle(Point.Empty, new Size(48, 48)).CenterR(new Size(PB.Image.Width * 48 / PB.Image.Height, 48)));
 		}
 
 		private void PB_100_Paint(object sender, PaintEventArgs e)
@@ -81,7 +102,11 @@ namespace ThumbnailMaker.Controls
 
 			e.Graphics.Clear(tableLayoutPanel1.BackColor);
 			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-			e.Graphics.DrawImage(PB.Image.Color(PB.HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor : FormDesign.Design.IconColor), PB.ClientRectangle);
+
+			if (PropertyName == "Logo")
+				e.Graphics.DrawImage(PB.Image.Color(PB.HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor : FormDesign.Design.IconColor), new Rectangle(Point.Empty, new Size(16, 16)).CenterR(new Size(16, PB.Image.Height * 16 / PB.Image.Width)));
+			else
+				e.Graphics.DrawImage(PB.Image.Color(PB.HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor : FormDesign.Design.IconColor), PB.ClientRectangle);
 		}
 
 		private void PB_100_MouseClick(object sender, MouseEventArgs e)
@@ -93,18 +118,32 @@ namespace ThumbnailMaker.Controls
 					if (openFileDialog.ShowDialog() != DialogResult.OK)
 						return;
 
-					ResourceManager.SetImage(LaneType, sender == PB_100, openFileDialog.FileName);
+					if (PropertyName == null)
+						ResourceManager.SetImage(LaneType, sender == PB_100, openFileDialog.FileName);
+					else
+						ResourceManager.SetImage(PropertyName, sender == PB_100, openFileDialog.FileName);
 				}
 				else if (e.Button == MouseButtons.Middle)
 				{
 					if (MessagePrompt.Show($"Are you sure you want to delete the icon for {LaneType.ToString().FormatWords()}?", PromptButtons.YesNo, PromptIcons.Warning) != DialogResult.Yes)
 						return;
 
-					ResourceManager.SetImage(LaneType, sender == PB_100, null);
+					if (PropertyName == null)
+						ResourceManager.SetImage(LaneType, sender == PB_100, null);
+					else
+						ResourceManager.SetImage(PropertyName, sender == PB_100, null);
 				}
 
-				PB_100.Image = ResourceManager.GetImage(LaneType, true)?.Color(FormDesign.Design.IconColor);
-				PB_512.Image = ResourceManager.GetImage(LaneType, false)?.Color(FormDesign.Design.IconColor);
+				if (PropertyName == null)
+				{
+					PB_100.Image = ResourceManager.GetImage(LaneType, true)?.Color(FormDesign.Design.IconColor);
+					PB_512.Image = ResourceManager.GetImage(LaneType, false)?.Color(FormDesign.Design.IconColor);
+				}
+				else
+				{
+					PB_100.Image = ResourceManager.GetImage(PropertyName, true)?.Color(FormDesign.Design.IconColor);
+					PB_512.Image = ResourceManager.GetImage(PropertyName, false)?.Color(FormDesign.Design.IconColor);
+				}
 			}
 			catch (Exception ex) { MessagePrompt.Show(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 		}

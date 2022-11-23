@@ -180,7 +180,7 @@ namespace ThumbnailMaker.Controls
 				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 24 - 32 - (32 * 3) + 6, 6, Width - 24 - 32 - (32 * 3) + 6, Height - 13);
 				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 25 - 32 - (32 * 6), 6, Width - 25 - 32 - (32 * 6), Height - 13);
 
-				grabberRectangle = new Rectangle(iconX + 8, 0, (Width - 6 - 32 - (32 * (6) - 16)) - iconX - 8, Height - 4);
+				grabberRectangle = new Rectangle(iconX + 8, 0, (Width - 6 - 32 - (32 * (7) - 16)) - iconX - 8, Height - 4);
 				e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), grabberRectangle.CenterR(10, 5));
 
 				return;
@@ -315,16 +315,14 @@ namespace ThumbnailMaker.Controls
 				if (item.Value.Contains(e.Location))
 				{
 					Lanes = item.Key;
-					RoadLaneChanged?.Invoke(this, EventArgs.Empty);
-					Invalidate();
+					RefreshRoad();
 
 					if (LaneType == LaneType.Parking)
 					{
 						foreach (var rl in Parent.Controls.OfType<RoadLane>().Where(x => x != this && x.LaneType == LaneType.Parking))
 						{
 							rl.Lanes = item.Key;
-							rl.RoadLaneChanged?.Invoke(this, EventArgs.Empty);
-							rl.Invalidate();
+							rl.RefreshRoad();
 						}
 					}
 
@@ -355,8 +353,7 @@ namespace ThumbnailMaker.Controls
 							break;
 					}
 
-					RoadLaneChanged?.Invoke(this, EventArgs.Empty);
-					Invalidate();
+					RefreshRoad();
 					return;
 				}
 			}
@@ -436,6 +433,49 @@ namespace ThumbnailMaker.Controls
 				CustomVerticalOffset = CustomVerticalOffset,
 				CustomSpeedLimit = CustomSpeedLimit,
 			};
+		}
+
+		internal void RefreshRoad()
+		{
+			Invalidate();
+
+			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		internal void ApplyLaneType(LaneType previousLaneType)
+		{
+			if (previousLaneType < LaneType.Car && LaneType >= LaneType.Car)
+			{
+				Lanes = 0;
+			}
+
+			if (LaneType < LaneType.Car)
+			{
+				LaneDirection = LaneDirection.None;
+
+				if (previousLaneType >= LaneType.Car)
+					Lanes = 0;
+			}
+
+			if (LaneType == LaneType.Parking)
+			{
+				Lanes = Parent.Controls.OfType<RoadLane>().FirstOrDefault(x => x != this && x.LaneType == LaneType.Parking)?.Lanes ?? 0;
+
+				if (LaneDirection == LaneDirection.Both)
+					LaneDirection = LaneDirection.None;
+			}
+
+			if (LaneType >= LaneType.Car)
+			{
+				LaneType &= ~LaneType.Empty & ~LaneType.Grass & ~LaneType.Gravel & ~LaneType.Pavement;
+			}
+
+			if (LaneType.HasFlag(LaneType.Parking))
+			{
+				LaneType = LaneType.Parking;
+			}
+
+			RefreshRoad();
 		}
 	}
 }

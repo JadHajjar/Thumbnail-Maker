@@ -1,9 +1,10 @@
 ﻿namespace ThumbnailMaker
 {
-	public enum RegionType
+	public enum LaneDirection
 	{
-		Europe = 0,
-		USA = 1,
-		Canada = 2
+		None = 0,
+		Both = 1,
+		Backwards = 2,
+		Forward = 3,
 	}
 }
