@@ -53,6 +53,13 @@ namespace ThumbnailMaker
 
 			using (var g = Graphics.FromImage(img))
 			{
+				if (FormDesign.Design.BackColor.GetBrightness() > 0.3)
+				{
+					g.SmoothingMode = SmoothingMode.HighQuality;
+					g.FillRoundedRectangle(new SolidBrush(Color.Black), new Rectangle(0, 0, 512, 512), 20);
+					g.SmoothingMode = SmoothingMode.Default;
+				}
+
 				DrawThumbnail(g, lanes, false);
 
 				PB.Image = img;
