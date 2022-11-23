@@ -127,7 +127,7 @@
         AAAASUVORK5CYII=
 </value>
   </data>
-  <data name="slickButton4.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="B_Export.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAAQNJREFUOE+l0j1KA1EUxfEgUSujtdFgG5cgGiuDjZ1LGExWI6ggNoooRkSXoFvx
@@ -137,7 +137,7 @@
         5arqX3GMKornikWwiSvoD/OLL9yihdL5UvBfyXB8WWUAJXorgCSjXXYAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="button1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="B_SaveThumb.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAAL1JREFUOE+l0jsKwlAQheGgq7AX0Z3YaeEDSyGVy3AVNi5AF+FWLAVRwUYQn/+E
@@ -146,13 +146,24 @@
         CmhgF2Z2OYIs5ChmjyEKAT9xh+WlyRPtcUD2VZGJ/AAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="slickButton3.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="B_CopyName.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAAJ1JREFUOE+l0UEKg0AMBVBPUO/iti5d9AAewbsU9JriFaxYaH+GiSSZCBEXDzI/
         IQSmevXDLW4IE6zwEzZ4gppVD4GGHyajJQu0IjtdQMNe1sAMXc6OBZGTbU8tCJ+cUS/VRSBQVpychRew
         4+QstECy/VsLavjw2xvwUJ/t8IbUkwNce077XHjfyNTJFhcjfEGeytTJlhte4YZxQ/UHC8U77Rzkh7wA
         AAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="slickGroupBox1.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAUJJREFUOE/N
+        0k0rRGEYxvFTg0SmWEkxCwufwGA5fAMLG2lSys6SsrBlIQvFglLykpeSBc3SVtnLFDKIEnZC0vG/73M9
+        malZWrjqV+e5nvt0zjxzoj9PHMc92MQ1XvGAfXRrpHoYqMEy3mG5QTOmUMAd5pHSLZVhYwEnEnKMMe33
+        o4RFv6E8lFncogVfCDlFRmM2N4IX9KpKQrGBCV0/4RKzSPuAwjoFe9C6qiQU9mqduj7EGdIYxrQPKawv
+        UNIyCcUb6nXdhFWcYxADPqSwtkP90DIJxT06tPSwHoL9jd+YQYP6LhR9KIRiG37a5aH7RMijunHs+kAI
+        RR/s4PwpIaznELKFOlwhq5HfUC7hCI2qrGuH/QR7wzYcYE3blWHDvsQVFDGKVtiBTSIP6+0Tr9Ut1cNA
+        Djuwg7U8Yw85jfyrRNEPnbarJyJVnAIAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="RB_Canada.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -184,15 +195,13 @@
         IK/E8HdR8AZU1NY4SFdDZgAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="slickGroupBox1.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="groupBox2.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAUJJREFUOE/N
-        0k0rRGEYxvFTg0SmWEkxCwufwGA5fAMLG2lSys6SsrBlIQvFglLykpeSBc3SVtnLFDKIEnZC0vG/73M9
-        malZWrjqV+e5nvt0zjxzoj9PHMc92MQ1XvGAfXRrpHoYqMEy3mG5QTOmUMAd5pHSLZVhYwEnEnKMMe33
-        o4RFv6E8lFncogVfCDlFRmM2N4IX9KpKQrGBCV0/4RKzSPuAwjoFe9C6qiQU9mqduj7EGdIYxrQPKawv
-        UNIyCcUb6nXdhFWcYxADPqSwtkP90DIJxT06tPSwHoL9jd+YQYP6LhR9KIRiG37a5aH7RMijunHs+kAI
-        RR/s4PwpIaznELKFOlwhq5HfUC7hCI2qrGuH/QR7wzYcYE3blWHDvsQVFDGKVtiBTSIP6+0Tr9Ut1cNA
-        Djuwg7U8Yw85jfyrRNEPnbarJyJVnAIAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAMBJREFUOE/F
+        k9ENglAMRd8C4h46iI6mcQNdhEFkEL7UaPK8t701UA3yYeJJmvaeFr6g/IRa6x51Qc2Bdzs96kDcUAvF
+        SXC3RF0VHYiq0UBswrGD0cspNDpZIK7DsYOVLQSFRicLxG04drCxhaDQ6IRg/8bw/sVQvC3F5E0WiKdw
+        7OBoC0Gh0ckCsQ3HDlpbCAqNThaIXTh2cLaFoNDoZIHYh2MHvS0EhUYHmV9iozgJ7j5+iQfUAzWHO2r8
+        L/yRUp5WZ14VceWpZQAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="RB_Pedestrian.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -222,15 +231,6 @@
         H7z2Ccqm9qnBFeLX0QO+80BhhjGsVStko5oKM3DfQ7VCdpsNU52G+7j/UyvMc4M2ODfgnDk61WkmsFKt
         kF29QNXUPnXgvlCZ/ZDz5Zx9h3CEB5ha2dcB/MLmcAN+eS1gw7hydJw//+z9EoXX45zZKHb7buouOPud
         IK/E8HdR8AZU1NY4SFdDZgAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="groupBox2.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAMBJREFUOE/F
-        k9ENglAMRd8C4h46iI6mcQNdhEFkEL7UaPK8t701UA3yYeJJmvaeFr6g/IRa6x51Qc2Bdzs96kDcUAvF
-        SXC3RF0VHYiq0UBswrGD0cspNDpZIK7DsYOVLQSFRicLxG04drCxhaDQ6IRg/8bw/sVQvC3F5E0WiKdw
-        7OBoC0Gh0ckCsQ3HDlpbCAqNThaIXTh2cLaFoNDoZIHYh2MHvS0EhUYHmV9iozgJ7j5+iQfUAzWHO2r8
-        L/yRUp5WZ14VceWpZQAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="TB_Size.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -276,7 +276,7 @@
         ujdhmDw+nBKjtgAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="slickButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="B_AddLane.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAAO5JREFUOE+l081uQUEYxnELH4sGtUV6IY2y7QW4BMHtiETovmlEr0C4EYt+iLAQ
@@ -286,7 +286,7 @@
         bHDTt/AvwfB2jcQJQtEuogB7QfQAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="slickButton5.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="B_ClearLines.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAAPxJREFUOE+l0jFOAkEUxvGNIRASWxsLAiaewBYqGw+wcII9gSGxUg+gl7ATEk0o
@@ -296,7 +296,7 @@
         HnEKvZOdJ5s40CbP+ILm/k1yg39Lhn9XZD/zFS9nSKwO4wAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="slickButton2.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="B_Options.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
         vAAADrwBlbxySQAAAQhJREFUOE+l0z1OQkEUhmEaG40FvT/galiAS2AHNhQkKsEl+BNMCAUQCJBoqcb9

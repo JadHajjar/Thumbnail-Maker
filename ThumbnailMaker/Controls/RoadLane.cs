@@ -78,6 +78,44 @@ namespace ThumbnailMaker.Controls
 			if (_dragDropActive)
 				e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.ActiveColor, 2F), ClientRectangle.Pad(0, 0, 1, 7), 6);
 
+			var iconX = DrawIcon(e, cursor, lane);
+
+			DrawDeleteIcon(e, cursor);
+
+			if (LaneType == LaneType.Parking)
+			{
+				Draw(e, cursor, iconX,
+					new[] { 1, 2, 3 },
+					GetParkingDirectionIcon,
+					new[] { LaneDirection.None, LaneDirection.Backwards, LaneDirection.Forward });
+			}
+			else if (lane.IsFiller)
+			{
+				Draw(e, cursor, iconX,
+					new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+					l => new ItemDrawContent { Text = $"{(10 - Math.Min(l, 9)) * 10}%" },
+					new LaneDirection[0]);
+			}
+			else
+			{
+				Draw(e, cursor, iconX,
+					LaneType == LaneType.Pedestrian ? new[] { 0, 1, 2 } : new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
+					l => new ItemDrawContent { Image = l == 0 ? Properties.Resources.I_Unavailable : null, Text = $"{l}L" },
+					new[] { LaneDirection.None, LaneDirection.Backwards, LaneDirection.Forward, LaneDirection.Both });
+			}
+		}
+
+		private void DrawDeleteIcon(PaintEventArgs e, Point cursor)
+		{
+			deleteRectangle = new Rectangle(Width - 32, (Height - 32 - 7) / 2, 32, 32);
+
+			e.Graphics.DrawImage(Properties.Resources.I_X.Color(deleteRectangle.Contains(cursor) ? FormDesign.Design.RedColor : FormDesign.Design.IconColor), deleteRectangle.CenterR(16, 16));
+
+			DrawLine(e, Width - 34);
+		}
+
+		private int DrawIcon(PaintEventArgs e, Point cursor, LaneInfo lane)
+		{
 			e.Graphics.FillEllipse(new SolidBrush(lane.Color), new Rectangle(6, (Height - 24 - 7) / 2, 24, 24));
 
 			if (LaneType == LaneType.Empty)
@@ -97,40 +135,60 @@ namespace ThumbnailMaker.Controls
 			if (iconRectangle.Contains(cursor))
 				DrawFocus(e.Graphics, iconRectangle.Pad(-4, -4, lane.Icons(true) == null ? 23 : -4, -4), HoverState.Focused, 4);
 
-			deleteRectangle = new Rectangle(Width - 32, (Height - 32 - 7) / 2, 32, 32);
+			DrawLine(e, iconX + 8);
+			return iconX;
+		}
 
-			e.Graphics.DrawImage(Properties.Resources.I_X.Color(deleteRectangle.Contains(cursor) ? FormDesign.Design.RedColor : FormDesign.Design.IconColor), deleteRectangle.CenterR(16, 16));
+		private ItemDrawContent GetParkingDirectionIcon(int arg)
+		{
+			if (arg < 2)
+				return new ItemDrawContent { Image = Properties.Resources.I_Vertical };
 
-			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 34, 6, Width - 34, Height - 13);
+			if (arg == 2)
+				return new ItemDrawContent { Image = Properties.Resources.Icon_Horizontal };
 
-			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), iconX + 8, 6, iconX + 8, Height - 13);
+			return new ItemDrawContent { Image = Properties.Resources.I_Diagonal };
+		}
 
-			editRectangle = new Rectangle(iconX + 8+4, (Height - 32 - 7) / 2, 32, 32);
+		private void DrawLine(PaintEventArgs e, int x)
+		{
+			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), x, 6, x, Height - 13);
+		}
 
-			e.Graphics.DrawImage(Properties.Resources.I_Edit.Color(FormDesign.Design.IconColor), editRectangle.CenterR(16, 16));
-
-			if (editRectangle.Contains(cursor))
-				DrawFocus(e.Graphics, editRectangle.Pad(0, 1, 0, 1), HoverState.Focused, 4);
-
-			iconX += 40;
-
-			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), iconX + 8, 6, iconX + 8, Height - 13);
-
-			if (LaneType == LaneType.Parking)
+		private void Draw(PaintEventArgs e, Point cursor, int iconX, int[] lanes, Func<int, ItemDrawContent> drawLane, LaneDirection[] directions)
+		{
+			// Draw lane buttons
+			var i = 0;
+			foreach (var l in lanes)
 			{
-				for (var i = 3; i >= 0; i--)
+				sizeRects[l] = new Rectangle(Width - (32 * (1 + lanes.Length - i++)) - 6, (Height - 32 - 7) / 2, 32, 32);
+
+				if (sizeRects[l].Contains(cursor))
+					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), sizeRects[l], 4);
+
+				var content = drawLane(l);
+
+				if (content.Image != null)
+					e.Graphics.DrawImage(content.Image.Color(sizeRects[l].Contains(cursor) ? FormDesign.Design.ActiveForeColor : l == Lanes ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), sizeRects[l].CenterR(16, 16));
+				else
+					e.Graphics.DrawString(content.Text, new Font(UI.FontFamily, 8.25F), new SolidBrush(sizeRects[l].Contains(cursor) ? FormDesign.Design.ActiveForeColor : l == Lanes ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), sizeRects[l], new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+			}
+
+			DrawLine(e, Width - (32 * (1 + lanes.Length)) - 12);
+
+			if (directions.Length > 0)
+			{ 
+				// Draw direction buttons
+				var ind = 0;
+				foreach (var direction in directions)
 				{
-					var direction = (LaneDirection)i;
-
-					if (direction == LaneDirection.Both)
-						continue;
-
-					directionRects[direction] = new Rectangle(Width - 6 - 32 - (32 * (5 - Math.Max(0, i - 1) + 2) - 16), (Height - 32 - 7) / 2, 32, 32);
+					directionRects[direction] = new Rectangle(Width - (32 * (1 + lanes.Length - ind++ + directions.Length)) - 18, (Height - 32 - 7) / 2, 32, 32);
 
 					if (directionRects[direction].Contains(cursor))
 						e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), directionRects[direction], 4);
 
 					Bitmap icon;
+
 					switch (direction)
 					{
 						case LaneDirection.Both:
@@ -150,114 +208,28 @@ namespace ThumbnailMaker.Controls
 					e.Graphics.DrawImage(icon.Color(directionRects[direction].Contains(cursor) ? FormDesign.Design.ActiveForeColor : LaneDirection == direction ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), directionRects[direction].CenterR(16, 16));
 				}
 
-				var icon_ = Properties.Resources.I_Vertical;
-				var diagonalRect = new Rectangle(Width - 24 - 32 - (32 * 3) + 10, (Height - 32 - 7) / 2, 32, 32);
-
-				if (diagonalRect.Contains(cursor))
-					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), diagonalRect, 4);
-
-				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes <= 1 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
-				sizeRects[1] = diagonalRect;
-
-				icon_ = Properties.Resources.Icon_Horizontal;
-				diagonalRect.X += 32;
-
-				if (diagonalRect.Contains(cursor))
-					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), diagonalRect, 4);
-
-				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes == 2 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
-				sizeRects[2] = diagonalRect;
-
-				icon_ = Properties.Resources.I_Diagonal;
-				diagonalRect.X += 32;
-
-				if (diagonalRect.Contains(cursor))
-					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), diagonalRect, 4);
-
-				e.Graphics.DrawImage(icon_.Color(diagonalRect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lanes > 2 ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), diagonalRect.CenterR(16, 16));
-				sizeRects[3] = diagonalRect;
-
-				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 24 - 32 - (32 * 3) + 6, 6, Width - 24 - 32 - (32 * 3) + 6, Height - 13);
-				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 25 - 32 - (32 * 6), 6, Width - 25 - 32 - (32 * 6), Height - 13);
-
-				grabberRectangle = new Rectangle(iconX + 8, 0, (Width - 6 - 32 - (32 * (7) - 16)) - iconX - 8, Height - 4);
-				e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), grabberRectangle.CenterR(10, 5));
-
-				return;
+				DrawLine(e, Width - (32 * (1 + lanes.Length + directions.Length)) - 24);
 			}
 
-			if (lane.IsFiller)
-			{
-				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.AccentBackColor), new Rectangle(Width - 6 - 32 - (32 * 10), (Height - 32 - 7) / 2, 32 * 10, 32), 4);
+			// Draw direction buttons
+			editRectangle = new Rectangle(Width - (32 * (1 + lanes.Length + directions.Length + 1)) - (directions.Any() ? 30 : 18), (Height - 32 - 7) / 2, 32, 32);
 
-				for (var i = 9; i >= 0; i--)
-				{
-					sizeRects[i] = new Rectangle(Width - 6 - 32 - (32 * (9 - i + 1)), (Height - 32 - 7) / 2, 32, 32);
+			e.Graphics.DrawImage(Properties.Resources.I_Edit.Color(FormDesign.Design.IconColor), editRectangle.CenterR(16, 16));
 
-					if (sizeRects[i].Contains(cursor))
-						e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), sizeRects[i], 4);
+			if (editRectangle.Contains(cursor))
+				DrawFocus(e.Graphics, editRectangle.Pad(0, 1, 0, 1), HoverState.Focused, 4);
 
-					e.Graphics.DrawString($"{(10 - Math.Min(i, 9)) * 10}%", new Font(UI.FontFamily, 8.25F), new SolidBrush(sizeRects[i].Contains(cursor) ? FormDesign.Design.ActiveForeColor : i == Lanes ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), sizeRects[i], new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
-				}
+			DrawLine(e, editRectangle.X - 6);
 
-				e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 6 - 8 - 32 - (32 * 10), 6, Width - 6 - 8 - 32 - (32 * 10), Height - 13);
+			grabberRectangle = new Rectangle(iconX + 8, 0, editRectangle.X - 6 - iconX - 8, Height - 4);
 
-				grabberRectangle = new Rectangle(iconX + 8, 0, Width - 6 - 8 - 32 - (32 * 10) - iconX - 8, Height - 4);
-				e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), grabberRectangle.CenterR(10, 5));
+			e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), grabberRectangle.CenterR(10, 5));
+		}
 
-				return;
-			}
-
-			e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.AccentBackColor), new Rectangle(Width - 6 - 32 - (32 * 8), (Height - 32 - 7) / 2, 32 * 8, 32), 4);
-
-			for (var i = 8; i >= 0; i--)
-			{
-				sizeRects[i] = new Rectangle(Width - 6 - 32 - (32 * (8 - i + 1)), (Height - 32 - 7) / 2, 32, 32);
-
-				if (sizeRects[i].Contains(cursor))
-					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), sizeRects[i], 4);
-
-				if (i == 0)
-					e.Graphics.DrawImage(Properties.Resources.I_Unavailable.Color(sizeRects[i].Contains(cursor) ? FormDesign.Design.ActiveForeColor : i == Lanes ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), sizeRects[i].CenterR(16, 16));
-				else
-					e.Graphics.DrawString($"{i}L", new Font(UI.FontFamily, 8.25F), new SolidBrush(sizeRects[i].Contains(cursor) ? FormDesign.Design.ActiveForeColor : i == Lanes ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), sizeRects[i], new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
-			}
-
-			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 6 - 8 - 32 - (32 * 9), 6, Width - 6 - 8 - 32 - (32 * 9), Height - 13);
-			e.Graphics.DrawLine(new Pen(FormDesign.Design.AccentColor), Width - 6 - 8 - 16 - 32 - (32 * 13), 6, Width - 6 - 16 - 8 - 32 - (32 * 13), Height - 13);
-
-			grabberRectangle = new Rectangle(iconX + 8, 0, Width - 6 - 8 - 16 - 32 - (32 * 13) - iconX - 8, Height - 4);
-			e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(grabberRectangle.Contains(cursor)? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), grabberRectangle.CenterR(10, 5));
-
-			e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.AccentBackColor), new Rectangle(Width - 6 - 32 - (32 * 13) - 16, (Height - 32 - 7) / 2, 32 * 4, 32), 4);
-
-			for (var i = 3; i >= 0; i--)
-			{
-				var direction = (LaneDirection)i;
-				directionRects[direction] = new Rectangle(Width - 6 - 32 - (32 * (13 - i + 1) - 16), (Height - 32 - 7) / 2, 32, 32);
-
-				if (directionRects[direction].Contains(cursor))
-					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), directionRects[direction], 4);
-
-				Bitmap icon;
-				switch (direction)
-				{
-					case LaneDirection.Both:
-						icon = Properties.Resources.I_2W;
-						break;
-					case LaneDirection.Forward:
-						icon = Properties.Resources.I_1WF;
-						break;
-					case LaneDirection.Backwards:
-						icon = Properties.Resources.I_1WB;
-						break;
-					default:
-						icon = Properties.Resources.I_Unavailable;
-						break;
-				}
-
-				e.Graphics.DrawImage(icon.Color(directionRects[direction].Contains(cursor) ? FormDesign.Design.ActiveForeColor : LaneDirection == direction ? FormDesign.Design.ActiveColor : FormDesign.Design.ForeColor), directionRects[direction].CenterR(16, 16));
-			}
+		struct ItemDrawContent
+		{
+			public string Text;
+			public Bitmap Image;
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)
@@ -473,6 +445,12 @@ namespace ThumbnailMaker.Controls
 			if (LaneType.HasFlag(LaneType.Parking))
 			{
 				LaneType = LaneType.Parking;
+				Lanes = Lanes.Between(1, 3);
+			}
+
+			if (LaneType.HasFlag(LaneType.Pedestrian))
+			{
+				Lanes = Lanes.Between(0, 2);
 			}
 
 			RefreshRoad();

@@ -29,6 +29,29 @@ namespace ThumbnailMaker
 			InitializeComponent();
 
 			TB_BufferSize.Text = 0.25F.ToString();
+
+			SlickTip.SetTo(RB_Road, "A normal road with curbs & sidewalks");
+			SlickTip.SetTo(RB_Highway, "A flat road with no pavement and highway rules");
+			SlickTip.SetTo(RB_Pedestrian, "A flat pedestrian road");
+
+			SlickTip.SetTo(RB_Europe, "Use a European styled speed limit sign, as well as km/h as the speed measurement");
+			SlickTip.SetTo(RB_USA, "Use a US styled speed limit sign, as well as mph as the speed measurement");
+			SlickTip.SetTo(RB_Canada, "Use a Canadian styled speed limit sign, as well as km/h as the speed measurement");
+
+			SlickTip.SetTo(TB_Size, "Manually specify the total asphalt width of the road");
+			SlickTip.SetTo(TB_BufferSize, "Determines how far should the lanes be from the sidewalk");
+			SlickTip.SetTo(TB_BufferSize, "Manually specify the default speed limit of the road");
+			SlickTip.SetTo(TB_CustomText, "Add custom text to the thumbnail");
+
+			SlickTip.SetTo(B_CopyName, "Copy the generated road name into your clipboard");
+			SlickTip.SetTo(B_CopyDesc, "Copy the generated road description into your clipboard");
+			SlickTip.SetTo(B_SaveThumb, "Saves the thumbnail on your desktop, or to the folder you have copied in your clipboard");
+			SlickTip.SetTo(B_Export, "Exports the road configuration to the Road Builder folder to be generated");
+
+			SlickTip.SetTo(B_Options, "Change the colors & icons of lane types as well as other options");
+			SlickTip.SetTo(B_DuplicateFlip, "Duplicates the current lanes to the right and flips their direction");
+			SlickTip.SetTo(B_FlipLanes, "Flips the whole road to create its opposite variation");
+			SlickTip.SetTo(B_AddLane, "Add a new empty lane");
 		}
 
 		protected override void UIChanged()
@@ -53,19 +76,17 @@ namespace ThumbnailMaker
 			{
 				var lanes = GetLanes(false);
 
-				if (FormDesign.Design.BackColor.GetBrightness() > 0.3)
-				{
-					g.SmoothingMode = SmoothingMode.HighQuality;
-					g.FillRoundedRectangle(new SolidBrush(Color.Black), new Rectangle(0, 0, 512, 512), 20);
-					g.SmoothingMode = SmoothingMode.Default;
-				}
-
-				DrawThumbnail(g, lanes, false);
-
 				var img = new Bitmap(512, 512, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 				using (var g = Graphics.FromImage(img))
 				{
+					if (FormDesign.Design.BackColor.GetBrightness() > 0.3)
+					{
+						g.SmoothingMode = SmoothingMode.HighQuality;
+						g.FillRoundedRectangle(new SolidBrush(Color.Black), new Rectangle(0, 0, 512, 512), 20);
+						g.SmoothingMode = SmoothingMode.Default;
+					}
+
 					DrawThumbnail(g, lanes, false);
 
 					PB.Image = img;
