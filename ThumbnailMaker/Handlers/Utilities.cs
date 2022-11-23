@@ -25,7 +25,7 @@ namespace ThumbnailMaker.Handlers
 
 			foreach (var lane in lanes)
 			{
-				if (skip || lane.Type == LaneType.Pedestrian)
+				if (skip || (lane.Type == LaneType.Pedestrian && (lane == lanes.First() || lane == lanes.Last())))
 					continue;
 
 				var types = LaneInfo.GetLaneTypes(lane.Type).Select(x => x.ToString());
@@ -33,6 +33,10 @@ namespace ThumbnailMaker.Handlers
 
 				if (lane.Type < LaneType.Trees)
 					laneDescriptors.Add(lane.Lanes > 3 ? "Separator" : "Median");
+				else if (lane.DiagonalParking)
+					laneDescriptors.Add("Diagonal Parking");
+				else if (lane.HorizontalParking)
+					laneDescriptors.Add("Horizontal Parking");
 				else if (lane.Direction == LaneDirection.Both && lane.Type != LaneType.Parking)
 					laneDescriptors.Add($"2W {lane.Lanes}L {name}");
 				else if (lane.Lanes > 0 && lane.Type != LaneType.Parking)
