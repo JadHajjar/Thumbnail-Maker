@@ -24,6 +24,20 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <BuilderPath>..\..\..\..\BlankRoadBuilder\BlankRoadBuilder\ModContents\Thumbnail Maker</BuilderPath>
+    <PostBuildEvent>
+	    rmdir /s /q "$(BuilderPath)"
+      mkdir "$(BuilderPath)"
+      mkdir "$(BuilderPath)\Resources"
+      xcopy /y /e ".\Resources" "$(BuilderPath)\Resources"
+      copy /y ".\Extensions.dll" "$(BuilderPath)\Extensions_dll"
+      copy /y ".\SlickControls.dll" "$(BuilderPath)\SlickControls_dll"
+      copy /y ".\Newtonsoft.Json.dll" "$(BuilderPath)\Newtonsoft_Json_dll"
+      copy /y ".\ThumbnailMaker.exe" "$(BuilderPath)\ThumbnailMaker_exe"
+    </PostBuildEvent>
+    <BaseOutputPath>Output</BaseOutputPath>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
