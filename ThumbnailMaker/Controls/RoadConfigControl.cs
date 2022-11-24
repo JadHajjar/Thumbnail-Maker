@@ -77,10 +77,11 @@ namespace ThumbnailMaker.Controls
 
 			var foreColor = !deleteHovered && HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
 			
-			e.Graphics.DrawString(Road.Name
+			e.Graphics.DrawString(Road.Name.Substring(4)
 				, new Font(UI.FontFamily, 9.75F, FontStyle.Bold)
 				, new SolidBrush(foreColor)
-				, ClientRectangle.Pad(65, 12, 36, 0));
+				, ClientRectangle.Pad(65, 10, 36, 20)
+				, new StringFormat { Trimming = StringTrimming.EllipsisCharacter });
 
 			foreColor = foreColor.MergeColor(FormDesign.Design.AccentBackColor, 70);
 

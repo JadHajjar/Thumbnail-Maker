@@ -41,7 +41,6 @@
 			// base_P_SideControls
 			// 
 			this.base_P_SideControls.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(114)))), ((int)(((byte)(129)))), ((int)(((byte)(150)))));
-			this.base_P_SideControls.Location = new System.Drawing.Point(0, 342);
 			// 
 			// base_P_Container
 			// 
@@ -75,7 +74,7 @@
 			this.FormIcon = ((System.Drawing.Image)(resources.GetObject("$this.FormIcon")));
 			this.HideMenu = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.IconBounds = new System.Drawing.Rectangle(3, 21, 14, 42);
+			this.IconBounds = new System.Drawing.Rectangle(3, 14, 14, 42);
 			this.MaximizeBox = true;
 			this.MaximizedBounds = new System.Drawing.Rectangle(0, 0, 1920, 1032);
 			this.MinimizeBox = true;
