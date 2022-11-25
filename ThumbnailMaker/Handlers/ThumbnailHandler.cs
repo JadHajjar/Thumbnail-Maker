@@ -400,7 +400,7 @@ namespace ThumbnailMaker.Handlers
 				return 0;
 			}
 
-			if (lane.Type == LaneType.Pedestrian && lane.Lanes <= 1)
+			if (lane.Type == LaneType.Pedestrian && (lane.Direction == LaneDirection.Both || lane.Direction == LaneDirection.None))
 			{
 				return 0;
 			}
