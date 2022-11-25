@@ -40,39 +40,43 @@ namespace ThumbnailMaker.Controls
 
 		public void RefreshConfigs()
 		{
-			var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+			try
+			{
+				var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
 				, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"));
 
-			var controls = P_Configs.Controls.OfType<RoadConfigControl>().ToDictionary(x => x.FileName);
-			var files = Directory.GetFiles(appdata, "*.xml");
+				var controls = P_Configs.Controls.OfType<RoadConfigControl>().ToDictionary(x => x.FileName);
+				var files = Directory.Exists(appdata) ? Directory.GetFiles(appdata, "*.xml") : new string[0];
 
-			this.TryInvoke(() =>
-			{
-				for (var i = 0; i < files.Length; i++)
+				this.TryInvoke(() =>
 				{
-					if (!controls.ContainsKey(files[i]))
-						createControl(files[i]);
-				}
+					for (var i = 0; i < files.Length; i++)
+					{
+						if (!controls.ContainsKey(files[i]))
+							createControl(files[i]);
+					}
 
-				foreach (var item in controls)
-				{
-					if (!files.Any(x => x == item.Key))
-						item.Value.Dispose();
-				}
+					foreach (var item in controls)
+					{
+						if (!files.Any(x => x == item.Key))
+							item.Value.Dispose();
+					}
 
-				void createControl(string file)
-				{
-					var ctrl = new RoadConfigControl(file);
+					void createControl(string file)
+					{
+						var ctrl = new RoadConfigControl(file);
 
-					ctrl.LoadConfiguration += Ctrl_LoadConfiguration;
+						ctrl.LoadConfiguration += Ctrl_LoadConfiguration;
 
-					P_Configs.Controls.Add(ctrl);
+						P_Configs.Controls.Add(ctrl);
 
-					ctrl.BringToFront();
-				}
+						ctrl.BringToFront();
+					}
 
-				P_Configs.OrderBy(x => (x as RoadConfigControl).TimeSaved);
-			});
+					P_Configs.OrderBy(x => (x as RoadConfigControl).TimeSaved);
+				});
+			}
+			catch { }
 		}
 
 		private void Ctrl_LoadConfiguration(object sender, Domain.RoadInfo e)
