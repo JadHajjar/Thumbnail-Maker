@@ -121,12 +121,21 @@
   <data name="B_Apply.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wgAADsIBFShKgAAAARVJREFUOE+l080uQ0EYxvEulIWg3Za4CEvxkZaFC3AJJ61lE25EJIK9iLRXINyI
+        wQAADsEBuJFr7QAAARVJREFUOE+l080uQ0EYxvEulIWg3Za4CEvxkZaFC3AJJ61lE25EJIK9iLRXINyI
         BSXiI9Sajfg/8r4nb4+RnOjil3nnmTnnTGemla3tbCypcB19vOLd2h7W8Gt+7EzgGNdoYx51azu4xyGq
         SL7gBBeYDllUwxX0kTz3Qsu+wYz1/zKLAVY984FzaNneL9IDu1bv4Mzq/AVPWPCwYBMPWLL+ovV/xn3S
         Jyat3sOK1fryM/QTfe4UPrzv4SO026p1XHqoixc04fMkuYLiHrTwho2QueQeaMk6Be2yZ6kT0fgtlj2L
         gwe4xFzIIr8H+yEbeYFu2BHuoJvXgHK18SbqxubP5UWgHT+FLswXhij1X/iXZFheVvkGLc0uBwWwORgA
         AAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="CB_BusStop.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wQAADsEBuJFr7QAAAMNJREFUOE/N0kEOwVAQxvGu0MZpBAv7XkpEcSUOQII7UFxDmkj4/tJJXialysbi
+        l06/mbYv7zXqjdKfVIZNVIZNWJHIXM5yk/sL9E7CbCzPF/DwXlYykG555X4jbbEPtcR6O0kIF7IUGwqR
+        T1wW9jKKi/TL0ONrB5eFvZyiEJbtB0B+dVnYKyjYON7mB1C3giPFTN7twdhlYW9KwSmwo+zsUFgaV+7X
+        4k/BeluJrdERzjaXuv+AmUx45o9+5a9Vhp9LowdMTOFzQGeuNQAAAABJRU5ErkJggg==
 </value>
   </data>
 </root>

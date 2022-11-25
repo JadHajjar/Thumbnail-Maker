@@ -34,6 +34,7 @@ namespace ThumbnailMaker.Controls
 		public float CustomLaneWidth { get; set; } = -1F;
 		public float CustomVerticalOffset { get; set; } = -1F;
 		public float CustomSpeedLimit { get; set; } = -1F;
+		public bool AddStopToFiller { get; set; }
 
 		public void SetLaneType(LaneType laneType)
 		{
@@ -42,12 +43,7 @@ namespace ThumbnailMaker.Controls
 			sizeRects.Clear();
 			directionRects.Clear();
 
-			if ((LaneType < LaneType.Car || LaneType == LaneType.Parking) && LaneDirection != LaneDirection.None)
-				LaneDirection = LaneDirection.None;
-
-			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
-
-			Invalidate();
+			RefreshRoad();
 		}
 
 		private Rectangle iconRectangle;
@@ -95,6 +91,12 @@ namespace ThumbnailMaker.Controls
 					new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 },
 					l => new ItemDrawContent { Text = $"{(10 - Math.Min(l, 9)) * 10}%" },
 					new LaneDirection[0]);
+			}
+			else if (LaneType == LaneType.Pedestrian && Parent.Controls.IndexOf(this).AnyOf(0, Parent.Controls.Count - 1))
+			{
+				grabberRectangle = new Rectangle(iconX + 8, 0, Width - 34 - iconX - 8, Height - 4);
+
+				e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), grabberRectangle.CenterR(10, 5));
 			}
 			else
 			{
@@ -390,6 +392,7 @@ namespace ThumbnailMaker.Controls
 				CustomWidth = CustomLaneWidth == -1 ? 0 : CustomLaneWidth,
 				Elevation = CustomVerticalOffset == -1 ? (float?)null : CustomVerticalOffset,
 				SpeedLimit = CustomSpeedLimit == -1 ? (float?)null : CustomSpeedLimit,
+				AddStopToFiller = AddStopToFiller,
 				Width = (LaneType < LaneType.Car ? (10 - Math.Min(Lanes, 9)) : 10) * (small ? 2 : 10)
 			};
 		}
@@ -404,6 +407,7 @@ namespace ThumbnailMaker.Controls
 				CustomLaneWidth = CustomLaneWidth,
 				CustomVerticalOffset = CustomVerticalOffset,
 				CustomSpeedLimit = CustomSpeedLimit,
+				AddStopToFiller = AddStopToFiller,
 			};
 		}
 
@@ -439,7 +443,7 @@ namespace ThumbnailMaker.Controls
 
 			if (LaneType >= LaneType.Car)
 			{
-				LaneType &= ~LaneType.Empty & ~LaneType.Grass & ~LaneType.Gravel & ~LaneType.Pavement;
+				LaneType &= ~LaneType.Empty & ~LaneType.Grass & ~LaneType.Gravel & ~LaneType.Pavement & ~LaneType.Trees;
 			}
 
 			if (LaneType.HasFlag(LaneType.Parking))
@@ -452,6 +456,14 @@ namespace ThumbnailMaker.Controls
 			{
 				Lanes = Lanes.Between(0, 2);
 			}
+
+			if ((LaneType < LaneType.Car || LaneType == LaneType.Parking) && LaneDirection != LaneDirection.None)
+			{
+				LaneDirection = LaneDirection.None;
+			}
+
+			sizeRects.Clear();
+			directionRects.Clear();
 
 			RefreshRoad();
 		}

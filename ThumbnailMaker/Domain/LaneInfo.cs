@@ -19,6 +19,7 @@ namespace ThumbnailMaker.Domain
 		public float? Elevation { get; set; }
 		public float CustomWidth { get; set; }
 		public float? SpeedLimit { get; set; }
+		public bool AddStopToFiller { get; set; }
 
 		public int FillerSize { get => IsFiller ? 10 * (10 - Math.Min(Lanes, 9)) : 0; set { } }
 		public bool DiagonalParking { get => Type == LaneType.Parking && Lanes > 2; set { } }
@@ -121,14 +122,14 @@ namespace ThumbnailMaker.Domain
 			if (Lanes > 0)
 				sb.Append($"{Lanes}L ");
 
-			sb.Append(Type.ToString().Where(char.IsUpper).ListStrings());
+			sb.Append(GetLaneTypes(Type).Select(GetLaneAbbreviation).OrderBy(y => y).ListStrings("-"));
 
 			return sb.ToString();
 		}
 
-		public string GetTitle()
+		public string GetTitle(IEnumerable<LaneInfo> lanes)
 		{
-			if (Type == LaneType.Pedestrian)
+			if (Type == LaneType.Pedestrian && (lanes.First() == this || lanes.Last() == this))
 				return string.Empty;
 
 			if (Type == LaneType.Parking)

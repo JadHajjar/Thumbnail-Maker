@@ -128,10 +128,10 @@ namespace ThumbnailMaker.Handlers
 				case LaneType.Grass:
 				case LaneType.Pavement:
 				case LaneType.Gravel:
-					return 0.03F * lane.FillerSize;
+					return (float)Math.Round(0.03F * lane.FillerSize, 1);
 
 				case LaneType.Trees:
-					return 0.04F * lane.FillerSize;
+					return (float)Math.Round(0.04F * lane.FillerSize, 1);
 
 				case LaneType.Tram:
 				case LaneType.Car:
