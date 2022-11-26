@@ -32,31 +32,37 @@ namespace ThumbnailMaker.Controls
 
 		public event System.EventHandler<RoadInfo> LoadConfiguration;
 
-		public RoadConfigControl(string fileName)
+		public RoadConfigControl(string fileName, out bool valid)
 		{
-			FileName = fileName;
-			TimeSaved = new FileInfo(fileName).LastWriteTime;
-
-			var xml = new XmlSerializer(typeof(RoadInfo));
-
-			using (var stream = File.OpenRead(fileName))
-				Road = (RoadInfo)xml.Deserialize(stream);
-
-			using (var ms = new MemoryStream(Road.SmallThumbnail))
-			using (var bm = new Bitmap(ms))
-				Image = new Bitmap(bm, 55, 50);
-
-			if (!string.IsNullOrWhiteSpace(Road.ThumbnailMakerConfig))
+			try
 			{
-				var lanes = JsonConvert.DeserializeObject<TmLane[]>(Road.ThumbnailMakerConfig).Select(x => (LaneInfo)x).ToList();
+				FileName = fileName;
+				TimeSaved = new FileInfo(fileName).LastWriteTime;
 
-				RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(lanes, Road.RegionType == RegionType.USA) : Road.SpeedLimit.ToString();
-				RoadSize = Road.Width <= 0F ? Utilities.CalculateRoadSize(lanes, Road.BufferSize.ToString()) : Road.Width.ToString();
+				var xml = new XmlSerializer(typeof(RoadInfo));
+
+				using (var stream = File.OpenRead(fileName))
+					Road = (RoadInfo)xml.Deserialize(stream);
+
+				using (var ms = new MemoryStream(Road.SmallThumbnail))
+				using (var bm = new Bitmap(ms))
+					Image = new Bitmap(bm, 55, 50);
+
+				if (!string.IsNullOrWhiteSpace(Road.ThumbnailMakerConfig))
+				{
+					var lanes = JsonConvert.DeserializeObject<TmLane[]>(Road.ThumbnailMakerConfig).Select(x => (LaneInfo)x).ToList();
+
+					RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(lanes, Road.RegionType == RegionType.USA) : Road.SpeedLimit.ToString();
+					RoadSize = Road.Width <= 0F ? Utilities.CalculateRoadSize(lanes, Road.BufferSize.ToString()) : Road.Width.ToString();
+				}
+
+				Height = 64;
+				Dock = DockStyle.Top;
+				Cursor = Cursors.Hand;
+
+				valid = true;
 			}
-
-			Height = 64;
-			Dock = DockStyle.Top;
-			Cursor = Cursors.Hand;
+			catch { valid = false; }
 		}
 
 		protected override void OnPaint(PaintEventArgs e)

@@ -36,7 +36,7 @@ namespace ThumbnailMaker.Controls
 			if (_roadLane.CustomVerticalOffset != -1)
 				TB_Vertical.Text = _roadLane.CustomVerticalOffset.ToString();
 			if (_roadLane.CustomSpeedLimit != -1)
-				TB_Vertical.Text = _roadLane.CustomSpeedLimit.ToString();
+				TB_Speed.Text = _roadLane.CustomSpeedLimit.ToString();
 
 			CB_BusStop.Enabled = roadLane.LaneType < LaneType.Car;
 			CB_BusStop.Checked = roadLane.AddStopToFiller && roadLane.LaneType < LaneType.Car;
@@ -48,7 +48,7 @@ namespace ThumbnailMaker.Controls
 		{
 			_roadLane.CustomLaneWidth = TB_LaneWidth.Text.SmartParseF(-1);
 			_roadLane.CustomVerticalOffset = TB_Vertical.Text.SmartParseF(-1);
-			_roadLane.CustomSpeedLimit = TB_Vertical.Text.SmartParseF(-1);
+			_roadLane.CustomSpeedLimit = TB_Speed.Text.SmartParseF(-1);
 			_roadLane.AddStopToFiller = CB_BusStop.Checked;
 			_roadLane.RefreshRoad();
 

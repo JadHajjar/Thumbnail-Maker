@@ -146,7 +146,7 @@ namespace ThumbnailMaker.Domain
 			}
 
 			if (laneNames.All(x => x == "M"))
-				return Lanes > 3 ? "" : laneNames[0];
+				return Lanes < -6 ? "XLM" : Lanes < -2 ? "LM" : Lanes > 4 ? "S" : laneNames[0];
 
 			return (Lanes >= 2 ? Lanes.ToString() : "") + laneNames.ListStrings("/");
 		}

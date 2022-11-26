@@ -64,7 +64,13 @@ namespace ThumbnailMaker.Controls
 
 					void createControl(string file)
 					{
-						var ctrl = new RoadConfigControl(file);
+						var ctrl = new RoadConfigControl(file, out var valid);
+
+						if (!valid)
+						{
+							File.Delete(file);
+							return;
+						}
 
 						ctrl.LoadConfiguration += Ctrl_LoadConfiguration;
 

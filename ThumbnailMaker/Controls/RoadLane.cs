@@ -88,7 +88,7 @@ namespace ThumbnailMaker.Controls
 			else if (lane.IsFiller)
 			{
 				Draw(e, cursor, iconX,
-					new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+					new[] { -10, -8, -6, -4, -2, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 },
 					l => new ItemDrawContent { Text = $"{(10 - Math.Min(l, 9)) * 10}%" },
 					new LaneDirection[0]);
 			}
@@ -236,7 +236,7 @@ namespace ThumbnailMaker.Controls
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left && !iconRectangle.Contains(e.Location) && !editRectangle.Contains(e.Location) && !deleteRectangle.Contains(e.Location) && !sizeRects.Any(x => x.Value.Contains(e.Location)) && !directionRects.Any(x => x.Value.Contains(e.Location)))
+			if (e.Button == MouseButtons.Left && grabberRectangle.Contains(e.Location))
 			{
 				_dragDropActive = true;
 
