@@ -6,7 +6,7 @@ namespace ThumbnailMaker.Domain
 	[Flags]
 	public enum LaneType
 	{
-		[LaneIdentity(0)]
+		[LaneIdentity(0, "M")]
 		Empty = 0,
 
 		[LaneIdentity(1, "M", 154, 203, 96)]

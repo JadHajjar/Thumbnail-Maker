@@ -38,7 +38,7 @@ namespace ThumbnailMaker.Controls
 			RefreshConfigs();
 		}
 
-		public void RefreshConfigs()
+		public void RefreshConfigs(string fileToRefresh = null)
 		{
 			try
 			{
@@ -50,6 +50,12 @@ namespace ThumbnailMaker.Controls
 
 				this.TryInvoke(() =>
 				{
+					if (!string.IsNullOrEmpty(fileToRefresh) && controls.ContainsKey(fileToRefresh))
+					{
+						controls[fileToRefresh].Dispose();
+						controls.Remove(fileToRefresh);
+					}
+
 					for (var i = 0; i < files.Length; i++)
 					{
 						if (!controls.ContainsKey(files[i]))

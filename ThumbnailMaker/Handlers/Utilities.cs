@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
@@ -26,30 +24,48 @@ namespace ThumbnailMaker.Handlers
 			foreach (var lane in lanes)
 			{
 				if (skip || (lane.Type == LaneType.Pedestrian && (lane == lanes.First() || lane == lanes.Last())))
+				{
 					continue;
+				}
 
 				var types = LaneInfo.GetLaneTypes(lane.Type).Select(x => x.ToString());
 				var name = types.Count() > 1 ? $"Shared {types.ListStrings(" & ")}" : types.First();
 
 				if (lane.Type < LaneType.Trees)
+				{
 					laneDescriptors.Add(lane.Lanes > 3 ? "Separator" : "Median");
+				}
 				else if (lane.DiagonalParking)
+				{
 					laneDescriptors.Add("Diagonal Parking");
+				}
 				else if (lane.HorizontalParking)
+				{
 					laneDescriptors.Add("Horizontal Parking");
+				}
 				else if (lane.Direction == LaneDirection.Both && lane.Type != LaneType.Parking)
+				{
 					laneDescriptors.Add($"2W {lane.Lanes}L {name}");
+				}
 				else if (lane.Lanes > 0 && lane.Type != LaneType.Parking)
+				{
 					laneDescriptors.Add($"{lane.Lanes}L{lane.Direction.Switch(LaneDirection.Backwards, "B", LaneDirection.Forward, "F", "")} {name}");
+				}
 				else
+				{
 					laneDescriptors.Add(name);
+				}
 			}
 
 			if (string.IsNullOrWhiteSpace(size))
+			{
 				size = CalculateRoadSize(lanes, bufferSize);
+			}
 
 			if (string.IsNullOrWhiteSpace(speedLimit))
+			{
 				speedLimit = DefaultSpeedSign(lanes, usa);
+			}
 
 			var info = (size.Length == 0 ? "" : $"{size}m") +
 				(speedLimit.Length == 0 ? "" : $" - {speedLimit}{usa.If("mph", "km/h")}");
@@ -63,10 +79,7 @@ namespace ThumbnailMaker.Handlers
 
 		public static string DefaultSpeedSign(List<LaneInfo> lanes, bool usa)
 		{
-			if (lanes.Any(x => (x.Type & (LaneType.Car | LaneType.Bus | LaneType.Highway)) != 0))
-				return usa ? "25" : "40";
-
-			return string.Empty;
+			return lanes.Any(x => (x.Type & (LaneType.Car | LaneType.Bus | LaneType.Highway)) != 0) ? usa ? "25" : "40" : string.Empty;
 		}
 
 		public static string CalculateRoadSize(List<LaneInfo> lanes, string bufferSize)
@@ -74,17 +87,23 @@ namespace ThumbnailMaker.Handlers
 			lanes = new List<LaneInfo>(lanes);
 
 			if (lanes.Count > 0 && lanes[0].Type == LaneType.Pedestrian)
+			{
 				lanes.RemoveAt(0);
+			}
 
 			if (lanes.Count > 0 && lanes[lanes.Count - 1].Type == LaneType.Pedestrian)
+			{
 				lanes.RemoveAt(lanes.Count - 1);
+			}
 
 			if (lanes.Count == 0)
+			{
 				return string.Empty;
+			}
 
-			var size = (bufferSize.SmartParseF() * 2 + lanes.Sum(x => LaneInfo.GetLaneTypes(x.Type).Max(y => Utilities.GetLaneWidth(y, x))));
+			var size = (bufferSize.SmartParseF() * 2) + lanes.Sum(x => LaneInfo.GetLaneTypes(x.Type).Max(y => Utilities.GetLaneWidth(y, x)));
 
-			return (Math.Ceiling(size * 2) / 2F).ToString("0.#");
+			return Math.Round(size, 2).ToString("0.#");
 		}
 
 		public static bool? IsOneWay(List<LaneInfo> lanes)
@@ -107,20 +126,19 @@ namespace ThumbnailMaker.Handlers
 					.All(x => x.Direction == bus.Direction);
 			}
 
-			if (bike != null)
-			{
-				return bike.Direction != LaneDirection.Both && lanes
+			return bike != null
+				? bike.Direction != LaneDirection.Both && lanes
 					.Where(x => x.Type.HasFlag(LaneType.Bike))
-					.All(x => x.Direction == bike.Direction);
-			}
-
-			return null;
+					.All(x => x.Direction == bike.Direction)
+				: (bool?)null;
 		}
 
 		public static float GetLaneWidth(LaneType type, LaneInfo lane)
 		{
 			if (lane.CustomWidth > 0)
+			{
 				return lane.CustomWidth;
+			}
 
 			switch (type)
 			{
@@ -128,10 +146,10 @@ namespace ThumbnailMaker.Handlers
 				case LaneType.Grass:
 				case LaneType.Pavement:
 				case LaneType.Gravel:
-					return (float)Math.Round(0.03F * lane.FillerSize, 1);
+					return (float)Math.Round(Math.Ceiling(4 * 0.03 * lane.FillerSize) / 4, 2);
 
 				case LaneType.Trees:
-					return (float)Math.Round(0.04F * lane.FillerSize, 1);
+					return (float)Math.Round(Math.Ceiling(4 * 0.04 * lane.FillerSize) / 4, 2);
 
 				case LaneType.Tram:
 				case LaneType.Car:

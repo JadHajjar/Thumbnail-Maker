@@ -9,9 +9,10 @@ namespace ThumbnailMaker.Domain
 {
 	public class LaneIdentityAttribute : Attribute
 	{
-		public LaneIdentityAttribute(int id)
+		public LaneIdentityAttribute(int id, string name)
 		{
 			Id = id;
+			Name = name;
 		}
 
 		public LaneIdentityAttribute(int id, string name, int r, int g, int b)

@@ -7,10 +7,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using ThumbnailMaker.Handlers;
 
 namespace ThumbnailMaker
 {
@@ -23,6 +26,22 @@ namespace ThumbnailMaker
 			FormDesign.Initialize(this, DesignChanged);
 
 			SetPanel<PC_MainPage>(panelItem1);
+
+			var timer = new System.Timers.Timer(1000);
+
+			timer.Elapsed += (s, e) => 
+			{
+				if (File.Exists(Path.Combine(Utilities.Folder, "Wake")))
+				{
+					SendKeys.SendWait("%{TAB}");
+
+					this.TryInvoke(this.ShowUp);
+
+					File.Delete(Path.Combine(Utilities.Folder, "Wake"));
+				}
+			};
+
+			timer.Start();
 		}
 
 		protected override void UIChanged()

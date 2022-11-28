@@ -289,6 +289,18 @@ namespace ThumbnailMaker
 						.Show(Form, 15);
 				}
 
+				if (lanes.Any(x => x.IsFiller && x.AddStopToFiller && Utilities.GetLaneWidth(x.Type, x) < 2))
+				{
+					Notification.Create("Invalid Stops Detected", "Your road was exported, some filler lanes that you've added stops to are too small to work.", PromptIcons.Info, null)
+						.Show(Form, 15);
+				}
+
+				if (L_RoadName.Text.Length > 32)
+				{
+					Notification.Create("Lane Name too Long", "Your road was exported, but the generated road name is too long for the game.\nPlease keep that in mind", PromptIcons.Info, null)
+						.Show(Form, 15);
+				}
+
 				var _lanes = GetLanes(false);
 
 				for (var i = 0; i < lanes.Count; i++)
@@ -333,7 +345,7 @@ namespace ThumbnailMaker
 				using (var stream = File.Create(Path.Combine(appdata, $"BR4 {_lanes.ListStrings("+")}.xml")))
 					xML.Serialize(stream, roadInfo);
 
-				RCC.RefreshConfigs();
+				RCC.RefreshConfigs(Path.Combine(appdata, $"BR4 {_lanes.ListStrings("+")}.xml"));
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 
@@ -400,6 +412,7 @@ namespace ThumbnailMaker
 				ctrl.CustomLaneWidth = item.CustomLaneWidth;
 				ctrl.CustomVerticalOffset = item.CustomVerticalOffset;
 				ctrl.CustomSpeedLimit = item.CustomSpeedLimit;
+				ctrl.AddStopToFiller = item.AddStopToFiller;
 
 				P_Lanes.Controls.Add(ctrl);
 
