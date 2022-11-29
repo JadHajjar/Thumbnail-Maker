@@ -44,9 +44,9 @@ namespace ThumbnailMaker.Controls
 				using (var stream = File.OpenRead(fileName))
 					Road = (RoadInfo)xml.Deserialize(stream);
 
-				using (var ms = new MemoryStream(Road.SmallThumbnail))
-				using (var bm = new Bitmap(ms))
-					Image = new Bitmap(bm, 55, 50);
+			using (var ms = new MemoryStream(Road.SmallThumbnail))
+			using (var bm = new Bitmap(ms))
+				Image = new Bitmap(bm, UI.Scale(new Size(55, 50), UI.UIScale));
 
 				if (!string.IsNullOrWhiteSpace(Road.ThumbnailMakerConfig))
 				{
@@ -65,9 +65,18 @@ namespace ThumbnailMaker.Controls
 			catch { valid = false; }
 		}
 
+		protected override void UIChanged()
+		{
+			base.UIChanged();
+
+			Height = (int)(64 * UI.UIScale);
+		}
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			deleteRect = new Rectangle(Width - 32, Height / 2 - 10, 26, 26);
+			var deleteSize = UI.Scale(new Size(26, 26), UI.UIScale);
+
+			deleteRect = new Rectangle(Width - deleteSize.Width - 6, Height / 2 - deleteSize.Height / 2 + 2, deleteSize.Width, deleteSize.Height);
 
 			var mouse = PointToClient(Cursor.Position);
 			var deleteHovered = deleteRect.Contains(mouse);
@@ -79,12 +88,12 @@ namespace ThumbnailMaker.Controls
 				HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveColor :
 				HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor.MergeColor(FormDesign.Design.AccentBackColor, 35) : FormDesign.Design.AccentBackColor), ClientRectangle.Pad(3, 6, 3, 1), 4);
 			
-			SlickButton.DrawButton(e, deleteRect, string.Empty, new Font(UI.FontFamily, 8.25F), Properties.Resources.I_Delete, null, deleteHovered ? HoverState : HoverState.Normal, ColorStyle.Red);
+			SlickButton.DrawButton(e, deleteRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Delete, null, deleteHovered ? HoverState : HoverState.Normal, ColorStyle.Red);
 
 			var foreColor = !deleteHovered && HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
 			
 			e.Graphics.DrawString(Road.Name.Substring(4)
-				, new Font(UI.FontFamily, 9.75F, FontStyle.Bold)
+				, UI.Font(9.75F, FontStyle.Bold)
 				, new SolidBrush(foreColor)
 				, ClientRectangle.Pad(65, 10, 36, 20)
 				, new StringFormat { Trimming = StringTrimming.EllipsisCharacter });
@@ -96,7 +105,7 @@ namespace ThumbnailMaker.Controls
 				e.Graphics.DrawImage(Properties.Resources.I_Size.Color(foreColor), new Rectangle(70, 44, 16, 16));
 
 				e.Graphics.DrawString(RoadSize + "m"
-					, new Font(UI.FontFamily, 8.25F)
+					, UI.Font(8.25F)
 					, new SolidBrush(foreColor)
 					, ClientRectangle.Pad(88, 44, 36, 0));
 			}
@@ -106,7 +115,7 @@ namespace ThumbnailMaker.Controls
 				e.Graphics.DrawImage(Properties.Resources.I_SpeedLimit.Color(foreColor), new Rectangle(130, 44, 16, 16));
 
 				e.Graphics.DrawString(RoadSpeed + (Road.RegionType == RegionType.USA ? "mph" : "km/h")
-					, new Font(UI.FontFamily, 8.25F)
+					, UI.Font(8.25F)
 					, new SolidBrush(foreColor)
 					, ClientRectangle.Pad(148, 44, 36, 0));
 			}
@@ -117,7 +126,7 @@ namespace ThumbnailMaker.Controls
 			e.Graphics.TranslateTransform(7, 10);
 
 			using (var texture = new TextureBrush(Image))
-				e.Graphics.FillRoundedRectangle(texture, new Rectangle(0, 0, 55, 50), 6);
+				e.Graphics.FillRoundedRectangle(texture, new Rectangle(Point.Empty, UI.Scale(new Size(55, 50), UI.UIScale)), 6);
 		}
 
 		protected override void OnMouseClick(MouseEventArgs e)

@@ -32,7 +32,7 @@ namespace ThumbnailMaker
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PC_MainPage));
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			this.TLP_Main = new System.Windows.Forms.TableLayoutPanel();
 			this.slickSpacer2 = new SlickControls.SlickSpacer();
 			this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
 			this.RCC = new ThumbnailMaker.Controls.RoadConfigContainer();
@@ -69,7 +69,7 @@ namespace ThumbnailMaker
 			this.B_AddLane = new SlickControls.SlickButton();
 			this.B_ClearLines = new SlickControls.SlickButton();
 			this.B_Options = new SlickControls.SlickButton();
-			this.tableLayoutPanel1.SuspendLayout();
+			this.TLP_Main.SuspendLayout();
 			this.tableLayoutPanel8.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PB)).BeginInit();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -87,41 +87,41 @@ namespace ThumbnailMaker
 			this.base_Text.Size = new System.Drawing.Size(130, 26);
 			this.base_Text.Text = "Thumbnail Maker";
 			// 
-			// tableLayoutPanel1
+			// TLP_Main
 			// 
-			this.tableLayoutPanel1.ColumnCount = 5;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 276F));
-			this.tableLayoutPanel1.Controls.Add(this.slickSpacer2, 3, 0);
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel8, 4, 0);
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel6, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 4);
-			this.tableLayoutPanel1.Controls.Add(this.slickSpacer1, 0, 3);
-			this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 0, 2);
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 30);
-			this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-			this.tableLayoutPanel1.RowCount = 5;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(1176, 569);
-			this.tableLayoutPanel1.TabIndex = 8;
+			this.TLP_Main.ColumnCount = 5;
+			this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+			this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 276F));
+			this.TLP_Main.Controls.Add(this.slickSpacer2, 3, 0);
+			this.TLP_Main.Controls.Add(this.tableLayoutPanel8, 4, 0);
+			this.TLP_Main.Controls.Add(this.tableLayoutPanel6, 0, 0);
+			this.TLP_Main.Controls.Add(this.panel1, 0, 4);
+			this.TLP_Main.Controls.Add(this.slickSpacer1, 0, 3);
+			this.TLP_Main.Controls.Add(this.tableLayoutPanel4, 0, 2);
+			this.TLP_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.TLP_Main.Location = new System.Drawing.Point(5, 30);
+			this.TLP_Main.Margin = new System.Windows.Forms.Padding(0);
+			this.TLP_Main.Name = "TLP_Main";
+			this.TLP_Main.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+			this.TLP_Main.RowCount = 5;
+			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.TLP_Main.Size = new System.Drawing.Size(1176, 569);
+			this.TLP_Main.TabIndex = 8;
 			// 
 			// slickSpacer2
 			// 
 			this.slickSpacer2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
 			this.slickSpacer2.Location = new System.Drawing.Point(894, 3);
 			this.slickSpacer2.Name = "slickSpacer2";
-			this.tableLayoutPanel1.SetRowSpan(this.slickSpacer2, 5);
+			this.TLP_Main.SetRowSpan(this.slickSpacer2, 5);
 			this.slickSpacer2.Size = new System.Drawing.Size(1, 563);
 			this.slickSpacer2.TabIndex = 18;
 			this.slickSpacer2.TabStop = false;
@@ -142,7 +142,7 @@ namespace ThumbnailMaker
 			this.tableLayoutPanel8.Margin = new System.Windows.Forms.Padding(0);
 			this.tableLayoutPanel8.Name = "tableLayoutPanel8";
 			this.tableLayoutPanel8.RowCount = 5;
-			this.tableLayoutPanel1.SetRowSpan(this.tableLayoutPanel8, 5);
+			this.TLP_Main.SetRowSpan(this.tableLayoutPanel8, 5);
 			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -278,7 +278,7 @@ namespace ThumbnailMaker
 			this.tableLayoutPanel6.AutoSize = true;
 			this.tableLayoutPanel6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.tableLayoutPanel6.ColumnCount = 4;
-			this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel6, 3);
+			this.TLP_Main.SetColumnSpan(this.tableLayoutPanel6, 3);
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 22.22222F));
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 22.22222F));
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.77778F));
@@ -294,7 +294,7 @@ namespace ThumbnailMaker
 			this.tableLayoutPanel6.Margin = new System.Windows.Forms.Padding(0);
 			this.tableLayoutPanel6.Name = "tableLayoutPanel6";
 			this.tableLayoutPanel6.RowCount = 3;
-			this.tableLayoutPanel1.SetRowSpan(this.tableLayoutPanel6, 2);
+			this.TLP_Main.SetRowSpan(this.tableLayoutPanel6, 2);
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -621,7 +621,7 @@ namespace ThumbnailMaker
 			// 
 			// panel1
 			// 
-			this.tableLayoutPanel1.SetColumnSpan(this.panel1, 3);
+			this.TLP_Main.SetColumnSpan(this.panel1, 3);
 			this.panel1.Controls.Add(this.slickScroll1);
 			this.panel1.Controls.Add(this.P_Lanes);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -656,7 +656,7 @@ namespace ThumbnailMaker
 			// 
 			// slickSpacer1
 			// 
-			this.tableLayoutPanel1.SetColumnSpan(this.slickSpacer1, 3);
+			this.TLP_Main.SetColumnSpan(this.slickSpacer1, 3);
 			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.slickSpacer1.Location = new System.Drawing.Point(18, 171);
 			this.slickSpacer1.Name = "slickSpacer1";
@@ -670,7 +670,7 @@ namespace ThumbnailMaker
 			this.tableLayoutPanel4.AutoSize = true;
 			this.tableLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.tableLayoutPanel4.ColumnCount = 7;
-			this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel4, 3);
+			this.TLP_Main.SetColumnSpan(this.tableLayoutPanel4, 3);
 			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -797,15 +797,15 @@ namespace ThumbnailMaker
 			// PC_MainPage
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.Controls.Add(this.tableLayoutPanel1);
+			this.Controls.Add(this.TLP_Main);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(58)))), ((int)(((byte)(69)))));
 			this.Name = "PC_MainPage";
 			this.Size = new System.Drawing.Size(1186, 604);
 			this.Text = "Thumbnail Maker";
-			this.Controls.SetChildIndex(this.tableLayoutPanel1, 0);
+			this.Controls.SetChildIndex(this.TLP_Main, 0);
 			this.Controls.SetChildIndex(this.base_Text, 0);
-			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel1.PerformLayout();
+			this.TLP_Main.ResumeLayout(false);
+			this.TLP_Main.PerformLayout();
 			this.tableLayoutPanel8.ResumeLayout(false);
 			this.tableLayoutPanel8.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PB)).EndInit();
@@ -829,7 +829,7 @@ namespace ThumbnailMaker
 		}
 
 		#endregion
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+		private System.Windows.Forms.TableLayoutPanel TLP_Main;
 		private System.Windows.Forms.PictureBox PB;
 		private SlickControls.SlickTextBox TB_Size;
 		private System.Windows.Forms.Panel panel1;

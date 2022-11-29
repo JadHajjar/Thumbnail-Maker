@@ -40,7 +40,7 @@ namespace ThumbnailMaker
 
 			SlickTip.SetTo(TB_Size, "Manually specify the total asphalt width of the road");
 			SlickTip.SetTo(TB_BufferSize, "Determines how far should the lanes be from the sidewalk");
-			SlickTip.SetTo(TB_BufferSize, "Manually specify the default speed limit of the road");
+			SlickTip.SetTo(TB_SpeedLimit, "Manually specify the default speed limit of the road");
 			SlickTip.SetTo(TB_CustomText, "Add custom text to the thumbnail");
 
 			SlickTip.SetTo(B_CopyName, "Copy the generated road name into your clipboard");
@@ -59,6 +59,9 @@ namespace ThumbnailMaker
 			base.UIChanged();
 
 			L_RoadName.Font = UI.Font(9.75F, FontStyle.Bold);
+
+			TLP_Main.ColumnStyles[TLP_Main.ColumnStyles.Count - 1].Width = (float)(276 * UI.UIScale);
+			PB.Size = UI.Scale(new Size(256, 256), UI.UIScale);
 		}
 
 		protected override void OnCreateControl()
