@@ -83,7 +83,7 @@ namespace ThumbnailMaker.Controls
 			var mouse = PointToClient(Cursor.Position);
 			var deleteHovered = deleteRect.Contains(mouse);
 			var folderHovered = folderRect.Contains(mouse);
-			var startX = (int)(55 * UI.UIScale) + 12;
+			var startX = (int)(55 * UI.UIScale) + 10;
 
 			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
@@ -95,17 +95,18 @@ namespace ThumbnailMaker.Controls
 			SlickButton.DrawButton(e, deleteRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Delete, null, deleteHovered ? HoverState : HoverState.Normal, ColorStyle.Red);
 			SlickButton.DrawButton(e, folderRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Folder, null, folderHovered ? HoverState : HoverState.Normal, ColorStyle.Active);
 
+			var bottomY = Height - UI.Font(8.25F).Height - 6;
 			var foreColor = !deleteHovered && !folderHovered && HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
 			
-			e.Graphics.DrawString(Road.Name.Substring(4)
+			e.Graphics.DrawString(Road.Name.RegexRemove("^BR[B4]").Trim()
 				, UI.Font(9.75F, FontStyle.Bold)
 				, new SolidBrush(foreColor)
-				, ClientRectangle.Pad(startX, 10, 36, 20)
+				, ClientRectangle.Pad(startX, 10, Width - deleteRect.X - 2, UI.Font(8.25F).Height)
 				, new StringFormat { Trimming = StringTrimming.EllipsisCharacter });
 
 			foreColor = foreColor.MergeColor(FormDesign.Design.AccentBackColor, 70);
 
-			var bottomY = Height - UI.Font(8.25F).Height - 6;
+			var portion = (Width - startX + Width - deleteRect.X - 24 * 6) / 2;
 
 			if (!string.IsNullOrEmpty(RoadSize))
 			{
@@ -114,17 +115,17 @@ namespace ThumbnailMaker.Controls
 				e.Graphics.DrawString(RoadSize + "m"
 					, UI.Font(8.25F)
 					, new SolidBrush(foreColor)
-					, ClientRectangle.Pad(startX + 28, bottomY, 36, 0));
+					, ClientRectangle.Pad(startX + 29, bottomY, 36, 0));
 			}
 
 			if (!string.IsNullOrEmpty(RoadSpeed))
 			{
-				e.Graphics.DrawImage(Properties.Resources.I_SpeedLimit.Color(foreColor), new Rectangle(startX + 85, bottomY + (UI.Font(8.25F).Height - 14) / 2, 16, 16));
+				e.Graphics.DrawImage(Properties.Resources.I_SpeedLimit.Color(foreColor), new Rectangle(startX + 29 + portion, bottomY + (UI.Font(8.25F).Height - 14) / 2, 16, 16));
 
 				e.Graphics.DrawString(RoadSpeed + (Road.RegionType == RegionType.USA ? "mph" : "km/h")
 					, UI.Font(8.25F)
 					, new SolidBrush(foreColor)
-					, ClientRectangle.Pad(startX + 102, bottomY, 36, 0));
+					, ClientRectangle.Pad(startX + 29 + portion + 19, bottomY, 36, 0));
 			}
 
 			if (!deleteHovered && !folderHovered)
