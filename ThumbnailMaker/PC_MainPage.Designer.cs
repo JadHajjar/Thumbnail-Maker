@@ -174,6 +174,7 @@
 			this.PB.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.PB.TabIndex = 2;
 			this.PB.TabStop = false;
+			this.PB.Click += new System.EventHandler(this.PB_Click);
 			this.PB.MouseEnter += new System.EventHandler(this.TB_Name_TextChanged);
 			this.PB.MouseLeave += new System.EventHandler(this.TB_Name_TextChanged);
 			// 

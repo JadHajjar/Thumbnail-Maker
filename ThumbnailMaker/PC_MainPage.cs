@@ -28,6 +28,16 @@ namespace ThumbnailMaker
 		{
 			InitializeComponent();
 
+			using (var img = new Bitmap(24, 24))
+			using (var g = Graphics.FromImage(img))
+			{
+				g.SmoothingMode = SmoothingMode.AntiAlias;
+				g.FillRoundedRectangle(Brushes.Black, new Rectangle(0, 0, 23, 23), 6);
+				g.DrawImage(B_CopyName.Image.Color(Color.White), new Rectangle(4, 4, 16, 16));
+
+				PB.Cursor = new Cursor(img.GetHicon());
+			}
+
 			TB_BufferSize.Text = 0.25F.ToString();
 
 			SlickTip.SetTo(RB_Road, "A normal road with curbs & sidewalks");
@@ -431,6 +441,28 @@ namespace ThumbnailMaker
 			}
 
 			RefreshPreview();
+		}
+
+		private void PB_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				var lanes = GetLanes(false);
+
+				using (var img = new Bitmap(512, 512, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+				using (var g = Graphics.FromImage(img))
+				{
+					g.Clear(Color.Black);
+
+					DrawThumbnail(g, lanes, false);
+
+					Clipboard.SetDataObject(new Bitmap(img, 256,256));
+				}
+
+				Notification.Create("Thumbnail copied to clipboard", "", PromptIcons.None, () => { }, NotificationSound.None, new Size(240, 32))
+					.Show(Form, 5);
+			}
+			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 		}
 	}
 }

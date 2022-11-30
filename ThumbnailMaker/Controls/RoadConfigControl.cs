@@ -46,9 +46,8 @@ namespace ThumbnailMaker.Controls
 				using (var stream = File.OpenRead(fileName))
 					Road = (RoadInfo)xml.Deserialize(stream);
 
-			using (var ms = new MemoryStream(Road.SmallThumbnail))
-			using (var bm = new Bitmap(ms))
-				Image = new Bitmap(bm, UI.Scale(new Size(55, 50), UI.UIScale));
+				using (var ms = new MemoryStream(Road.SmallThumbnail))
+					Image = new Bitmap(ms);
 
 				if (!string.IsNullOrWhiteSpace(Road.ThumbnailMakerConfig))
 				{
@@ -133,7 +132,8 @@ namespace ThumbnailMaker.Controls
 
 			e.Graphics.TranslateTransform(7, 3 + (int)(Height - 50 * UI.UIScale) / 2);
 
-			using (var texture = new TextureBrush(Image))
+			using (var image = new Bitmap(Image, UI.Scale(new Size(55, 50), UI.UIScale)))
+			using (var texture = new TextureBrush(image))
 				e.Graphics.FillRoundedRectangle(texture, new Rectangle(Point.Empty, UI.Scale(new Size(55, 50), UI.UIScale)), 6);
 		}
 

@@ -194,7 +194,7 @@ namespace ThumbnailMaker.Controls
 				if (sizeRects[l].Contains(cursor))
 					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), sizeRects[l], 4);
 				else if (l == Lanes)
-					e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(_dragDropActive ? 255 : 200, FormDesign.Design.ActiveForeColor)), sizeRects[l], 4);
+					DrawFocus(e.Graphics, sizeRects[l], HoverState.Focused, 4);
 
 				var content = drawLane(l);
 
@@ -217,7 +217,7 @@ namespace ThumbnailMaker.Controls
 					if (directionRects[direction].Contains(cursor))
 						e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), directionRects[direction], 4);
 					else if (LaneDirection == direction)
-						e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(_dragDropActive ? 255 : 200, FormDesign.Design.ActiveForeColor)), directionRects[direction], 4);
+						DrawFocus(e.Graphics, directionRects[direction], HoverState.Focused, 4);
 
 					Bitmap icon;
 
