@@ -40,6 +40,10 @@ namespace ThumbnailMaker
 
 			TB_BufferSize.Text = 0.25F.ToString();
 
+			RB_Europe.Checked = Options.Current.Region == RegionType.Europe;
+			RB_Canada.Checked = Options.Current.Region == RegionType.Canada;
+			RB_USA.Checked = Options.Current.Region == RegionType.USA;
+
 			SlickTip.SetTo(RB_Road, "A normal road with curbs & sidewalks");
 			SlickTip.SetTo(RB_Highway, "A flat road with no pavement and highway rules");
 			SlickTip.SetTo(RB_Pedestrian, "A flat pedestrian road");
@@ -112,7 +116,7 @@ namespace ThumbnailMaker
 					PB.Image = img;
 				}
 
-				L_RoadName.Text = "BR4 " + Utilities.IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle(lanes)).WhereNotEmpty().ListStrings("+");
+				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? "BRB " + Utilities.IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle(lanes)).WhereNotEmpty().ListStrings("+") : TB_RoadName.Text;
 				L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
@@ -137,6 +141,9 @@ namespace ThumbnailMaker
 				item.Invalidate();
 
 			RefreshPreview();
+
+			Options.Current.Region = GetRegion();
+			Options.Save();
 		}
 
 		private void TB_Name_TextChanged(object sender, EventArgs e)
@@ -146,6 +153,7 @@ namespace ThumbnailMaker
 
 		private void B_Clear_Click(object sender, EventArgs e)
 		{
+			TB_RoadName.Text = string.Empty;
 			P_Lanes.Controls.Clear(true);
 
 			RefreshPreview();
@@ -463,6 +471,59 @@ namespace ThumbnailMaker
 					.Show(Form, 5);
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
+		}
+
+		private void L_RoadName_MouseEnter(object sender, EventArgs e)
+		{
+			L_RoadName.ForeColor = FormDesign.Design.ActiveColor;
+		}
+
+		private void L_RoadName_MouseLeave(object sender, EventArgs e)
+		{
+			L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
+		}
+
+		private void L_RoadName_Click(object sender, EventArgs e)
+		{
+			L_RoadName.Parent = null;
+			B_CopyName.Parent = null;
+			TLP_Right.Controls.Add(TB_RoadName, 0, 0);
+			TLP_Right.SetColumnSpan(TB_RoadName, 2);
+			TB_RoadName.Focus();
+			TB_RoadName.MaxLength = 32;
+		}
+
+		private void TB_RoadName_Leave(object sender, EventArgs e)
+		{
+			RefreshPreview();
+			TB_RoadName.Parent = null;
+			TLP_Right.Controls.Add(L_RoadName, 1, 0);
+			TLP_Right.Controls.Add(B_CopyName, 0, 0);
+		}
+
+		private void TB_RoadName_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				e.IsInputKey = true;
+
+				TB_RoadName_Leave(sender, e);
+			}	
+		}
+
+		private void TB_RoadName_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				e.SuppressKeyPress = true;
+				e.Handled = true;
+			}
+
+			if (TB_RoadName.Text.Length >= 32 && e.KeyData.IsDigitOrLetter())
+			{
+				e.SuppressKeyPress = true;
+				e.Handled = true;
+			}
 		}
 	}
 }

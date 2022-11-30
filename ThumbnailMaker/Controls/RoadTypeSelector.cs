@@ -130,7 +130,11 @@ namespace ThumbnailMaker.Controls
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
 				{
-					_roadLane.SetLaneType(_roadLane.LaneType.HasFlag(laneType) ? _roadLane.LaneType & ~laneType : _roadLane.LaneType | laneType);
+					if (laneType == LaneType.Empty)
+						_roadLane.SetLaneType(LaneType.Empty);
+					else
+						_roadLane.SetLaneType(_roadLane.LaneType.HasFlag(laneType) ? _roadLane.LaneType & ~laneType : _roadLane.LaneType | laneType);
+				
 					Invalidate();
 					return;
 				}

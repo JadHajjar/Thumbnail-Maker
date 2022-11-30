@@ -255,7 +255,9 @@ namespace ThumbnailMaker.Controls
 
 			grabberRectangle = new Rectangle(iconX + 8, 0, editRectangle.X - 6 - iconX - 8, Height - 4);
 
-			e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(_dragDropActive || grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : foreColor), grabberRectangle.CenterR(10, 5));
+			var drawGrabberRect = new Rectangle(scale * 2, 0, Width - (scale + 2) * 19 - 18, Height - 4);
+
+			e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(_dragDropActive || grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : foreColor), drawGrabberRect.CenterR(10, 5));
 		}
 
 		struct ItemDrawContent

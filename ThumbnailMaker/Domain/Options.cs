@@ -15,9 +15,11 @@ namespace ThumbnailMaker
 	{
 		public override string Name => "LaneOptions.tf";
 		public static Options Current { get; set; }
+
 		public Dictionary<LaneType, Color> LaneColors { get; set; } = new Dictionary<LaneType, Color>();
 		public string SizeFont { get; set; } = "Adobe Gothic Std B";
 		public string ExportFolder { get; set; }
+		public RegionType Region { get; set; }
 
 		public static void Save()
 		{
