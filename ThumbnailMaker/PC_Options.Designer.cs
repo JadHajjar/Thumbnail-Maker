@@ -35,6 +35,7 @@
 			this.DD_Font = new SlickControls.SlickDropdown();
 			this.label1 = new System.Windows.Forms.Label();
 			this.TB_ExportFolder = new SlickControls.SlickPathTextBox();
+			this.B_Theme = new SlickControls.SlickButton();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -51,7 +52,7 @@
 			this.TLP.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
 			this.TLP.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
 			this.TLP.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.TLP.Location = new System.Drawing.Point(5, 166);
+			this.TLP.Location = new System.Drawing.Point(5, 186);
 			this.TLP.Margin = new System.Windows.Forms.Padding(0);
 			this.TLP.Name = "TLP";
 			this.TLP.Padding = new System.Windows.Forms.Padding(15, 10, 15, 0);
@@ -64,7 +65,7 @@
 			this.TLP.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.TLP.Size = new System.Drawing.Size(908, 459);
+			this.TLP.Size = new System.Drawing.Size(908, 439);
 			this.TLP.TabIndex = 8;
 			// 
 			// tableLayoutPanel2
@@ -77,16 +78,19 @@
 			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel2.Controls.Add(this.slickSpacer1, 0, 2);
 			this.tableLayoutPanel2.Controls.Add(this.DD_Font, 0, 0);
-			this.tableLayoutPanel2.Controls.Add(this.label1, 1, 0);
 			this.tableLayoutPanel2.Controls.Add(this.TB_ExportFolder, 0, 1);
+			this.tableLayoutPanel2.Controls.Add(this.B_Theme, 1, 0);
+			this.tableLayoutPanel2.Controls.Add(this.label1, 1, 1);
 			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.tableLayoutPanel2.Location = new System.Drawing.Point(5, 30);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-			this.tableLayoutPanel2.RowCount = 3;
+			this.tableLayoutPanel2.RowCount = 4;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(908, 136);
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(908, 156);
 			this.tableLayoutPanel2.TabIndex = 13;
 			// 
 			// slickSpacer1
@@ -139,7 +143,6 @@
 			this.label1.Location = new System.Drawing.Point(709, 96);
 			this.label1.Margin = new System.Windows.Forms.Padding(7, 7, 18, 7);
 			this.label1.Name = "label1";
-			this.tableLayoutPanel2.SetRowSpan(this.label1, 2);
 			this.label1.Size = new System.Drawing.Size(181, 26);
 			this.label1.TabIndex = 2;
 			this.label1.Text = "Right-click on a color to reset it.\r\nMiddle-click on an icon to clear it.";
@@ -175,6 +178,23 @@
 			this.TB_ExportFolder.ValidationCustom = null;
 			this.TB_ExportFolder.ValidationRegex = "";
 			// 
+			// B_Theme
+			// 
+			this.B_Theme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.B_Theme.ColorShade = null;
+			this.B_Theme.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_Theme.IconSize = 16;
+			this.B_Theme.Image = ((System.Drawing.Image)(resources.GetObject("B_Theme.Image")));
+			this.B_Theme.Location = new System.Drawing.Point(813, 28);
+			this.B_Theme.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
+			this.B_Theme.Name = "B_Theme";
+			this.B_Theme.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_Theme.Size = new System.Drawing.Size(85, 27);
+			this.B_Theme.SpaceTriggersClick = true;
+			this.B_Theme.TabIndex = 14;
+			this.B_Theme.Text = "Theme & UI Scaling";
+			this.B_Theme.Click += new System.EventHandler(this.B_Theme_Click);
+			// 
 			// PC_Options
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -201,5 +221,6 @@
 		private SlickControls.SlickDropdown DD_Font;
 		private System.Windows.Forms.Label label1;
 		private SlickControls.SlickPathTextBox TB_ExportFolder;
+		private SlickControls.SlickButton B_Theme;
 	}
 }

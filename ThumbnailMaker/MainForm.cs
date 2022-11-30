@@ -46,9 +46,7 @@ namespace ThumbnailMaker
 
 		protected override void UIChanged()
 		{
-			var bounds = Bounds;
 			base.UIChanged();
-			Bounds = bounds;
 		}
 
 		private void panelItem2_OnClick(object sender, MouseEventArgs e)

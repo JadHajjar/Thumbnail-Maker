@@ -1,7 +1,4 @@
-﻿
-using System.Security.Cryptography;
-
-namespace ThumbnailMaker
+﻿namespace ThumbnailMaker
 {
 	partial class PC_MainPage
 	{
@@ -16,10 +13,13 @@ namespace ThumbnailMaker
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
+			Extensions.FormDesign.DesignChanged -= FormDesign_DesignChanged;
+
 			if (disposing && (components != null))
 			{
 				components.Dispose();
 			}
+
 			base.Dispose(disposing);
 		}
 
@@ -635,9 +635,9 @@ namespace ThumbnailMaker
 			// 
 			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
 			this.slickScroll1.LinkedControl = this.P_Lanes;
-			this.slickScroll1.Location = new System.Drawing.Point(870, 0);
+			this.slickScroll1.Location = new System.Drawing.Point(868, 0);
 			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(5, 386);
+			this.slickScroll1.Size = new System.Drawing.Size(7, 386);
 			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
 			this.slickScroll1.TabIndex = 1;
 			this.slickScroll1.TabStop = false;

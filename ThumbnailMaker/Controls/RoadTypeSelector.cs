@@ -28,7 +28,7 @@ namespace ThumbnailMaker.Controls
 
 			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
-				if (laneType == LaneType.Highway)
+				if ((laneType & (LaneType.Highway | LaneType.Train)) != 0)
 					continue;
 
 				point.X += 108;
@@ -44,8 +44,18 @@ namespace ThumbnailMaker.Controls
 			ResizeRedraw = true;
 			FormBorderStyle = FormBorderStyle.None;
 			StartPosition = FormStartPosition.Manual;
-			Location = roadLane.FindForm().Bounds.Center(Size);
+
 			Show(roadLane.FindForm());
+		}
+
+		protected override void OnCreateControl()
+		{
+			base.OnCreateControl();
+
+			Location = new Point(_roadLane.PointToScreen(Point.Empty).X, _roadLane.PointToScreen(Point.Empty).Y + _roadLane.Height);
+
+			if (Location.Y + Height > Screen.FromControl(this).WorkingArea.Height)
+				Top -= _roadLane.Height + Height;
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -70,7 +80,7 @@ namespace ThumbnailMaker.Controls
 
 			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
-				if (laneType == LaneType.Highway)
+				if ((laneType & (LaneType.Highway | LaneType.Train)) != 0)
 					continue;
 
 				var rectangle = new Rectangle(point, new Size(96, 96));
@@ -115,7 +125,7 @@ namespace ThumbnailMaker.Controls
 
 			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
-				if (laneType == LaneType.Highway)
+				if ((laneType & (LaneType.Highway | LaneType.Train)) != 0)
 					continue;
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
@@ -142,7 +152,7 @@ namespace ThumbnailMaker.Controls
 
 			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
-				if (laneType == LaneType.Highway)
+				if ((laneType & (LaneType.Highway | LaneType.Train)) != 0)
 					continue;
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))

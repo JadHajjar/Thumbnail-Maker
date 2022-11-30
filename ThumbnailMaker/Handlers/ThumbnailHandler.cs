@@ -90,7 +90,7 @@ namespace ThumbnailMaker.Handlers
 
 		private Rectangle GetAvailableSpace(Image logo)
 		{
-			var startingHeight = logo.Height - 2;
+			var startingHeight = (logo?.Height ?? 2) - 2;
 
 			if (string.IsNullOrWhiteSpace(RoadSize) && string.IsNullOrWhiteSpace(Speed) && string.IsNullOrWhiteSpace(CustomText))
 			{
@@ -115,7 +115,7 @@ namespace ThumbnailMaker.Handlers
 				var modifier = (float)lane.Width / (Small ? 20 : 100);
 
 				using (x)
-					return (Image)new Bitmap(x, (int)(x.Width * modifier), (int)(x.Height * modifier));
+					return (Image)new Bitmap(x, Math.Max(1, (int)(x.Width * modifier)), Math.Max(1, (int)(x.Height * modifier)));
 			}).ToList();
 
 			var iconsSize = icons.Sum(i => i.Height);

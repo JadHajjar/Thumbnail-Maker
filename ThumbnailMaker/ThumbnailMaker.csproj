@@ -265,6 +265,7 @@
     <None Include="Resources\I_Delete.png" />
     <None Include="Resources\I_Size.png" />
     <None Include="Resources\I_SpeedLimit.png" />
+    <None Include="Resources\I_Folder.png" />
     <Content Include="Resources\tooltip.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

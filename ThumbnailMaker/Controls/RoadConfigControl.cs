@@ -6,6 +6,7 @@ using SlickControls;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace ThumbnailMaker.Controls
 	public class RoadConfigControl : SlickControl
 	{
 		private Rectangle deleteRect;
+		private Rectangle folderRect;
 
 		public Bitmap Image { get; }
 		public RoadInfo Road { get; }
@@ -76,54 +78,60 @@ namespace ThumbnailMaker.Controls
 		{
 			var deleteSize = UI.Scale(new Size(26, 26), UI.UIScale);
 
-			deleteRect = new Rectangle(Width - deleteSize.Width - 6, Height / 2 - deleteSize.Height / 2 + 2, deleteSize.Width, deleteSize.Height);
+			folderRect = new Rectangle(Width - deleteSize.Width - 6, Height / 6 - deleteSize.Height / 6 + 1, deleteSize.Width, deleteSize.Height);
+			deleteRect = new Rectangle(Width - deleteSize.Width - 6, Height * 5 / 6 - deleteSize.Height * 5 / 6 + 5, deleteSize.Width, deleteSize.Height);
 
 			var mouse = PointToClient(Cursor.Position);
 			var deleteHovered = deleteRect.Contains(mouse);
+			var folderHovered = folderRect.Contains(mouse);
+			var startX = (int)(55 * UI.UIScale) + 12;
 
 			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-			e.Graphics.FillRoundedRectangle(new SolidBrush(deleteHovered ? FormDesign.Design.AccentBackColor :
+			e.Graphics.FillRoundedRectangle(new SolidBrush(deleteHovered || folderHovered ? FormDesign.Design.AccentBackColor :
 				HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveColor :
 				HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor.MergeColor(FormDesign.Design.AccentBackColor, 35) : FormDesign.Design.AccentBackColor), ClientRectangle.Pad(3, 6, 3, 1), 4);
 			
 			SlickButton.DrawButton(e, deleteRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Delete, null, deleteHovered ? HoverState : HoverState.Normal, ColorStyle.Red);
+			SlickButton.DrawButton(e, folderRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Folder, null, folderHovered ? HoverState : HoverState.Normal, ColorStyle.Active);
 
-			var foreColor = !deleteHovered && HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
+			var foreColor = !deleteHovered && !folderHovered && HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
 			
 			e.Graphics.DrawString(Road.Name.Substring(4)
 				, UI.Font(9.75F, FontStyle.Bold)
 				, new SolidBrush(foreColor)
-				, ClientRectangle.Pad(65, 10, 36, 20)
+				, ClientRectangle.Pad(startX, 10, 36, 20)
 				, new StringFormat { Trimming = StringTrimming.EllipsisCharacter });
 
 			foreColor = foreColor.MergeColor(FormDesign.Design.AccentBackColor, 70);
 
+			var bottomY = Height - UI.Font(8.25F).Height - 6;
+
 			if (!string.IsNullOrEmpty(RoadSize))
 			{
-				e.Graphics.DrawImage(Properties.Resources.I_Size.Color(foreColor), new Rectangle(70, 44, 16, 16));
+				e.Graphics.DrawImage(Properties.Resources.I_Size.Color(foreColor), new Rectangle(startX + 10, bottomY + (UI.Font(8.25F).Height - 14 )/ 2, 16, 16));
 
 				e.Graphics.DrawString(RoadSize + "m"
 					, UI.Font(8.25F)
 					, new SolidBrush(foreColor)
-					, ClientRectangle.Pad(88, 44, 36, 0));
+					, ClientRectangle.Pad(startX + 28, bottomY, 36, 0));
 			}
 
 			if (!string.IsNullOrEmpty(RoadSpeed))
 			{
-				e.Graphics.DrawImage(Properties.Resources.I_SpeedLimit.Color(foreColor), new Rectangle(130, 44, 16, 16));
+				e.Graphics.DrawImage(Properties.Resources.I_SpeedLimit.Color(foreColor), new Rectangle(startX + 85, bottomY + (UI.Font(8.25F).Height - 14) / 2, 16, 16));
 
 				e.Graphics.DrawString(RoadSpeed + (Road.RegionType == RegionType.USA ? "mph" : "km/h")
 					, UI.Font(8.25F)
 					, new SolidBrush(foreColor)
-					, ClientRectangle.Pad(148, 44, 36, 0));
+					, ClientRectangle.Pad(startX + 102, bottomY, 36, 0));
 			}
 
-			if (!deleteHovered)
+			if (!deleteHovered && !folderHovered)
 				DrawFocus(e.Graphics, ClientRectangle.Pad(3, 6, 3, 1), 4);
 
-			e.Graphics.TranslateTransform(7, 10);
+			e.Graphics.TranslateTransform(7, 3 + (int)(Height - 50 * UI.UIScale) / 2);
 
 			using (var texture = new TextureBrush(Image))
 				e.Graphics.FillRoundedRectangle(texture, new Rectangle(Point.Empty, UI.Scale(new Size(55, 50), UI.UIScale)), 6);
@@ -131,6 +139,9 @@ namespace ThumbnailMaker.Controls
 
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left && e.Button != MouseButtons.None)
+				return;
+
 			if (deleteRect.Contains(e.Location))
 			{
 				if (MessagePrompt.Show("Are you sure you want to delete this road configuration?", PromptButtons.YesNo, PromptIcons.Question) == DialogResult.Yes)
@@ -139,6 +150,17 @@ namespace ThumbnailMaker.Controls
 
 					Dispose();
 				}
+
+				return;
+			}
+
+			if (folderRect.Contains(e.Location))
+			{
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = "explorer",
+					Arguments = $"/e, /select, \"{FileName}\""
+				});
 
 				return;
 			}

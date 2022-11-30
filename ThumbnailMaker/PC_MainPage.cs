@@ -52,6 +52,13 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(B_DuplicateFlip, "Duplicates the current lanes to the right and flips their direction");
 			SlickTip.SetTo(B_FlipLanes, "Flips the whole road to create its opposite variation");
 			SlickTip.SetTo(B_AddLane, "Add a new empty lane");
+
+			FormDesign.DesignChanged += FormDesign_DesignChanged;
+		}
+
+		private void FormDesign_DesignChanged(FormDesign design)
+		{
+			RefreshPreview();
 		}
 
 		protected override void UIChanged()
@@ -343,12 +350,13 @@ namespace ThumbnailMaker
 					ThumbnailMakerConfig = JsonConvert.SerializeObject(_lanes.Select(x => new TmLane(x)))
 				};
 
+				var guid = Guid.NewGuid().ToString();
 				var xML = new System.Xml.Serialization.XmlSerializer(typeof(RoadInfo));
 
-				using (var stream = File.Create(Path.Combine(appdata, $"BR4 {_lanes.ListStrings("+")}.xml")))
+				using (var stream = File.Create(Path.Combine(appdata, $"{guid}.xml")))
 					xML.Serialize(stream, roadInfo);
 
-				RCC.RefreshConfigs(Path.Combine(appdata, $"BR4 {_lanes.ListStrings("+")}.xml"));
+				RCC.RefreshConfigs(Path.Combine(appdata, $"{guid}.xml"));
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 

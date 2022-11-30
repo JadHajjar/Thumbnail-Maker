@@ -67,5 +67,10 @@ namespace ThumbnailMaker
 				Options.Save();
 			}
 		}
+
+		private void B_Theme_Click(object sender, EventArgs e)
+		{
+			Form.PushPanel<PC_ThemeChanger>(null);
+		}
 	}
 }
