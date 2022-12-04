@@ -142,8 +142,17 @@ namespace ThumbnailMaker
 
 			RefreshPreview();
 
+			TB_SpeedLimit.LabelText = $"Speed Limit ({(RB_USA.Checked ? "mph" : "km/h")})";
+
 			Options.Current.Region = GetRegion();
 			Options.Save();
+		}
+
+		protected override void OnVisibleChanged(EventArgs e)
+		{
+			base.OnVisibleChanged(e);
+
+			RefreshPreview();
 		}
 
 		private void TB_Name_TextChanged(object sender, EventArgs e)
@@ -350,6 +359,9 @@ namespace ThumbnailMaker
 					});
 				}
 
+				if (Options.Current.LHT)
+					lanes.Reverse();
+
 				var roadInfo = new RoadInfo
 				{
 					Name = L_RoadName.Text,
@@ -362,9 +374,9 @@ namespace ThumbnailMaker
 					Width = TB_Size.Text.SmartParseF(),
 					RegionType = GetRegion(),
 					RoadType = GetRoadType(),
-					Elevation = -0.3F,
 					SpeedLimit = TB_SpeedLimit.Text.SmartParseF() * (RB_USA.Checked ? 1.609F : 1F),
 					Lanes = lanes,
+					LHT = Options.Current.LHT,
 					ThumbnailMakerConfig = JsonConvert.SerializeObject(_lanes.Select(x => new TmLane(x)))
 				};
 
@@ -401,6 +413,9 @@ namespace ThumbnailMaker
 
 			if (RB_Highway.Checked)
 				return RoadType.Highway;
+
+			if (RB_FlatRoad.Checked)
+				return RoadType.Flat;
 
 			return RoadType.Road;
 		}

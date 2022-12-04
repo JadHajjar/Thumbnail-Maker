@@ -48,6 +48,7 @@ namespace ThumbnailMaker
 			DD_Font.SelectedItem = Options.Current.SizeFont;
 
 			TB_ExportFolder.Text = Options.Current.ExportFolder;
+			CB_LHT.Checked = Options.Current.LHT;
 		}
 
 
@@ -62,7 +63,6 @@ namespace ThumbnailMaker
 		{
 			if (new Font(DD_Font.Text, 8.25F).FontFamily.Name.Equals(DD_Font.Text, StringComparison.CurrentCultureIgnoreCase))
 			{
-				Options.Current.ExportFolder = TB_ExportFolder.Text;
 				Options.Current.SizeFont = DD_Font.Text;
 				Options.Save();
 			}
@@ -71,6 +71,18 @@ namespace ThumbnailMaker
 		private void B_Theme_Click(object sender, EventArgs e)
 		{
 			Form.PushPanel<PC_ThemeChanger>(null);
+		}
+
+		private void TB_ExportFolder_TextChanged(object sender, EventArgs e)
+		{
+			Options.Current.ExportFolder = TB_ExportFolder.Text;
+			Options.Save();
+		}
+
+		private void CB_LHT_CheckChanged(object sender, EventArgs e)
+		{
+			Options.Current.LHT = CB_LHT.Checked;
+			Options.Save();
 		}
 	}
 }

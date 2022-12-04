@@ -23,9 +23,14 @@ namespace ThumbnailMaker
 		{
 			InitializeComponent();
 
-			FormDesign.Initialize(this, DesignChanged);
+			try
+			{ FormDesign.Initialize(this, DesignChanged); }
+			catch { }
 
-			SetPanel<PC_MainPage>(panelItem1);
+			try
+			{ SetPanel<PC_MainPage>(panelItem1); }
+			catch(Exception ex)
+			{ MessagePrompt.Show(ex.ToString(),"Error"); }
 
 			var timer = new System.Timers.Timer(1000);
 

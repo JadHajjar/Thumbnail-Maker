@@ -14,7 +14,7 @@ namespace ThumbnailMaker.Domain
 		public float Width { get; set; }
 		public float BufferSize { get; set; }
 		public float SpeedLimit { get; set; }
-		public float Elevation { get; set; }
+		public bool LHT { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public string CustomText { get; set; }
