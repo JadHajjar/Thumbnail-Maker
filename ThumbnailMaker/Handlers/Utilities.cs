@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 using ThumbnailMaker.Domain;
 
@@ -34,6 +35,10 @@ namespace ThumbnailMaker.Handlers
 				if (lane.Type < LaneType.Trees)
 				{
 					laneDescriptors.Add(lane.Lanes > 3 ? "Separator" : "Median");
+				}
+				else if (lane.InvertedDiagonalParking)
+				{
+					laneDescriptors.Add("Inverted Diagonal Parking");
 				}
 				else if (lane.DiagonalParking)
 				{
@@ -146,31 +151,17 @@ namespace ThumbnailMaker.Handlers
 				case LaneType.Grass:
 				case LaneType.Pavement:
 				case LaneType.Gravel:
-					return (float)Math.Round(Math.Ceiling(4 * 0.03 * lane.FillerSize) / 4, 2);
-
 				case LaneType.Trees:
-					return (float)Math.Round(Math.Ceiling(4 * 0.04 * lane.FillerSize) / 4, 2);
-
-				case LaneType.Tram:
-				case LaneType.Car:
-				case LaneType.Trolley:
-				case LaneType.Emergency:
-					return 3F * lane.Lanes;
-
-				case LaneType.Pedestrian:
-				case LaneType.Bike:
-					return 2F * lane.Lanes;
+					return (float)Math.Round(Math.Ceiling(0.04 * LaneSizeOptions.LaneSizes[type] * lane.FillerSize) / 4, 2);
 
 				case LaneType.Parking:
-					return lane.DiagonalParking ? 4F : lane.HorizontalParking ? 5F : 2F;
-
-				case LaneType.Highway:
-				case LaneType.Bus:
-				case LaneType.Train:
-					return 4F * lane.Lanes;
+					return
+						lane.HorizontalParking ? LaneSizeOptions.LaneSizes.DiagonalParkingSize :
+						lane.DiagonalParking || lane.InvertedDiagonalParking ? LaneSizeOptions.LaneSizes.DiagonalParkingSize :
+						LaneSizeOptions.LaneSizes[type];
 			}
 
-			return 3F * lane.Lanes;
+			return LaneSizeOptions.LaneSizes[type];
 		}
 	}
 }

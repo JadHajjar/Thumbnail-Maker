@@ -22,7 +22,8 @@ namespace ThumbnailMaker.Domain
 		public bool AddStopToFiller { get; set; }
 
 		public int FillerSize { get => IsFiller ? 10 * (10 - Math.Min(Lanes, 9)) : 0; set { } }
-		public bool DiagonalParking { get => Type == LaneType.Parking && Lanes > 2; set { } }
+		public bool DiagonalParking { get => Type == LaneType.Parking && Lanes == 3; set { } }
+		public bool InvertedDiagonalParking { get => Type == LaneType.Parking && Lanes > 3; set { } }
 		public bool HorizontalParking { get => Type == LaneType.Parking && Lanes == 2; set { } }
 
 		[XmlIgnore]
@@ -133,7 +134,7 @@ namespace ThumbnailMaker.Domain
 				return string.Empty;
 
 			if (Type == LaneType.Parking)
-				return DiagonalParking ? "DP" : HorizontalParking ? "HP" : "P";
+				return InvertedDiagonalParking ? "CP" : DiagonalParking ? "DP" : HorizontalParking ? "HP" : "P";
 
 			var laneNames = GetLaneTypes(Type).Select(GetLaneAbbreviation).OrderBy(y => y).ToList();
 

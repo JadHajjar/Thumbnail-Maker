@@ -106,6 +106,7 @@
     <Compile Include="Controls\RoadTypeSelector.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Domain\LaneSizeOptions.cs" />
     <Compile Include="Domain\RoadType.cs" />
     <Compile Include="Domain\RegionType.cs" />
     <Compile Include="Domain\LaneIdentity.cs" />
@@ -266,6 +267,7 @@
     <None Include="Resources\I_Size.png" />
     <None Include="Resources\I_SpeedLimit.png" />
     <None Include="Resources\I_Folder.png" />
+    <None Include="Resources\Icon_IDiagonal.png" />
     <Content Include="Resources\tooltip.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -90,7 +90,7 @@ namespace ThumbnailMaker.Controls
 			if (LaneType == LaneType.Parking)
 			{
 				Draw(e, cursor, iconX, lane,
-					new[] { 1, 2, 3 },
+					new[] { 1, 2, 4, 3 },
 					GetParkingDirectionIcon,
 					new[] { LaneDirection.None, LaneDirection.Backwards, LaneDirection.Forward });
 			}
@@ -170,7 +170,10 @@ namespace ThumbnailMaker.Controls
 			if (arg == 2)
 				return new ItemDrawContent { Image = Properties.Resources.Icon_Horizontal };
 
-			return new ItemDrawContent { Image = Properties.Resources.I_Diagonal };
+			if (arg == 3)
+				return new ItemDrawContent { Image = Properties.Resources.I_Diagonal };
+
+			return new ItemDrawContent { Image = Properties.Resources.Icon_IDiagonal };
 		}
 
 		private void DrawLine(PaintEventArgs e, int x)

@@ -34,6 +34,8 @@ namespace ThumbnailMaker.Handlers
 			Small = small;
 			Width = Small ? 109 : 512;
 			Height = Small ? 100 : 512;
+
+			LaneSizeOptions.LaneSizes = new LaneSizeOptions();
 		}
 
 		public void Draw()
@@ -208,11 +210,11 @@ namespace ThumbnailMaker.Handlers
 			var translate = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
 
 			Graphics.TranslateTransform(translate.X, translate.Y);
-			Graphics.RotateTransform(45F);
+			Graphics.RotateTransform(lane.InvertedDiagonalParking ? -45F : 45F);
 
 			Graphics.DrawImage(arrow, new Rectangle(new Point(-rect.Width / 2, -rect.Height / 2), rect.Size));
 
-			Graphics.RotateTransform(-45F);
+			Graphics.RotateTransform(lane.InvertedDiagonalParking ? 45F : -45F);
 			Graphics.TranslateTransform(-translate.X, -translate.Y);
 		}
 
