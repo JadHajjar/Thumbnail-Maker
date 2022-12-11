@@ -29,6 +29,28 @@ namespace ThumbnailMaker.Domain
 		public float this[LaneType l]
 		{
 			get => _sizes[l];
+			set
+			{
+				_sizes[l] = value;
+
+				try
+				{
+					var appdata = Directory.GetParent(Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+						, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"))).FullName;
+
+					var xML = new XmlSerializer(typeof(SavedSettings));
+
+					using (var stream = File.Create(Path.Combine(appdata, "LaneSizes.xml")))
+						xML.Serialize(stream, new SavedSettings
+						{
+							DiagonalParkingSize = _diagonalParkingSize,
+							HorizontalParkingSize = _horizontalParkingSize,
+							LaneTypes = _sizes.Keys.Cast<int>().ToList(),
+							LaneSizes = _sizes.Values.ToList(),
+						});
+				}
+				catch { }
+			}
 		}
 
 		public static LaneSizeOptions LaneSizes { get; set; } = new LaneSizeOptions();

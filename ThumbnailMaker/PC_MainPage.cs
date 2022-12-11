@@ -350,12 +350,16 @@ namespace ThumbnailMaker
 					lanes[i].Lanes--;
 
 					if (bi && lanes[i].Lanes == 1)
-						lanes[i].Direction = LaneDirection.Forward;
+						lanes[i].Direction = !Options.Current.LHT ? LaneDirection.Forward : LaneDirection.Backwards;
 
 					lanes.Insert(i, new LaneInfo
 					{
 						Type = lanes[i].Type,
-						Direction = bi ? LaneDirection.Backwards : lanes[i].Direction
+						Direction = bi ? (Options.Current.LHT ? LaneDirection.Forward : LaneDirection.Backwards) : lanes[i].Direction,
+						CustomWidth = lanes[i].CustomWidth,
+						SpeedLimit = lanes[i].SpeedLimit,
+						Elevation = lanes[i].Elevation,
+						AddStopToFiller = lanes[i].AddStopToFiller						
 					});
 				}
 

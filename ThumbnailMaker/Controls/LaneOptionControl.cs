@@ -29,6 +29,7 @@ namespace ThumbnailMaker.Controls
 			pictureBox1.BackColor = LaneInfo.GetColor(LaneType);
 			PB_100.Image = ResourceManager.GetImage(LaneType, true)?.Color(FormDesign.Design.IconColor);
 			PB_512.Image = ResourceManager.GetImage(LaneType, false)?.Color(FormDesign.Design.IconColor);
+			SS_Width.Value = LaneSizeOptions.LaneSizes[laneType];
 		}
 
 		public LaneOptionControl(string name)
@@ -44,6 +45,8 @@ namespace ThumbnailMaker.Controls
 
 			if (PropertyName == "Logo")
 				PB_100.SizeMode = PB_512.SizeMode = PictureBoxSizeMode.Zoom;
+
+			SS_Width.Visible = slickIcon1.Visible = label3.Visible = slickSpacer3.Visible = false;
 		}
 
 		public LaneType LaneType { get; }
@@ -166,6 +169,18 @@ namespace ThumbnailMaker.Controls
 				pictureBox1.BackColor = LaneInfo.GetColor(LaneType);
 				Options.Save();
 			}
+		}
+
+		private void SS_Width_ValuesChanged(object sender, EventArgs e)
+		{
+			LaneSizeOptions.LaneSizes[LaneType] = (float)Math.Round(SS_Width.Value, 1);
+
+			label3.Text = $"{Math.Round(SS_Width.Value, 1):0.#}m";
+		}
+
+		private void slickIcon1_Click(object sender, EventArgs e)
+		{
+			SS_Width.Value = LaneSizeOptions.GetDefaultLaneWidth(LaneType);
 		}
 	}
 }

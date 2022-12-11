@@ -33,11 +33,14 @@
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.DD_Font = new SlickControls.SlickDropdown();
+			this.CB_LHT = new SlickControls.SlickCheckbox();
 			this.TB_ExportFolder = new SlickControls.SlickPathTextBox();
 			this.B_Theme = new SlickControls.SlickButton();
 			this.label1 = new System.Windows.Forms.Label();
-			this.CB_LHT = new SlickControls.SlickCheckbox();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.slickScroll1 = new SlickControls.SlickScroll();
 			this.tableLayoutPanel2.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// base_Text
@@ -47,13 +50,14 @@
 			// 
 			// TLP
 			// 
+			this.TLP.AutoSize = true;
+			this.TLP.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.TLP.ColumnCount = 4;
 			this.TLP.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
 			this.TLP.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
 			this.TLP.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
 			this.TLP.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-			this.TLP.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.TLP.Location = new System.Drawing.Point(5, 218);
+			this.TLP.Location = new System.Drawing.Point(0, 0);
 			this.TLP.Margin = new System.Windows.Forms.Padding(0);
 			this.TLP.Name = "TLP";
 			this.TLP.Padding = new System.Windows.Forms.Padding(15, 10, 15, 0);
@@ -66,7 +70,7 @@
 			this.TLP.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.TLP.Size = new System.Drawing.Size(908, 407);
+			this.TLP.Size = new System.Drawing.Size(30, 10);
 			this.TLP.TabIndex = 8;
 			// 
 			// tableLayoutPanel2
@@ -85,13 +89,13 @@
 			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.tableLayoutPanel2.Location = new System.Drawing.Point(5, 30);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-			this.tableLayoutPanel2.RowCount = 5;
+			this.tableLayoutPanel2.RowCount = 4;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(908, 188);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(908, 168);
 			this.tableLayoutPanel2.TabIndex = 13;
 			// 
 			// slickSpacer1
@@ -136,6 +140,28 @@
 			this.DD_Font.ValidationCustom = null;
 			this.DD_Font.ValidationRegex = "";
 			this.DD_Font.TextChanged += new System.EventHandler(this.DD_Font_TextChanged);
+			// 
+			// CB_LHT
+			// 
+			this.CB_LHT.ActiveColor = null;
+			this.CB_LHT.AutoSize = true;
+			this.CB_LHT.Center = false;
+			this.CB_LHT.Checked = false;
+			this.CB_LHT.CheckedText = null;
+			this.CB_LHT.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.CB_LHT.DefaultValue = false;
+			this.CB_LHT.HideText = false;
+			this.CB_LHT.IconSize = 16;
+			this.CB_LHT.Image = ((System.Drawing.Image)(resources.GetObject("CB_LHT.Image")));
+			this.CB_LHT.Location = new System.Drawing.Point(20, 132);
+			this.CB_LHT.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+			this.CB_LHT.Name = "CB_LHT";
+			this.CB_LHT.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
+			this.CB_LHT.Size = new System.Drawing.Size(127, 26);
+			this.CB_LHT.TabIndex = 15;
+			this.CB_LHT.Text = "Left-Hand Traffic";
+			this.CB_LHT.UncheckedText = null;
+			this.CB_LHT.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
 			// 
 			// TB_ExportFolder
 			// 
@@ -198,31 +224,32 @@
 			this.label1.Text = "Right-click on a color to reset it.\r\nMiddle-click on an icon to clear it.";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.BottomRight;
 			// 
-			// CB_LHT
+			// panel1
 			// 
-			this.CB_LHT.ActiveColor = null;
-			this.CB_LHT.AutoSize = true;
-			this.CB_LHT.Center = false;
-			this.CB_LHT.Checked = false;
-			this.CB_LHT.CheckedText = null;
-			this.CB_LHT.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.CB_LHT.HideText = false;
-			this.CB_LHT.IconSize = 16;
-			this.CB_LHT.Image = ((System.Drawing.Image)(resources.GetObject("CB_LHT.Image")));
-			this.CB_LHT.Location = new System.Drawing.Point(20, 132);
-			this.CB_LHT.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
-			this.CB_LHT.Name = "CB_LHT";
-			this.CB_LHT.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
-			this.CB_LHT.Size = new System.Drawing.Size(127, 26);
-			this.CB_LHT.TabIndex = 15;
-			this.CB_LHT.Text = "Left-Hand Traffic";
-			this.CB_LHT.UncheckedText = null;
-			this.CB_LHT.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
+			this.panel1.Controls.Add(this.TLP);
+			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel1.Location = new System.Drawing.Point(5, 198);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(908, 427);
+			this.panel1.TabIndex = 14;
+			// 
+			// slickScroll1
+			// 
+			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
+			this.slickScroll1.LinkedControl = this.TLP;
+			this.slickScroll1.Location = new System.Drawing.Point(907, 198);
+			this.slickScroll1.Name = "slickScroll1";
+			this.slickScroll1.Size = new System.Drawing.Size(6, 427);
+			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
+			this.slickScroll1.TabIndex = 15;
+			this.slickScroll1.TabStop = false;
+			this.slickScroll1.Text = "slickScroll1";
 			// 
 			// PC_Options
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.Controls.Add(this.TLP);
+			this.Controls.Add(this.slickScroll1);
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.tableLayoutPanel2);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(58)))), ((int)(((byte)(69)))));
 			this.Name = "PC_Options";
@@ -230,9 +257,12 @@
 			this.Text = "Thumbnail Maker - Options";
 			this.Controls.SetChildIndex(this.base_Text, 0);
 			this.Controls.SetChildIndex(this.tableLayoutPanel2, 0);
-			this.Controls.SetChildIndex(this.TLP, 0);
+			this.Controls.SetChildIndex(this.panel1, 0);
+			this.Controls.SetChildIndex(this.slickScroll1, 0);
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.tableLayoutPanel2.PerformLayout();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -247,5 +277,7 @@
 		private SlickControls.SlickPathTextBox TB_ExportFolder;
 		private SlickControls.SlickButton B_Theme;
 		private SlickControls.SlickCheckbox CB_LHT;
+		private System.Windows.Forms.Panel panel1;
+		private SlickControls.SlickScroll slickScroll1;
 	}
 }

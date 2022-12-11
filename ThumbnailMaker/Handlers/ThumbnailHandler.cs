@@ -148,6 +148,9 @@ namespace ThumbnailMaker.Handlers
 			if (lane.Type != LaneType.Parking && (lane.Direction == LaneDirection.Backwards || lane.Direction == LaneDirection.Both))
 				arrow.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
+			if (lane.Direction == LaneDirection.Both && Options.Current.LHT && lane.Lanes > 1)
+				arrow.RotateFlip(RotateFlipType.RotateNoneFlipY);
+
 			foreach (var arrowRect in GetDirectionArrowRects(lane, new Rectangle(rect.X, 0, rect.Width, availableSpace.Y + arrowsHeight + (availableSpace.Height - iconsSize - arrowsHeight) / 2)))
 			{
 				if (lane.Type == LaneType.Parking && lane.Lanes > 2)
