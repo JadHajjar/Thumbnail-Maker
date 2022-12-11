@@ -43,11 +43,13 @@ namespace ThumbnailMaker.Handlers
 			Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 			Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-			if (Lanes.Count > 0 && Lanes.First().Type == LaneType.Pedestrian)
-				Lanes.First().Width = Lanes.First().Width * 2 / 3;
+			Lanes.ForEach(PrepareLanes);
 
-			if (Lanes.Count > 1 && Lanes.Last().Type == LaneType.Pedestrian)
-				Lanes.Last().Width = Lanes.Last().Width * 2 / 3;
+			//if (Lanes.Count > 0 && Lanes.First().Type == LaneType.Pedestrian)
+			//	Lanes.First().Width = Lanes.First().Width * 2 / 3;
+
+			//if (Lanes.Count > 1 && Lanes.Last().Type == LaneType.Pedestrian)
+			//	Lanes.Last().Width = Lanes.Last().Width * 2 / 3;
 
 			var idealWidthModifier = (float)Lanes.Sum(x => x.Width).If(x => x > Width, x => Width / (float)x, _ => 1F);
 
@@ -73,15 +75,19 @@ namespace ThumbnailMaker.Handlers
 				var arrowsHeight = Lanes.Any() ? (Lanes.Max(GetArrowRows) * (arrowSize.Height + (Small ? 2 : 8))) : 0;
 				var availableSpace = GetAvailableSpace(logo);
 				var xIndex = (Width - lanesWidth) / 2;
+				var laneRects = new Dictionary<LaneInfo, Rectangle>();
 
 				foreach (var lane in Lanes)
 				{
-					var rect = new Rectangle(xIndex, 0, lane.Width, Height);
-
-					DrawLane(lane, rect, availableSpace, arrowsHeight);
+					laneRects[lane] = new Rectangle(xIndex, 0, lane.Width, Height);
 
 					xIndex += lane.Width;
 				}
+
+				DrawBackground(availableSpace, laneRects);
+
+				foreach (var lane in Lanes)
+					DrawLane(lane, laneRects[lane], availableSpace, arrowsHeight, idealWidthModifier);
 
 				if (logo != null)
 					Graphics.DrawImage(logo, new Rectangle(new Point((Width - logo.Width) / 2, 0), logo.Size));
@@ -90,55 +96,118 @@ namespace ThumbnailMaker.Handlers
 			}
 		}
 
+		private void DrawBackground(Rectangle availableSpace, Dictionary<LaneInfo, Rectangle> laneRects)
+		{
+			var sideWalks = Lanes.Where(x => x.Type == LaneType.Sidewalk).ToList();
+			var bottomArea = new Rectangle(availableSpace.X, availableSpace.Y + availableSpace.Height, availableSpace.Width, Height - (availableSpace.Y + availableSpace.Height)).Pad(0, -(Small ? 5 : 20), 0, 0);
+
+			Graphics.SmoothingMode = SmoothingMode.HighQuality;
+			
+			using (var path = new Rectangle(bottomArea.X, bottomArea.Y + (Small ? 5 : 20), bottomArea.Width, bottomArea.Height - (Small ? 5 : 20)).RoundedRect(Small ? 5 : 20, false, false))
+				Graphics.FillPath(new SolidBrush(Color.FromArgb(50, 50, 50)), path);
+
+			using (var path = new Rectangle(0, 0, bottomArea.Width, bottomArea.Y + (Small ? 5 : 20)).RoundedRect(Small ? 5 : 20, true, true, false, false))
+				Graphics.FillPath(new SolidBrush(Color.FromArgb(174, 215, 242)), path);
+
+			if (sideWalks.Count == 2)
+			{
+				using (var path = new Rectangle(0, bottomArea.Y, laneRects[sideWalks[0]].X + laneRects[sideWalks[0]].Width, bottomArea.Height).RoundedRect(Small ? 5 : 20, false, false, false, true))
+					Graphics.FillPath(new SolidBrush(Color.FromArgb(180, 180, 180)), path);
+				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(130, 130, 130)), new Rectangle(laneRects[sideWalks[0]].X + laneRects[sideWalks[0]].Width - (Small ? 3 : 10), bottomArea.Y, Small ? 3 : 10, bottomArea.Height));
+
+				using (var path = new Rectangle(laneRects[sideWalks[1]].X, bottomArea.Y, Width - laneRects[sideWalks[1]].X, bottomArea.Height).RoundedRect(Small ? 5 : 20, false, false, true, false))
+					Graphics.FillPath(new SolidBrush(Color.FromArgb(180, 180, 180)), path);
+				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(130, 130, 130)), new Rectangle(laneRects[sideWalks[1]].X, bottomArea.Y, Small ? 3 : 10, bottomArea.Height));
+			}
+			else if (sideWalks.Count == 1)
+			{
+				using (var path = new Rectangle(0, bottomArea.Y, laneRects[sideWalks[0]].X, bottomArea.Height).RoundedRect(Small ? 5 : 20, false, false, false, true))
+					Graphics.FillPath(new SolidBrush(Color.FromArgb(180, 180, 180)), path);
+				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(130, 130, 130)), new Rectangle(laneRects[sideWalks[0]].X - (Small ? 3 : 10), bottomArea.Y, Small ? 3 : 10, bottomArea.Height));
+			}
+
+			Graphics.SmoothingMode = SmoothingMode.Default;
+		}
+
+		private void PrepareLanes(LaneInfo lane)
+		{
+			lane.Width = (int)(30 * LaneInfo.GetLaneTypes(lane.Type).Max(y => Utilities.GetLaneWidth(y, lane)));
+
+			var sideWalks = Lanes.Where(x => x.Type == LaneType.Sidewalk).Select(x => Lanes.IndexOf(x)).ToList();
+
+			if (sideWalks.Count == 2)
+			{
+				lane.Sidewalk = !Lanes.IndexOf(lane).IsWithin(sideWalks[0], sideWalks[1]);
+			}
+			else if (sideWalks.Count == 1)
+			{
+				lane.Sidewalk = Lanes.IndexOf(lane) <= sideWalks[0];
+			}
+		}
+
 		private Rectangle GetAvailableSpace(Image logo)
 		{
 			var startingHeight = (logo?.Height ?? 2) - 2;
 
-			if (string.IsNullOrWhiteSpace(RoadSize) && string.IsNullOrWhiteSpace(Speed) && string.IsNullOrWhiteSpace(CustomText))
-			{
-				var buffer = Small ? 4 : 12;
-				return new Rectangle(0, startingHeight + buffer, Width, Height - (startingHeight + buffer * 2));
-			}
+			//if (string.IsNullOrWhiteSpace(RoadSize) && string.IsNullOrWhiteSpace(Speed) && string.IsNullOrWhiteSpace(CustomText))
+			//{
+			//	var buffer = Small ? 4 : 12;
+			//	return new Rectangle(0, startingHeight + buffer, Width, Height - (startingHeight + buffer * 2));
+			////}
 
-			return new Rectangle(0, startingHeight, Width, Height - startingHeight - (Small ? 30 : 120));
+			return new Rectangle(0, startingHeight, Width, Height - startingHeight - (Small ? 50 : 200));
 		}
 
-		private void DrawLane(LaneInfo lane, Rectangle rect, Rectangle availableSpace, int arrowsHeight)
+		private void DrawLane(LaneInfo lane, Rectangle rect, Rectangle availableSpace, int arrowsHeight, float scale)
 		{
-			Graphics.FillRectangle(lane.Brush(Small), rect);
+			availableSpace = availableSpace.Pad(0, 0, 0, (lane.Sidewalk ? (Small ? 5 : 20) : 0) -(Small ? 2 : 4));
+
+			DrawBackground(lane, rect, availableSpace);
 
 			var icons = lane.Icons(Small);
 
 			if (icons.Count == 0 || lane.Width < 1)
 				return;
 
-			icons = icons.Select(x =>
+			if (scale != 1F)
 			{
-				var modifier = (float)lane.Width / (Small ? 20 : 100);
+				icons = icons.Select(x =>
+				{
+					//	var modifier = (float)lane.Width /Math.Max(1,lane.Lanes)/ (Small ? 20 : 100);
 
-				using (x)
-					return (Image)new Bitmap(x, Math.Max(1, (int)(x.Width * modifier)), Math.Max(1, (int)(x.Height * modifier)));
-			}).ToList();
+					using (x)
+						return (Image)new Bitmap(x, Math.Max(1, (int)(x.Width * scale)), Math.Max(1, (int)(x.Height * scale)));
+				}).ToList();
+			}
 
 			var iconsSize = icons.Sum(i => i.Height);
 			var arrowRows = GetArrowRows(lane);
-			var y = availableSpace.Y + (availableSpace.Height - iconsSize - arrowsHeight) / 2 + arrowsHeight;
+			var xPos = rect.X;
 
-			foreach (var icon in icons)
+			for (int i = 0; i < lane.Lanes; i++)
 			{
-				if (lane.Type == LaneType.Highway && lane.Direction == LaneDirection.Backwards)
-					icon.RotateFlip(RotateFlipType.RotateNoneFlipY);
+			var y = availableSpace.Y + availableSpace.Height - iconsSize;
+				foreach (var icon in icons)
+				{
+					if (lane.Type == LaneType.Highway && lane.Direction == LaneDirection.Backwards)
+						icon.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
-				Graphics.DrawImage(icon, new Rectangle(new Point(rect.X + (rect.Width - icon.Width) / 2, y), icon.Size));
+					if (lane.Type == LaneType.Sidewalk && lane.Direction == LaneDirection.Forward)
+						icon.RotateFlip(RotateFlipType.RotateNoneFlipX);
 
-				y += icon.Height;
+					Graphics.DrawImage(icon, new Rectangle(new Point(xPos + (rect.Width / lane.Lanes - icon.Width) / 2, y), icon.Size));
+
+					y += icon.Height;
+				}
+
+				xPos += rect.Width / lane.Lanes;
 			}
 
 			if (arrowRows == 0)
 				return;
 
 			var arrow = ResourceManager.Arrow(Small);
-				
+
 			if (arrow == null)
 				return;
 
@@ -168,6 +237,21 @@ namespace ThumbnailMaker.Handlers
 			}
 
 			arrow.Dispose();
+		}
+
+		private void DrawBackground(LaneInfo lane, Rectangle rect, Rectangle availableSpace)
+		{
+			var bottomArea = new Rectangle(rect.X, availableSpace.Y + availableSpace.Height, rect.Width, Height - (availableSpace.Y + availableSpace.Height));
+			
+			if (lane.IsFiller)
+			{
+				var fillArea = new Rectangle(rect.X, availableSpace.Y + availableSpace.Height - (Small ? 5 : 20), rect.Width, Height);
+
+				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(130, 130, 130)), fillArea);
+				Graphics.FillRectangle(new SolidBrush(lane.Color), fillArea.Pad(5, 0, 5, 0));
+			}
+
+			//Graphics.FillRectangle(lane.Brush(Small), bottomArea.Pad(0, -4, 0, 0));
 		}
 
 		private IEnumerable<Rectangle> GetDirectionArrowRects(LaneInfo lane, Rectangle rect)
@@ -225,7 +309,6 @@ namespace ThumbnailMaker.Handlers
 		{
 			var speed = !string.IsNullOrWhiteSpace(Speed);
 			var size = !string.IsNullOrWhiteSpace(RoadSize);
-			var custom = !string.IsNullOrWhiteSpace(CustomText);
 
 			var speedWidth = speed ? GetSpeedWidth() : 0;
 			var roadSizeWidth = size ? GetRoadSizeWidth() : 0;
@@ -241,8 +324,7 @@ namespace ThumbnailMaker.Handlers
 			if (size)
 				DrawRoadWidth(new Rectangle(0, Height - (Small ? 30 : 120), Width, (Small ? 30 : 120)));
 
-			if (custom)
-				DrawCustomText(new Rectangle(0, Height - (Small ? 30 : 120), size ? ((Width - roadSizeWidth) / 2 - (Small ? 3 : 24)) : speed ? ((Width - speedWidth) / 2 - (Small ? 3 : 24)) : Width, (Small ? 30 : 120)), !speed && !size);
+			DrawRoadIcon(new Rectangle(0, Height - (Small ? 30 : 120), size ? ((Width - roadSizeWidth) / 2 - (Small ? 3 : 24)) : speed ? ((Width - speedWidth) / 2 - (Small ? 3 : 24)) : Width, (Small ? 30 : 120)));
 		}
 
 		private void DrawRoadWidth(Rectangle containerRect)
@@ -342,6 +424,12 @@ namespace ThumbnailMaker.Handlers
 			}
 
 			Graphics.SmoothingMode = SmoothingMode.Default;
+		}
+
+		private void DrawRoadIcon(Rectangle containerRect)
+		{
+			using (var icon = ResourceManager.GetRoadType(RoadType, Small))
+				Graphics.DrawImage(icon, containerRect.Pad(0, Small ? 4 : 20, 0, 0).CenterR(icon.Size));
 		}
 
 		private void DrawCustomText(Rectangle containerRect, bool center)

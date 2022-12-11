@@ -28,7 +28,7 @@ namespace ThumbnailMaker
 			{
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault(false);
-				Application.Run(new MainForm());
+					Application.Run(new MainForm());
 			}
 			catch(Exception ex)
 			{ MessageBox.Show(ex.ToString(), "App failed to start"); }

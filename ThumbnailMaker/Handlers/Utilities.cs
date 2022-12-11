@@ -142,7 +142,7 @@ namespace ThumbnailMaker.Handlers
 		{
 			if (lane.CustomWidth > 0)
 			{
-				return lane.Lanes * lane.CustomWidth;
+				return Math.Max(1, lane.Lanes) * lane.CustomWidth;
 			}
 
 			switch (type)
@@ -161,7 +161,7 @@ namespace ThumbnailMaker.Handlers
 						LaneSizeOptions.LaneSizes[type];
 			}
 
-			return lane.Lanes * LaneSizeOptions.LaneSizes[type];
+			return Math.Max(1, lane.Lanes) * LaneSizeOptions.LaneSizes[type];
 		}
 	}
 }

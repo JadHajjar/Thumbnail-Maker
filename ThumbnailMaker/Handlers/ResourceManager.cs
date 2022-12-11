@@ -17,6 +17,8 @@ namespace ThumbnailMaker
 
 		public static Image Arrow(bool small) => GetImage(nameof(Arrow), small);
 
+		public static Image GetRoadType(RoadType type, bool small) => GetImage($"RT_{(int)type}", small);
+
 		public static Image GetImage(LaneType lane, bool small)
 		{
 			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneType), lane));

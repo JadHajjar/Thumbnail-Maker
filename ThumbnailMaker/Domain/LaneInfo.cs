@@ -26,12 +26,11 @@ namespace ThumbnailMaker.Domain
 		public bool InvertedDiagonalParking { get => Type == LaneType.Parking && Lanes > 3; set { } }
 		public bool HorizontalParking { get => Type == LaneType.Parking && Lanes == 2; set { } }
 
-		[XmlIgnore]
-		public int Width { get; set; }
-		[XmlIgnore]
-		public int Lanes { get; set; }
-		[XmlIgnore]
-		public Color Color
+		[XmlIgnore] public int Width { get; set; }
+		[XmlIgnore] public int Lanes { get; set; }
+		[XmlIgnore] public bool Sidewalk { get; set; }
+		[XmlIgnore] public bool IsFiller => GetLaneTypes(Type).All(x => x < LaneType.Car);
+		[XmlIgnore] public Color Color
 		{
 			get
 			{
@@ -47,8 +46,6 @@ namespace ThumbnailMaker.Domain
 				return color;
 			}
 		}
-		[XmlIgnore]
-		public bool IsFiller => GetLaneTypes(Type).All(x => x < LaneType.Car);
 
 		public static Color GetColor(LaneType laneType)
 		{
@@ -90,7 +87,7 @@ namespace ThumbnailMaker.Domain
 		public Brush Brush(bool small)
 			=> new LinearGradientBrush(
 				new Rectangle(0, 0, small ? 100 : 512, small ? 100 : 512),
-				Color.FromArgb(0, Color), Color,
+				Color.FromArgb(0, Color), Color.FromArgb(100, Color),
 				LinearGradientMode.Vertical);
 
 		public List<Image> Icons(bool small)

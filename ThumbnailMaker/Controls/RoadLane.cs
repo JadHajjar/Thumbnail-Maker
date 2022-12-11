@@ -428,7 +428,7 @@ namespace ThumbnailMaker.Controls
 				Elevation = CustomVerticalOffset == -1 ? (float?)null : CustomVerticalOffset,
 				SpeedLimit = CustomSpeedLimit == -1 ? (float?)null : CustomSpeedLimit,
 				AddStopToFiller = AddStopToFiller,
-				Width = (LaneType < LaneType.Car ? (10 - Math.Min(Lanes, 9)) : 10) * (small ? 2 : 10)
+				Width = (LaneType == LaneType.Sidewalk ? 5 : (LaneType < LaneType.Car ? (10 - Math.Min(Lanes, 9)) : 10)) * (small ? 2 : 10)
 			};
 		}
 

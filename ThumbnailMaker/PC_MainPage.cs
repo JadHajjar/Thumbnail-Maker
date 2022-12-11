@@ -104,13 +104,6 @@ namespace ThumbnailMaker
 
 				using (var g = Graphics.FromImage(img))
 				{
-					if (FormDesign.Design.BackColor.GetBrightness() > 0.3)
-					{
-						g.SmoothingMode = SmoothingMode.HighQuality;
-						g.FillRoundedRectangle(new SolidBrush(Color.Black), new Rectangle(0, 0, 512, 512), 20);
-						g.SmoothingMode = SmoothingMode.Default;
-					}
-
 					DrawThumbnail(g, lanes, false);
 
 					PB.Image = img;
@@ -374,8 +367,9 @@ namespace ThumbnailMaker
 					SmallThumbnail = getImage(true),
 					LargeThumbnail = getImage(false),
 					TooltipImage = File.ReadAllBytes($"{Utilities.Folder}\\Resources\\tooltip.png"),
-					BufferSize = TB_BufferSize.Text.SmartParseF(0.25f),
-					Width = TB_Size.Text.SmartParseF(),
+					BufferWidth = TB_BufferSize.Text.SmartParseF(0.25f),
+					AsphaltWidth = TB_Size.Text.SmartParseF(),
+					PavementWidth = TB_PavementWidth.Text.SmartParseF(),
 					RegionType = GetRegion(),
 					RoadType = GetRoadType(),
 					SpeedLimit = TB_SpeedLimit.Text.SmartParseF() * (RB_USA.Checked ? 1.609F : 1F),
@@ -440,8 +434,9 @@ namespace ThumbnailMaker
 			if (string.IsNullOrWhiteSpace(r.ThumbnailMakerConfig))
 				return;
 
-			TB_Size.Text = r.Width == 0 ? string.Empty : r.Width.ToString();
-			TB_BufferSize.Text = r.BufferSize.ToString();
+			TB_Size.Text = r.AsphaltWidth == 0 ? string.Empty : r.AsphaltWidth.ToString();
+			TB_PavementWidth.Text = r.PavementWidth == 0 ? string.Empty : r.PavementWidth.ToString();
+			TB_BufferSize.Text = r.BufferWidth.ToString();
 			TB_SpeedLimit.Text = r.SpeedLimit == 0 ? string.Empty : r.SpeedLimit.ToString();
 			TB_CustomText.Text = r.CustomText;
 
@@ -479,11 +474,9 @@ namespace ThumbnailMaker
 				using (var img = new Bitmap(512, 512, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 				using (var g = Graphics.FromImage(img))
 				{
-					g.Clear(Color.Black);
-
 					DrawThumbnail(g, lanes, false);
 
-					Clipboard.SetDataObject(new Bitmap(img, 256,256));
+					Clipboard.SetDataObject(new Bitmap(img));
 				}
 
 				Notification.Create("Thumbnail copied to clipboard", "", PromptIcons.None, () => { }, NotificationSound.None, new Size(240, 32))

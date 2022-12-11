@@ -49,6 +49,9 @@ namespace ThumbnailMaker.Domain
 		Train = 4096,
 
 		[LaneIdentity(14, "P", 74, 89, 161)]
-		Parking = 8192
+		Parking = 8192,
+
+		[LaneIdentity(15, "", 200, 200, 200)]
+		Sidewalk = 16384,
 	}
 }

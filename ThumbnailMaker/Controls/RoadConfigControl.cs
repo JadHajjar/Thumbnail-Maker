@@ -31,6 +31,7 @@ namespace ThumbnailMaker.Controls
 		public DateTime TimeSaved { get; }
 		public string RoadSpeed { get; }
 		public string RoadSize { get; }
+		public string PavementSize { get; }
 
 		public event System.EventHandler<RoadInfo> LoadConfiguration;
 
@@ -44,7 +45,7 @@ namespace ThumbnailMaker.Controls
 				var xml = new XmlSerializer(typeof(RoadInfo));
 
 				using (var stream = File.OpenRead(fileName))
-					Road = (RoadInfo)xml.Deserialize(stream);
+					Road = ((RoadInfo)xml.Deserialize(stream)).Update();
 
 				using (var ms = new MemoryStream(Road.SmallThumbnail))
 					Image = new Bitmap(ms);
@@ -54,7 +55,8 @@ namespace ThumbnailMaker.Controls
 					var lanes = JsonConvert.DeserializeObject<TmLane[]>(Road.ThumbnailMakerConfig).Select(x => (LaneInfo)x).ToList();
 
 					RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(lanes, Road.RegionType == RegionType.USA) : Road.SpeedLimit.ToString();
-					RoadSize = Road.Width <= 0F ? Utilities.CalculateRoadSize(lanes, Road.BufferSize.ToString()) : Road.Width.ToString();
+					RoadSize = Road.AsphaltWidth <= 0F ? Utilities.CalculateRoadSize(lanes, Road.BufferWidth.ToString()) : Road.AsphaltWidth.ToString();
+					PavementSize = Road.PavementWidth <= 0F ? "" : Road.PavementWidth.ToString();
 				}
 
 				Height = 64;

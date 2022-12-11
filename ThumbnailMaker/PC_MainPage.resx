@@ -251,12 +251,12 @@
         gAxufAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="TB_BufferSize.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="TB_CustomText.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAHtJREFUOE/t
-        kUEKQEAUQMcJSJGycUWRM0hyECsbp7CytHKU8dLXNBE1tvPq1fT+zN+M8hi01hnOGEqyoMcyTyUZiAXu
-        WEl6hHmDG+aSrMelpFe4V6NZwmFCF8ZrQYIrtmf4gHs9LhhJspZ0km4wC3BA+/EF0f0XPH9Q6gBI0biH
-        gAxufAAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAJBJREFUOE/N
+        klEKgkAURccWkHuIFtdP6xByTUFrEsSiYDzjXESzN4wJ0YEDby53Hgrj/gPvfY0d5hB6la5GCB641zEJ
+        vRLvOkYIvMYsFv1pEGYLVdILckguCLOFKj/+AsUzFrlVtPi0YPM7uOAL32nwhMVwijxx/hItKB7whldc
+        9Zsj3NvhGVtF38GCo8YJzvUyghuoHykoLAAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="TB_SpeedLimit.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -269,12 +269,21 @@
         E7DJ8+X7yt0k5uIN20SDDdUt2MB8wxv8/y/sSZ73A6zNcydQkpIFAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="TB_CustomText.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="TB_BufferSize.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAJBJREFUOE/N
-        klEKgkAURccWkHuIFtdP6xByTUFrEsSiYDzjXESzN4wJ0YEDby53Hgrj/gPvfY0d5hB6la5GCB641zEJ
-        vRLvOkYIvMYsFv1pEGYLVdILckguCLOFKj/+AsUzFrlVtPi0YPM7uOAL32nwhMVwijxx/hItKB7whldc
-        9Zsj3NvhGVtF38GCo8YJzvUyghuoHykoLAAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAHtJREFUOE/t
+        kUEKQEAUQMcJSJGycUWRM0hyECsbp7CytHKU8dLXNBE1tvPq1fT+zN+M8hi01hnOGEqyoMcyTyUZiAXu
+        WEl6hHmDG+aSrMelpFe4V6NZwmFCF8ZrQYIrtmf4gHs9LhhJspZ0km4wC3BA+/EF0f0XPH9Q6gBI0biH
+        gAxufAAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="TB_PavementWidth.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAN5JREFUOE9j
+        GNwgJiamOzo6+h2Q7oAKkQaAmr9ERkZaAumPUCHSAFBjV1RU1A+SXdDQ0MAE1JwFcj4Q/wXiS7GxsYpQ
+        afwAqnk3EB8F4l+hoaGiQLoSiFdDleAHQOf6ARWfcnBwYAHS/0FiCQkJHED2PRAfJoYTABXsB/o7AsrG
+        rxgbAGqyBjqbDcq+CzTMHyxBDgBqNgYa8hRIJ0OFiAcglwDD4zAQqwDZb+Pi4uSgUoQBMMp0gBpfAW22
+        A/GB7GlAQyrBkoQAULMYUPE9oOYEqBDYNUB8CcodVICBAQDXe1lOJz9WbQAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="B_DuplicateFlip.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
