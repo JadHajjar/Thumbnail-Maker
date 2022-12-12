@@ -14,7 +14,7 @@ namespace ThumbnailMaker.Domain
 
 		public TmLane(LaneInfo lane)
 		{
-			LaneType = lane.Type;
+			Class = lane.Class;
 			LaneDirection = lane.Direction;
 			Lanes = lane.Lanes;
 			CustomLaneWidth = lane.CustomWidth <= 0 ? -1 : lane.CustomWidth;
@@ -23,7 +23,8 @@ namespace ThumbnailMaker.Domain
 			AddStopToFiller = lane.AddStopToFiller;
 		}
 
-		public LaneType LaneType { get; set; }
+		public OLD_LaneType LaneType { get; set; }
+		public LaneClass Class { get; set; }
 		public LaneDirection LaneDirection { get; set; }
 		public int Lanes { get; set; }
 		public float CustomLaneWidth { get; set; }
@@ -33,6 +34,7 @@ namespace ThumbnailMaker.Domain
 
 		public static explicit operator LaneInfo(TmLane l) => new LaneInfo
 		{
+			Class = l.Class,
 			Type = l.LaneType,
 			Direction = l.LaneDirection,
 			Lanes = l.Lanes,

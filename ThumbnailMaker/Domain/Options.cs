@@ -16,7 +16,7 @@ namespace ThumbnailMaker
 		public override string Name => "LaneOptions.tf";
 		public static Options Current { get; set; }
 
-		public Dictionary<LaneType, Color> LaneColors { get; set; } = new Dictionary<LaneType, Color>();
+		public Dictionary<LaneClass, Color> LaneColors { get; set; } = new Dictionary<LaneClass, Color>();
 		public string SizeFont { get; set; } = "Century Gothic";
 		public string ExportFolder { get; set; }
 		public RegionType Region { get; set; }

@@ -103,9 +103,13 @@
     <Compile Include="Controls\RoadOptionsEditor.Designer.cs">
       <DependentUpon>RoadOptionsEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DecoTypeSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Controls\RoadTypeSelector.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Domain\LaneDecorationStyle.cs" />
     <Compile Include="Domain\LaneSizeOptions.cs" />
     <Compile Include="Domain\RoadType.cs" />
     <Compile Include="Domain\RegionType.cs" />
@@ -182,84 +186,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
-    <Content Include="Resources\100_10.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_11.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_12.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_13.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_14.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_15.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_4.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_5.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_6.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_7.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_8.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_9.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\100_Arrow.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_10.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_11.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_12.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_13.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_14.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_15.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_4.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_5.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_6.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_7.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_8.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_9.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_Arrow.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Resources\Icon_Vertical.png" />
     <None Include="Resources\I_Load.png" />
     <None Include="Resources\Icon_Diagonal.png" />
@@ -268,15 +194,21 @@
     <None Include="Resources\I_SpeedLimit.png" />
     <None Include="Resources\I_Folder.png" />
     <None Include="Resources\Icon_IDiagonal.png" />
-    <Content Include="Resources\512_RT_0.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_RT_1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\512_RT_2.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="Resources\L_RT_2.png" />
+    <None Include="Resources\L_Arrow.png" />
+    <None Include="Resources\L_C_3.png" />
+    <None Include="Resources\L_C_4.png" />
+    <None Include="Resources\L_C_5.png" />
+    <None Include="Resources\L_C_6.png" />
+    <None Include="Resources\L_C_7.png" />
+    <None Include="Resources\L_C_8.png" />
+    <None Include="Resources\L_C_9.png" />
+    <None Include="Resources\L_C_11.png" />
+    <None Include="Resources\L_D_4.png" />
+    <None Include="Resources\L_D_8.png" />
+    <None Include="Resources\L_RT_0.png" />
+    <None Include="Resources\L_RT_1.png" />
+    <None Include="Resources\L_D_9.png" />
     <Content Include="Resources\tooltip.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

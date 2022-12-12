@@ -4,7 +4,49 @@ using System.Drawing;
 namespace ThumbnailMaker.Domain
 {
 	[Flags]
-	public enum LaneType
+	public enum LaneClass
+	{
+		[LaneIdentity(0, "M")]
+		Empty = 0,
+
+		[LaneIdentity(1, "M", 130, 204, 96)]
+		Filler = 1,
+
+		[LaneIdentity(2, "", 200, 200, 200)]
+		Curb = 2,
+
+		[LaneIdentity(3, "Ped", 92, 97, 102)]
+		Pedestrian = 4,
+
+		[LaneIdentity(4, "B", 74, 205, 151)]
+		Bike = 16,
+
+		[LaneIdentity(5, "C", 66, 132, 212)]
+		Car = 32,
+
+		[LaneIdentity(6, "T", 230, 210, 122)]
+		Tram = 64,
+
+		[LaneIdentity(7, "Bus", 170, 62, 48)]
+		Bus = 128,
+
+		[LaneIdentity(8, "TBus", 184, 70, 55)]
+		Trolley = 256,
+
+		[LaneIdentity(9, "EV", 222, 75, 109)]
+		Emergency = 512,
+
+		[LaneIdentity(10, "Train", 194, 146, 74)]
+		Train = 1024,
+
+		[LaneIdentity(11, "P", 74, 89, 161)]
+		Parking = 2048,
+	}
+
+	#region Old
+
+	[Flags]
+	public enum OLD_LaneType
 	{
 		[LaneIdentity(0, "M")]
 		Empty = 0,
@@ -49,9 +91,7 @@ namespace ThumbnailMaker.Domain
 		Train = 4096,
 
 		[LaneIdentity(14, "P", 74, 89, 161)]
-		Parking = 8192,
-
-		[LaneIdentity(15, "", 200, 200, 200)]
-		Sidewalk = 16384,
+		Parking = 8192
 	}
+	#endregion
 }

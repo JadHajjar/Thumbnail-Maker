@@ -15,29 +15,32 @@ namespace ThumbnailMaker.Domain
 	public class LaneInfo
 	{
 		public LaneDirection Direction { get; set; }
-		public LaneType Type { get; set; }
+		public LaneClass Class { get; set; }
+		public LaneDecorationStyle Decorations { get; set; }
 		public float? Elevation { get; set; }
 		public float CustomWidth { get; set; }
 		public float? SpeedLimit { get; set; }
 		public bool AddStopToFiller { get; set; }
 
 		public int FillerSize { get => IsFiller ? 10 * (10 - Math.Min(Lanes, 9)) : 0; set { } }
-		public bool DiagonalParking { get => Type == LaneType.Parking && Lanes == 3; set { } }
-		public bool InvertedDiagonalParking { get => Type == LaneType.Parking && Lanes > 3; set { } }
-		public bool HorizontalParking { get => Type == LaneType.Parking && Lanes == 2; set { } }
+		public bool DiagonalParking { get => Class == LaneClass.Parking && Lanes == 3; set { } }
+		public bool InvertedDiagonalParking { get => Class == LaneClass.Parking && Lanes > 3; set { } }
+		public bool HorizontalParking { get => Class == LaneClass.Parking && Lanes == 2; set { } }
+
+		public OLD_LaneType Type { get; set; }
 
 		[XmlIgnore] public int Width { get; set; }
 		[XmlIgnore] public int Lanes { get; set; }
 		[XmlIgnore] public bool Sidewalk { get; set; }
-		[XmlIgnore] public bool IsFiller => GetLaneTypes(Type).All(x => x < LaneType.Car);
+		[XmlIgnore] public bool IsFiller => Class == LaneClass.Filler;
 		[XmlIgnore] public Color Color
 		{
 			get
 			{
-				if (Type == (LaneType.Car | LaneType.Tram) && !Options.Current.LaneColors.ContainsKey(LaneType.Car) && !Options.Current.LaneColors.ContainsKey(LaneType.Tram))
+				if (Class == (LaneClass.Car | LaneClass.Tram) && !Options.Current.LaneColors.ContainsKey(LaneClass.Car) && !Options.Current.LaneColors.ContainsKey(LaneClass.Tram))
 					return Color.FromArgb(66, 185, 212);
 
-				var types = GetLaneTypes(Type);
+				var types = GetLaneTypes(Class);
 				var color = GetColor(types[0]);
 
 				for (var i = 1; i < types.Count; i++)
@@ -47,40 +50,40 @@ namespace ThumbnailMaker.Domain
 			}
 		}
 
-		public static Color GetColor(LaneType laneType)
+		public static Color GetColor(LaneClass laneType)
 		{
 			return Options.Current.LaneColors.ContainsKey(laneType) 
 				? Options.Current.LaneColors[laneType] 
 				: GetDefaultLaneColor(laneType);
 		}
 
-		public static Color GetDefaultLaneColor(LaneType lane)
+		public static Color GetDefaultLaneColor(LaneClass lane)
 		{
-			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneType), lane));
+			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneClass), lane));
 
 			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
 
 			return attribute.DefaultColor;
 		}
 
-		public static string GetLaneAbbreviation(LaneType lane)
+		public static string GetLaneAbbreviation(LaneClass lane)
 		{
-			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneType), lane));
+			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneClass), lane));
 
 			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
 
 			return attribute.Name;
 		}
 
-		public static List<LaneType> GetLaneTypes(LaneType laneType)
+		public static List<LaneClass> GetLaneTypes(LaneClass laneType)
 		{
-			if (laneType == LaneType.Empty)
-				return new List<LaneType> { LaneType.Empty };
+			if (laneType == LaneClass.Empty)
+				return new List<LaneClass> { LaneClass.Empty };
 
 			return Enum
-				.GetValues(typeof(LaneType))
-				.Cast<LaneType>()
-				.Where(e => e != LaneType.Empty && laneType.HasFlag(e))
+				.GetValues(typeof(LaneClass))
+				.Cast<LaneClass>()
+				.Where(e => e != LaneClass.Empty && laneType.HasFlag(e))
 				.ToList();
 		}
 
@@ -90,9 +93,9 @@ namespace ThumbnailMaker.Domain
 				Color.FromArgb(0, Color), Color.FromArgb(255, Color),
 				LinearGradientMode.Vertical);
 
-		public List<KeyValuePair<LaneType, Image>> Icons(bool small)
+		public List<KeyValuePair<LaneClass, Image>> Icons(bool small)
 		{
-			return GetLaneTypes(Type)
+			return GetLaneTypes(Class)
 			  .ToDictionary(x => x, x => ResourceManager.GetImage(x, small))
 			  .Where(x => x.Value != null)
 			  .ToList();
@@ -120,20 +123,20 @@ namespace ThumbnailMaker.Domain
 			if (Lanes > 0)
 				sb.Append($"{Lanes}L ");
 
-			sb.Append(GetLaneTypes(Type).Select(GetLaneAbbreviation).OrderBy(y => y).ListStrings("-"));
+			sb.Append(GetLaneTypes(Class).Select(GetLaneAbbreviation).OrderBy(y => y).ListStrings("-"));
 
 			return sb.ToString();
 		}
 
 		public string GetTitle(IEnumerable<LaneInfo> lanes)
 		{
-			if (Type == LaneType.Pedestrian && (lanes.First() == this || lanes.Last() == this))
+			if (Class == LaneClass.Pedestrian && (lanes.First() == this || lanes.Last() == this))
 				return string.Empty;
 
-			if (Type == LaneType.Parking)
+			if (Class == LaneClass.Parking)
 				return InvertedDiagonalParking ? "CP" : DiagonalParking ? "DP" : HorizontalParking ? "HP" : "P";
 
-			var laneNames = GetLaneTypes(Type).Select(GetLaneAbbreviation).OrderBy(y => y).ToList();
+			var laneNames = GetLaneTypes(Class).Select(GetLaneAbbreviation).OrderBy(y => y).ToList();
 
 			if (Direction == LaneDirection.Both)
 			{

@@ -20,7 +20,7 @@ namespace ThumbnailMaker.Controls
 {
 	public partial class LaneOptionControl : SlickControl
 	{
-		public LaneOptionControl(LaneType laneType)
+		public LaneOptionControl(LaneClass laneType)
 		{
 			InitializeComponent();
 			LaneType = laneType;
@@ -49,7 +49,7 @@ namespace ThumbnailMaker.Controls
 			SS_Width.Visible = slickIcon1.Visible = label3.Visible = slickSpacer3.Visible = false;
 		}
 
-		public LaneType LaneType { get; }
+		public LaneClass LaneType { get; }
 		public string PropertyName { get; }
 
 		protected override void DesignChanged(FormDesign design)
@@ -123,8 +123,8 @@ namespace ThumbnailMaker.Controls
 
 					if (PropertyName == null)
 						ResourceManager.SetImage(LaneType, sender == PB_100, openFileDialog.FileName);
-					else
-						ResourceManager.SetImage(PropertyName, sender == PB_100, openFileDialog.FileName);
+					//else
+					//	ResourceManager.SetImage(PropertyName, sender == PB_100, openFileDialog.FileName);
 				}
 				else if (e.Button == MouseButtons.Middle)
 				{
@@ -133,8 +133,8 @@ namespace ThumbnailMaker.Controls
 
 					if (PropertyName == null)
 						ResourceManager.SetImage(LaneType, sender == PB_100, null);
-					else
-						ResourceManager.SetImage(PropertyName, sender == PB_100, null);
+					//else
+					//	ResourceManager.SetImage(PropertyName, sender == PB_100, null);
 				}
 
 				if (PropertyName == null)

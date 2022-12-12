@@ -26,7 +26,7 @@ namespace ThumbnailMaker.Controls
 			InitializeComponent();
 
 			var lane = roadLane.GetLane(false);
-			var width = LaneInfo.GetLaneTypes(lane.Type).Max(x => Utilities.GetLaneWidth(x, lane));
+			var width = LaneInfo.GetLaneTypes(lane.Class).Max(x => Utilities.GetLaneWidth(x, lane));
 
 			TB_LaneWidth.Placeholder = $"Calculated width is  {width}";
 
@@ -38,8 +38,8 @@ namespace ThumbnailMaker.Controls
 			if (_roadLane.CustomSpeedLimit != -1)
 				TB_Speed.Text = _roadLane.CustomSpeedLimit.ToString();
 
-			CB_BusStop.Visible = roadLane.LaneType < LaneType.Car;
-			CB_BusStop.Checked = roadLane.AddStopToFiller && roadLane.LaneType < LaneType.Car;
+			CB_BusStop.Visible = roadLane.LaneType < LaneClass.Car;
+			CB_BusStop.Checked = roadLane.AddStopToFiller && roadLane.LaneType < LaneClass.Car;
 
 			Show(roadLane.FindForm());
 		}

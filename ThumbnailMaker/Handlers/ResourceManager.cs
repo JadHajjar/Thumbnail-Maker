@@ -19,64 +19,51 @@ namespace ThumbnailMaker
 
 		public static Image GetRoadType(RoadType type, bool small) => GetImage($"RT_{(int)type}", small);
 
-		public static Image GetImage(LaneType lane, bool small)
+		public static Image GetImage(LaneClass lane, bool small)
 		{
-			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneType), lane));
+			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneClass), lane));
 
 			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
 
-			return GetImage(attribute.Id.ToString(), small);
+			if (attribute == null)
+				return null;
+
+			return GetImage($"C_{attribute.Id}", small);
+		}
+
+		public static Image GetImage(LaneDecorationStyle decorations, bool small)
+		{
+			var field = decorations.GetType().GetField(Enum.GetName(typeof(LaneDecorationStyle), decorations));
+
+			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
+
+			if (attribute == null)
+				return null;
+
+			return GetImage($"D_{attribute.Id}", small);
 		}
 
 		public static Image GetImage(string name, bool small)
 		{
 			try
 			{
-				var fileName = $"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{name}.png";
-
-				if (!File.Exists(fileName))
-				{
-					return null;
-				}
-
-				using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
-				{
-					var img = new byte[fileStream.Length];
-
-					fileStream.Read(img, 0, img.Length);
-					fileStream.Close();
-
-					return Image.FromStream(new MemoryStream(img));
-				}
+				return (Bitmap)Properties.Resources.ResourceManager.GetObject($"{(small ? "S" : "L")}_{name}", Properties.Resources.Culture);
 			}
 			catch
-			{ }
-
-			return null;
+			{
+				return null;
+			}
 		}
 
-		public static void SetImage(LaneType lane, bool small, string fileName)
+		public static void SetImage(LaneClass lane, bool small, string fileName)
 		{
-			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneType), lane));
+			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneClass), lane));
 
 			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
 
-			SetImage(attribute.Id.ToString(), small, fileName);
+			//SetImage(attribute.Id.ToString(), small, fileName);
 		}
 
-		public static void SetLogo(LaneType lane, bool small, string fileName) => SetImage(nameof(Logo), small, fileName);
-
-		public static void SetArrow(LaneType lane, bool small, string fileName) => SetImage(nameof(Arrow), small, fileName);
-
-		public static void SetImage(string name, bool small, string fileName)
-		{
-			if (string.IsNullOrWhiteSpace(fileName) || !File.Exists(fileName))
-			{
-				if (File.Exists($"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{name}.png"))
-					File.Delete($"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{name}.png");
-			}
-			else
-				File.Copy(fileName, $"{Utilities.Folder}\\Resources\\{(small ? 100 : 512)}_{name}.png", true);
-		}
+		public static void SetLogo(LaneClass lane, bool small, string fileName) { }// => SetImage(nameof(Logo), small, fileName);
 	}
 }

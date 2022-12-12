@@ -1,13 +1,18 @@
 ﻿using Extensions;
 
+using SlickControls;
+
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
 using ThumbnailMaker.Domain;
+
+using static System.Windows.Forms.AxHost;
 
 namespace ThumbnailMaker.Handlers
 {
@@ -19,20 +24,20 @@ namespace ThumbnailMaker.Handlers
 		{
 			var skip = false;
 			var oneWay = IsOneWay(lanes);
-			var asymetrical = lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards).Sum(x => x.Lanes) != lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Forward).Sum(x => x.Lanes) && lanes.Any(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards && x.Lanes > 0);
+			var asymetrical = lanes.Where(x => x.Class.HasFlag(LaneClass.Car) && x.Direction == LaneDirection.Backwards).Sum(x => x.Lanes) != lanes.Where(x => x.Class.HasFlag(LaneClass.Car) && x.Direction == LaneDirection.Forward).Sum(x => x.Lanes) && lanes.Any(x => x.Class.HasFlag(LaneClass.Car) && x.Direction == LaneDirection.Backwards && x.Lanes > 0);
 			var laneDescriptors = new List<string>();
 
 			foreach (var lane in lanes)
 			{
-				if (skip || (lane.Type == LaneType.Pedestrian && (lane == lanes.First() || lane == lanes.Last())))
+				if (skip || (lane.Class == LaneClass.Pedestrian && (lane == lanes.First() || lane == lanes.Last())))
 				{
 					continue;
 				}
 
-				var types = LaneInfo.GetLaneTypes(lane.Type).Select(x => x.ToString());
+				var types = LaneInfo.GetLaneTypes(lane.Class).Select(x => x.ToString());
 				var name = types.Count() > 1 ? $"Shared {types.ListStrings(" & ")}" : types.First();
 
-				if (lane.Type < LaneType.Trees)
+				if (lane.Class == LaneClass.Filler)
 				{
 					laneDescriptors.Add(lane.Lanes > 3 ? "Separator" : "Median");
 				}
@@ -48,11 +53,11 @@ namespace ThumbnailMaker.Handlers
 				{
 					laneDescriptors.Add("Horizontal Parking");
 				}
-				else if (lane.Direction == LaneDirection.Both && lane.Type != LaneType.Parking)
+				else if (lane.Direction == LaneDirection.Both && lane.Class != LaneClass.Parking)
 				{
 					laneDescriptors.Add($"2W {lane.Lanes}L {name}");
 				}
-				else if (lane.Lanes > 0 && lane.Type != LaneType.Parking)
+				else if (lane.Lanes > 0 && lane.Class != LaneClass.Parking)
 				{
 					laneDescriptors.Add($"{lane.Lanes}L{lane.Direction.Switch(LaneDirection.Backwards, "B", LaneDirection.Forward, "F", "")} {name}");
 				}
@@ -75,7 +80,7 @@ namespace ThumbnailMaker.Handlers
 			var info = (size.Length == 0 ? "" : $"{size}m") +
 				(speedLimit.Length == 0 ? "" : $" - {speedLimit}{usa.If("mph", "km/h")}");
 
-			var desc = $"Blank {(asymetrical ? "Asymmetrical " : oneWay.Switch(true, "One-Way ", false, "Two-Way ", string.Empty))}{lanes.Any(x => x.Type.HasFlag(LaneType.Bike)).If("Bike ")}Road.  " +
+			var desc = $"Blank {(asymetrical ? "Asymmetrical " : oneWay.Switch(true, "One-Way ", false, "Two-Way ", string.Empty))}{lanes.Any(x => x.Class.HasFlag(LaneClass.Bike)).If("Bike ")}Road.  " +
 				laneDescriptors.WhereNotEmpty().ListStrings(" + ") +
 				info.IfEmpty("", $"  ({info})") +
 				"  This road comes with no markings, use Intersection Marking Tool to mark it.";
@@ -84,7 +89,7 @@ namespace ThumbnailMaker.Handlers
 
 		public static string DefaultSpeedSign(List<LaneInfo> lanes, bool usa)
 		{
-			return lanes.Any(x => (x.Type & (LaneType.Car | LaneType.Bus | LaneType.Highway)) != 0) ? usa ? "25" : "40" : string.Empty;
+			return lanes.Any(x => (x.Class & (LaneClass.Car | LaneClass.Bus | LaneClass.Trolley | LaneClass.Emergency | LaneClass.Tram)) != 0) ? usa ? "25" : "40" : string.Empty;
 		}
 
 		public static string CalculateRoadSize(List<LaneInfo> lanes, string bufferSize)
@@ -96,39 +101,43 @@ namespace ThumbnailMaker.Handlers
 				return string.Empty;
 			}
 
-			var size = (bufferSize.SmartParseF() * 2) + lanes.Sum(x => LaneInfo.GetLaneTypes(x.Type).Max(y => GetLaneWidth(y, x)));
+			try
+			{
+				var size = (bufferSize.SmartParseF() * 2) + lanes.Sum(x => LaneInfo.GetLaneTypes(x.Class).Max(y => GetLaneWidth(y, x)));
 
-			return Math.Round(size, 1).ToString("0.#");
+				return Math.Round(size, 1).ToString("0.#");
+			}
+			catch { throw; }
 		}
 
 		public static bool? IsOneWay(List<LaneInfo> lanes)
 		{
-			var car = lanes.FirstOrDefault(x => x.Type.HasFlag(LaneType.Car));
-			var bus = lanes.FirstOrDefault(x => x.Type.HasFlag(LaneType.Bus));
-			var bike = lanes.FirstOrDefault(x => x.Type.HasFlag(LaneType.Bike));
+			var car = lanes.FirstOrDefault(x => x.Class.HasFlag(LaneClass.Car));
+			var bus = lanes.FirstOrDefault(x => x.Class.HasFlag(LaneClass.Bus));
+			var bike = lanes.FirstOrDefault(x => x.Class.HasFlag(LaneClass.Bike));
 
 			if (car != null)
 			{
 				return car.Direction != LaneDirection.Both && lanes
-					.Where(x => x.Type.HasFlag(LaneType.Car))
+					.Where(x => x.Class.HasFlag(LaneClass.Car))
 					.All(x => x.Direction == car.Direction);
 			}
 
 			if (bus != null)
 			{
 				return bus.Direction != LaneDirection.Both && lanes
-					.Where(x => x.Type.HasFlag(LaneType.Bus))
+					.Where(x => x.Class.HasFlag(LaneClass.Bus))
 					.All(x => x.Direction == bus.Direction);
 			}
 
 			return bike != null
 				? bike.Direction != LaneDirection.Both && lanes
-					.Where(x => x.Type.HasFlag(LaneType.Bike))
+					.Where(x => x.Class.HasFlag(LaneClass.Bike))
 					.All(x => x.Direction == bike.Direction)
 				: (bool?)null;
 		}
 
-		public static float GetLaneWidth(LaneType type, LaneInfo lane)
+		public static float GetLaneWidth(LaneClass type, LaneInfo lane)
 		{
 			if (lane.CustomWidth > 0)
 			{
@@ -137,21 +146,48 @@ namespace ThumbnailMaker.Handlers
 
 			switch (type)
 			{
-				case LaneType.Empty:
-				case LaneType.Grass:
-				case LaneType.Pavement:
-				case LaneType.Gravel:
-				case LaneType.Trees:
+				case LaneClass.Empty:
+					return 1;
+
+				case LaneClass.Filler:
 					return (float)Math.Round(Math.Ceiling(0.04 * LaneSizeOptions.LaneSizes[type] * lane.FillerSize) / 4, 2);
 
-				case LaneType.Parking:
+				case LaneClass.Parking:
 					return
-						lane.HorizontalParking ? LaneSizeOptions.LaneSizes.DiagonalParkingSize :
+						lane.HorizontalParking ? LaneSizeOptions.LaneSizes.HorizontalParkingSize :
 						lane.DiagonalParking || lane.InvertedDiagonalParking ? LaneSizeOptions.LaneSizes.DiagonalParkingSize :
 						LaneSizeOptions.LaneSizes[type];
 			}
 
 			return Math.Max(1, lane.Lanes) * LaneSizeOptions.LaneSizes[type];
+		}
+
+		public static void DrawIcon(this Graphics g, Image img, Rectangle rect, Size? size = null)
+		{
+			if (img == null)
+				return;
+
+			rect = rect.CenterR(size??img.Size);
+
+			if (img.Width >= rect.Width || rect.Height >= rect.Height)
+			{
+				if (img.Width > img.Height)
+				{
+					var newHeight = img.Height * rect.Width / img.Width;
+
+					rect.Y += (rect.Height - newHeight) / 2;
+					rect.Height = newHeight;
+				}
+				else
+				{
+					var newWidth = img.Width * rect.Width / img.Width;
+
+					rect.X += (rect.Width - newWidth) / 2;
+					rect.Width = newWidth;
+				}
+			}
+
+			g.DrawImage(img, rect);
 		}
 	}
 }

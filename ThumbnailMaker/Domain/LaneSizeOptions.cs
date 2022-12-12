@@ -12,7 +12,7 @@ namespace ThumbnailMaker.Domain
 {
 	public class LaneSizeOptions
 	{
-		private readonly Dictionary<LaneType, float> _sizes;
+		private readonly Dictionary<LaneClass, float> _sizes;
 		private float _diagonalParkingSize;
 		private float _horizontalParkingSize;
 
@@ -26,7 +26,7 @@ namespace ThumbnailMaker.Domain
 			get => _horizontalParkingSize;
 		}
 
-		public float this[LaneType l]
+		public float this[LaneClass l]
 		{
 			get => _sizes[l];
 			set
@@ -43,6 +43,7 @@ namespace ThumbnailMaker.Domain
 					using (var stream = File.Create(Path.Combine(appdata, "LaneSizes.xml")))
 						xML.Serialize(stream, new SavedSettings
 						{
+							Version = 1,
 							DiagonalParkingSize = _diagonalParkingSize,
 							HorizontalParkingSize = _horizontalParkingSize,
 							LaneTypes = _sizes.Keys.Cast<int>().ToList(),
@@ -72,13 +73,19 @@ namespace ThumbnailMaker.Domain
 
 						_diagonalParkingSize = savedSettings.DiagonalParkingSize;
 						_horizontalParkingSize = savedSettings.HorizontalParkingSize;
-						_sizes = new Dictionary<LaneType, float>();
+						_sizes = new Dictionary<LaneClass, float>();
 
-						foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
+						for (var i = 0; i < savedSettings.LaneTypes.Count; i++)
 						{
-							var index = savedSettings.LaneTypes.IndexOf((int)laneType);
+							var newType = savedSettings.Version < 1 ? RoadInfo.ConvertType((OLD_LaneType)savedSettings.LaneTypes[i]) : (LaneClass)savedSettings.LaneTypes[i];
 
-							_sizes[laneType] = index != -1 ? savedSettings.LaneSizes[index] : GetDefaultLaneWidth(laneType);
+							_sizes[newType] = savedSettings.LaneSizes[i];
+						}
+
+						foreach (LaneClass laneType in Enum.GetValues(typeof(LaneClass)))
+						{
+							if (!_sizes.ContainsKey(laneType))
+								_sizes[laneType] = GetDefaultLaneWidth(laneType);
 						}
 					}
 
@@ -87,44 +94,37 @@ namespace ThumbnailMaker.Domain
 			}
 			catch { }
 
-			_sizes = Enum.GetValues(typeof(LaneType)).Cast<LaneType>().ToDictionary(x => x, GetDefaultLaneWidth);
+			_sizes = Enum.GetValues(typeof(LaneClass)).Cast<LaneClass>().ToDictionary(x => x, GetDefaultLaneWidth);
 			_diagonalParkingSize = 4F;
 			_horizontalParkingSize = 5.5F;
 		}
 
-		public static float GetDefaultLaneWidth(LaneType type)
+		public static float GetDefaultLaneWidth(LaneClass type)
 		{
 			switch (type)
 			{
-				case LaneType.Empty:
-				case LaneType.Grass:
-				case LaneType.Pavement:
-				case LaneType.Gravel:
+				case LaneClass.Filler:
 					return 3F;
 
-				case LaneType.Trees:
-					return 4F;
-
-				case LaneType.Tram:
-				case LaneType.Car:
-				case LaneType.Bus:
-				case LaneType.Emergency:
+				case LaneClass.Tram:
+				case LaneClass.Car:
+				case LaneClass.Bus:
+				case LaneClass.Emergency:
 					return 3F;
 
-				case LaneType.Pedestrian:
+				case LaneClass.Pedestrian:
 					return 2F;
 
-				case LaneType.Bike:
+				case LaneClass.Bike:
 					return 2F;
 
-				case LaneType.Parking:
+				case LaneClass.Parking:
 					return 2F;
 
-				case LaneType.Highway:
-				case LaneType.Train:
+				case LaneClass.Train:
 					return 4F;
 
-				case LaneType.Sidewalk:
+				case LaneClass.Curb:
 					return 1F;
 			}
 
@@ -133,6 +133,7 @@ namespace ThumbnailMaker.Domain
 
 		public class SavedSettings
 		{
+			public int Version { get; set; }
 			public float DiagonalParkingSize { get; set; }
 			public float HorizontalParkingSize { get; set; }
 			public List<int> LaneTypes { get; set; }

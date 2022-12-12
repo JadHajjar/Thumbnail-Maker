@@ -10,6 +10,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
+using ThumbnailMaker.Handlers;
 
 namespace ThumbnailMaker.Controls
 {
@@ -35,7 +36,7 @@ namespace ThumbnailMaker.Controls
 			scale = (int)(30 * UI.UIScale);
 		}
 
-		public LaneType LaneType { get => _laneType == LaneType.Car && IsHighWay() ? LaneType.Highway : _laneType; set => _laneType = value; }
+		public LaneClass LaneType { get; set; }
 		public LaneDirection LaneDirection { get; set; }
 		public int Lanes { get; set; }
 		public Func<bool> IsHighWay { get; }
@@ -43,8 +44,9 @@ namespace ThumbnailMaker.Controls
 		public float CustomVerticalOffset { get; set; } = -1F;
 		public float CustomSpeedLimit { get; set; } = -1F;
 		public bool AddStopToFiller { get; set; }
+		public LaneDecorationStyle Decorations { get; internal set; }
 
-		public void SetLaneType(LaneType laneType)
+		public void SetLaneType(LaneClass laneType)
 		{
 			LaneType = laneType;
 
@@ -55,9 +57,9 @@ namespace ThumbnailMaker.Controls
 		}
 
 		private Rectangle iconRectangle;
+		private Rectangle decoRectangle;
 		private Rectangle deleteRectangle;
 		private Rectangle grabberRectangle;
-		private LaneType _laneType;
 		private Rectangle editRectangle;
 		private readonly Dictionary<int, Rectangle> sizeRects = new Dictionary<int, Rectangle>();
 		private readonly Dictionary<LaneDirection, Rectangle> directionRects = new Dictionary<LaneDirection, Rectangle>();
@@ -67,7 +69,7 @@ namespace ThumbnailMaker.Controls
 			var cursor = PointToClient(Cursor.Position);
 			var lane = new LaneInfo
 			{
-				Type = LaneType,
+				Class = LaneType,
 				Direction = LaneDirection,
 				Lanes = Lanes,
 			};
@@ -77,17 +79,25 @@ namespace ThumbnailMaker.Controls
 			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-
 			if (_dragDropActive)
-				e.Graphics.FillRoundedRectangle(new SolidBrush(LaneType == LaneType.Empty ? FormDesign.Design.ActiveColor : lane.Color), ClientRectangle.Pad(0, 0, 1, 7), 6);
+				e.Graphics.FillRoundedRectangle(new SolidBrush(LaneType == LaneClass.Empty ? FormDesign.Design.ActiveColor : lane.Color), ClientRectangle.Pad(0, 0, 1, 7), 6);
 			else
 				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.AccentBackColor), ClientRectangle.Pad(0, 0, 1, 7), 6);
 
 			var iconX = DrawIcon(e, cursor, lane);
 
-			DrawDeleteIcon(e, cursor);
+			DrawDecoIcon(e, cursor, lane, ref iconX);
 
-			if (LaneType == LaneType.Parking)
+			if (LaneType != LaneClass.Curb)
+				DrawDeleteIcon(e, cursor);
+
+			if (LaneType == LaneClass.Curb)
+			{
+				e.Graphics.DrawString((LaneDirection == LaneDirection.Forward ? "Right" : "Left") + " curb delimiter", UI.Font(9.75F, FontStyle.Bold), new SolidBrush(FormDesign.Design.ForeColor), ClientRectangle.Pad(4), new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center });
+
+				Draw(e, cursor, iconX, lane, new int[0], null, new LaneDirection[0]);
+			}
+			else if (LaneType == LaneClass.Parking)
 			{
 				Draw(e, cursor, iconX, lane,
 					new[] { 1, 2, 4, 3 },
@@ -101,16 +111,10 @@ namespace ThumbnailMaker.Controls
 					l => new ItemDrawContent { Text = $"{(10 - Math.Min(l, 9)) * 10}%" },
 					new LaneDirection[0]);
 			}
-			else if (LaneType == LaneType.Pedestrian && Parent.Controls.IndexOf(this).AnyOf(0, Parent.Controls.Count - 1))
-			{
-				grabberRectangle = new Rectangle(iconX + 8, 0, Width - 34 - iconX - 8, Height - 4);
-
-				e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), grabberRectangle.CenterR(10, 5));
-			}
 			else
 			{
 				Draw(e, cursor, iconX, lane,
-					LaneType == LaneType.Pedestrian ? new[] { 0, 1, 2 } : new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
+					LaneType == LaneClass.Pedestrian ? new[] { 0, 1, 2 } : new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
 					l => new ItemDrawContent { Image = l == 0 ? Properties.Resources.I_Unavailable : null, Text = $"{l}L" },
 					new[] { LaneDirection.None, LaneDirection.Backwards, LaneDirection.Forward, LaneDirection.Both });
 			}
@@ -118,7 +122,7 @@ namespace ThumbnailMaker.Controls
 
 		private void DrawDeleteIcon(PaintEventArgs e, Point cursor)
 		{
-			var lane = new LaneInfo { Type = LaneType };
+			var lane = new LaneInfo { Class = LaneType };
 			var foreColor = _dragDropActive ? Color.FromArgb(150, lane.Color.GetAccentColor()) : FormDesign.Design.ForeColor;
 
 			deleteRectangle = new Rectangle(Width - scale, (Height - scale - 7) / 2, scale, scale);
@@ -138,7 +142,7 @@ namespace ThumbnailMaker.Controls
 
 			iconRectangle = new Rectangle(3, (Height - scale - 7) / 2, Math.Max(scale, icons.Count * scale), scale);
 
-			if (LaneType == LaneType.Empty)
+			if (LaneType == LaneClass.Empty)
 				e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 1.5F), iconRectangle, 6);
 			else
 				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(iconRectangle.Contains(cursor) ? 100 : 200, laneColor)), iconRectangle, 6);
@@ -148,18 +152,39 @@ namespace ThumbnailMaker.Controls
 			foreach (var icon in icons.Select(x => x.Value))
 			{
 				using (icon)
-					e.Graphics.DrawImage(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale).CenterR(UI.FontScale <= 1.25 ? icon.Size : new Size(scale * 2 / 3, scale * 2 / 3)));
+					e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 2 / 3, scale * 2 / 3));
 
 				iconX += scale;
 			}
 
-			if (iconRectangle.Contains(cursor))
-				DrawFocus(e.Graphics, iconRectangle.Pad(-1), HoverState.Focused, 6, LaneType == LaneType.Empty ? (Color?)null : laneColor);
+			if (iconRectangle.Contains(cursor) && LaneType != LaneClass.Curb)
+				DrawFocus(e.Graphics, iconRectangle.Pad(-1), HoverState.Focused, 6, LaneType == LaneClass.Empty ? (Color?)null : laneColor);
 
 			if (!deleteRectangle.Contains(cursor) && ClientRectangle.Pad(0, 0, 1, 7).Contains(cursor) && HoverState.HasFlag(HoverState.Hovered))
 				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(25, laneColor)), ClientRectangle.Pad(0, 0, 1, 7), 6);
 
-			return iconRectangle.Width+12;
+			return iconRectangle.Width + 12;
+		}
+
+		private void DrawDecoIcon(PaintEventArgs e, Point cursor, LaneInfo lane, ref int iconX)
+		{
+			var laneColor = FormDesign.Design.AccentColor;
+			var icon = ResourceManager.GetImage(Decorations, UI.FontScale <= 1.25);
+
+			decoRectangle = new Rectangle(iconX + 3, (Height - scale - 7) / 2, Math.Max(scale, scale), scale);
+
+			if (LaneType == LaneClass.Empty)
+				e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 1.5F), decoRectangle, 6);
+			else
+				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(decoRectangle.Contains(cursor) ? 100 : 200, laneColor)), decoRectangle, 6);
+
+			using (icon)
+				e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 2 / 3, scale * 2 / 3));
+
+			iconX += scale;
+
+			if (decoRectangle.Contains(cursor))
+				DrawFocus(e.Graphics, decoRectangle.Pad(-1), HoverState.Focused, 6);	
 		}
 
 		private ItemDrawContent GetParkingDirectionIcon(int arg)
@@ -178,7 +203,7 @@ namespace ThumbnailMaker.Controls
 
 		private void DrawLine(PaintEventArgs e, int x)
 		{
-			var lane = new LaneInfo { Type = LaneType };
+			var lane = new LaneInfo { Class = LaneType };
 			var foreColor = _dragDropActive ? Color.FromArgb(150, lane.Color.GetAccentColor()) : FormDesign.Design.AccentColor;
 
 			e.Graphics.DrawLine(new Pen(foreColor), x, 6, x, Height - 13);
@@ -292,9 +317,18 @@ namespace ThumbnailMaker.Controls
 			if (e.Button != MouseButtons.Left || _dragDropActive)
 				return;
 
-			if (iconRectangle.Contains(e.Location))
+			if (iconRectangle.Contains(e.Location) && LaneType != LaneClass.Curb)
 			{
 				new RoadTypeSelector(this);
+
+				RoadLaneChanged?.Invoke(this, EventArgs.Empty);
+
+				return;
+			}
+
+			if (decoRectangle.Contains(e.Location) && LaneType != LaneClass.Curb)
+			{
+				new DecoTypeSelector(this);
 
 				RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 
@@ -310,7 +344,7 @@ namespace ThumbnailMaker.Controls
 				return;
 			}
 
-			if (deleteRectangle.Contains(e.Location))
+			if (deleteRectangle.Contains(e.Location) && LaneType != LaneClass.Curb)
 			{
 				Dispose();
 
@@ -326,9 +360,9 @@ namespace ThumbnailMaker.Controls
 					Lanes = item.Key;
 					RefreshRoad();
 
-					if (LaneType == LaneType.Parking)
+					if (LaneType == LaneClass.Parking)
 					{
-						foreach (var rl in Parent.Controls.OfType<RoadLane>().Where(x => x != this && x.LaneType == LaneType.Parking))
+						foreach (var rl in Parent.Controls.OfType<RoadLane>().Where(x => x != this && x.LaneType == LaneClass.Parking))
 						{
 							rl.Lanes = item.Key;
 							rl.RefreshRoad();
@@ -348,16 +382,16 @@ namespace ThumbnailMaker.Controls
 					switch (LaneDirection)
 					{
 						case LaneDirection.None:
-							if (LaneType != LaneType.Parking)
+							if (LaneType != LaneClass.Parking)
 								Lanes = 0;
 							break;
 						case LaneDirection.Both:
-							if (LaneType != LaneType.Parking)
-								Lanes = Math.Max(LaneType != LaneType.Pedestrian ? 2 : 1, Lanes);
+							if (LaneType != LaneClass.Parking)
+								Lanes = Math.Max(LaneType != LaneClass.Pedestrian ? 2 : 1, Lanes);
 							break;
 						case LaneDirection.Forward:
 						case LaneDirection.Backwards:
-							if (LaneType != LaneType.Parking)
+							if (LaneType != LaneClass.Parking)
 								Lanes = Math.Max(1, Lanes);
 							break;
 					}
@@ -372,7 +406,7 @@ namespace ThumbnailMaker.Controls
 		{
 			base.OnMouseMove(e);
 
-			if (iconRectangle.Contains(e.Location) || editRectangle.Contains(e.Location) || deleteRectangle.Contains(e.Location) || sizeRects.Any(x => x.Value.Contains(e.Location)) || directionRects.Any(x => x.Value.Contains(e.Location)))
+			if ((LaneType != LaneClass.Curb && (iconRectangle.Contains(e.Location) || deleteRectangle.Contains(e.Location))) || decoRectangle.Contains(e.Location) || editRectangle.Contains(e.Location) || sizeRects.Any(x => x.Value.Contains(e.Location)) || directionRects.Any(x => x.Value.Contains(e.Location)))
 			{
 				Cursor = Cursors.Hand;
 				return;
@@ -421,14 +455,14 @@ namespace ThumbnailMaker.Controls
 		{
 			return new LaneInfo
 			{
-				Type = LaneType,
+				Class = LaneType,
 				Direction = LaneDirection,
 				Lanes = Lanes,
 				CustomWidth = CustomLaneWidth == -1 ? 0 : CustomLaneWidth,
 				Elevation = CustomVerticalOffset == -1 ? (float?)null : CustomVerticalOffset,
 				SpeedLimit = CustomSpeedLimit == -1 ? (float?)null : CustomSpeedLimit,
 				AddStopToFiller = AddStopToFiller,
-				Width = (LaneType == LaneType.Sidewalk ? 5 : (LaneType < LaneType.Car ? (10 - Math.Min(Lanes, 9)) : 10)) * (small ? 2 : 10)
+				Width = (LaneType == LaneClass.Curb ? 5 : (LaneType < LaneClass.Car ? (10 - Math.Min(Lanes, 9)) : 10)) * (small ? 2 : 10)
 			};
 		}
 
@@ -453,46 +487,46 @@ namespace ThumbnailMaker.Controls
 			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-		internal void ApplyLaneType(LaneType previousLaneType)
+		internal void ApplyLaneType(LaneClass previousLaneType)
 		{
-			if (previousLaneType < LaneType.Car && LaneType >= LaneType.Car)
+			if (previousLaneType < LaneClass.Bike && LaneType >= LaneClass.Bike)
 			{
 				Lanes = 0;
 			}
 
-			if (LaneType < LaneType.Car)
+			if (LaneType < LaneClass.Bike)
 			{
 				LaneDirection = LaneDirection.None;
 
-				if (previousLaneType >= LaneType.Car)
+				if (previousLaneType >= LaneClass.Car)
 					Lanes = 0;
 			}
 
-			if (LaneType == LaneType.Parking)
+			if (LaneType == LaneClass.Parking)
 			{
-				Lanes = Parent.Controls.OfType<RoadLane>().FirstOrDefault(x => x != this && x.LaneType == LaneType.Parking)?.Lanes ?? 0;
+				Lanes = Parent.Controls.OfType<RoadLane>().FirstOrDefault(x => x != this && x.LaneType == LaneClass.Parking)?.Lanes ?? 0;
 
 				if (LaneDirection == LaneDirection.Both)
 					LaneDirection = LaneDirection.None;
 			}
 
-			if (LaneType >= LaneType.Car)
+			if (LaneType >= LaneClass.Bike)
 			{
-				LaneType &= ~LaneType.Empty & ~LaneType.Grass & ~LaneType.Gravel & ~LaneType.Pavement & ~LaneType.Trees;
+				LaneType &= ~LaneClass.Empty & ~LaneClass.Filler;
 			}
 
-			if (LaneType.HasFlag(LaneType.Parking))
+			if (LaneType.HasFlag(LaneClass.Parking))
 			{
-				LaneType = LaneType.Parking;
+				LaneType = LaneClass.Parking;
 				Lanes = Lanes.Between(1, 3);
 			}
 
-			if (LaneType.HasFlag(LaneType.Pedestrian))
+			if (LaneType.HasFlag(LaneClass.Pedestrian))
 			{
 				Lanes = Lanes.Between(0, 2);
 			}
 
-			if ((LaneType < LaneType.Car || LaneType == LaneType.Parking) && LaneDirection != LaneDirection.None)
+			if ((LaneType < LaneClass.Bike || LaneType == LaneClass.Parking) && LaneDirection != LaneDirection.None)
 			{
 				LaneDirection = LaneDirection.None;
 			}
@@ -501,6 +535,13 @@ namespace ThumbnailMaker.Controls
 			directionRects.Clear();
 
 			RefreshRoad();
+		}
+
+		internal void SetDecorations(LaneDecorationStyle laneDecorationStyle)
+		{
+			Decorations = laneDecorationStyle;
+
+			Invalidate();
 		}
 	}
 }

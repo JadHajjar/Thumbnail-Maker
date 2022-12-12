@@ -158,10 +158,10 @@ namespace ThumbnailMaker
 		{
 			if (road == RoadType.Road)
 			{
-				AddLaneControl(new LaneInfo { Type = LaneType.Pedestrian });
-				AddLaneControl(new LaneInfo { Type = LaneType.Sidewalk, Direction = LaneDirection.Backwards });
-				AddLaneControl(new LaneInfo { Type = LaneType.Sidewalk, Direction = LaneDirection.Forward });
-				AddLaneControl(new LaneInfo { Type = LaneType.Pedestrian });
+				AddLaneControl(new LaneInfo { Class = LaneClass.Pedestrian });
+				AddLaneControl(new LaneInfo { Class = LaneClass.Curb, Direction = LaneDirection.Backwards });
+				AddLaneControl(new LaneInfo { Class = LaneClass.Curb, Direction = LaneDirection.Forward });
+				AddLaneControl(new LaneInfo { Class = LaneClass.Pedestrian });
 			}
 		}
 
@@ -198,7 +198,17 @@ namespace ThumbnailMaker
 
 			P_Lanes.Controls.Add(ctrl);
 
-			ctrl.BringToFront();
+			if (RB_Road.Checked || RB_FlatRoad.Checked)
+			{
+				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.LaneType == LaneClass.Curb && x.LaneDirection == LaneDirection.Forward);
+
+				if (rightSidewalk != null)
+					P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.GetChildIndex(rightSidewalk) + 1);
+				else
+					ctrl.BringToFront();
+			}
+			else
+				ctrl.BringToFront();
 
 			var frm = new RoadTypeSelector(ctrl);
 
@@ -328,13 +338,13 @@ namespace ThumbnailMaker
 					return;
 				}
 
-				if (lanes.Any(x => x.Type.HasFlag(LaneType.Train)))
+				if (lanes.Any(x => x.Class.HasFlag(LaneClass.Train)))
 				{
 					Notification.Create("Train Lanes Detected", "Your road was exported, but it contains train lanes which have no effect.", PromptIcons.Info, null)
 						.Show(Form, 15);
 				}
 
-				if (lanes.Any(x => x.IsFiller && x.AddStopToFiller && Utilities.GetLaneWidth(x.Type, x) < 2))
+				if (lanes.Any(x => x.IsFiller && x.AddStopToFiller && Utilities.GetLaneWidth(x.Class, x) < 2))
 				{
 					Notification.Create("Invalid Stops Detected", "Your road was exported, some filler lanes that you've added stops to are too small to work.", PromptIcons.Info, null)
 						.Show(Form, 15);
@@ -350,7 +360,7 @@ namespace ThumbnailMaker
 
 				for (var i = 0; i < lanes.Count; i++)
 				{
-					if (lanes[i].IsFiller || lanes[i].Type == LaneType.Parking || lanes[i].Lanes <= 1)
+					if (lanes[i].IsFiller || lanes[i].Class == LaneClass.Parking || lanes[i].Lanes <= 1)
 						continue;
 
 					var bi = lanes[i].Direction == LaneDirection.Both;
@@ -362,7 +372,7 @@ namespace ThumbnailMaker
 
 					lanes.Insert(i, new LaneInfo
 					{
-						Type = lanes[i].Type,
+						Class = lanes[i].Class,
 						Direction = bi ? (Options.Current.LHT ? LaneDirection.Forward : LaneDirection.Backwards) : lanes[i].Direction,
 						CustomWidth = lanes[i].CustomWidth,
 						SpeedLimit = lanes[i].SpeedLimit,
@@ -468,7 +478,7 @@ namespace ThumbnailMaker
 			var ctrl = new RoadLane(() => RB_Highway.Checked);
 
 			ctrl.RoadLaneChanged += TB_Name_TextChanged;
-			ctrl.LaneType = item.Type;
+			ctrl.LaneType = item.Class;
 			ctrl.LaneDirection = item.Direction;
 			ctrl.Lanes = item.Lanes;
 			ctrl.CustomLaneWidth = item.CustomWidth == 0F ? -1F : item.CustomWidth;
