@@ -50,14 +50,9 @@ namespace ThumbnailMaker.Controls
 				using (var ms = new MemoryStream(Road.SmallThumbnail))
 					Image = new Bitmap(ms);
 
-				if (!string.IsNullOrWhiteSpace(Road.ThumbnailMakerConfig))
-				{
-					var lanes = JsonConvert.DeserializeObject<TmLane[]>(Road.ThumbnailMakerConfig).Select(x => (LaneInfo)x).ToList();
-
-					RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(lanes, Road.RegionType == RegionType.USA) : Road.SpeedLimit.ToString();
-					RoadSize = Road.AsphaltWidth <= 0F ? Utilities.CalculateRoadSize(lanes, Road.BufferWidth.ToString()) : Road.AsphaltWidth.ToString();
-					PavementSize = Road.PavementWidth <= 0F ? "" : Road.PavementWidth.ToString();
-				}
+				RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(Road.TmLanes, Road.RegionType == RegionType.USA) : Road.SpeedLimit.ToString();
+				RoadSize = Road.AsphaltWidth <= 0F ? Utilities.CalculateRoadSize(Road.TmLanes, Road.BufferWidth.ToString()) : Road.AsphaltWidth.ToString();
+				PavementSize = Road.PavementWidth <= 0F ? "" : Road.PavementWidth.ToString();
 
 				Height = 64;
 				Dock = DockStyle.Top;

@@ -91,24 +91,14 @@ namespace ThumbnailMaker.Handlers
 		{
 			lanes = new List<LaneInfo>(lanes);
 
-			if (lanes.Count > 0 && lanes[0].Type == LaneType.Pedestrian)
-			{
-				lanes.RemoveAt(0);
-			}
-
-			if (lanes.Count > 0 && lanes[lanes.Count - 1].Type == LaneType.Pedestrian)
-			{
-				lanes.RemoveAt(lanes.Count - 1);
-			}
-
 			if (lanes.Count == 0)
 			{
 				return string.Empty;
 			}
 
-			var size = (bufferSize.SmartParseF() * 2) + lanes.Sum(x => LaneInfo.GetLaneTypes(x.Type).Max(y => Utilities.GetLaneWidth(y, x)));
+			var size = (bufferSize.SmartParseF() * 2) + lanes.Sum(x => LaneInfo.GetLaneTypes(x.Type).Max(y => GetLaneWidth(y, x)));
 
-			return Math.Round(size, 2).ToString("0.#");
+			return Math.Round(size, 1).ToString("0.#");
 		}
 
 		public static bool? IsOneWay(List<LaneInfo> lanes)

@@ -39,6 +39,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.slickScroll1 = new SlickControls.SlickScroll();
+			this.CB_ColoredLanes = new SlickControls.SlickCheckbox();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -77,15 +78,17 @@
 			// 
 			this.tableLayoutPanel2.AutoSize = true;
 			this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanel2.ColumnCount = 2;
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.99999F));
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.00001F));
+			this.tableLayoutPanel2.ColumnCount = 3;
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel2.Controls.Add(this.slickSpacer1, 0, 3);
 			this.tableLayoutPanel2.Controls.Add(this.DD_Font, 0, 0);
 			this.tableLayoutPanel2.Controls.Add(this.CB_LHT, 0, 2);
 			this.tableLayoutPanel2.Controls.Add(this.TB_ExportFolder, 0, 1);
-			this.tableLayoutPanel2.Controls.Add(this.B_Theme, 1, 0);
-			this.tableLayoutPanel2.Controls.Add(this.label1, 1, 1);
+			this.tableLayoutPanel2.Controls.Add(this.B_Theme, 2, 0);
+			this.tableLayoutPanel2.Controls.Add(this.label1, 2, 1);
+			this.tableLayoutPanel2.Controls.Add(this.CB_ColoredLanes, 1, 2);
 			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.tableLayoutPanel2.Location = new System.Drawing.Point(5, 30);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -94,13 +97,12 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(908, 168);
 			this.tableLayoutPanel2.TabIndex = 13;
 			// 
 			// slickSpacer1
 			// 
-			this.tableLayoutPanel2.SetColumnSpan(this.slickSpacer1, 2);
+			this.tableLayoutPanel2.SetColumnSpan(this.slickSpacer1, 3);
 			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.slickSpacer1.Location = new System.Drawing.Point(3, 164);
 			this.slickSpacer1.Name = "slickSpacer1";
@@ -112,6 +114,7 @@
 			// DD_Font
 			// 
 			this.DD_Font.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.tableLayoutPanel2.SetColumnSpan(this.DD_Font, 2);
 			this.DD_Font.Conversion = null;
 			this.DD_Font.EnterTriggersClick = false;
 			this.DD_Font.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -166,6 +169,7 @@
 			// TB_ExportFolder
 			// 
 			this.TB_ExportFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.tableLayoutPanel2.SetColumnSpan(this.TB_ExportFolder, 2);
 			this.TB_ExportFolder.EnterTriggersClick = false;
 			this.TB_ExportFolder.FileExtensions = new string[0];
 			this.TB_ExportFolder.Folder = true;
@@ -237,13 +241,35 @@
 			// 
 			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
 			this.slickScroll1.LinkedControl = this.TLP;
-			this.slickScroll1.Location = new System.Drawing.Point(907, 198);
+			this.slickScroll1.Location = new System.Drawing.Point(906, 198);
 			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(6, 427);
+			this.slickScroll1.Size = new System.Drawing.Size(7, 427);
 			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
 			this.slickScroll1.TabIndex = 15;
 			this.slickScroll1.TabStop = false;
 			this.slickScroll1.Text = "slickScroll1";
+			// 
+			// CB_ColoredLanes
+			// 
+			this.CB_ColoredLanes.ActiveColor = null;
+			this.CB_ColoredLanes.AutoSize = true;
+			this.CB_ColoredLanes.Center = false;
+			this.CB_ColoredLanes.Checked = false;
+			this.CB_ColoredLanes.CheckedText = null;
+			this.CB_ColoredLanes.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.CB_ColoredLanes.DefaultValue = false;
+			this.CB_ColoredLanes.HideText = false;
+			this.CB_ColoredLanes.IconSize = 16;
+			this.CB_ColoredLanes.Image = ((System.Drawing.Image)(resources.GetObject("CB_ColoredLanes.Image")));
+			this.CB_ColoredLanes.Location = new System.Drawing.Point(246, 132);
+			this.CB_ColoredLanes.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+			this.CB_ColoredLanes.Name = "CB_ColoredLanes";
+			this.CB_ColoredLanes.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
+			this.CB_ColoredLanes.Size = new System.Drawing.Size(114, 26);
+			this.CB_ColoredLanes.TabIndex = 15;
+			this.CB_ColoredLanes.Text = "Colored Lanes";
+			this.CB_ColoredLanes.UncheckedText = null;
+			this.CB_ColoredLanes.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
 			// 
 			// PC_Options
 			// 
@@ -279,5 +305,6 @@
 		private SlickControls.SlickCheckbox CB_LHT;
 		private System.Windows.Forms.Panel panel1;
 		private SlickControls.SlickScroll slickScroll1;
+		private SlickControls.SlickCheckbox CB_ColoredLanes;
 	}
 }

@@ -21,6 +21,7 @@ namespace ThumbnailMaker
 		public string ExportFolder { get; set; }
 		public RegionType Region { get; set; }
 		public bool LHT { get; set; }
+		public bool ShowLaneColorsOnThumbnail { get; set; }
 
 		public static void Save()
 		{

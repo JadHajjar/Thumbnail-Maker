@@ -49,6 +49,7 @@ namespace ThumbnailMaker
 
 			TB_ExportFolder.Text = Options.Current.ExportFolder;
 			CB_LHT.Checked = Options.Current.LHT;
+			CB_ColoredLanes.Checked = Options.Current.ShowLaneColorsOnThumbnail;
 		}
 
 
@@ -82,6 +83,7 @@ namespace ThumbnailMaker
 		private void CB_LHT_CheckChanged(object sender, EventArgs e)
 		{
 			Options.Current.LHT = CB_LHT.Checked;
+			Options.Current.ShowLaneColorsOnThumbnail = CB_ColoredLanes.Checked;
 			Options.Save();
 		}
 	}

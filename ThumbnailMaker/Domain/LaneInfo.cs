@@ -87,14 +87,14 @@ namespace ThumbnailMaker.Domain
 		public Brush Brush(bool small)
 			=> new LinearGradientBrush(
 				new Rectangle(0, 0, small ? 100 : 512, small ? 100 : 512),
-				Color.FromArgb(0, Color), Color.FromArgb(100, Color),
+				Color.FromArgb(0, Color), Color.FromArgb(255, Color),
 				LinearGradientMode.Vertical);
 
-		public List<Image> Icons(bool small)
+		public List<KeyValuePair<LaneType, Image>> Icons(bool small)
 		{
 			return GetLaneTypes(Type)
-			  .Select(x => ResourceManager.GetImage(x, small))
-			  .Where(x => x != null)
+			  .ToDictionary(x => x, x => ResourceManager.GetImage(x, small))
+			  .Where(x => x.Value != null)
 			  .ToList();
 		}
 

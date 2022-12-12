@@ -107,7 +107,7 @@ namespace ThumbnailMaker.Domain
 
 				case LaneType.Tram:
 				case LaneType.Car:
-				case LaneType.Trolley:
+				case LaneType.Bus:
 				case LaneType.Emergency:
 					return 3F;
 
@@ -121,9 +121,11 @@ namespace ThumbnailMaker.Domain
 					return 2F;
 
 				case LaneType.Highway:
-				case LaneType.Bus:
 				case LaneType.Train:
 					return 4F;
+
+				case LaneType.Sidewalk:
+					return 1F;
 			}
 
 			return 3F;

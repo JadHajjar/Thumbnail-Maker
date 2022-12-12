@@ -134,7 +134,7 @@ namespace ThumbnailMaker.Controls
 		private int DrawIcon(PaintEventArgs e, Point cursor, LaneInfo lane)
 		{
 			var laneColor = lane.Color;
-			var icons = lane.Icons(UI.FontScale <= 1.25).Where(x => x != null).ToList();
+			var icons = lane.Icons(UI.FontScale <= 1.25);
 
 			iconRectangle = new Rectangle(3, (Height - scale - 7) / 2, Math.Max(scale, icons.Count * scale), scale);
 
@@ -145,10 +145,10 @@ namespace ThumbnailMaker.Controls
 
 			var iconX = 3;
 			var color = laneColor.GetAccentColor();
-			foreach (var icon in icons)
+			foreach (var icon in icons.Select(x => x.Value))
 			{
 				using (icon)
-					e.Graphics.DrawImage(icon.Color(color), new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale).CenterR(UI.FontScale <= 1.25 ? icon.Size : new Size(scale * 2 / 3, scale * 2 / 3)));
+					e.Graphics.DrawImage(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale).CenterR(UI.FontScale <= 1.25 ? icon.Size : new Size(scale * 2 / 3, scale * 2 / 3)));
 
 				iconX += scale;
 			}

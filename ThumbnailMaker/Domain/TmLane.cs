@@ -31,7 +31,6 @@ namespace ThumbnailMaker.Domain
 		public float CustomSpeedLimit { get; set; }
 		public bool AddStopToFiller { get; set; }
 
-
 		public static explicit operator LaneInfo(TmLane l) => new LaneInfo
 		{
 			Type = l.LaneType,
@@ -39,7 +38,7 @@ namespace ThumbnailMaker.Domain
 			Lanes = l.Lanes,
 			AddStopToFiller = l.AddStopToFiller,
 			CustomWidth = l.CustomLaneWidth == -1 ? 0 : l.CustomLaneWidth,
-			Elevation = l.CustomVerticalOffset == -1 ? (float?)null : l.CustomLaneWidth,
+			Elevation = l.CustomVerticalOffset == -1 ? (float?)null : l.CustomVerticalOffset,
 			SpeedLimit = l.CustomSpeedLimit == -1 ? (float?)null : l.CustomSpeedLimit
 		};
 	}
