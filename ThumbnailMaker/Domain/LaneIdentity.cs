@@ -9,7 +9,7 @@ namespace ThumbnailMaker.Domain
 {
 	public class LaneIdentityAttribute : Attribute
 	{
-		public LaneIdentityAttribute(int id, string name)
+		public LaneIdentityAttribute(int id, string name = null)
 		{
 			Id = id;
 			Name = name;
@@ -19,6 +19,12 @@ namespace ThumbnailMaker.Domain
 		{
 			Id = id;
 			Name = name;
+			DefaultColor = Color.FromArgb(r, g, b);
+		}
+
+		public LaneIdentityAttribute(int id, int r, int g, int b)
+		{
+			Id = id;
 			DefaultColor = Color.FromArgb(r, g, b);
 		}
 

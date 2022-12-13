@@ -186,6 +186,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\L_C_1.png" />
+    <None Include="Resources\S_C_2.png" />
+    <None Include="Resources\S_C_1.png" />
+    <None Include="Resources\L_C_2.png" />
     <None Include="Resources\Icon_Vertical.png" />
     <None Include="Resources\I_Load.png" />
     <None Include="Resources\Icon_Diagonal.png" />
@@ -219,9 +223,31 @@
     <None Include="Resources\L_D_10.png" />
     <None Include="Resources\L_D_11.png" />
     <None Include="Resources\L_D_12.png" />
-    <Content Include="Resources\tooltip.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="Resources\S_C_11.png" />
+    <None Include="Resources\S_D_1.png" />
+    <None Include="Resources\S_D_2.png" />
+    <None Include="Resources\S_D_3.png" />
+    <None Include="Resources\S_D_4.png" />
+    <None Include="Resources\S_D_5.png" />
+    <None Include="Resources\S_D_6.png" />
+    <None Include="Resources\S_D_7.png" />
+    <None Include="Resources\S_D_8.png" />
+    <None Include="Resources\S_D_9.png" />
+    <None Include="Resources\S_D_10.png" />
+    <None Include="Resources\S_D_11.png" />
+    <None Include="Resources\S_D_12.png" />
+    <None Include="Resources\S_RT_0.png" />
+    <None Include="Resources\S_RT_1.png" />
+    <None Include="Resources\S_RT_2.png" />
+    <None Include="Resources\S_RT_3.png" />
+    <None Include="Resources\S_Arrow.png" />
+    <None Include="Resources\S_C_3.png" />
+    <None Include="Resources\S_C_4.png" />
+    <None Include="Resources\S_C_5.png" />
+    <None Include="Resources\S_C_6.png" />
+    <None Include="Resources\S_C_7.png" />
+    <None Include="Resources\S_C_8.png" />
+    <None Include="Resources\S_C_9.png" />
     <None Include="Resources\I_Grabber.png" />
     <None Include="Resources\I_X.png" />
     <None Include="Resources\I_1WF.png" />

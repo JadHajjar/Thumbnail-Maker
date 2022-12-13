@@ -99,12 +99,13 @@ namespace ThumbnailMaker.Domain
 		public Brush Brush(bool small)
 			=> new LinearGradientBrush(
 				new Rectangle(0, 0, small ? 100 : 512, small ? 100 : 512),
-				Color.FromArgb(0, Color), Color.FromArgb(255, Color),
+				Color.FromArgb(30, Color), Color.FromArgb(220, Color),
 				LinearGradientMode.Vertical);
 
-		public List<KeyValuePair<LaneClass, Image>> Icons(bool small)
+		public List<KeyValuePair<LaneClass, Image>> Icons(bool small, bool all = false)
 		{
 			return GetLaneTypes(Class)
+			  .Where(x => all || x > LaneClass.Curb)
 			  .ToDictionary(x => x, x => ResourceManager.GetImage(x, small))
 			  .Where(x => x.Value != null)
 			  .ToList();

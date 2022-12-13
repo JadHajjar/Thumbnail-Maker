@@ -86,23 +86,27 @@ namespace ThumbnailMaker.Controls
 
 				var rectangle = new Rectangle(point, new Size(96, 96));
 
-				e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Decorations==laneType ? LaneInfo.GetColor(laneType) : FormDesign.Design.AccentColor), rectangle, 16);
-
-				if (laneType == LaneDecorationStyle.None)
-					e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 2.5F), rectangle, 16);
-
 				using (var icon = ResourceManager.GetImage(laneType, false))
 				{
-					if (icon != null)
-						e.Graphics.DrawImage(new Bitmap(icon, new Size(icon.Width * 84 / icon.Height, 84)), rectangle.CenterR(new Size(icon.Width * 84 / icon.Height, 84)));
-					else if (_roadLane.Decorations!=laneType)
-						e.Graphics.DrawRoundedRectangle(new Pen(LaneInfo.GetColor(laneType), 2.5F), rectangle, 16);
-				}
+					var laneColor = icon != null ? icon.GetAverageColor() : LaneInfo.GetColor(laneType);
 
-				if (rectangle.Contains(cursor))
-				{
-					e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(150, LaneInfo.GetColor(laneType))), rectangle, 16);
-					e.Graphics.DrawString(laneType.ToString().FormatWords(), new Font(UI.FontFamily, 11.25F, FontStyle.Bold), new SolidBrush(LaneInfo.GetColor(laneType).GetAccentColor()), rectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+					e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Decorations == laneType ? laneColor : FormDesign.Design.AccentColor), rectangle, 16);
+
+					if (laneType == LaneDecorationStyle.None)
+						e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 2.5F), rectangle, 16);
+
+					if (icon != null)
+						e.Graphics.DrawIcon(icon, rectangle, new Size(80, 80));
+					else if (_roadLane.Decorations != laneType)
+						e.Graphics.DrawRoundedRectangle(new Pen(laneColor, 2.5F), rectangle, 16);
+
+					if (rectangle.Contains(cursor))
+					{
+						e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(150, laneColor)), rectangle, 16);
+						e.Graphics.DrawString(laneType.ToString().FormatWords(), new Font(UI.FontFamily, 11.25F, FontStyle.Bold), new SolidBrush(laneColor.GetAccentColor()), rectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+					}
+					else if (_roadLane.Decorations != laneType)
+						e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
 				}
 
 				point.X += 108;

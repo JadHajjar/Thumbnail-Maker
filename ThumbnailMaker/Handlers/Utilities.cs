@@ -171,14 +171,15 @@ namespace ThumbnailMaker.Handlers
 
 			if (img.Width >= rect.Width || img.Height >= rect.Height)
 			{
-				if (img.Width > img.Height)
+				if (img.Width >= img.Height)
 				{
 					var newHeight = img.Height * rect.Width / img.Width;
 
 					rect.Y += (rect.Height - newHeight) / 2;
 					rect.Height = newHeight;
 				}
-				else
+
+				if (img.Width <= img.Height)
 				{
 					var newWidth = img.Width * rect.Height / img.Height;
 
@@ -186,31 +187,40 @@ namespace ThumbnailMaker.Handlers
 					rect.Width = newWidth;
 				}
 			}
+			else
+				rect = rect.CenterR(img.Size);
 
 			g.DrawImage(img, rect);
 		}
 
 		public static bool IsCompatible(this LaneDecorationStyle deco, LaneClass laneClass)
 		{
-			switch (laneClass)
+			foreach (var item in LaneInfo.GetLaneTypes(laneClass))
 			{
-				case LaneClass.Filler:
-				case LaneClass.Curb:
-					return !deco.AnyOf(LaneDecorationStyle.StreetLight, LaneDecorationStyle.DoubleStreetLight);
+				switch (item)
+				{
+					case LaneClass.Filler:
+					case LaneClass.Curb:
+						if (deco.AnyOf(LaneDecorationStyle.StreetLight, LaneDecorationStyle.DoubleStreetLight, LaneDecorationStyle.Filler))
+							return false;
+						break;
 
-				case LaneClass.Pedestrian:
-				case LaneClass.Bike:
-				case LaneClass.Car:
-				case LaneClass.Tram:
-				case LaneClass.Bus:
-				case LaneClass.Trolley:
-				case LaneClass.Emergency:
-				case LaneClass.Train:
-				case LaneClass.Parking:
-					return deco.AnyOf(LaneDecorationStyle.None, LaneDecorationStyle.Filler, LaneDecorationStyle.Grass, LaneDecorationStyle.Gravel, LaneDecorationStyle.Pavement);
+					case LaneClass.Pedestrian:
+					case LaneClass.Bike:
+					case LaneClass.Car:
+					case LaneClass.Tram:
+					case LaneClass.Bus:
+					case LaneClass.Trolley:
+					case LaneClass.Emergency:
+					case LaneClass.Train:
+					case LaneClass.Parking:
+						if (!deco.AnyOf(LaneDecorationStyle.None, LaneDecorationStyle.Filler, LaneDecorationStyle.Grass, LaneDecorationStyle.Gravel, LaneDecorationStyle.Pavement))
+							return false;
+						break;
+				}
 			}
 
-			return false;
+			return laneClass != LaneClass.Empty;
 		}
 	}
 }

@@ -86,7 +86,8 @@ namespace ThumbnailMaker.Controls
 
 			var iconX = DrawIcon(e, cursor, lane);
 
-			DrawDecoIcon(e, cursor, lane, ref iconX);
+			if (LaneType != LaneClass.Empty)
+				DrawDecoIcon(e, cursor, ref iconX);
 
 			if (LaneType != LaneClass.Curb)
 				DrawDeleteIcon(e, cursor);
@@ -138,19 +139,22 @@ namespace ThumbnailMaker.Controls
 		private int DrawIcon(PaintEventArgs e, Point cursor, LaneInfo lane)
 		{
 			var laneColor = lane.Color;
-			var icons = lane.Icons(UI.FontScale <= 1.25);
+			var icons = lane.Icons(UI.FontScale <= 1.25, true);
 
 			iconRectangle = new Rectangle(3, (Height - scale - 7) / 2, Math.Max(scale, icons.Count * scale), scale);
 
 			if (LaneType == LaneClass.Empty)
 				e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 1.5F), iconRectangle, 6);
 			else
-				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(iconRectangle.Contains(cursor) ? 100 : 200, laneColor)), iconRectangle, 6);
+				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(iconRectangle.Contains(cursor) ? 50 : 100, laneColor)), iconRectangle, 6);
 
 			var iconX = 3;
 			var color = laneColor.GetAccentColor();
 			foreach (var icon in icons.Select(x => x.Value))
 			{
+				if (LaneType == LaneClass.Curb && LaneDirection == LaneDirection.Backwards)
+					icon.RotateFlip(RotateFlipType.RotateNoneFlipX);
+
 				using (icon)
 					e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 3 / 4, scale * 3 / 4));
 
@@ -166,7 +170,7 @@ namespace ThumbnailMaker.Controls
 			return iconRectangle.Width + 12;
 		}
 
-		private void DrawDecoIcon(PaintEventArgs e, Point cursor, LaneInfo lane, ref int iconX)
+		private void DrawDecoIcon(PaintEventArgs e, Point cursor, ref int iconX)
 		{
 			var laneColor = FormDesign.Design.AccentColor;
 			var icon = ResourceManager.GetImage(Decorations, UI.FontScale <= 1.25);
@@ -512,7 +516,7 @@ namespace ThumbnailMaker.Controls
 					LaneDirection = LaneDirection.None;
 			}
 
-			if (LaneType >= LaneClass.Bike)
+			if (LaneType >= LaneClass.Pedestrian)
 			{
 				LaneType &= ~LaneClass.Empty & ~LaneClass.Filler;
 			}
@@ -541,6 +545,11 @@ namespace ThumbnailMaker.Controls
 
 			sizeRects.Clear();
 			directionRects.Clear();
+			iconRectangle = Rectangle.Empty;
+			decoRectangle = Rectangle.Empty;
+			deleteRectangle = Rectangle.Empty;
+			grabberRectangle = Rectangle.Empty;
+			editRectangle = Rectangle.Empty;
 
 			RefreshRoad();
 		}

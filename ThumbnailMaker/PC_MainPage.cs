@@ -20,6 +20,8 @@ using ThumbnailMaker.Controls;
 using ThumbnailMaker.Domain;
 using ThumbnailMaker.Handlers;
 
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
+
 namespace ThumbnailMaker
 {
 	public partial class PC_MainPage : PanelContent
@@ -118,7 +120,7 @@ namespace ThumbnailMaker
 
 		private void DrawThumbnail(Graphics graphics, List<LaneInfo> lanes, bool small)
 		{
-			new ThumbnailHandler(graphics, small)
+			new ThumbnailHandler(graphics, small, false)
 			{
 				RoadWidth = string.IsNullOrWhiteSpace(TB_Size.Text) ? Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text) : 0F,
 				CustomText = TB_CustomText.Text,
@@ -237,7 +239,7 @@ namespace ThumbnailMaker
 			else
 				ctrl.BringToFront();
 
-			var frm = new RoadTypeSelector(ctrl);
+			var frm = new RoadTypeSelector(ctrl, B_AddLane);
 
 			frm.FormClosed += (s, _) => RefreshPreview();
 		}
