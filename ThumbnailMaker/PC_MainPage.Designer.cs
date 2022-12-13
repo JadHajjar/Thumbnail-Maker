@@ -59,7 +59,6 @@
 			this.TB_CustomText = new SlickControls.SlickTextBox();
 			this.TB_SpeedLimit = new SlickControls.SlickTextBox();
 			this.TB_BufferSize = new SlickControls.SlickTextBox();
-			this.TB_PavementWidth = new SlickControls.SlickTextBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.slickScroll1 = new SlickControls.SlickScroll();
 			this.P_Lanes = new ThumbnailMaker.Controls.RoadLaneContainer();
@@ -295,10 +294,9 @@
 			this.tableLayoutPanel6.Controls.Add(this.slickGroupBox1, 1, 0);
 			this.tableLayoutPanel6.Controls.Add(this.groupBox2, 0, 0);
 			this.tableLayoutPanel6.Controls.Add(this.TB_Size, 2, 0);
-			this.tableLayoutPanel6.Controls.Add(this.TB_CustomText, 2, 2);
 			this.tableLayoutPanel6.Controls.Add(this.TB_SpeedLimit, 3, 1);
-			this.tableLayoutPanel6.Controls.Add(this.TB_BufferSize, 2, 1);
-			this.tableLayoutPanel6.Controls.Add(this.TB_PavementWidth, 3, 0);
+			this.tableLayoutPanel6.Controls.Add(this.TB_BufferSize, 3, 0);
+			this.tableLayoutPanel6.Controls.Add(this.TB_CustomText, 2, 1);
 			this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Top;
 			this.tableLayoutPanel6.Location = new System.Drawing.Point(15, 0);
 			this.tableLayoutPanel6.Margin = new System.Windows.Forms.Padding(0);
@@ -476,7 +474,6 @@
 			this.RB_FlatRoad.Checked = false;
 			this.RB_FlatRoad.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.RB_FlatRoad.Data = null;
-			this.RB_FlatRoad.Enabled = false;
 			this.RB_FlatRoad.EnterTriggersClick = false;
 			this.RB_FlatRoad.HideText = false;
 			this.RB_FlatRoad.IconSize = 16;
@@ -519,7 +516,6 @@
 			this.RB_Highway.Checked = false;
 			this.RB_Highway.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.RB_Highway.Data = null;
-			this.RB_Highway.Enabled = false;
 			this.RB_Highway.EnterTriggersClick = false;
 			this.RB_Highway.HideText = false;
 			this.RB_Highway.IconSize = 16;
@@ -540,7 +536,7 @@
 			this.TB_Size.EnterTriggersClick = false;
 			this.TB_Size.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_Size.Image = ((System.Drawing.Image)(resources.GetObject("TB_Size.Image")));
-			this.TB_Size.LabelText = "Asphalt Size (m)";
+			this.TB_Size.LabelText = "Road Size (m)";
 			this.TB_Size.Location = new System.Drawing.Point(388, 10);
 			this.TB_Size.Margin = new System.Windows.Forms.Padding(0, 10, 10, 15);
 			this.TB_Size.MaximumSize = new System.Drawing.Size(9999, 0);
@@ -548,7 +544,7 @@
 			this.TB_Size.MinimumSize = new System.Drawing.Size(50, 0);
 			this.TB_Size.Name = "TB_Size";
 			this.TB_Size.Password = false;
-			this.TB_Size.Placeholder = "Custom asphalt width";
+			this.TB_Size.Placeholder = "Custom road width";
 			this.TB_Size.ReadOnly = false;
 			this.TB_Size.Required = false;
 			this.TB_Size.SelectAllOnFocus = false;
@@ -571,8 +567,8 @@
 			this.TB_CustomText.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_CustomText.Image = ((System.Drawing.Image)(resources.GetObject("TB_CustomText.Image")));
 			this.TB_CustomText.LabelText = "Text";
-			this.TB_CustomText.Location = new System.Drawing.Point(388, 110);
-			this.TB_CustomText.Margin = new System.Windows.Forms.Padding(0, 0, 10, 3);
+			this.TB_CustomText.Location = new System.Drawing.Point(388, 60);
+			this.TB_CustomText.Margin = new System.Windows.Forms.Padding(0, 0, 10, 15);
 			this.TB_CustomText.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.TB_CustomText.MaxLength = 32767;
 			this.TB_CustomText.MinimumSize = new System.Drawing.Size(50, 0);
@@ -631,8 +627,8 @@
 			this.TB_BufferSize.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_BufferSize.Image = ((System.Drawing.Image)(resources.GetObject("TB_BufferSize.Image")));
 			this.TB_BufferSize.LabelText = "Buffer Size (m)";
-			this.TB_BufferSize.Location = new System.Drawing.Point(388, 60);
-			this.TB_BufferSize.Margin = new System.Windows.Forms.Padding(0, 0, 10, 15);
+			this.TB_BufferSize.Location = new System.Drawing.Point(631, 10);
+			this.TB_BufferSize.Margin = new System.Windows.Forms.Padding(0, 10, 10, 15);
 			this.TB_BufferSize.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.TB_BufferSize.MaxLength = 32767;
 			this.TB_BufferSize.MinimumSize = new System.Drawing.Size(50, 0);
@@ -645,43 +641,13 @@
 			this.TB_BufferSize.SelectedText = "";
 			this.TB_BufferSize.SelectionLength = 0;
 			this.TB_BufferSize.SelectionStart = 0;
-			this.TB_BufferSize.Size = new System.Drawing.Size(233, 35);
+			this.TB_BufferSize.Size = new System.Drawing.Size(234, 35);
 			this.TB_BufferSize.TabIndex = 2;
 			this.TB_BufferSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			this.TB_BufferSize.Validation = SlickControls.ValidationType.Decimal;
 			this.TB_BufferSize.ValidationCustom = null;
 			this.TB_BufferSize.ValidationRegex = "";
 			this.TB_BufferSize.TextChanged += new System.EventHandler(this.TB_Name_TextChanged);
-			// 
-			// TB_PavementWidth
-			// 
-			this.TB_PavementWidth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TB_PavementWidth.EnterTriggersClick = false;
-			this.TB_PavementWidth.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TB_PavementWidth.Image = ((System.Drawing.Image)(resources.GetObject("TB_PavementWidth.Image")));
-			this.TB_PavementWidth.LabelText = "Pavement Size (m)";
-			this.TB_PavementWidth.Location = new System.Drawing.Point(631, 10);
-			this.TB_PavementWidth.Margin = new System.Windows.Forms.Padding(0, 10, 10, 15);
-			this.TB_PavementWidth.MaximumSize = new System.Drawing.Size(9999, 0);
-			this.TB_PavementWidth.MaxLength = 32767;
-			this.TB_PavementWidth.MinimumSize = new System.Drawing.Size(50, 0);
-			this.TB_PavementWidth.Name = "TB_PavementWidth";
-			this.TB_PavementWidth.Password = false;
-			this.TB_PavementWidth.Placeholder = "Custom pavement width";
-			this.TB_PavementWidth.ReadOnly = false;
-			this.TB_PavementWidth.Required = false;
-			this.TB_PavementWidth.SelectAllOnFocus = false;
-			this.TB_PavementWidth.SelectedText = "";
-			this.TB_PavementWidth.SelectionLength = 0;
-			this.TB_PavementWidth.SelectionStart = 0;
-			this.TB_PavementWidth.Size = new System.Drawing.Size(234, 35);
-			this.TB_PavementWidth.TabIndex = 2;
-			this.TB_PavementWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.TB_PavementWidth.Validation = SlickControls.ValidationType.Decimal;
-			this.TB_PavementWidth.ValidationCustom = null;
-			this.TB_PavementWidth.ValidationRegex = "";
-			this.TB_PavementWidth.TextChanged += new System.EventHandler(this.TB_Name_TextChanged);
 			// 
 			// panel1
 			// 
@@ -699,9 +665,9 @@
 			// 
 			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
 			this.slickScroll1.LinkedControl = this.P_Lanes;
-			this.slickScroll1.Location = new System.Drawing.Point(869, 0);
+			this.slickScroll1.Location = new System.Drawing.Point(868, 0);
 			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(6, 354);
+			this.slickScroll1.Size = new System.Drawing.Size(7, 354);
 			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
 			this.slickScroll1.TabIndex = 1;
 			this.slickScroll1.TabStop = false;
@@ -964,6 +930,5 @@
 		private Controls.RoadConfigContainer RCC;
 		private SlickControls.SlickTextBox TB_RoadName;
 		private SlickControls.SlickRadioButton RB_FlatRoad;
-		private SlickControls.SlickTextBox TB_PavementWidth;
 	}
 }

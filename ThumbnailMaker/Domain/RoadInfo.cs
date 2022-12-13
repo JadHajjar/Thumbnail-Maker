@@ -15,8 +15,7 @@ namespace ThumbnailMaker.Domain
 		public List<LaneInfo> Lanes { get; set; }
 		public RoadType RoadType { get; set; }
 		public RegionType RegionType { get; set; }
-		public float AsphaltWidth { get; set; }
-		public float PavementWidth { get; set; }
+		public float RoadWidth { get; set; }
 		public float BufferWidth { get; set; }
 		public float SpeedLimit { get; set; }
 		public bool LHT { get; set; }
@@ -41,7 +40,9 @@ namespace ThumbnailMaker.Domain
 			{
 				TmLanes.ForEach(TranslateLaneTypesV1);
 
-				AsphaltWidth = Width;
+				if (Width != 0)
+					RoadWidth = Width + 6;
+
 				BufferWidth = BufferSize;
 
 				if (!(TmLanes.Count > 0 && TmLanes[0].Class == LaneClass.Pedestrian))
@@ -78,16 +79,22 @@ namespace ThumbnailMaker.Domain
 				switch (item)
 				{
 					case OLD_LaneType.Grass:
-						l.Decorations |= LaneDecorationStyle.Grass;
+						l.Decorations = LaneDecorationStyle.Grass;
 						break;
 					case OLD_LaneType.Pavement:
-						l.Decorations |= LaneDecorationStyle.Pavement;
+						l.Decorations = LaneDecorationStyle.Pavement;
 						break;
 					case OLD_LaneType.Gravel:
-						l.Decorations |= LaneDecorationStyle.Gravel;
+						l.Decorations = LaneDecorationStyle.Gravel;
 						break;
 					case OLD_LaneType.Trees:
-						l.Decorations |= LaneDecorationStyle.TreeAndGrass;
+						l.Decorations = LaneDecorationStyle.TreeAndGrass;
+						break;
+
+					case OLD_LaneType.Bike:
+					case OLD_LaneType.Bus:
+					case OLD_LaneType.Trolley:
+						l.Decorations = LaneDecorationStyle.Filler;
 						break;
 				}
 			}

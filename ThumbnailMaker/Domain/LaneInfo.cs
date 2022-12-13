@@ -57,6 +57,15 @@ namespace ThumbnailMaker.Domain
 				: GetDefaultLaneColor(laneType);
 		}
 
+		public static Color GetColor(LaneDecorationStyle deco)
+		{
+			var field = deco.GetType().GetField(Enum.GetName(typeof(LaneDecorationStyle), deco));
+
+			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
+
+			return attribute.DefaultColor;
+		}
+
 		public static Color GetDefaultLaneColor(LaneClass lane)
 		{
 			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneClass), lane));

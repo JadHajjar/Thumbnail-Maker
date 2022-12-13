@@ -8,29 +8,31 @@ namespace ThumbnailMaker.Domain
 {
 	public enum LaneDecorationStyle
 	{
-		[LaneIdentity(5, "M", 72, 161, 73)] None,
+		[LaneIdentity(0, "M", 72, 161, 73)] 
+		None = 0,
+		[LaneIdentity(12, "M", 72, 161, 73)]
+		Filler = 1,
 		[LaneIdentity(1, "M", 154, 203, 96)]
-		Grass,
+		Grass = 2,
 		[LaneIdentity(2, "M", 99, 102, 107)]
-		Pavement,
+		Pavement = 3,
 		[LaneIdentity(3, "M", 79, 61, 55)]
-		Gravel,
+		Gravel = 4,
 		[LaneIdentity(4, "M", 72, 161, 73)]
-		Tree,
-		[LaneIdentity(4, "M", 72, 161, 73)]
-		TreeAndGrass,
+		Tree = 5,
 		[LaneIdentity(5, "M", 72, 161, 73)]
-		TreeAndBenches,
+		TreeAndGrass = 6,
 		[LaneIdentity(6, "M", 72, 161, 73)]
-		Benches,
-		[LaneIdentity(7, "M", 72, 161, 73)] 
-		FlowerPots,
-		[LaneIdentity(8, "M", 72, 161, 73)]
-		StreetLight,
+		TreeAndBenches = 7,
+		[LaneIdentity(7, "M", 72, 161, 73)]
+		Benches = 8,
+		[LaneIdentity(8, "M", 72, 161, 73)] 
+		FlowerPots = 9,
 		[LaneIdentity(9, "M", 72, 161, 73)]
-		DoubleStreetLight,
+		StreetLight = 10,
 		[LaneIdentity(10, "M", 72, 161, 73)]
-		Bollard,
-
+		DoubleStreetLight = 11,
+		[LaneIdentity(11, "M", 72, 161, 73)]
+		Bollard = 12
 	}
 }

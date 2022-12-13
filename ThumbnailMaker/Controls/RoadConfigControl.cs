@@ -31,7 +31,6 @@ namespace ThumbnailMaker.Controls
 		public DateTime TimeSaved { get; }
 		public string RoadSpeed { get; }
 		public string RoadSize { get; }
-		public string PavementSize { get; }
 
 		public event System.EventHandler<RoadInfo> LoadConfiguration;
 
@@ -50,9 +49,8 @@ namespace ThumbnailMaker.Controls
 				using (var ms = new MemoryStream(Road.SmallThumbnail))
 					Image = new Bitmap(ms);
 
-				RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(Road.TmLanes, Road.RegionType == RegionType.USA) : Road.SpeedLimit.ToString();
-				RoadSize = Road.AsphaltWidth <= 0F ? Utilities.CalculateRoadSize(Road.TmLanes, Road.BufferWidth.ToString()) : Road.AsphaltWidth.ToString();
-				PavementSize = Road.PavementWidth <= 0F ? "" : Road.PavementWidth.ToString();
+				RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(Road.TmLanes, Road.RegionType == RegionType.USA).If(x => x == 0, x => "", x => x.ToString()) : Road.SpeedLimit.ToString();
+				RoadSize = Road.RoadWidth <= 0F ? Utilities.CalculateRoadSize(Road.TmLanes, Road.BufferWidth.ToString()).If(x => x == 0F, x => "", x => x.ToString("0.#")) : Road.RoadWidth.ToString();
 
 				Height = 64;
 				Dock = DockStyle.Top;

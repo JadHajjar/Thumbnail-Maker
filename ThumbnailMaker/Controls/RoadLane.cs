@@ -152,7 +152,7 @@ namespace ThumbnailMaker.Controls
 			foreach (var icon in icons.Select(x => x.Value))
 			{
 				using (icon)
-					e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 2 / 3, scale * 2 / 3));
+					e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 3 / 4, scale * 3 / 4));
 
 				iconX += scale;
 			}
@@ -179,7 +179,7 @@ namespace ThumbnailMaker.Controls
 				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(decoRectangle.Contains(cursor) ? 100 : 200, laneColor)), decoRectangle, 6);
 
 			using (icon)
-				e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 2 / 3, scale * 2 / 3));
+				e.Graphics.DrawIcon(icon, decoRectangle, UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 3 / 4, scale * 3 / 4));
 
 			iconX += scale;
 
@@ -326,7 +326,7 @@ namespace ThumbnailMaker.Controls
 				return;
 			}
 
-			if (decoRectangle.Contains(e.Location) && LaneType != LaneClass.Curb)
+			if (decoRectangle.Contains(e.Location))
 			{
 				new DecoTypeSelector(this);
 
@@ -458,6 +458,7 @@ namespace ThumbnailMaker.Controls
 				Class = LaneType,
 				Direction = LaneDirection,
 				Lanes = Lanes,
+				Decorations = Decorations,
 				CustomWidth = CustomLaneWidth == -1 ? 0 : CustomLaneWidth,
 				Elevation = CustomVerticalOffset == -1 ? (float?)null : CustomVerticalOffset,
 				SpeedLimit = CustomSpeedLimit == -1 ? (float?)null : CustomSpeedLimit,
@@ -473,6 +474,7 @@ namespace ThumbnailMaker.Controls
 				LaneType = LaneType,
 				LaneDirection = LaneDirection,
 				Lanes = Lanes,
+				Decorations = Decorations,
 				CustomLaneWidth = CustomLaneWidth,
 				CustomVerticalOffset = CustomVerticalOffset,
 				CustomSpeedLimit = CustomSpeedLimit,
@@ -531,6 +533,12 @@ namespace ThumbnailMaker.Controls
 				LaneDirection = LaneDirection.None;
 			}
 
+			if (Decorations == LaneDecorationStyle.None && (LaneType == LaneClass.Bike || LaneType == LaneClass.Bus || LaneType == LaneClass.Trolley))
+				Decorations = LaneDecorationStyle.Filler;
+
+			if (!Decorations.IsCompatible(LaneType))
+				Decorations = LaneDecorationStyle.None;
+
 			sizeRects.Clear();
 			directionRects.Clear();
 
@@ -541,7 +549,7 @@ namespace ThumbnailMaker.Controls
 		{
 			Decorations = laneDecorationStyle;
 
-			Invalidate();
+			RefreshRoad();
 		}
 	}
 }

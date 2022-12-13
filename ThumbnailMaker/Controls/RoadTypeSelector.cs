@@ -31,10 +31,10 @@ namespace ThumbnailMaker.Controls
 				if ((laneType & (LaneClass.Curb | LaneClass.Train)) != 0)
 					continue;
 
-				point.X += 108;
-
 				if (point.X + 96 > 5 * 108 + 12)
 					point = new Point(12, point.Y + 108);
+
+				point.X += 108;
 			}
 
 			Size = new Size(5 * 108 + 12, point.Y + 108);

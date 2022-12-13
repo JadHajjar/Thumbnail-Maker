@@ -54,7 +54,9 @@ namespace ThumbnailMaker.Domain
 			}
 		}
 
-		public static LaneSizeOptions LaneSizes { get; set; } = new LaneSizeOptions();
+		public static LaneSizeOptions LaneSizes { get; private set; } = new LaneSizeOptions();
+
+		public static void Refresh() => LaneSizes = new LaneSizeOptions();
 
 		public LaneSizeOptions()
 		{

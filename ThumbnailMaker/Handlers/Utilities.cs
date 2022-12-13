@@ -69,12 +69,12 @@ namespace ThumbnailMaker.Handlers
 
 			if (string.IsNullOrWhiteSpace(size))
 			{
-				size = CalculateRoadSize(lanes, bufferSize);
+				size = CalculateRoadSize(lanes, bufferSize).If(x => x == 0F, x => "", x => x.ToString("0.#"));
 			}
 
 			if (string.IsNullOrWhiteSpace(speedLimit))
 			{
-				speedLimit = DefaultSpeedSign(lanes, usa);
+				speedLimit = DefaultSpeedSign(lanes, usa).If(x => x == 0, x => "", x => x.ToString());
 			}
 
 			var info = (size.Length == 0 ? "" : $"{size}m") +
@@ -87,25 +87,25 @@ namespace ThumbnailMaker.Handlers
 			return desc;
 		}
 
-		public static string DefaultSpeedSign(List<LaneInfo> lanes, bool usa)
+		public static int DefaultSpeedSign(List<LaneInfo> lanes, bool usa)
 		{
-			return lanes.Any(x => (x.Class & (LaneClass.Car | LaneClass.Bus | LaneClass.Trolley | LaneClass.Emergency | LaneClass.Tram)) != 0) ? usa ? "25" : "40" : string.Empty;
+			return lanes.Any(x => (x.Class & (LaneClass.Car | LaneClass.Bus | LaneClass.Trolley | LaneClass.Emergency | LaneClass.Tram)) != 0) ? usa ? 25 : 40 : 0;
 		}
 
-		public static string CalculateRoadSize(List<LaneInfo> lanes, string bufferSize)
+		public static float CalculateRoadSize(List<LaneInfo> lanes, string bufferSize)
 		{
 			lanes = new List<LaneInfo>(lanes);
 
 			if (lanes.Count == 0)
 			{
-				return string.Empty;
+				return 0;
 			}
 
 			try
 			{
 				var size = (bufferSize.SmartParseF() * 2) + lanes.Sum(x => LaneInfo.GetLaneTypes(x.Class).Max(y => GetLaneWidth(y, x)));
 
-				return Math.Round(size, 1).ToString("0.#");
+				return (float)Math.Round(size, 1);
 			}
 			catch { throw; }
 		}
@@ -169,7 +169,7 @@ namespace ThumbnailMaker.Handlers
 
 			rect = rect.CenterR(size??img.Size);
 
-			if (img.Width >= rect.Width || rect.Height >= rect.Height)
+			if (img.Width >= rect.Width || img.Height >= rect.Height)
 			{
 				if (img.Width > img.Height)
 				{
@@ -180,7 +180,7 @@ namespace ThumbnailMaker.Handlers
 				}
 				else
 				{
-					var newWidth = img.Width * rect.Width / img.Width;
+					var newWidth = img.Width * rect.Height / img.Height;
 
 					rect.X += (rect.Width - newWidth) / 2;
 					rect.Width = newWidth;
@@ -188,6 +188,29 @@ namespace ThumbnailMaker.Handlers
 			}
 
 			g.DrawImage(img, rect);
+		}
+
+		public static bool IsCompatible(this LaneDecorationStyle deco, LaneClass laneClass)
+		{
+			switch (laneClass)
+			{
+				case LaneClass.Filler:
+				case LaneClass.Curb:
+					return !deco.AnyOf(LaneDecorationStyle.StreetLight, LaneDecorationStyle.DoubleStreetLight);
+
+				case LaneClass.Pedestrian:
+				case LaneClass.Bike:
+				case LaneClass.Car:
+				case LaneClass.Tram:
+				case LaneClass.Bus:
+				case LaneClass.Trolley:
+				case LaneClass.Emergency:
+				case LaneClass.Train:
+				case LaneClass.Parking:
+					return deco.AnyOf(LaneDecorationStyle.None, LaneDecorationStyle.Filler, LaneDecorationStyle.Grass, LaneDecorationStyle.Gravel, LaneDecorationStyle.Pavement);
+			}
+
+			return false;
 		}
 	}
 }

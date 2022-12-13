@@ -120,27 +120,25 @@ namespace ThumbnailMaker
 		{
 			new ThumbnailHandler(graphics, small)
 			{
-				RoadSize = TB_Size.Text.IfEmpty(Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text)),
+				RoadWidth = string.IsNullOrWhiteSpace(TB_Size.Text) ? Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text) : 0F,
 				CustomText = TB_CustomText.Text,
 				BufferSize = TB_BufferSize.Text.SmartParseF(),
-				PavementWidth = TB_PavementWidth.Text.SmartParseF(),
-				AsphaltWidth = TB_Size.Text.SmartParseF(),
 				RegionType = GetRegion(),
 				RoadType = GetRoadType(),
-				Speed = TB_SpeedLimit.Text.IfEmpty(Utilities.DefaultSpeedSign(lanes, RB_USA.Checked)),
+				Speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, RB_USA.Checked) : TB_SpeedLimit.Text.SmartParse(),
 				Lanes = new List<LaneInfo>(lanes)
 			}.Draw();
 		}
 
 		private void RB_CheckedChanged(object sender, EventArgs e)
 		{
-			if (RB_Road == sender)
+			if (RB_Road == sender && RB_Road.Checked)
 				SetupType(RoadType.Road);
-			else if (RB_Highway == sender)
+			else if (RB_Highway == sender && RB_Highway.Checked)
 				SetupType(RoadType.Highway);
-			else if (RB_FlatRoad == sender)
+			else if (RB_FlatRoad == sender && RB_FlatRoad.Checked)
 				SetupType(RoadType.Flat);
-			else if (RB_Pedestrian == sender)
+			else if (RB_Pedestrian == sender && RB_Pedestrian.Checked)
 				SetupType(RoadType.Pedestrian);
 
 			foreach (var item in P_Lanes.Controls.OfType<RoadLane>())
@@ -156,12 +154,41 @@ namespace ThumbnailMaker
 
 		private void SetupType(RoadType road)
 		{
-			if (road == RoadType.Road)
+			if (road == RoadType.Road || road == RoadType.Flat)
 			{
-				AddLaneControl(new LaneInfo { Class = LaneClass.Pedestrian });
-				AddLaneControl(new LaneInfo { Class = LaneClass.Curb, Direction = LaneDirection.Backwards });
-				AddLaneControl(new LaneInfo { Class = LaneClass.Curb, Direction = LaneDirection.Forward });
-				AddLaneControl(new LaneInfo { Class = LaneClass.Pedestrian });
+				var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.LaneType == LaneClass.Curb && x.LaneDirection == LaneDirection.Backwards);
+				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.LaneType == LaneClass.Curb && x.LaneDirection == LaneDirection.Forward);
+				
+				if (leftSidewalk == null)
+				{
+					AddLaneControl(new LaneInfo { Class = LaneClass.Curb, Direction = LaneDirection.Backwards }).SendToBack();
+					AddLaneControl(new LaneInfo { Class = LaneClass.Pedestrian }).SendToBack();
+				}
+
+				if (rightSidewalk == null)
+				{
+					AddLaneControl(new LaneInfo { Class = LaneClass.Curb, Direction = LaneDirection.Forward });
+					AddLaneControl(new LaneInfo { Class = LaneClass.Pedestrian });
+				}
+			}
+
+			if (road == RoadType.Highway)
+			{
+				var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.LaneType == LaneClass.Curb && x.LaneDirection == LaneDirection.Backwards);
+				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.LaneType == LaneClass.Curb && x.LaneDirection == LaneDirection.Forward);
+
+				var leftIndex = leftSidewalk == null ? P_Lanes.Controls.Count : P_Lanes.Controls.IndexOf(leftSidewalk);
+				var rightIndex = rightSidewalk == null ? -1 : P_Lanes.Controls.IndexOf(rightSidewalk);
+
+				while (leftIndex < P_Lanes.Controls.Count)
+				{
+					P_Lanes.Controls[leftIndex].Dispose();
+				}
+
+				while (rightIndex >= 0)
+				{
+					P_Lanes.Controls[rightIndex--].Dispose();
+				}
 			}
 		}
 
@@ -182,7 +209,7 @@ namespace ThumbnailMaker
 			TB_RoadName.Text = string.Empty;
 			P_Lanes.Controls.Clear(true);
 
-			RefreshPreview();
+			RB_CheckedChanged(tableLayoutPanel3.Controls.OfType<SlickRadioButton>().FirstOrDefault(x => x.Checked), e);
 		}
 
 		private void B_Options_Click(object sender, EventArgs e)
@@ -377,7 +404,8 @@ namespace ThumbnailMaker
 						CustomWidth = lanes[i].CustomWidth,
 						SpeedLimit = lanes[i].SpeedLimit,
 						Elevation = lanes[i].Elevation,
-						AddStopToFiller = lanes[i].AddStopToFiller						
+						AddStopToFiller = lanes[i].AddStopToFiller,
+						Decorations = lanes[i].Decorations,
 					});
 				}
 
@@ -394,8 +422,7 @@ namespace ThumbnailMaker
 					LargeThumbnail = getImage(false),
 					TooltipImage = File.ReadAllBytes($"{Utilities.Folder}\\Resources\\tooltip.png"),
 					BufferWidth = TB_BufferSize.Text.SmartParseF(0.25f),
-					AsphaltWidth = TB_Size.Text.SmartParseF(),
-					PavementWidth = TB_PavementWidth.Text.SmartParseF(),
+					RoadWidth = TB_Size.Text.SmartParseF(),
 					RegionType = GetRegion(),
 					RoadType = GetRoadType(),
 					SpeedLimit = TB_SpeedLimit.Text.SmartParseF() * (RB_USA.Checked ? 1.609F : 1F),
@@ -457,8 +484,7 @@ namespace ThumbnailMaker
 
 		private void RCC_LoadConfiguration(object sender, RoadInfo r)
 		{
-			TB_Size.Text = r.AsphaltWidth == 0 ? string.Empty : r.AsphaltWidth.ToString();
-			TB_PavementWidth.Text = r.PavementWidth == 0 ? string.Empty : r.PavementWidth.ToString();
+			TB_Size.Text = r.RoadWidth == 0 ? string.Empty : r.RoadWidth.ToString();
 			TB_BufferSize.Text = r.BufferWidth.ToString();
 			TB_SpeedLimit.Text = r.SpeedLimit == 0 ? string.Empty : r.SpeedLimit.ToString();
 			TB_CustomText.Text = r.CustomText;
@@ -473,7 +499,7 @@ namespace ThumbnailMaker
 			RefreshPreview();
 		}
 
-		private void AddLaneControl(LaneInfo item)
+		private RoadLane AddLaneControl(LaneInfo item)
 		{
 			var ctrl = new RoadLane(() => RB_Highway.Checked);
 
@@ -485,10 +511,13 @@ namespace ThumbnailMaker
 			ctrl.CustomVerticalOffset = item.Elevation == null ? -1F : (float)item.Elevation;
 			ctrl.CustomSpeedLimit = item.SpeedLimit == null ? -1F : (float)item.SpeedLimit;
 			ctrl.AddStopToFiller = item.AddStopToFiller;
+			ctrl.Decorations = item.Decorations;
 
 			P_Lanes.Controls.Add(ctrl);
 
 			ctrl.BringToFront();
+
+			return ctrl;
 		}
 
 		private void PB_Click(object sender, EventArgs e)
