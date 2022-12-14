@@ -64,7 +64,6 @@
 			// 
 			// base_PB_Icon
 			// 
-			this.base_PB_Icon.Image = global::ThumbnailMaker.Properties.Resources.I_Edit;
 			// 
 			// TB_LaneWidth
 			// 
@@ -216,7 +215,6 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(358, 288);
-			this.FormIcon = global::ThumbnailMaker.Properties.Resources.I_Edit;
 			this.MaximizeBox = false;
 			this.MaximizedBounds = new System.Drawing.Rectangle(0, 0, 1920, 1032);
 			this.MinimizeBox = false;

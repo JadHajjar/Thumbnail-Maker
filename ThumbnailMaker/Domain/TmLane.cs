@@ -17,7 +17,7 @@ namespace ThumbnailMaker.Domain
 			Class = lane.Class;
 			LaneDirection = lane.Direction;
 			Lanes = lane.Lanes;
-			CustomLaneWidth = lane.CustomWidth <= 0 ? -1 : lane.CustomWidth;
+			CustomLaneWidth = lane.CustomWidth ?? -1;
 			CustomVerticalOffset = lane.Elevation ?? -1;
 			CustomSpeedLimit = lane.SpeedLimit ?? -1;
 			AddStopToFiller = lane.AddStopToFiller;
@@ -32,7 +32,7 @@ namespace ThumbnailMaker.Domain
 		public float CustomVerticalOffset { get; set; }
 		public float CustomSpeedLimit { get; set; }
 		public bool AddStopToFiller { get; set; }
-		public LaneDecorationStyle Decorations { get; set; }
+		public LaneDecoration Decorations { get; set; }
 
 		public static explicit operator LaneInfo(TmLane l) => new LaneInfo
 		{

@@ -88,10 +88,10 @@ namespace ThumbnailMaker.Controls
 
 				var rectangle = new Rectangle(point, new Size(96, 96));
 
-				e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.LaneType.HasFlag(laneType) && laneType != LaneClass.Empty ? Color.FromArgb(175, LaneInfo.GetColor(laneType)) : FormDesign.Design.AccentColor), rectangle, 16);
+				e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.LaneType.HasFlag(laneType) ? Color.FromArgb(175, LaneInfo.GetColor(laneType)) : FormDesign.Design.AccentColor), rectangle, 16);
 
-				if (laneType == LaneClass.Empty)
-					e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 2.5F), rectangle, 16);
+				if (laneType == LaneClass.Empty ? (_roadLane.LaneType == LaneClass.Empty) : _roadLane.LaneType.HasFlag(laneType))
+					e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.ActiveColor, 2.5F), rectangle, 16);
 
 				using (var icon = ResourceManager.GetImage(laneType, false))
 				{

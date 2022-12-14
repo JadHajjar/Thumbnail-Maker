@@ -47,11 +47,15 @@ namespace ThumbnailMaker.Domain
 
 				if (!(TmLanes.Count > 0 && TmLanes[0].Class == LaneClass.Pedestrian))
 					TmLanes.Insert(0, new LaneInfo { Class = LaneClass.Pedestrian, Direction = LaneDirection.Both });
+				else
+					TmLanes[0].Decorations = LaneDecoration.None;
 
 				TmLanes.Insert(1, new LaneInfo { Class = LaneClass.Curb, Direction = LaneDirection.Backwards, Lanes = 1 });
 
 				if (!(TmLanes.Count > 2 && TmLanes[TmLanes.Count - 1].Class == LaneClass.Pedestrian))
 					TmLanes.Add(new LaneInfo { Class = LaneClass.Pedestrian, Direction = LaneDirection.Both });
+				else
+					TmLanes[TmLanes.Count - 1].Decorations = LaneDecoration.None;
 
 				TmLanes.Insert(TmLanes.Count - 1, new LaneInfo { Class = LaneClass.Curb, Direction = LaneDirection.Forward, Lanes = 1 });
 			}
@@ -79,27 +83,34 @@ namespace ThumbnailMaker.Domain
 				switch (item)
 				{
 					case OLD_LaneType.Grass:
-						l.Decorations = LaneDecorationStyle.Grass;
+						l.Decorations = LaneDecoration.Grass;
 						break;
 					case OLD_LaneType.Pavement:
-						l.Decorations = LaneDecorationStyle.Pavement;
+						l.Decorations = LaneDecoration.Pavement;
 						break;
 					case OLD_LaneType.Gravel:
-						l.Decorations = LaneDecorationStyle.Gravel;
+						l.Decorations = LaneDecoration.Gravel;
 						break;
 					case OLD_LaneType.Trees:
-						l.Decorations = LaneDecorationStyle.TreeAndGrass;
+						l.Decorations = LaneDecoration.Tree | LaneDecoration.Grass;
+						break;
+
+					case OLD_LaneType.Pedestrian:
+						l.Decorations = LaneDecoration.TransitStop;
 						break;
 
 					case OLD_LaneType.Bike:
 					case OLD_LaneType.Bus:
 					case OLD_LaneType.Trolley:
-						l.Decorations = LaneDecorationStyle.Filler;
+						l.Decorations = LaneDecoration.Filler;
 						break;
 				}
 			}
 
 			l.Class = newType;
+
+			if (l.AddStopToFiller)
+				l.Decorations |= LaneDecoration.TransitStop;
 		}
 
 		internal static LaneClass ConvertType(OLD_LaneType old)

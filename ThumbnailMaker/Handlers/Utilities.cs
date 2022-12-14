@@ -139,9 +139,9 @@ namespace ThumbnailMaker.Handlers
 
 		public static float GetLaneWidth(LaneClass type, LaneInfo lane)
 		{
-			if (lane.CustomWidth > 0)
+			if (lane.CustomWidth != null)
 			{
-				return type == LaneClass.Filler || type == LaneClass.Parking ? lane.CustomWidth : Math.Max(1, lane.Lanes) * lane.CustomWidth;
+				return type == LaneClass.Filler || type == LaneClass.Parking ? (float)lane.CustomWidth : Math.Max(1, lane.Lanes) * (float)lane.CustomWidth;
 			}
 
 			switch (type)
@@ -193,7 +193,7 @@ namespace ThumbnailMaker.Handlers
 			g.DrawImage(img, rect);
 		}
 
-		public static bool IsCompatible(this LaneDecorationStyle deco, LaneClass laneClass)
+		public static bool IsCompatible(this LaneDecoration deco, LaneClass laneClass)
 		{
 			foreach (var item in LaneInfo.GetLaneTypes(laneClass))
 			{
@@ -201,11 +201,15 @@ namespace ThumbnailMaker.Handlers
 				{
 					case LaneClass.Filler:
 					case LaneClass.Curb:
-						if (deco.AnyOf(LaneDecorationStyle.StreetLight, LaneDecorationStyle.DoubleStreetLight, LaneDecorationStyle.Filler))
+						if (deco.AnyOf(LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight, LaneDecoration.Filler))
 							return false;
 						break;
 
 					case LaneClass.Pedestrian:
+						if (!deco.AnyOf(LaneDecoration.TransitStop, LaneDecoration.None, LaneDecoration.Filler, LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+							return false;
+						break;
+
 					case LaneClass.Bike:
 					case LaneClass.Car:
 					case LaneClass.Tram:
@@ -214,13 +218,50 @@ namespace ThumbnailMaker.Handlers
 					case LaneClass.Emergency:
 					case LaneClass.Train:
 					case LaneClass.Parking:
-						if (!deco.AnyOf(LaneDecorationStyle.None, LaneDecorationStyle.Filler, LaneDecorationStyle.Grass, LaneDecorationStyle.Gravel, LaneDecorationStyle.Pavement))
+						if (!deco.AnyOf(LaneDecoration.None, LaneDecoration.Filler, LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
 							return false;
 						break;
 				}
 			}
 
 			return laneClass != LaneClass.Empty;
+		}
+
+		public static IEnumerable<T> GetValues<T>(this T @enum) where T : Enum
+		{
+			if (@enum.Equals(default(T)))
+			{
+				yield return @enum;
+				yield break;
+			}	
+
+			foreach (T value in Enum.GetValues(typeof(T)))
+			{
+				if (!value.Equals(default(T)) && @enum.HasFlag(value))
+					yield return value;
+			}
+		}
+
+		public static bool HasAnyFlag<T>(this T @enum, params T[] values) where T : Enum
+		{
+			foreach (var value in values)
+			{
+				if (@enum.HasFlag(value))
+					return true;
+			}
+
+			return false;
+		}
+
+		public static bool HasAllFlag<T>(this T @enum, params T[] values) where T : Enum
+		{
+			foreach (var value in values)
+			{
+				if (!@enum.HasFlag(value))
+					return false;
+			}
+
+			return true;
 		}
 	}
 }

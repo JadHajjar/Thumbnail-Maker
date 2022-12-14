@@ -7,8 +7,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.Serialization;
+
+using ThumbnailMaker.Handlers;
 
 namespace ThumbnailMaker.Domain
 {
@@ -16,9 +19,9 @@ namespace ThumbnailMaker.Domain
 	{
 		public LaneDirection Direction { get; set; }
 		public LaneClass Class { get; set; }
-		public LaneDecorationStyle Decorations { get; set; }
+		public LaneDecoration Decorations { get; set; }
 		public float? Elevation { get; set; }
-		public float CustomWidth { get; set; }
+		public float? CustomWidth { get; set; }
 		public float? SpeedLimit { get; set; }
 		public bool AddStopToFiller { get; set; }
 
@@ -57,20 +60,31 @@ namespace ThumbnailMaker.Domain
 				: GetDefaultLaneColor(laneType);
 		}
 
-		public static Color GetColor(LaneDecorationStyle deco)
+		public static Color GetColor(LaneDecoration deco)
 		{
-			var field = deco.GetType().GetField(Enum.GetName(typeof(LaneDecorationStyle), deco));
+			var types = deco.GetValues().ToList();
+			var color = getColor(types[0]);
 
-			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
+			for (var i = 1; i < types.Count; i++)
+				color = color.MergeColor(getColor(types[i]), 30);
 
-			return attribute.DefaultColor;
+			return color;
+
+			Color getColor(LaneDecoration val)
+			{ 
+				var field = typeof(LaneDecoration).GetField(Enum.GetName(typeof(LaneDecoration), val));
+
+				var attribute = Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) as StyleIdentityAttribute;
+
+				return attribute.DefaultColor; 
+			}
 		}
 
 		public static Color GetDefaultLaneColor(LaneClass lane)
 		{
 			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneClass), lane));
 
-			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
+			var attribute = Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) as StyleIdentityAttribute;
 
 			return attribute.DefaultColor;
 		}
@@ -79,7 +93,7 @@ namespace ThumbnailMaker.Domain
 		{
 			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneClass), lane));
 
-			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
+			var attribute = Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) as StyleIdentityAttribute;
 
 			return attribute.Name;
 		}

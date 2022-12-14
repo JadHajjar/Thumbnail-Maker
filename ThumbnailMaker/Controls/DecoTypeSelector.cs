@@ -18,7 +18,7 @@ namespace ThumbnailMaker.Controls
 	public class DecoTypeSelector : Form
 	{
 		private readonly RoadLane _roadLane;
-		private readonly LaneDecorationStyle _previousLaneType;
+		private readonly LaneDecoration _previousLaneType;
 
 		public DecoTypeSelector(RoadLane roadLane)
 		{
@@ -27,7 +27,7 @@ namespace ThumbnailMaker.Controls
 
 			var point = new Point(12, 12);
 
-			foreach (LaneDecorationStyle laneType in Enum.GetValues(typeof(LaneDecorationStyle)))
+			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
 				if (!Utilities.IsCompatible(laneType, roadLane.LaneType))
 					continue;
@@ -79,7 +79,7 @@ namespace ThumbnailMaker.Controls
 			var cursor = PointToClient(Cursor.Position);
 			var point = new Point(12, 12);
 
-			foreach (LaneDecorationStyle laneType in Enum.GetValues(typeof(LaneDecorationStyle)))
+			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.LaneType))
 					continue;
@@ -88,16 +88,19 @@ namespace ThumbnailMaker.Controls
 
 				using (var icon = ResourceManager.GetImage(laneType, false))
 				{
-					var laneColor = icon != null ? icon.GetAverageColor() : LaneInfo.GetColor(laneType);
+					var laneColor = LaneInfo.GetColor(laneType);
 
-					e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Decorations == laneType ? laneColor : FormDesign.Design.AccentColor), rectangle, 16);
+					e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Decorations.HasFlag(laneType) ? laneColor : FormDesign.Design.AccentColor), rectangle, 16);
 
-					if (laneType == LaneDecorationStyle.None)
-						e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 2.5F), rectangle, 16);
+					if (laneType == LaneDecoration.None ? (_roadLane.Decorations == LaneDecoration.None) : _roadLane.Decorations.HasFlag(laneType))
+						e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.ActiveColor, 2.5F), rectangle, 16);
 
 					if (icon != null)
-						e.Graphics.DrawIcon(icon, rectangle, new Size(80, 80));
-					else if (_roadLane.Decorations != laneType)
+					{
+						e.Graphics.DrawIcon(laneType == LaneDecoration.None ? icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor)) : icon
+							, rectangle, new Size(80, 80));
+					}
+					else if (!_roadLane.Decorations.HasFlag(laneType))
 						e.Graphics.DrawRoundedRectangle(new Pen(laneColor, 2.5F), rectangle, 16);
 
 					if (rectangle.Contains(cursor))
@@ -105,7 +108,7 @@ namespace ThumbnailMaker.Controls
 						e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(150, laneColor)), rectangle, 16);
 						e.Graphics.DrawString(laneType.ToString().FormatWords(), new Font(UI.FontFamily, 11.25F, FontStyle.Bold), new SolidBrush(laneColor.GetAccentColor()), rectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 					}
-					else if (_roadLane.Decorations != laneType)
+					else if (!_roadLane.Decorations.HasFlag(laneType))
 						e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
 				}
 
@@ -128,16 +131,19 @@ namespace ThumbnailMaker.Controls
 
 			var point = new Point(8, 8);
 
-			foreach (LaneDecorationStyle laneType in Enum.GetValues(typeof(LaneDecorationStyle)))
+			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.LaneType))
 					continue;
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
 				{
-					_roadLane.SetDecorations(laneType);
+					if (laneType == LaneDecoration.None)
+						_roadLane.SetDecorations(laneType);
+					else
+						_roadLane.SetDecorations(_roadLane.Decorations.HasFlag(laneType) ? _roadLane.Decorations & ~laneType : _roadLane.Decorations | laneType);
 
-					Close();
+					Invalidate();
 					return;
 				}
 
@@ -156,7 +162,7 @@ namespace ThumbnailMaker.Controls
 
 			var point = new Point(8, 8);
 
-			foreach (LaneDecorationStyle laneType in Enum.GetValues(typeof(LaneDecorationStyle)))
+			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.LaneType))
 					continue;

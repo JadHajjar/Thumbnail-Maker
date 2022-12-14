@@ -21,9 +21,14 @@ namespace ThumbnailMaker
 
 		public static Image GetImage(LaneClass lane, bool small)
 		{
-			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneClass), lane));
+			var name = Enum.GetName(typeof(LaneClass), lane);
 
-			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
+			if (name == null)
+				return null;
+
+			var field = lane.GetType().GetField(name);
+
+			var attribute = Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) as StyleIdentityAttribute;
 
 			if (attribute == null)
 				return null;
@@ -31,11 +36,16 @@ namespace ThumbnailMaker
 			return GetImage($"C_{attribute.Id}", small);
 		}
 
-		public static Image GetImage(LaneDecorationStyle decorations, bool small)
+		public static Image GetImage(LaneDecoration decorations, bool small)
 		{
-			var field = decorations.GetType().GetField(Enum.GetName(typeof(LaneDecorationStyle), decorations));
+			var name = Enum.GetName(typeof(LaneDecoration), decorations);
 
-			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
+			if (name == null)
+				return null;
+
+			var field = decorations.GetType().GetField(name);
+
+			var attribute = Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) as StyleIdentityAttribute;
 
 			if (attribute == null)
 				return null;
@@ -59,7 +69,7 @@ namespace ThumbnailMaker
 		{
 			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneClass), lane));
 
-			var attribute = Attribute.GetCustomAttribute(field, typeof(LaneIdentityAttribute)) as LaneIdentityAttribute;
+			var attribute = Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) as StyleIdentityAttribute;
 
 			//SetImage(attribute.Id.ToString(), small, fileName);
 		}

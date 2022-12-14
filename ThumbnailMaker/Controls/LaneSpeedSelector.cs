@@ -19,7 +19,7 @@ namespace ThumbnailMaker.Controls
 	public class LaneSpeedSelector : Form
 	{
 		private readonly RoadLane _roadLane;
-		private readonly LaneDecorationStyle _previousLaneType;
+		private readonly LaneDecoration _previousLaneType;
 
 		public LaneSpeedSelector(RoadLane roadLane)
 		{

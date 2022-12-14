@@ -189,6 +189,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\I_Plus.png" />
+    <None Include="Resources\I_Minus.png" />
+    <None Include="Resources\I_Up.png" />
+    <None Include="Resources\I_Down.png" />
+    <None Include="Resources\I_Info.png" />
+    <None Include="Resources\S_D_14.png" />
+    <None Include="Resources\L_D_13.png" />
+    <None Include="Resources\S_D_13.png" />
+    <None Include="Resources\L_D_14.png" />
+    <None Include="Resources\S_C_0 .png" />
+    <None Include="Resources\L_C_0.png" />
+    <None Include="Resources\S_D_0.png" />
+    <None Include="Resources\L_D_0.png" />
     <None Include="Resources\L_C_1.png" />
     <None Include="Resources\S_C_2.png" />
     <None Include="Resources\S_C_1.png" />
