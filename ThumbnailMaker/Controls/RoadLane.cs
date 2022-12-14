@@ -323,7 +323,8 @@ namespace ThumbnailMaker.Controls
 
 			if (iconRectangle.Contains(e.Location) && LaneType != LaneClass.Curb)
 			{
-				new RoadTypeSelector(this);
+				new LaneSpeedSelector(this);
+				//new RoadTypeSelector(this);
 
 				RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 

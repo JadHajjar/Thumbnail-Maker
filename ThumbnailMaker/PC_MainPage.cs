@@ -20,6 +20,7 @@ using ThumbnailMaker.Controls;
 using ThumbnailMaker.Domain;
 using ThumbnailMaker.Handlers;
 
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace ThumbnailMaker
@@ -55,8 +56,8 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(RB_USA, "Use a US styled speed limit sign, as well as mph as the speed measurement");
 			SlickTip.SetTo(RB_Canada, "Use a Canadian styled speed limit sign, as well as km/h as the speed measurement");
 
-			SlickTip.SetTo(TB_Size, "Manually specify the total asphalt width of the road");
-			SlickTip.SetTo(TB_BufferSize, "Determines how far should the lanes be from the sidewalk");
+			SlickTip.SetTo(TB_Size, "Manually specify the total road width, which includes the asphalt and pavement");
+			SlickTip.SetTo(TB_BufferSize, "Represents the distance between the sidewalks and the lanes next to them");
 			SlickTip.SetTo(TB_SpeedLimit, "Manually specify the default speed limit of the road");
 			SlickTip.SetTo(TB_CustomText, "Add custom text to the thumbnail");
 
@@ -107,7 +108,7 @@ namespace ThumbnailMaker
 
 				using (var g = Graphics.FromImage(img))
 				{
-					DrawThumbnail(g, lanes, false);
+					DrawThumbnail(g, lanes, false, false);
 
 					PB.Image = img;
 				}
@@ -118,11 +119,11 @@ namespace ThumbnailMaker
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 		}
 
-		private void DrawThumbnail(Graphics graphics, List<LaneInfo> lanes, bool small)
+		private void DrawThumbnail(Graphics graphics, List<LaneInfo> lanes, bool small, bool tooltip)
 		{
-			new ThumbnailHandler(graphics, small, false)
+			new ThumbnailHandler(graphics, small, tooltip)
 			{
-				RoadWidth = string.IsNullOrWhiteSpace(TB_Size.Text) ? Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text) : 0F,
+				RoadWidth = TB_Size.Text.SmartParseF(Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text)),
 				CustomText = TB_CustomText.Text,
 				BufferSize = TB_BufferSize.Text.SmartParseF(),
 				RegionType = GetRegion(),
@@ -285,44 +286,40 @@ namespace ThumbnailMaker
 			{
 				var folder = Clipboard.ContainsText() && Directory.Exists(Clipboard.GetText()) ? Clipboard.GetText() : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 				var matched = false;
-				var files = new List<(string, bool)>
+				var files = new List<(string, bool, bool)>
 				{
-					("asset_thumb.png", true),
-					("PreviewImage.png", false),
-					("snapshot.png", false),
-					("thumbnail.png", false),
+					("asset_thumb.png", true, false),
+					("PreviewImage.png", false, false),
+					("snapshot.png", false, false),
+					("thumbnail.png", false, false),
+					("tooltip.png", true, true),
+					("asset_tooltip.png", true, true),
 				};
-
-				if (File.Exists(Path.Combine(folder, "tooltip.png")))
-					File.Copy($"{Utilities.Folder}\\Resources\\tooltip.png", Path.Combine(folder, "tooltip.png"), true);
-
-				if (File.Exists(Path.Combine(folder, "asset_tooltip.png")))
-					File.Copy($"{Utilities.Folder}\\Resources\\tooltip.png", Path.Combine(folder, "asset_tooltip.png"), true);
 
 				foreach (var item in files)
 				{
 					if (File.Exists(Path.Combine(folder, item.Item1)))
 					{
-						save(item.Item1, item.Item2);
+						save(item.Item1, item.Item2, item.Item3);
 
 						matched = true;
 					}
 				}
 
 				if (!matched)
-					save(GetLanes(false).ListStrings(" + ") + ".png", false);
+					save(GetLanes(false).ListStrings(" + ") + ".png", false, false);
 
-				void save(string filename, bool small)
+				void save(string filename, bool small, bool toolTip)
 				{
-					var width = small ? 109 : 512;
-					var height = small ? 100 : 512;
+					var width = toolTip ? 492 : small ? 109 : 512;
+					var height = toolTip ? 147 : small ? 100 : 512;
 
 					var lanes = GetLanes(small);
 
 					using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 					using (var g = Graphics.FromImage(img))
 					{
-						DrawThumbnail(g, lanes, small);
+						DrawThumbnail(g, lanes, small, toolTip);
 
 						img.Save(Path.Combine(folder, filename), System.Drawing.Imaging.ImageFormat.Png);
 
@@ -420,9 +417,9 @@ namespace ThumbnailMaker
 					Name = L_RoadName.Text,
 					Description = Utilities.GetRoadDescription(_lanes, TB_Size.Text, TB_BufferSize.Text, TB_SpeedLimit.Text, RB_USA.Checked),
 					CustomText = TB_CustomText.Text,
-					SmallThumbnail = getImage(true),
-					LargeThumbnail = getImage(false),
-					TooltipImage = File.ReadAllBytes($"{Utilities.Folder}\\Resources\\tooltip.png"),
+					SmallThumbnail = getImage(true, false),
+					LargeThumbnail = getImage(false, false),
+					TooltipImage = getImage(true, true),
 					BufferWidth = TB_BufferSize.Text.SmartParseF(0.25f),
 					RoadWidth = TB_Size.Text.SmartParseF(),
 					RegionType = GetRegion(),
@@ -443,15 +440,15 @@ namespace ThumbnailMaker
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 
-			byte[] getImage(bool small)
+			byte[] getImage(bool small, bool toolTip)
 			{
-				var width = small ? 109 : 512;
-				var height = small ? 100 : 512;
+				var width = toolTip ? 492 : small ? 109 : 512;
+				var height = toolTip ? 147 : small ? 100 : 512;
 
 				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 				using (var g = Graphics.FromImage(img))
 				{
-					DrawThumbnail(g, GetLanes(small), small);
+					DrawThumbnail(g, GetLanes(small), small, toolTip);
 
 					var converter = new ImageConverter();
 					return (byte[])converter.ConvertTo(img, typeof(byte[]));
@@ -531,7 +528,7 @@ namespace ThumbnailMaker
 				using (var img = new Bitmap(512, 512, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 				using (var g = Graphics.FromImage(img))
 				{
-					DrawThumbnail(g, lanes, false);
+					DrawThumbnail(g, lanes, false, false);
 
 					Clipboard.SetDataObject(new Bitmap(img, 256, 256));
 				}

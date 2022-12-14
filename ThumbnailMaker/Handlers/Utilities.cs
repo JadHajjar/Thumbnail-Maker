@@ -141,7 +141,7 @@ namespace ThumbnailMaker.Handlers
 		{
 			if (lane.CustomWidth > 0)
 			{
-				return Math.Max(1, lane.Lanes) * lane.CustomWidth;
+				return type == LaneClass.Filler || type == LaneClass.Parking ? lane.CustomWidth : Math.Max(1, lane.Lanes) * lane.CustomWidth;
 			}
 
 			switch (type)

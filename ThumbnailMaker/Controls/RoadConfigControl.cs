@@ -93,7 +93,7 @@ namespace ThumbnailMaker.Controls
 			var bottomY = Height - UI.Font(8.25F).Height - 6;
 			var foreColor = !deleteHovered && !folderHovered && HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
 			
-			e.Graphics.DrawString(Road.Name.RegexRemove("^BR[B4]").Trim()
+			e.Graphics.DrawString(Road.Name.RegexRemove("^B?R[B4][RHFP]").Trim()
 				, UI.Font(9.75F, FontStyle.Bold)
 				, new SolidBrush(foreColor)
 				, ClientRectangle.Pad(startX, 10, Width - deleteRect.X - 2, UI.Font(8.25F).Height)
