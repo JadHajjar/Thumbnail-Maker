@@ -71,7 +71,7 @@ namespace ThumbnailMaker.Controls
 		{
 			base.OnCreateControl();
 
-			Location = new Point(_roadLane.PointToScreen(Point.Empty).X, _roadLane.PointToScreen(Point.Empty).Y + _roadLane.Height);
+			Location = new Point(_roadLane.PointToScreen(Point.Empty).X+ _roadLane.Width-Width, _roadLane.PointToScreen(Point.Empty).Y + _roadLane.Height);
 
 			if (Location.Y + Height > Screen.FromControl(this).WorkingArea.Height)
 				Top -= _roadLane.Height + Height;
@@ -103,7 +103,7 @@ namespace ThumbnailMaker.Controls
 
 				var laneColor = FormDesign.Design.AccentBackColor;
 
-				e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.CustomSpeedLimit == speed ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), rectangle, 16);
+				e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.SpeedLimit == speed ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), rectangle, 16);
 
 				//if (laneType == LaneDecorationStyle.None)
 				//	e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 2.5F), rectangle, 16);
@@ -111,7 +111,7 @@ namespace ThumbnailMaker.Controls
 				ThumbnailHandler.DrawSpeedSignLarge(e.Graphics, Options.Current.Region, speed, rectangle);
 				e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 
-				if (!rectangle.Contains(cursor) && _roadLane.CustomSpeedLimit != speed)
+				if (!rectangle.Contains(cursor) && _roadLane.SpeedLimit != speed)
 					e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
 
 				point.X += 108;
@@ -137,7 +137,9 @@ namespace ThumbnailMaker.Controls
 			{
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
 				{
-					_roadLane.CustomSpeedLimit = speed;
+					_roadLane.SpeedLimit = speed;
+
+					_roadLane.RefreshRoad();
 
 					Close();
 					return;

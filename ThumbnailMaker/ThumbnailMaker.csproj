@@ -100,12 +100,6 @@
     <Compile Include="Controls\RoadLane.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\RoadOptionsEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\RoadOptionsEditor.Designer.cs">
-      <DependentUpon>RoadOptionsEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\DecoTypeSelector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -151,9 +145,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\RoadConfigContainer.resx">
       <DependentUpon>RoadConfigContainer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\RoadOptionsEditor.resx">
-      <DependentUpon>RoadOptionsEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

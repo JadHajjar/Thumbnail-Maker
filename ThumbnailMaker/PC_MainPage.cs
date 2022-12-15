@@ -506,9 +506,9 @@ namespace ThumbnailMaker
 			ctrl.LaneType = item.Class;
 			ctrl.LaneDirection = item.Direction;
 			ctrl.Lanes = item.Lanes;
-			ctrl.CustomLaneWidth = item.CustomWidth;
-			ctrl.CustomVerticalOffset = item.Elevation;
-			ctrl.CustomSpeedLimit = item.SpeedLimit;
+			ctrl.CustomWidth = item.CustomWidth;
+			ctrl.Elevation = item.Elevation;
+			ctrl.SpeedLimit = item.SpeedLimit;
 			ctrl.AddStopToFiller = item.AddStopToFiller;
 			ctrl.Decorations = item.Decorations;
 

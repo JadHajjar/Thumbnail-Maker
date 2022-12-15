@@ -50,14 +50,13 @@ namespace ThumbnailMaker
 			TB_ExportFolder.Text = Options.Current.ExportFolder;
 			CB_LHT.Checked = Options.Current.LHT;
 			CB_ColoredLanes.Checked = Options.Current.ShowLaneColorsOnThumbnail;
+			CB_AdvancedElevartion.Checked = Options.Current.AdvancedElevation;
 		}
 
 
 		protected override void UIChanged()
 		{
 			base.UIChanged();
-
-			label1.Font = UI.Font(8.25F, FontStyle.Italic);
 		}
 
 		private void DD_Font_TextChanged(object sender, EventArgs e)
@@ -84,6 +83,7 @@ namespace ThumbnailMaker
 		{
 			Options.Current.LHT = CB_LHT.Checked;
 			Options.Current.ShowLaneColorsOnThumbnail = CB_ColoredLanes.Checked;
+			Options.Current.AdvancedElevation = CB_AdvancedElevartion.Checked;
 			Options.Save();
 		}
 	}

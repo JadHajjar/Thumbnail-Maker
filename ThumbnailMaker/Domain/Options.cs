@@ -22,6 +22,7 @@ namespace ThumbnailMaker
 		public RegionType Region { get; set; }
 		public bool LHT { get; set; }
 		public bool ShowLaneColorsOnThumbnail { get; set; }
+		public bool AdvancedElevation { get; set; }
 
 		public static void Save()
 		{

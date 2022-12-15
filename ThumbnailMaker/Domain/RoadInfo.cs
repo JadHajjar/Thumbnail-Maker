@@ -65,6 +65,9 @@ namespace ThumbnailMaker.Domain
 
 		private void TranslateLaneTypesV1(LaneInfo l)
 		{
+			if ((l.CustomWidth ?? 0) == 0)
+				l.CustomWidth = null;
+
 			var newType = LaneClass.Empty;
 
 			if (l.Type == OLD_LaneType.Empty)

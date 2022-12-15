@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Extensions;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,9 +19,9 @@ namespace ThumbnailMaker.Domain
 			Class = lane.Class;
 			LaneDirection = lane.Direction;
 			Lanes = lane.Lanes;
-			CustomLaneWidth = lane.CustomWidth ?? -1;
-			CustomVerticalOffset = lane.Elevation ?? -1;
-			CustomSpeedLimit = lane.SpeedLimit ?? -1;
+			CustomLaneWidth = lane.CustomWidth;
+			CustomVerticalOffset = lane.Elevation;
+			CustomSpeedLimit = lane.SpeedLimit;
 			AddStopToFiller = lane.AddStopToFiller;
 			Decorations = lane.Decorations;
 		}
@@ -28,9 +30,9 @@ namespace ThumbnailMaker.Domain
 		public LaneClass Class { get; set; }
 		public LaneDirection LaneDirection { get; set; }
 		public int Lanes { get; set; }
-		public float CustomLaneWidth { get; set; }
-		public float CustomVerticalOffset { get; set; }
-		public float CustomSpeedLimit { get; set; }
+		public float? CustomLaneWidth { get; set; }
+		public float? CustomVerticalOffset { get; set; }
+		public float? CustomSpeedLimit { get; set; }
 		public bool AddStopToFiller { get; set; }
 		public LaneDecoration Decorations { get; set; }
 
@@ -42,9 +44,9 @@ namespace ThumbnailMaker.Domain
 			Lanes = l.Lanes,
 			Decorations = l.Decorations,
 			AddStopToFiller = l.AddStopToFiller,
-			CustomWidth = l.CustomLaneWidth == -1 ? 0 : l.CustomLaneWidth,
-			Elevation = l.CustomVerticalOffset == -1 ? (float?)null : l.CustomVerticalOffset,
-			SpeedLimit = l.CustomSpeedLimit == -1 ? (float?)null : l.CustomSpeedLimit
+			CustomWidth = l.CustomLaneWidth.If(-1, null),
+			Elevation = l.CustomVerticalOffset.If(-1, null),
+			SpeedLimit = l.CustomSpeedLimit.If(-1, null),
 		};
 	}
 }
