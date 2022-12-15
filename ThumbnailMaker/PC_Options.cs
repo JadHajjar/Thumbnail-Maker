@@ -25,9 +25,9 @@ namespace ThumbnailMaker
 		{
 			InitializeComponent();
 
-			foreach (LaneClass laneType in Enum.GetValues(typeof(LaneClass)))
+			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
-				if (laneType == LaneClass.Empty)
+				if (laneType == LaneType.Empty)
 					continue;
 
 				var ctrl = new LaneOptionControl(laneType);

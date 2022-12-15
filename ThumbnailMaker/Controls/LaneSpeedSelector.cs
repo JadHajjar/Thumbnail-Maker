@@ -19,12 +19,10 @@ namespace ThumbnailMaker.Controls
 	public class LaneSpeedSelector : Form
 	{
 		private readonly RoadLane _roadLane;
-		private readonly LaneDecoration _previousLaneType;
 
 		public LaneSpeedSelector(RoadLane roadLane)
 		{
 			_roadLane = roadLane;
-			_previousLaneType = roadLane.Decorations;
 
 			var point = new Point(12, 12);
 
@@ -103,7 +101,7 @@ namespace ThumbnailMaker.Controls
 
 				var laneColor = FormDesign.Design.AccentBackColor;
 
-				e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.SpeedLimit == speed ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), rectangle, 16);
+				e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Lane.SpeedLimit == speed ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), rectangle, 16);
 
 				//if (laneType == LaneDecorationStyle.None)
 				//	e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 2.5F), rectangle, 16);
@@ -111,7 +109,7 @@ namespace ThumbnailMaker.Controls
 				ThumbnailHandler.DrawSpeedSignLarge(e.Graphics, Options.Current.Region, speed, rectangle);
 				e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 
-				if (!rectangle.Contains(cursor) && _roadLane.SpeedLimit != speed)
+				if (!rectangle.Contains(cursor) && _roadLane.Lane.SpeedLimit != speed)
 					e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
 
 				point.X += 108;
@@ -137,7 +135,7 @@ namespace ThumbnailMaker.Controls
 			{
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
 				{
-					_roadLane.SpeedLimit = speed;
+					_roadLane.Lane.SpeedLimit = speed;
 
 					_roadLane.RefreshRoad();
 
@@ -182,13 +180,6 @@ namespace ThumbnailMaker.Controls
 			base.OnDeactivate(e);
 
 			Close();
-		}
-
-		protected override void OnClosed(EventArgs e)
-		{
-			base.OnClosed(e);
-
-			//_roadLane.ApplyLaneType(_previousLaneType);
 		}
 	}
 }

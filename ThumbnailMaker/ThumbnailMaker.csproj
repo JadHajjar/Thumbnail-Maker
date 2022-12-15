@@ -107,14 +107,17 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Domain\LaneDecorationStyle.cs" />
-    <Compile Include="Domain\LaneSizeOptions.cs" />
+    <Compile Include="Domain\ParkingAngle.cs" />
+    <Compile Include="Handlers\LaneSizeOptions.cs" />
     <Compile Include="Domain\RoadType.cs" />
     <Compile Include="Domain\RegionType.cs" />
-    <Compile Include="Domain\LaneIdentity.cs" />
+    <Compile Include="Domain\StyleIdentity.cs" />
     <Compile Include="Domain\RoadInfo.cs" />
-    <Compile Include="Domain\TmLane.cs" />
+    <Compile Include="Domain\ThumbnailLaneInfo.cs" />
+    <Compile Include="Handlers\LegacyUtil.cs" />
     <Compile Include="Handlers\ThumbnailHandler.cs" />
     <Compile Include="Handlers\Utilities.cs" />
+    <Compile Include="Legacy\RoadInfo_V0.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -180,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\I_Copy.png" />
     <None Include="Resources\I_Plus.png" />
     <None Include="Resources\I_Minus.png" />
     <None Include="Resources\I_Up.png" />
@@ -262,5 +266,6 @@
     <None Include="Resources\I_2W.png" />
     <None Include="Resources\I_1WB.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

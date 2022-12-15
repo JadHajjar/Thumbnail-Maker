@@ -19,19 +19,17 @@ namespace ThumbnailMaker.Controls
 	{
 		private readonly RoadLane _roadLane;
 		private readonly Control _control;
-		private readonly LaneClass _previousLaneType;
 
 		public RoadTypeSelector(RoadLane roadLane, Control control = null)
 		{
 			_roadLane = roadLane;
 			_control = control ?? roadLane;
-			_previousLaneType = roadLane.LaneType;
 
 			var point = new Point(12, 12);
 
-			foreach (LaneClass laneType in Enum.GetValues(typeof(LaneClass)))
+			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
-				if ((laneType & (LaneClass.Curb | LaneClass.Train)) != 0)
+				if ((laneType & (LaneType.Curb | LaneType.Train)) != 0)
 					continue;
 
 				if (point.X + 96 > 5 * 108 + 12)
@@ -81,32 +79,32 @@ namespace ThumbnailMaker.Controls
 			var cursor = PointToClient(Cursor.Position);
 			var point = new Point(12, 12);
 
-			foreach (LaneClass laneType in Enum.GetValues(typeof(LaneClass)))
+			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
-				if ((laneType & (LaneClass.Curb | LaneClass.Train)) != 0)
+				if ((laneType & (LaneType.Curb | LaneType.Train)) != 0)
 					continue;
 
 				var rectangle = new Rectangle(point, new Size(96, 96));
 
-				e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.LaneType.HasFlag(laneType) ? Color.FromArgb(175, LaneInfo.GetColor(laneType)) : FormDesign.Design.AccentColor), rectangle, 16);
+				e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Lane.Type.HasFlag(laneType) ? Color.FromArgb(175, ThumbnailLaneInfo.GetColor(laneType)) : FormDesign.Design.AccentColor), rectangle, 16);
 
-				if (laneType == LaneClass.Empty ? (_roadLane.LaneType == LaneClass.Empty) : _roadLane.LaneType.HasFlag(laneType))
+				if (laneType == LaneType.Empty ? (_roadLane.Lane.Type == LaneType.Empty) : _roadLane.Lane.Type.HasFlag(laneType))
 					e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.ActiveColor, 2.5F), rectangle, 16);
 
 				using (var icon = ResourceManager.GetImage(laneType, false))
 				{
 					if (icon != null)
 						e.Graphics.DrawIcon(icon, rectangle, new Size(80, 80));
-					else if (!_roadLane.LaneType.HasFlag(laneType))
-						e.Graphics.DrawRoundedRectangle(new Pen(LaneInfo.GetColor(laneType), 2.5F), rectangle, 16);
+					else if (!_roadLane.Lane.Type.HasFlag(laneType))
+						e.Graphics.DrawRoundedRectangle(new Pen(ThumbnailLaneInfo.GetColor(laneType), 2.5F), rectangle, 16);
 				}
 
 				if (rectangle.Contains(cursor))
 				{
-					e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(150, LaneInfo.GetColor(laneType))), rectangle, 16);
-					e.Graphics.DrawString(laneType.ToString(), new Font(UI.FontFamily, 11.25F, FontStyle.Bold), new SolidBrush(LaneInfo.GetColor(laneType).GetAccentColor()), rectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+					e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(150, ThumbnailLaneInfo.GetColor(laneType))), rectangle, 16);
+					e.Graphics.DrawString(laneType.ToString(), new Font(UI.FontFamily, 11.25F, FontStyle.Bold), new SolidBrush(ThumbnailLaneInfo.GetColor(laneType).GetAccentColor()), rectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 				}
-				else if (!_roadLane.LaneType.HasFlag(laneType))
+				else if (!_roadLane.Lane.Type.HasFlag(laneType))
 					e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
 
 				point.X += 108;
@@ -128,19 +126,20 @@ namespace ThumbnailMaker.Controls
 
 			var point = new Point(8, 8);
 
-			foreach (LaneClass laneType in Enum.GetValues(typeof(LaneClass)))
+			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
-				if ((laneType & (LaneClass.Curb | LaneClass.Train)) != 0)
+				if ((laneType & (LaneType.Curb | LaneType.Train)) != 0)
 					continue;
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
 				{
-					if (laneType == LaneClass.Empty || laneType == LaneClass.Filler || laneType == LaneClass.Parking)
-						_roadLane.SetLaneType(laneType);
+					if (laneType == LaneType.Empty || laneType == LaneType.Filler || laneType == LaneType.Parking)
+						_roadLane.Lane.Type = laneType;
 					else
-						_roadLane.SetLaneType(_roadLane.LaneType.HasFlag(laneType) ? _roadLane.LaneType & ~laneType : _roadLane.LaneType | laneType);
+						_roadLane.Lane.Type = _roadLane.Lane.Type.HasFlag(laneType) ? _roadLane.Lane.Type & ~laneType : _roadLane.Lane.Type | laneType;
 				
 					Invalidate();
+					_roadLane.RefreshRoad();
 					return;
 				}
 
@@ -159,9 +158,9 @@ namespace ThumbnailMaker.Controls
 
 			var point = new Point(8, 8);
 
-			foreach (LaneClass laneType in Enum.GetValues(typeof(LaneClass)))
+			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
-				if ((laneType & (LaneClass.Curb | LaneClass.Train)) != 0)
+				if ((laneType & (LaneType.Curb | LaneType.Train)) != 0)
 					continue;
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
@@ -190,7 +189,7 @@ namespace ThumbnailMaker.Controls
 		{
 			base.OnClosed(e);
 
-			_roadLane.ApplyLaneType(_previousLaneType);
+			_roadLane.ApplyLaneType();
 		}
 	}
 }

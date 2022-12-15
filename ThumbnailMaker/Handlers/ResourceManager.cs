@@ -19,9 +19,9 @@ namespace ThumbnailMaker
 
 		public static Image GetRoadType(RoadType type, bool small) => GetImage($"RT_{(int)type}", small);
 
-		public static Image GetImage(LaneClass lane, bool small)
+		public static Image GetImage(LaneType lane, bool small)
 		{
-			var name = Enum.GetName(typeof(LaneClass), lane);
+			var name = Enum.GetName(typeof(LaneType), lane);
 
 			if (name == null)
 				return null;
@@ -65,15 +65,15 @@ namespace ThumbnailMaker
 			}
 		}
 
-		public static void SetImage(LaneClass lane, bool small, string fileName)
+		public static void SetImage(LaneType lane, bool small, string fileName)
 		{
-			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneClass), lane));
+			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneType), lane));
 
 			var attribute = Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) as StyleIdentityAttribute;
 
 			//SetImage(attribute.Id.ToString(), small, fileName);
 		}
 
-		public static void SetLogo(LaneClass lane, bool small, string fileName) { }// => SetImage(nameof(Logo), small, fileName);
+		public static void SetLogo(LaneType lane, bool small, string fileName) { }// => SetImage(nameof(Logo), small, fileName);
 	}
 }

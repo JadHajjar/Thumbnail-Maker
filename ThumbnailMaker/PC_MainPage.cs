@@ -96,13 +96,13 @@ namespace ThumbnailMaker
 			RefreshPreview();
 		}
 
-		private List<LaneInfo> GetLanes(bool small) => P_Lanes.Controls.OfType<RoadLane>().Reverse().Select(x => x.GetLane(small)).ToList();
+		private List<ThumbnailLaneInfo> GetLanes() => P_Lanes.Controls.OfType<RoadLane>().Reverse().Select(x => x.Lane).ToList();
 
 		private void RefreshPreview()
 		{
 			try
 			{
-				var lanes = GetLanes(false);
+				var lanes = GetLanes();
 
 				var img = new Bitmap(512, 512, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
@@ -115,21 +115,30 @@ namespace ThumbnailMaker
 
 				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? "BRB " + Utilities.IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle(lanes)).WhereNotEmpty().ListStrings("+") : TB_RoadName.Text;
 				L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
+
+				var speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, RB_USA.Checked) : TB_SpeedLimit.Text.SmartParse();
+
+				if (speed != RoadLane.GlobalSpeed)
+				{
+					RoadLane.GlobalSpeed = speed;
+					foreach (Control item in P_Lanes.Controls)
+						item.Invalidate();
+				}
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 		}
 
-		private void DrawThumbnail(Graphics graphics, List<LaneInfo> lanes, bool small, bool tooltip)
+		private void DrawThumbnail(Graphics graphics, List<ThumbnailLaneInfo> lanes, bool small, bool tooltip)
 		{
 			new ThumbnailHandler(graphics, small, tooltip)
 			{
-				RoadWidth = TB_Size.Text.SmartParseF(Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text)),
+				RoadWidth = TB_Size.Text.SmartParseF(Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text.SmartParseF())),
 				CustomText = TB_CustomText.Text,
-				BufferSize = TB_BufferSize.Text.SmartParseF(),
+				BufferSize = Math.Max(0, TB_BufferSize.Text.SmartParseF()),
 				RegionType = GetRegion(),
 				RoadType = GetRoadType(),
 				Speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, RB_USA.Checked) : TB_SpeedLimit.Text.SmartParse(),
-				Lanes = new List<LaneInfo>(lanes)
+				Lanes = new List<ThumbnailLaneInfo>(lanes)
 			}.Draw();
 		}
 
@@ -159,26 +168,26 @@ namespace ThumbnailMaker
 		{
 			if (road == RoadType.Road || road == RoadType.Flat)
 			{
-				var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.LaneType == LaneClass.Curb && x.LaneDirection == LaneDirection.Backwards);
-				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.LaneType == LaneClass.Curb && x.LaneDirection == LaneDirection.Forward);
+				var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
+				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
 				
 				if (leftSidewalk == null)
 				{
-					AddLaneControl(new LaneInfo { Class = LaneClass.Curb, Direction = LaneDirection.Backwards }).SendToBack();
-					AddLaneControl(new LaneInfo { Class = LaneClass.Pedestrian }).SendToBack();
+					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Backwards }).SendToBack();
+					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian }).SendToBack();
 				}
 
 				if (rightSidewalk == null)
 				{
-					AddLaneControl(new LaneInfo { Class = LaneClass.Curb, Direction = LaneDirection.Forward });
-					AddLaneControl(new LaneInfo { Class = LaneClass.Pedestrian });
+					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Forward });
+					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian });
 				}
 			}
 
 			if (road == RoadType.Highway)
 			{
-				var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.LaneType == LaneClass.Curb && x.LaneDirection == LaneDirection.Backwards);
-				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.LaneType == LaneClass.Curb && x.LaneDirection == LaneDirection.Forward);
+				var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
+				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
 
 				var leftIndex = leftSidewalk == null ? P_Lanes.Controls.Count : P_Lanes.Controls.IndexOf(leftSidewalk);
 				var rightIndex = rightSidewalk == null ? -1 : P_Lanes.Controls.IndexOf(rightSidewalk);
@@ -222,7 +231,7 @@ namespace ThumbnailMaker
 
 		private void B_Add_Click(object sender, EventArgs e)
 		{
-			var ctrl = new RoadLane(() => RB_Highway.Checked);
+			var ctrl = new RoadLane();
 
 			ctrl.RoadLaneChanged += TB_Name_TextChanged;
 
@@ -230,7 +239,7 @@ namespace ThumbnailMaker
 
 			if (RB_Road.Checked || RB_FlatRoad.Checked)
 			{
-				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.LaneType == LaneClass.Curb && x.LaneDirection == LaneDirection.Forward);
+				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
 
 				if (rightSidewalk != null)
 					P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.GetChildIndex(rightSidewalk) + 1);
@@ -263,10 +272,10 @@ namespace ThumbnailMaker
 			{
 				var ctrl = item.Duplicate();
 
-				if (ctrl.LaneDirection == LaneDirection.Forward)
-					ctrl.LaneDirection = LaneDirection.Backwards;
-				else if (ctrl.LaneDirection == LaneDirection.Backwards)
-					ctrl.LaneDirection = LaneDirection.Forward;
+				if (ctrl.Lane.Direction == LaneDirection.Forward)
+					ctrl.Lane.Direction = LaneDirection.Backwards;
+				else if (ctrl.Lane.Direction == LaneDirection.Backwards)
+					ctrl.Lane.Direction = LaneDirection.Forward;
 
 				ctrl.Dock = DockStyle.Top;
 
@@ -307,14 +316,14 @@ namespace ThumbnailMaker
 				}
 
 				if (!matched)
-					save(GetLanes(false).ListStrings(" + ") + ".png", false, false);
+					save(GetLanes().ListStrings(" + ") + ".png", false, false);
 
 				void save(string filename, bool small, bool toolTip)
 				{
 					var width = toolTip ? 492 : small ? 109 : 512;
 					var height = toolTip ? 147 : small ? 100 : 512;
 
-					var lanes = GetLanes(small);
+					var lanes = GetLanes();
 
 					using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 					using (var g = Graphics.FromImage(img))
@@ -333,7 +342,7 @@ namespace ThumbnailMaker
 
 		private void B_CopyDesc_Click(object sender, EventArgs e)
 		{
-			var desc = Utilities.GetRoadDescription(GetLanes(false), TB_Size.Text, TB_BufferSize.Text, TB_SpeedLimit.Text, RB_USA.Checked);
+			var desc = Utilities.GetRoadDescription(GetLanes(), TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RB_USA.Checked);
 
 			Clipboard.SetText(desc);
 		}
@@ -352,25 +361,25 @@ namespace ThumbnailMaker
 
 				Directory.CreateDirectory(appdata);
 
-				var lanes = GetLanes(false);
+				var lanes = GetLanes();
 
 				if (lanes.Count == 0)
 					return;
 
-				if (lanes.Any(x => !x.IsFiller && x.Direction == LaneDirection.None))
+				if (lanes.Any(x => x.Type != LaneType.Filler && x.Direction == LaneDirection.None))
 				{
 					ShowPrompt("You need to specify the direction of all non-filler lanes before you can export this road.", PromptButtons.OK, PromptIcons.Hand);
 
 					return;
 				}
 
-				if (lanes.Any(x => x.Class.HasFlag(LaneClass.Train)))
+				if (lanes.Any(x => x.Type.HasFlag(LaneType.Train)))
 				{
 					Notification.Create("Train Lanes Detected", "Your road was exported, but it contains train lanes which have no effect.", PromptIcons.Info, null)
 						.Show(Form, 15);
 				}
 
-				if (lanes.Any(x => x.IsFiller && x.AddStopToFiller && Utilities.GetLaneWidth(x.Class, x) < 2))
+				if (lanes.Any(x => x.Decorations.HasFlag(LaneDecoration.TransitStop) && x.LaneWidth < 2))
 				{
 					Notification.Create("Invalid Stops Detected", "Your road was exported, some filler lanes that you've added stops to are too small to work.", PromptIcons.Info, null)
 						.Show(Form, 15);
@@ -382,31 +391,30 @@ namespace ThumbnailMaker
 						.Show(Form, 15);
 				}
 
-				var _lanes = GetLanes(false);
+				var _lanes = GetLanes();
 
-				for (var i = 0; i < lanes.Count; i++)
-				{
-					if (lanes[i].IsFiller || lanes[i].Class == LaneClass.Parking || lanes[i].Lanes <= 1)
-						continue;
+				//for (var i = 0; i < lanes.Count; i++)
+				//{
+				//	if (lanes[i].Type == LaneType.Filler || lanes[i].Type == LaneType.Parking || lanes[i].Lanes <= 1)
+				//		continue;
 
-					var bi = lanes[i].Direction == LaneDirection.Both;
+				//	var bi = lanes[i].Direction == LaneDirection.Both;
 
-					lanes[i].Lanes--;
+				//	lanes[i].Lanes--;
 
-					if (bi && lanes[i].Lanes == 1)
-						lanes[i].Direction = !Options.Current.LHT ? LaneDirection.Forward : LaneDirection.Backwards;
+				//	if (bi && lanes[i].Lanes == 1)
+				//		lanes[i].Direction = !Options.Current.LHT ? LaneDirection.Forward : LaneDirection.Backwards;
 
-					lanes.Insert(i, new LaneInfo
-					{
-						Class = lanes[i].Class,
-						Direction = bi ? (Options.Current.LHT ? LaneDirection.Forward : LaneDirection.Backwards) : lanes[i].Direction,
-						CustomWidth = lanes[i].CustomWidth,
-						SpeedLimit = lanes[i].SpeedLimit,
-						Elevation = lanes[i].Elevation,
-						AddStopToFiller = lanes[i].AddStopToFiller,
-						Decorations = lanes[i].Decorations,
-					});
-				}
+				//	lanes.Insert(i, new ThumbnailLaneInfo
+				//	{
+				//		Type = lanes[i].Type,
+				//		Direction = bi ? (Options.Current.LHT ? LaneDirection.Forward : LaneDirection.Backwards) : lanes[i].Direction,
+				//		CustomWidth = lanes[i].CustomWidth,
+				//		SpeedLimit = lanes[i].SpeedLimit,
+				//		Elevation = lanes[i].Elevation,
+				//		Decorations = lanes[i].Decorations,
+				//	});
+				//}
 
 				if (Options.Current.LHT)
 					lanes.Reverse();
@@ -415,7 +423,7 @@ namespace ThumbnailMaker
 				{
 					Version = 1,
 					Name = L_RoadName.Text,
-					Description = Utilities.GetRoadDescription(_lanes, TB_Size.Text, TB_BufferSize.Text, TB_SpeedLimit.Text, RB_USA.Checked),
+					Description = Utilities.GetRoadDescription(_lanes, TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RB_USA.Checked),
 					CustomText = TB_CustomText.Text,
 					SmallThumbnail = getImage(true, false),
 					LargeThumbnail = getImage(false, false),
@@ -425,12 +433,11 @@ namespace ThumbnailMaker
 					RegionType = GetRegion(),
 					RoadType = GetRoadType(),
 					SpeedLimit = TB_SpeedLimit.Text.SmartParseF() * (RB_USA.Checked ? 1.609F : 1F),
-					Lanes = lanes,
-					LHT = Options.Current.LHT,
-					ThumbnailMakerConfig = JsonConvert.SerializeObject(_lanes.Select(x => new TmLane(x)))
+					Lanes = lanes.Select(x => x.AsLaneInfo()).ToList(),
+					LHT = Options.Current.LHT
 				};
 
-				var guid = Guid.NewGuid().ToString();
+				var	 guid = Guid.NewGuid().ToString();
 				var xML = new System.Xml.Serialization.XmlSerializer(typeof(RoadInfo));
 
 				using (var stream = File.Create(Path.Combine(appdata, $"{guid}.xml")))
@@ -448,7 +455,7 @@ namespace ThumbnailMaker
 				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 				using (var g = Graphics.FromImage(img))
 				{
-					DrawThumbnail(g, GetLanes(small), small, toolTip);
+					DrawThumbnail(g, GetLanes(), small, toolTip);
 
 					var converter = new ImageConverter();
 					return (byte[])converter.ConvertTo(img, typeof(byte[]));
@@ -490,27 +497,19 @@ namespace ThumbnailMaker
 
 			P_Lanes.Controls.Clear(true);
 
-			foreach (var item in r.TmLanes)
+			foreach (var item in r.Lanes)
 			{
-				AddLaneControl(item);
+				AddLaneControl(new ThumbnailLaneInfo(item));
 			}
 
 			RefreshPreview();
 		}
 
-		private RoadLane AddLaneControl(LaneInfo item)
+		private RoadLane AddLaneControl(ThumbnailLaneInfo item)
 		{
-			var ctrl = new RoadLane(() => RB_Highway.Checked);
+			var ctrl = new RoadLane(item);
 
 			ctrl.RoadLaneChanged += TB_Name_TextChanged;
-			ctrl.LaneType = item.Class;
-			ctrl.LaneDirection = item.Direction;
-			ctrl.Lanes = item.Lanes;
-			ctrl.CustomWidth = item.CustomWidth;
-			ctrl.Elevation = item.Elevation;
-			ctrl.SpeedLimit = item.SpeedLimit;
-			ctrl.AddStopToFiller = item.AddStopToFiller;
-			ctrl.Decorations = item.Decorations;
 
 			P_Lanes.Controls.Add(ctrl);
 
@@ -523,7 +522,7 @@ namespace ThumbnailMaker
 		{
 			try
 			{
-				var lanes = GetLanes(false);
+				var lanes = GetLanes();
 
 				using (var img = new Bitmap(512, 512, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 				using (var g = Graphics.FromImage(img))

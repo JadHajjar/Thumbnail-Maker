@@ -18,18 +18,16 @@ namespace ThumbnailMaker.Controls
 	public class DecoTypeSelector : Form
 	{
 		private readonly RoadLane _roadLane;
-		private readonly LaneDecoration _previousLaneType;
 
 		public DecoTypeSelector(RoadLane roadLane)
 		{
 			_roadLane = roadLane;
-			_previousLaneType = roadLane.Decorations;
 
 			var point = new Point(12, 12);
 
 			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
-				if (!Utilities.IsCompatible(laneType, roadLane.LaneType))
+				if (!Utilities.IsCompatible(laneType, roadLane.Lane.Type))
 					continue;
 
 				if (point.X + 96 > 5 * 108 + 12)
@@ -81,18 +79,18 @@ namespace ThumbnailMaker.Controls
 
 			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
-				if (!Utilities.IsCompatible(laneType, _roadLane.LaneType))
+				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
 					continue;
 
 				var rectangle = new Rectangle(point, new Size(96, 96));
 
 				using (var icon = ResourceManager.GetImage(laneType, false))
 				{
-					var laneColor = LaneInfo.GetColor(laneType);
+					var laneColor = ThumbnailLaneInfo.GetColor(laneType);
 
-					e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Decorations.HasFlag(laneType) ? laneColor : FormDesign.Design.AccentColor), rectangle, 16);
+					e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Lane.Decorations.HasFlag(laneType) ? laneColor : FormDesign.Design.AccentColor), rectangle, 16);
 
-					if (laneType == LaneDecoration.None ? (_roadLane.Decorations == LaneDecoration.None) : _roadLane.Decorations.HasFlag(laneType))
+					if (laneType == LaneDecoration.None ? (_roadLane.Lane.Decorations == LaneDecoration.None) : _roadLane.Lane.Decorations.HasFlag(laneType))
 						e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.ActiveColor, 2.5F), rectangle, 16);
 
 					if (icon != null)
@@ -100,7 +98,7 @@ namespace ThumbnailMaker.Controls
 						e.Graphics.DrawIcon(laneType == LaneDecoration.None ? icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor)) : icon
 							, rectangle, new Size(80, 80));
 					}
-					else if (!_roadLane.Decorations.HasFlag(laneType))
+					else if (!_roadLane.Lane.Decorations.HasFlag(laneType))
 						e.Graphics.DrawRoundedRectangle(new Pen(laneColor, 2.5F), rectangle, 16);
 
 					if (rectangle.Contains(cursor))
@@ -108,7 +106,7 @@ namespace ThumbnailMaker.Controls
 						e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(150, laneColor)), rectangle, 16);
 						e.Graphics.DrawString(laneType.ToString().FormatWords(), new Font(UI.FontFamily, 11.25F, FontStyle.Bold), new SolidBrush(laneColor.GetAccentColor()), rectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 					}
-					else if (!_roadLane.Decorations.HasFlag(laneType))
+					else if (!_roadLane.Lane.Decorations.HasFlag(laneType))
 						e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
 				}
 
@@ -133,17 +131,18 @@ namespace ThumbnailMaker.Controls
 
 			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
-				if (!Utilities.IsCompatible(laneType, _roadLane.LaneType))
+				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
 					continue;
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
 				{
 					if (laneType == LaneDecoration.None)
-						_roadLane.SetDecorations(laneType);
+						_roadLane.Lane.Decorations = laneType;
 					else
-						_roadLane.SetDecorations(_roadLane.Decorations.HasFlag(laneType) ? _roadLane.Decorations & ~laneType : _roadLane.Decorations | laneType);
+						_roadLane.Lane.Decorations = _roadLane.Lane.Decorations.HasFlag(laneType) ? _roadLane.Lane.Decorations & ~laneType : _roadLane.Lane.Decorations | laneType;
 
 					Invalidate();
+					_roadLane.RefreshRoad();
 					return;
 				}
 
@@ -164,7 +163,7 @@ namespace ThumbnailMaker.Controls
 
 			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
-				if (!Utilities.IsCompatible(laneType, _roadLane.LaneType))
+				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
 					continue;
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
@@ -187,13 +186,6 @@ namespace ThumbnailMaker.Controls
 			base.OnDeactivate(e);
 
 			Close();
-		}
-
-		protected override void OnClosed(EventArgs e)
-		{
-			base.OnClosed(e);
-
-			//_roadLane.ApplyLaneType(_previousLaneType);
 		}
 	}
 }

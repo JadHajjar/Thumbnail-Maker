@@ -93,6 +93,16 @@ namespace ThumbnailMaker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap I_Copy {
+            get {
+                object obj = ResourceManager.GetObject("I_Copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap I_Delete {
             get {
                 object obj = ResourceManager.GetObject("I_Delete", resourceCulture);
@@ -483,26 +493,6 @@ namespace ThumbnailMaker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap L_D_5 {
-            get {
-                object obj = ResourceManager.GetObject("L_D_5", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap L_D_6 {
-            get {
-                object obj = ResourceManager.GetObject("L_D_6", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap L_D_7 {
             get {
                 object obj = ResourceManager.GetObject("L_D_7", resourceCulture);
@@ -786,26 +776,6 @@ namespace ThumbnailMaker.Properties {
         internal static System.Drawing.Bitmap S_D_4 {
             get {
                 object obj = ResourceManager.GetObject("S_D_4", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap S_D_5 {
-            get {
-                object obj = ResourceManager.GetObject("S_D_5", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap S_D_6 {
-            get {
-                object obj = ResourceManager.GetObject("S_D_6", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

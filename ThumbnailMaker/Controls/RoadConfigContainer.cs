@@ -32,8 +32,8 @@ namespace ThumbnailMaker.Controls
 				return;
 
 			_systemWatcher = new Timer(1000);
+			_systemWatcher.AutoReset = false;
 			_systemWatcher.Elapsed += (s, e) => RefreshConfigs();
-			_systemWatcher.Start();
 
 			RefreshConfigs();
 		}
@@ -74,7 +74,6 @@ namespace ThumbnailMaker.Controls
 
 						if (!valid)
 						{
-							File.Delete(file);
 							return;
 						}
 
@@ -89,6 +88,8 @@ namespace ThumbnailMaker.Controls
 				});
 			}
 			catch { }
+
+			_systemWatcher.Start();
 		}
 
 		private void Ctrl_LoadConfiguration(object sender, Domain.RoadInfo e)

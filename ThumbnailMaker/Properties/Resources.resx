@@ -133,6 +133,9 @@
   <data name="I_2W" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_2W.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="I_Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\I_Copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="I_Delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_Delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -244,12 +247,6 @@
   <data name="L_D_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\L_D_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="L_D_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\L_D_5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="L_D_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\L_D_6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="L_D_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\L_D_7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -336,12 +333,6 @@
   </data>
   <data name="S_D_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S_D_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="S_D_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\S_D_5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="S_D_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\S_D_6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="S_D_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S_D_7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

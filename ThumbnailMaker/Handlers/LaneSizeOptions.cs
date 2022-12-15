@@ -12,7 +12,7 @@ namespace ThumbnailMaker.Domain
 {
 	public class LaneSizeOptions
 	{
-		private readonly Dictionary<LaneClass, float> _sizes;
+		private readonly Dictionary<LaneType, float> _sizes;
 		private float _diagonalParkingSize;
 		private float _horizontalParkingSize;
 
@@ -26,32 +26,37 @@ namespace ThumbnailMaker.Domain
 			get => _horizontalParkingSize;
 		}
 
-		public float this[LaneClass l]
+		public float this[LaneType l]
 		{
 			get => _sizes[l];
 			set
 			{
 				_sizes[l] = value;
 
-				try
-				{
-					var appdata = Directory.GetParent(Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-						, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"))).FullName;
-
-					var xML = new XmlSerializer(typeof(SavedSettings));
-
-					using (var stream = File.Create(Path.Combine(appdata, "LaneSizes.xml")))
-						xML.Serialize(stream, new SavedSettings
-						{
-							Version = 1,
-							DiagonalParkingSize = _diagonalParkingSize,
-							HorizontalParkingSize = _horizontalParkingSize,
-							LaneTypes = _sizes.Keys.Cast<int>().ToList(),
-							LaneSizes = _sizes.Values.ToList(),
-						});
-				}
-				catch { }
+				Save();
 			}
+		}
+
+		private void Save()
+		{
+			try
+			{
+				var appdata = Directory.GetParent(Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+					, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"))).FullName;
+
+				var xML = new XmlSerializer(typeof(SavedSettings));
+
+				using (var stream = File.Create(Path.Combine(appdata, "LaneSizes.xml")))
+					xML.Serialize(stream, new SavedSettings
+					{
+						Version = 1,
+						DiagonalParkingSize = _diagonalParkingSize,
+						HorizontalParkingSize = _horizontalParkingSize,
+						LaneTypes = _sizes.Keys.Cast<int>().ToList(),
+						LaneSizes = _sizes.Values.ToList(),
+					});
+			}
+			catch { }
 		}
 
 		public static LaneSizeOptions LaneSizes { get; private set; } = new LaneSizeOptions();
@@ -75,20 +80,23 @@ namespace ThumbnailMaker.Domain
 
 						_diagonalParkingSize = savedSettings.DiagonalParkingSize;
 						_horizontalParkingSize = savedSettings.HorizontalParkingSize;
-						_sizes = new Dictionary<LaneClass, float>();
+						_sizes = new Dictionary<LaneType, float>();
 
 						for (var i = 0; i < savedSettings.LaneTypes.Count; i++)
 						{
-							var newType = savedSettings.Version < 1 ? RoadInfo.ConvertType((OLD_LaneType)savedSettings.LaneTypes[i]) : (LaneClass)savedSettings.LaneTypes[i];
+							var newType = savedSettings.Version >= 1 ? (LaneType)savedSettings.LaneTypes[i] : Legacy.RoadInfo_V0.ConvertType((Legacy.LaneType_V0)savedSettings.LaneTypes[i]);
 
 							_sizes[newType] = savedSettings.LaneSizes[i];
 						}
 
-						foreach (LaneClass laneType in Enum.GetValues(typeof(LaneClass)))
+						foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 						{
 							if (!_sizes.ContainsKey(laneType))
 								_sizes[laneType] = GetDefaultLaneWidth(laneType);
 						}
+
+						if (savedSettings.Version < 1)
+							Save();
 					}
 
 					return;
@@ -96,37 +104,37 @@ namespace ThumbnailMaker.Domain
 			}
 			catch { }
 
-			_sizes = Enum.GetValues(typeof(LaneClass)).Cast<LaneClass>().ToDictionary(x => x, GetDefaultLaneWidth);
+			_sizes = Enum.GetValues(typeof(LaneType)).Cast<LaneType>().ToDictionary(x => x, GetDefaultLaneWidth);
 			_diagonalParkingSize = 4F;
 			_horizontalParkingSize = 5.5F;
 		}
 
-		public static float GetDefaultLaneWidth(LaneClass type)
+		public static float GetDefaultLaneWidth(LaneType type)
 		{
 			switch (type)
 			{
-				case LaneClass.Filler:
+				case LaneType.Filler:
 					return 3F;
 
-				case LaneClass.Tram:
-				case LaneClass.Car:
-				case LaneClass.Bus:
-				case LaneClass.Emergency:
+				case LaneType.Tram:
+				case LaneType.Car:
+				case LaneType.Bus:
+				case LaneType.Emergency:
 					return 3F;
 
-				case LaneClass.Pedestrian:
+				case LaneType.Pedestrian:
 					return 2F;
 
-				case LaneClass.Bike:
+				case LaneType.Bike:
 					return 2F;
 
-				case LaneClass.Parking:
+				case LaneType.Parking:
 					return 2F;
 
-				case LaneClass.Train:
+				case LaneType.Train:
 					return 4F;
 
-				case LaneClass.Curb:
+				case LaneType.Curb:
 					return 1F;
 			}
 

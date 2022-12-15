@@ -41,16 +41,13 @@ namespace ThumbnailMaker.Controls
 				FileName = fileName;
 				TimeSaved = new FileInfo(fileName).LastWriteTime;
 
-				var xml = new XmlSerializer(typeof(RoadInfo));
-
-				using (var stream = File.OpenRead(fileName))
-					Road = ((RoadInfo)xml.Deserialize(stream)).Update();
+				Road = LegacyUtil.LoadRoad(fileName);
 
 				using (var ms = new MemoryStream(Road.SmallThumbnail))
 					Image = new Bitmap(ms);
 
-				RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(Road.TmLanes, Road.RegionType == RegionType.USA).If(x => x == 0, x => "", x => x.ToString()) : Road.SpeedLimit.ToString();
-				RoadSize = Road.RoadWidth <= 0F ? Utilities.CalculateRoadSize(Road.TmLanes, Road.BufferWidth.ToString()).If(x => x == 0F, x => "", x => x.ToString("0.#")) : Road.RoadWidth.ToString();
+				RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(Road.Lanes, Road.RegionType == RegionType.USA).If(x => x == 0, x => "", x => x.ToString()) : Road.SpeedLimit.ToString();
+				RoadSize = Road.RoadWidth <= 0F ? Utilities.CalculateRoadSize(Road.Lanes, Road.BufferWidth).If(x => x == 0F, x => "", x => x.ToString("0.#")) : Road.RoadWidth.ToString();
 
 				Height = 64;
 				Dock = DockStyle.Top;

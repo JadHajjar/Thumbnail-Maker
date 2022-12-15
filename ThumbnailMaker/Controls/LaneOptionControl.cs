@@ -20,13 +20,13 @@ namespace ThumbnailMaker.Controls
 {
 	public partial class LaneOptionControl : SlickControl
 	{
-		public LaneOptionControl(LaneClass laneType)
+		public LaneOptionControl(LaneType laneType)
 		{
 			InitializeComponent();
 			LaneType = laneType;
 
 			label1.Text = LaneType.ToString().FormatWords();
-			pictureBox1.BackColor = LaneInfo.GetColor(LaneType);
+			pictureBox1.BackColor = ThumbnailLaneInfo.GetColor(LaneType);
 			PB_100.Image = ResourceManager.GetImage(LaneType, true)?.Color(FormDesign.Design.IconColor);
 			PB_512.Image = ResourceManager.GetImage(LaneType, false)?.Color(FormDesign.Design.IconColor);
 			SS_Width.Value = LaneSizeOptions.LaneSizes[laneType];
@@ -49,7 +49,7 @@ namespace ThumbnailMaker.Controls
 			SS_Width.Visible = slickIcon1.Visible = label3.Visible = slickSpacer3.Visible = false;
 		}
 
-		public LaneClass LaneType { get; }
+		public LaneType LaneType { get; }
 		public string PropertyName { get; }
 
 		protected override void DesignChanged(FormDesign design)
@@ -156,7 +156,7 @@ namespace ThumbnailMaker.Controls
 			if (e.Button != MouseButtons.Left)
 			{
 				Options.Current.LaneColors.Remove(LaneType);
-				pictureBox1.BackColor = LaneInfo.GetColor(LaneType);
+				pictureBox1.BackColor = ThumbnailLaneInfo.GetColor(LaneType);
 				Options.Save();
 				return;
 			}
@@ -166,7 +166,7 @@ namespace ThumbnailMaker.Controls
 			if (picker.ShowDialog() == DialogResult.OK)
 			{
 				Options.Current.LaneColors[LaneType] = picker.Color;
-				pictureBox1.BackColor = LaneInfo.GetColor(LaneType);
+				pictureBox1.BackColor = ThumbnailLaneInfo.GetColor(LaneType);
 				Options.Save();
 			}
 		}
