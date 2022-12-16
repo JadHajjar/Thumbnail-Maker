@@ -34,10 +34,10 @@
 			this.B_Theme = new SlickControls.SlickButton();
 			this.CB_LHT = new SlickControls.SlickCheckbox();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
-			this.TB_ExportFolder = new SlickControls.SlickPathTextBox();
-			this.DD_Font = new SlickControls.SlickDropdown();
 			this.CB_ColoredLanes = new SlickControls.SlickCheckbox();
 			this.CB_AdvancedElevartion = new SlickControls.SlickCheckbox();
+			this.DD_Font = new SlickControls.SlickDropdown();
+			this.TB_ExportFolder = new SlickControls.SlickPathTextBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.slickScroll1 = new SlickControls.SlickScroll();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -98,7 +98,7 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(908, 151);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(908, 157);
 			this.tableLayoutPanel2.TabIndex = 13;
 			// 
 			// B_Theme
@@ -144,75 +144,12 @@
 			// 
 			this.tableLayoutPanel2.SetColumnSpan(this.slickSpacer1, 3);
 			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.slickSpacer1.Location = new System.Drawing.Point(3, 147);
+			this.slickSpacer1.Location = new System.Drawing.Point(3, 153);
 			this.slickSpacer1.Name = "slickSpacer1";
 			this.slickSpacer1.Size = new System.Drawing.Size(902, 1);
 			this.slickSpacer1.TabIndex = 0;
 			this.slickSpacer1.TabStop = false;
 			this.slickSpacer1.Text = "slickSpacer1";
-			// 
-			// TB_ExportFolder
-			// 
-			this.TB_ExportFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.TB_ExportFolder.EnterTriggersClick = false;
-			this.TB_ExportFolder.FileExtensions = new string[0];
-			this.TB_ExportFolder.Folder = true;
-			this.TB_ExportFolder.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TB_ExportFolder.Image = ((System.Drawing.Image)(resources.GetObject("TB_ExportFolder.Image")));
-			this.TB_ExportFolder.LabelText = "Custom Export Folder";
-			this.TB_ExportFolder.Location = new System.Drawing.Point(474, 97);
-			this.TB_ExportFolder.Margin = new System.Windows.Forms.Padding(20, 3, 20, 15);
-			this.TB_ExportFolder.MaximumSize = new System.Drawing.Size(9999, 0);
-			this.TB_ExportFolder.MaxLength = 32767;
-			this.TB_ExportFolder.MinimumSize = new System.Drawing.Size(50, 0);
-			this.TB_ExportFolder.Name = "TB_ExportFolder";
-			this.TB_ExportFolder.Password = false;
-			this.TB_ExportFolder.Placeholder = "Default is the Blank Road Generator\'s app data folder";
-			this.TB_ExportFolder.ReadOnly = false;
-			this.TB_ExportFolder.Required = false;
-			this.TB_ExportFolder.SelectAllOnFocus = false;
-			this.TB_ExportFolder.SelectedText = "";
-			this.TB_ExportFolder.SelectionLength = 0;
-			this.TB_ExportFolder.SelectionStart = 0;
-			this.TB_ExportFolder.Size = new System.Drawing.Size(414, 32);
-			this.TB_ExportFolder.TabIndex = 3;
-			this.TB_ExportFolder.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.TB_ExportFolder.Validation = SlickControls.ValidationType.Number;
-			this.TB_ExportFolder.ValidationCustom = null;
-			this.TB_ExportFolder.ValidationRegex = "";
-			this.TB_ExportFolder.TextChanged += new System.EventHandler(this.TB_ExportFolder_TextChanged);
-			// 
-			// DD_Font
-			// 
-			this.DD_Font.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.DD_Font.Conversion = null;
-			this.DD_Font.EnterTriggersClick = false;
-			this.DD_Font.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.DD_Font.Image = ((System.Drawing.Image)(resources.GetObject("DD_Font.Image")));
-			this.DD_Font.Items = null;
-			this.DD_Font.LabelText = "Road Size Font";
-			this.DD_Font.Location = new System.Drawing.Point(474, 47);
-			this.DD_Font.Margin = new System.Windows.Forms.Padding(20, 3, 20, 15);
-			this.DD_Font.MaximumSize = new System.Drawing.Size(9999, 0);
-			this.DD_Font.MaxLength = 32767;
-			this.DD_Font.MinimumSize = new System.Drawing.Size(50, 0);
-			this.DD_Font.Name = "DD_Font";
-			this.DD_Font.Password = false;
-			this.DD_Font.Placeholder = "Font used for the road\'s size";
-			this.DD_Font.ReadOnly = false;
-			this.DD_Font.Required = false;
-			this.DD_Font.SelectAllOnFocus = false;
-			this.DD_Font.SelectedItem = null;
-			this.DD_Font.SelectedText = "";
-			this.DD_Font.SelectionLength = 0;
-			this.DD_Font.SelectionStart = 0;
-			this.DD_Font.Size = new System.Drawing.Size(414, 32);
-			this.DD_Font.TabIndex = 1;
-			this.DD_Font.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.DD_Font.Validation = SlickControls.ValidationType.None;
-			this.DD_Font.ValidationCustom = null;
-			this.DD_Font.ValidationRegex = "";
-			this.DD_Font.TextChanged += new System.EventHandler(this.DD_Font_TextChanged);
 			// 
 			// CB_ColoredLanes
 			// 
@@ -248,32 +185,95 @@
 			this.CB_AdvancedElevartion.HideText = false;
 			this.CB_AdvancedElevartion.IconSize = 16;
 			this.CB_AdvancedElevartion.Image = ((System.Drawing.Image)(resources.GetObject("CB_AdvancedElevartion.Image")));
-			this.CB_AdvancedElevartion.Location = new System.Drawing.Point(20, 97);
+			this.CB_AdvancedElevartion.Location = new System.Drawing.Point(20, 91);
 			this.CB_AdvancedElevartion.Margin = new System.Windows.Forms.Padding(20, 3, 3, 15);
 			this.CB_AdvancedElevartion.Name = "CB_AdvancedElevartion";
 			this.CB_AdvancedElevartion.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
-			this.CB_AdvancedElevartion.Size = new System.Drawing.Size(114, 26);
+			this.CB_AdvancedElevartion.Size = new System.Drawing.Size(167, 26);
 			this.CB_AdvancedElevartion.TabIndex = 15;
-			this.CB_AdvancedElevartion.Text = "Colored Lanes";
+			this.CB_AdvancedElevartion.Text = "Advanced Lane Elevation";
 			this.CB_AdvancedElevartion.UncheckedText = null;
 			this.CB_AdvancedElevartion.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
+			// 
+			// DD_Font
+			// 
+			this.DD_Font.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.DD_Font.Conversion = null;
+			this.DD_Font.EnterTriggersClick = false;
+			this.DD_Font.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.DD_Font.Image = ((System.Drawing.Image)(resources.GetObject("DD_Font.Image")));
+			this.DD_Font.Items = null;
+			this.DD_Font.LabelText = "Road Size Font";
+			this.DD_Font.Location = new System.Drawing.Point(474, 51);
+			this.DD_Font.Margin = new System.Windows.Forms.Padding(20, 3, 20, 0);
+			this.DD_Font.MaximumSize = new System.Drawing.Size(9999, 0);
+			this.DD_Font.MaxLength = 32767;
+			this.DD_Font.MinimumSize = new System.Drawing.Size(50, 0);
+			this.DD_Font.Name = "DD_Font";
+			this.DD_Font.Password = false;
+			this.DD_Font.Placeholder = "Font used for the road\'s size";
+			this.DD_Font.ReadOnly = false;
+			this.DD_Font.Required = false;
+			this.DD_Font.SelectAllOnFocus = false;
+			this.DD_Font.SelectedItem = null;
+			this.DD_Font.SelectedText = "";
+			this.DD_Font.SelectionLength = 0;
+			this.DD_Font.SelectionStart = 0;
+			this.DD_Font.Size = new System.Drawing.Size(414, 32);
+			this.DD_Font.TabIndex = 1;
+			this.DD_Font.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+			this.DD_Font.Validation = SlickControls.ValidationType.None;
+			this.DD_Font.ValidationCustom = null;
+			this.DD_Font.ValidationRegex = "";
+			this.DD_Font.TextChanged += new System.EventHandler(this.DD_Font_TextChanged);
+			// 
+			// TB_ExportFolder
+			// 
+			this.TB_ExportFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.TB_ExportFolder.EnterTriggersClick = false;
+			this.TB_ExportFolder.FileExtensions = new string[0];
+			this.TB_ExportFolder.Folder = true;
+			this.TB_ExportFolder.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TB_ExportFolder.Image = ((System.Drawing.Image)(resources.GetObject("TB_ExportFolder.Image")));
+			this.TB_ExportFolder.LabelText = "Custom Export Folder";
+			this.TB_ExportFolder.Location = new System.Drawing.Point(474, 103);
+			this.TB_ExportFolder.Margin = new System.Windows.Forms.Padding(20, 15, 20, 15);
+			this.TB_ExportFolder.MaximumSize = new System.Drawing.Size(9999, 0);
+			this.TB_ExportFolder.MaxLength = 32767;
+			this.TB_ExportFolder.MinimumSize = new System.Drawing.Size(50, 0);
+			this.TB_ExportFolder.Name = "TB_ExportFolder";
+			this.TB_ExportFolder.Password = false;
+			this.TB_ExportFolder.Placeholder = "Default is the Blank Road Generator\'s app data folder";
+			this.TB_ExportFolder.ReadOnly = false;
+			this.TB_ExportFolder.Required = false;
+			this.TB_ExportFolder.SelectAllOnFocus = false;
+			this.TB_ExportFolder.SelectedText = "";
+			this.TB_ExportFolder.SelectionLength = 0;
+			this.TB_ExportFolder.SelectionStart = 0;
+			this.TB_ExportFolder.Size = new System.Drawing.Size(414, 32);
+			this.TB_ExportFolder.TabIndex = 3;
+			this.TB_ExportFolder.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+			this.TB_ExportFolder.Validation = SlickControls.ValidationType.Number;
+			this.TB_ExportFolder.ValidationCustom = null;
+			this.TB_ExportFolder.ValidationRegex = "";
+			this.TB_ExportFolder.TextChanged += new System.EventHandler(this.TB_ExportFolder_TextChanged);
 			// 
 			// panel1
 			// 
 			this.panel1.Controls.Add(this.TLP);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(5, 181);
+			this.panel1.Location = new System.Drawing.Point(5, 187);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(908, 444);
+			this.panel1.Size = new System.Drawing.Size(908, 438);
 			this.panel1.TabIndex = 14;
 			// 
 			// slickScroll1
 			// 
 			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
 			this.slickScroll1.LinkedControl = this.TLP;
-			this.slickScroll1.Location = new System.Drawing.Point(906, 181);
+			this.slickScroll1.Location = new System.Drawing.Point(906, 187);
 			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(7, 444);
+			this.slickScroll1.Size = new System.Drawing.Size(7, 438);
 			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
 			this.slickScroll1.TabIndex = 15;
 			this.slickScroll1.TabStop = false;
