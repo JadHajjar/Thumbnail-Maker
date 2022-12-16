@@ -258,9 +258,12 @@ namespace ThumbnailMaker
 		{
 			foreach (var item in P_Lanes.Controls.OfType<RoadLane>().ToList())
 			{
-				item.Invalidate();
-
 				item.BringToFront();
+
+				if (item.Lane.Type == LaneType.Curb)
+					item.Lane.Direction = item.Lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward;
+
+				item.Invalidate();
 			}
 
 			RefreshPreview();
@@ -268,7 +271,23 @@ namespace ThumbnailMaker
 
 		private void B_DuplicateFlip_Click(object sender, EventArgs e)
 		{
-			foreach (var item in P_Lanes.Controls.OfType<RoadLane>().ToList())
+			var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
+			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
+			var lanes = P_Lanes.Controls.OfType<RoadLane>().Where(x =>
+			{
+				if (leftSidewalk != null && P_Lanes.Controls.IndexOf(x) >= P_Lanes.Controls.IndexOf(leftSidewalk))
+					return false;
+
+				if (rightSidewalk != null && P_Lanes.Controls.IndexOf(x) <= P_Lanes.Controls.IndexOf(rightSidewalk))
+					return false;
+
+				return true;
+			}).ToList();
+
+			if (lanes.FirstOrDefault()?.Lane.Type == LaneType.Filler)
+				lanes.RemoveAt(0);
+
+			foreach (var item in lanes)
 			{
 				var ctrl = item.Duplicate();
 
@@ -283,7 +302,10 @@ namespace ThumbnailMaker
 
 				P_Lanes.Controls.Add(ctrl);
 
-				ctrl.BringToFront();
+				if (rightSidewalk != null)
+					P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.IndexOf(rightSidewalk) + 1);
+				else
+					ctrl.BringToFront();
 			}
 
 			RefreshPreview();
@@ -356,22 +378,10 @@ namespace ThumbnailMaker
 		{
 			try
 			{
-				var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-					, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"));
-
-				Directory.CreateDirectory(appdata);
-
 				var lanes = GetLanes();
 
 				if (lanes.Count == 0)
 					return;
-
-				if (lanes.Any(x => x.Type != LaneType.Filler && x.Direction == LaneDirection.None))
-				{
-					ShowPrompt("You need to specify the direction of all non-filler lanes before you can export this road.", PromptButtons.OK, PromptIcons.Hand);
-
-					return;
-				}
 
 				if (lanes.Any(x => x.Type.HasFlag(LaneType.Train)))
 				{
@@ -387,80 +397,29 @@ namespace ThumbnailMaker
 
 				if (L_RoadName.Text.Length > 32)
 				{
-					Notification.Create("Lane Name too Long", "Your road was exported, but the generated road name is too long for the game.\nPlease keep that in mind", PromptIcons.Info, null)
+					Notification.Create("Road name too Long", "Your road was exported, but the generated road name is too long for the game.\nPlease keep that in mind", PromptIcons.Info, null)
 						.Show(Form, 15);
 				}
 
-				var _lanes = GetLanes();
-
-				//for (var i = 0; i < lanes.Count; i++)
-				//{
-				//	if (lanes[i].Type == LaneType.Filler || lanes[i].Type == LaneType.Parking || lanes[i].Lanes <= 1)
-				//		continue;
-
-				//	var bi = lanes[i].Direction == LaneDirection.Both;
-
-				//	lanes[i].Lanes--;
-
-				//	if (bi && lanes[i].Lanes == 1)
-				//		lanes[i].Direction = !Options.Current.LHT ? LaneDirection.Forward : LaneDirection.Backwards;
-
-				//	lanes.Insert(i, new ThumbnailLaneInfo
-				//	{
-				//		Type = lanes[i].Type,
-				//		Direction = bi ? (Options.Current.LHT ? LaneDirection.Forward : LaneDirection.Backwards) : lanes[i].Direction,
-				//		CustomWidth = lanes[i].CustomWidth,
-				//		SpeedLimit = lanes[i].SpeedLimit,
-				//		Elevation = lanes[i].Elevation,
-				//		Decorations = lanes[i].Decorations,
-				//	});
-				//}
-
-				if (Options.Current.LHT)
-					lanes.Reverse();
-
 				var roadInfo = new RoadInfo
 				{
-					Version = 1,
 					Name = L_RoadName.Text,
-					Description = Utilities.GetRoadDescription(_lanes, TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RB_USA.Checked),
+					Description = Utilities.GetRoadDescription(lanes, TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RB_USA.Checked),
 					CustomText = TB_CustomText.Text,
-					SmallThumbnail = getImage(true, false),
-					LargeThumbnail = getImage(false, false),
-					TooltipImage = getImage(true, true),
 					BufferWidth = TB_BufferSize.Text.SmartParseF(0.25f),
 					RoadWidth = TB_Size.Text.SmartParseF(),
 					RegionType = GetRegion(),
 					RoadType = GetRoadType(),
-					SpeedLimit = TB_SpeedLimit.Text.SmartParseF() * (RB_USA.Checked ? 1.609F : 1F),
+					SpeedLimit = (int)(TB_SpeedLimit.Text.SmartParse() * (RB_USA.Checked ? 1.609F : 1F)),
 					Lanes = lanes.Select(x => x.AsLaneInfo()).ToList(),
 					LHT = Options.Current.LHT
 				};
 
-				var	 guid = Guid.NewGuid().ToString();
-				var xML = new System.Xml.Serialization.XmlSerializer(typeof(RoadInfo));
+				var file = Utilities.ExportRoad(roadInfo);
 
-				using (var stream = File.Create(Path.Combine(appdata, $"{guid}.xml")))
-					xML.Serialize(stream, roadInfo);
-
-				RCC.RefreshConfigs(Path.Combine(appdata, $"{guid}.xml"));
+				RCC.RefreshConfigs(file);
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
-
-			byte[] getImage(bool small, bool toolTip)
-			{
-				var width = toolTip ? 492 : small ? 109 : 512;
-				var height = toolTip ? 147 : small ? 100 : 512;
-
-				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
-				using (var g = Graphics.FromImage(img))
-				{
-					DrawThumbnail(g, GetLanes(), small, toolTip);
-
-					var converter = new ImageConverter();
-					return (byte[])converter.ConvertTo(img, typeof(byte[]));
-				}
-			}
 		}
 
 		private RoadType GetRoadType()
@@ -490,16 +449,45 @@ namespace ThumbnailMaker
 
 		private void RCC_LoadConfiguration(object sender, RoadInfo r)
 		{
+			P_Lanes.Controls.Clear(true);
+
 			TB_Size.Text = r.RoadWidth == 0 ? string.Empty : r.RoadWidth.ToString();
 			TB_BufferSize.Text = r.BufferWidth.ToString();
 			TB_SpeedLimit.Text = r.SpeedLimit == 0 ? string.Empty : r.SpeedLimit.ToString();
 			TB_CustomText.Text = r.CustomText;
 
-			P_Lanes.Controls.Clear(true);
-
 			foreach (var item in r.Lanes)
 			{
 				AddLaneControl(new ThumbnailLaneInfo(item));
+			}
+
+			switch (r.RoadType)
+			{
+				case RoadType.Road:
+					RB_Road.Checked = true;
+					break;
+				case RoadType.Highway:
+					RB_Highway.Checked = true;
+					break;
+				case RoadType.Pedestrian:
+					RB_Pedestrian.Checked = true;
+					break;
+				case RoadType.Flat:
+					RB_FlatRoad.Checked = true;
+					break;
+			}
+
+			switch (r.RegionType)
+			{
+				case RegionType.Europe:
+					RB_Europe.Checked = true;
+					break;
+				case RegionType.USA:
+					RB_USA.Checked = true;
+					break;
+				case RegionType.Canada:
+					RB_Canada.Checked = true;
+					break;
 			}
 
 			RefreshPreview();

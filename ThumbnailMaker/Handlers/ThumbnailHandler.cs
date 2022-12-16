@@ -44,7 +44,6 @@ namespace ThumbnailMaker.Handlers
 		private int PixelFactor { get; }
 
 		private float IdealWidthModifier;
-		//private int CurbHeight => RoadType != RoadType.Road ? 0 : (int)((Small ? 5 : 20) * IdealWidthModifier);
 
 		public void Draw()
 		{
@@ -377,7 +376,7 @@ namespace ThumbnailMaker.Handlers
 			//	});
 			//}
 
-			Lanes.ForEach(lane => lane.Width = (int)(PixelFactor * lane.LaneWidth));
+			Lanes.ForEach(lane => { lane.Width = (int)(PixelFactor * lane.LaneWidth); lane.Sidewalk = false; });
 
 			var leftSidewalk = Lanes.FirstOrDefault(x => x.Type == LaneType.Curb && x.Direction == LaneDirection.Backwards);
 			var rightSidewalk = Lanes.LastOrDefault(x => x.Type == LaneType.Curb && x.Direction == LaneDirection.Forward);
@@ -446,7 +445,6 @@ namespace ThumbnailMaker.Handlers
 		private bool DisplaysArrows(ThumbnailLaneInfo lane)
 		{
 			if (lane.Type.AnyOf(LaneType.Curb, LaneType.Pedestrian, LaneType.Filler)
-				|| lane.Direction == LaneDirection.None
 				|| lane.Direction == LaneDirection.Both)
 			{
 				return false;
@@ -532,7 +530,7 @@ namespace ThumbnailMaker.Handlers
 				Graphics.FillEllipse(new SolidBrush(Color.FromArgb(207, 30, 22)), rect.Pad(3));
 				Graphics.FillEllipse(Brushes.White, rect.Pad(12));
 				if (Speed > 0)
-					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 30F : 40F, FontStyle.Bold, GraphicsUnit.Pixel), Brushes.Black, Speed > 99 ? rect.Pad(0, 4, 0, 0) : rect.Pad(4, 8, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 30F : 40F, FontStyle.Bold, GraphicsUnit.Pixel), Brushes.Black, Speed > 99 ? rect.Pad(-3, 4, -3, 0) : rect.Pad(4, 8, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 			}
 			else if (RegionType == RegionType.USA)
 			{
@@ -544,7 +542,7 @@ namespace ThumbnailMaker.Handlers
 				Graphics.DrawString("SPEED", new Font(Options.Current.SizeFont, 14.6f, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(3-5, 8, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
 				Graphics.DrawString("LIMIT", new Font(Options.Current.SizeFont, 14.6f, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(3-5, 22, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
 				if (Speed > 0)
-					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 25F : 33.3F, FontStyle.Bold, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(3, 0, 0, Speed > 99 ? 1 : -3), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 25F : 33.3F, FontStyle.Bold, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(0, 0, -3, Speed > 99 ? 1 : -3), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 			}
 			else if (RegionType == RegionType.Canada)
 			{
@@ -556,7 +554,7 @@ namespace ThumbnailMaker.Handlers
 				Graphics.DrawString("MAXIMUM", new Font(Options.Current.SizeFont, 11f, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(3, 7, 0, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
 				Graphics.DrawString("km/ h", new Font(Options.Current.SizeFont, 16f, GraphicsUnit.Pixel), Brushes.White, rect.Pad(3, 28, 0, 0), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 				if (Speed > 0)
-					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 30F : 37.3F, FontStyle.Bold, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(3, 0, 0, Speed > 99 ? 20 : 14), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 30F : 37.3F, FontStyle.Bold, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(0, 0, -3, Speed > 99 ? 20 : 14), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 			}
 
 			Graphics.SmoothingMode = SmoothingMode.Default;
@@ -575,7 +573,7 @@ namespace ThumbnailMaker.Handlers
 				Graphics.FillEllipse(new SolidBrush(Color.FromArgb(207, 30, 22)), rect.Pad(1));
 				Graphics.FillEllipse(Brushes.White, rect.Pad(4));
 				if (Speed > 0)
-					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 9.3F : 10.6F, FontStyle.Bold, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(2, 1, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 9.3F : 10.6F, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(-1, 2, -3, 0), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 			}
 			else if (RegionType == RegionType.USA)
 			{
@@ -586,7 +584,7 @@ namespace ThumbnailMaker.Handlers
 				Graphics.DrawString("SPEED", new Font(Options.Current.SizeFont, 4.6f, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(1 - 5, 2, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
 				Graphics.DrawString("LIMIT", new Font(Options.Current.SizeFont, 4.6f, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(1 - 5, 6, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
 				if (Speed > 0)
-					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 8.6F : 10.6F, FontStyle.Bold, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(3, 0, 0, Speed > 99 ? 1 : -1), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 8.6F : 10.6F, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(-1, 0, -3, Speed > 99 ? 1 : -1), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 			}
 			else if (RegionType == RegionType.Canada)
 			{
@@ -597,7 +595,7 @@ namespace ThumbnailMaker.Handlers
 				Graphics.DrawString("MAXIMUM", new Font(Options.Current.SizeFont, 4f, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(0, 2, 0, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
 				Graphics.DrawString("km/ h", new Font(Options.Current.SizeFont, 6f, GraphicsUnit.Pixel), Brushes.White, rect.Pad(1, 0, 0, -1), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 				if (Speed > 0)
-					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 9.3F : 10.6F, FontStyle.Bold, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(2, 0, 0, Speed > 99 ? 5 : 4), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(Options.Current.SizeFont, Speed > 99 ? 9.3F : 10.6F, GraphicsUnit.Pixel), Brushes.Black, rect.Pad(-1, 0, -3, Speed > 99 ? 5 : 4), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 			}
 
 			Graphics.SmoothingMode = SmoothingMode.Default;

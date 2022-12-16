@@ -46,7 +46,7 @@ namespace ThumbnailMaker.Legacy
 				Name = road.Name,
 				RoadType = RoadType.Road,
 				SmallThumbnail = road.SmallThumbnail,
-				SpeedLimit = road.SpeedLimit,
+				SpeedLimit = (int)road.SpeedLimit,
 				TooltipImage = road.TooltipImage,
 				Version = LegacyUtil.CURRENT_VERSION,
 				Lanes = new List<LaneInfo>()
@@ -101,7 +101,7 @@ namespace ThumbnailMaker.Legacy
 				CustomWidth = l.CustomWidth <= 0 ? (float?)null : l.CustomWidth,
 				Elevation = l.Elevation,
 				SpeedLimit = l.SpeedLimit,
-				Direction = (LaneDirection)(int)l.Direction,
+				Direction = l.Direction == LaneDirection_V0.Forward ? LaneDirection.Forward : l.Direction == LaneDirection_V0.Backwards ? LaneDirection.Backwards : LaneDirection.Both,
 				ParkingAngle = l.DiagonalParking ? ParkingAngle.Diagonal : l.InvertedDiagonalParking ? ParkingAngle.InvertedDiagonal : l.HorizontalParking ? ParkingAngle.Horizontal : ParkingAngle.Vertical
 			};
 
@@ -150,6 +150,8 @@ namespace ThumbnailMaker.Legacy
 		{
 			switch (old)
 			{
+				case LaneType_V0.Empty:
+					return LaneType.Filler;
 				case LaneType_V0.Grass:
 					return LaneType.Filler;
 				case LaneType_V0.Pavement:

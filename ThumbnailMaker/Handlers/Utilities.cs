@@ -13,12 +13,60 @@ using System.Xml.Linq;
 using ThumbnailMaker.Domain;
 
 using static System.Windows.Forms.AxHost;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ThumbnailMaker.Handlers
 {
 	public static class Utilities
 	{
 		public static string Folder => Directory.GetParent(Application.ExecutablePath).FullName;
+
+		public static string ExportRoad(RoadInfo road, string fileName = null)
+		{
+			var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+				, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"));
+			
+			Directory.CreateDirectory(appdata);
+
+			road.Version = LegacyUtil.CURRENT_VERSION;
+			road.SmallThumbnail = getImage(true, false);
+			road.LargeThumbnail = getImage(false, false);
+			road.TooltipImage = getImage(true, true);
+
+			if (road.LHT)
+				road.Lanes.Reverse();
+
+			var guid = Guid.NewGuid().ToString();
+			var xML = new System.Xml.Serialization.XmlSerializer(typeof(RoadInfo));
+
+			using (var stream = File.Create(fileName ?? Path.Combine(appdata, $"{guid}.xml")))
+				xML.Serialize(stream, road);
+
+			return fileName ?? Path.Combine(appdata, $"{guid}.xml");
+
+			byte[] getImage(bool small, bool toolTip)
+			{
+				var width = toolTip ? 492 : small ? 109 : 512;
+				var height = toolTip ? 147 : small ? 100 : 512;
+
+				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+				using (var g = Graphics.FromImage(img))
+				{
+					new ThumbnailHandler(g, small, toolTip)
+					{
+						RoadWidth = road.RoadWidth,
+						CustomText = road.CustomText,
+						BufferSize = Math.Max(0, road.BufferWidth),
+						RegionType = road.RegionType,
+						RoadType = road.RoadType,
+						Speed = road.SpeedLimit,
+						Lanes = road.Lanes.Select(x => new ThumbnailLaneInfo(x)).ToList()
+					}.Draw();
+
+					return (byte[])new ImageConverter().ConvertTo(img, typeof(byte[]));
+				}
+			}
+		}
 
 		public static string GetRoadDescription<T>(List<T> lanes, string size, float bufferSize, int speedLimit, bool usa) where T : LaneInfo
 		{

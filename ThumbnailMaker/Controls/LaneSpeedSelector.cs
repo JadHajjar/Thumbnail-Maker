@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -95,21 +96,43 @@ namespace ThumbnailMaker.Controls
 			var cursor = PointToClient(Cursor.Position);
 			var point = new Point(12, 12);
 
-			foreach (var speed in GetSpeedValues())
+			var rectangle = new Rectangle(point, new Size(96, 96));
+			var laneColor = ThumbnailLaneInfo.GetColor(LaneDecoration.None);
+
+			e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Lane.SpeedLimit == null ? laneColor : FormDesign.Design.AccentColor), rectangle, 16);
+
+			if (_roadLane.Lane.SpeedLimit == null)
+				e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.ActiveColor, 2.5F), rectangle, 16);
+
+			using(var icon = ResourceManager.GetImage(LaneDecoration.None, false))
+			if (icon != null)
 			{
-				var rectangle = new Rectangle(point, new Size(96, 96));
+				e.Graphics.DrawIcon(_roadLane.Lane.SpeedLimit == null ? icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor)) : icon
+					, rectangle, new Size(80, 80));
+			}
 
-				var laneColor = FormDesign.Design.AccentBackColor;
+			if (rectangle.Contains(cursor))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(150, laneColor)), rectangle, 16);
+				e.Graphics.DrawString("Default Speed Limit", new Font(UI.FontFamily, 11.25F, FontStyle.Bold), new SolidBrush(laneColor.GetAccentColor()), rectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+			}
+			else if (_roadLane.Lane.SpeedLimit != null)
+				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
+			
+			point.X += 108;
 
-				e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Lane.SpeedLimit == speed ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), rectangle, 16);
+			foreach (var speed in GetSpeedValues().Skip(1))
+			{
+				rectangle = new Rectangle(point, new Size(96, 96));
 
-				//if (laneType == LaneDecorationStyle.None)
-				//	e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 2.5F), rectangle, 16);
+				laneColor = FormDesign.Design.AccentBackColor;
+
+				e.Graphics.FillRoundedRectangle(new SolidBrush((_roadLane.Lane.SpeedLimit ?? -1) == speed ? FormDesign.Design.ActiveColor : FormDesign.Design.AccentColor), rectangle, 16);
 
 				ThumbnailHandler.DrawSpeedSignLarge(e.Graphics, Options.Current.Region, speed, rectangle);
-				e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+				e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-				if (!rectangle.Contains(cursor) && _roadLane.Lane.SpeedLimit != speed)
+				if (!rectangle.Contains(cursor) && (_roadLane.Lane.SpeedLimit ?? -1) != speed)
 					e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
 
 				point.X += 108;
@@ -135,7 +158,7 @@ namespace ThumbnailMaker.Controls
 			{
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
 				{
-					_roadLane.Lane.SpeedLimit = speed;
+					_roadLane.Lane.SpeedLimit = speed == -1 ? (float?)null : speed;
 
 					_roadLane.RefreshRoad();
 

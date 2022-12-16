@@ -16,10 +16,11 @@ namespace ThumbnailMaker.Controls
 {
 	public partial class RoadLane : SlickControl
 	{
+		private readonly Dictionary<Rectangle, string> _tooltips = new Dictionary<Rectangle, string>();
+		private readonly Dictionary<Rectangle, MouseEventHandler> _clickActions = new Dictionary<Rectangle, MouseEventHandler>();
 		private bool _dragDropActive;
+		private Rectangle grabberRectangle;
 		private int scale;
-
-		public event EventHandler RoadLaneChanged;
 
 		public RoadLane(ThumbnailLaneInfo lane = null)
 		{
@@ -28,358 +29,99 @@ namespace ThumbnailMaker.Controls
 			Lane = lane ?? new ThumbnailLaneInfo();
 		}
 
-		protected override void UIChanged()
-		{
-			base.UIChanged();
+		public event EventHandler RoadLaneChanged;
 
-			Height = (int)(35 * UI.UIScale) + 7;
-			scale = (int)(30 * UI.UIScale);
-		}
-
-		private Rectangle grabberRectangle;
-		private readonly Dictionary<Rectangle, MouseEventHandler> _clickActions = new Dictionary<Rectangle, MouseEventHandler>();
-
-		private int yIndex => (Height - scale - 7) / 2;
-		private Color foreColor => _dragDropActive ? Color.FromArgb(200, Lane.Color.GetAccentColor()) : FormDesign.Design.ForeColor;
-
-		public ThumbnailLaneInfo Lane { get; }
 		public static float GlobalSpeed { get; set; }
 
-		protected override void OnPaint(PaintEventArgs e)
+		public ThumbnailLaneInfo Lane { get; }
+
+		private Color foreColor => _dragDropActive ? Color.FromArgb(200, Lane.Color.GetAccentColor()) : FormDesign.Design.ForeColor;
+
+		private int yIndex => (Height - scale - 7) / 2;
+
+		public static void HandleDragAction(DragEventArgs drgevent, bool drop)
 		{
-			var cursor = PointToClient(Cursor.Position);
-
-			e.Graphics.Clear(BackColor);
-
-			_clickActions.Clear();
-
-			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-			if (_dragDropActive)
-				e.Graphics.FillRoundedRectangle(new SolidBrush(Lane.Type== LaneType.Empty ? FormDesign.Design.ActiveColor : Lane.Color), ClientRectangle.Pad(0, 0, 1, 7), 6);
-			else
-				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.AccentBackColor), ClientRectangle.Pad(0, 0, 1, 7), 6);
-
-			var iconX = DrawIcon(e, cursor);
-
-			if (Lane.Type!= LaneType.Empty)
-				DrawDecoIcon(e, cursor, ref iconX);
-					
-			var leftX = DrawDeleteOrInfoIcon(e, cursor);
-
-			DrawCopyButton(e, cursor, ref leftX);
-
-			DrawLaneWidth(e, cursor, ref leftX);
-
-			if (Options.Current.AdvancedElevation)
-				DrawLaneAdvancedElevation(e, cursor, ref leftX);
-			else
-				DrawLaneElevation(e, cursor, ref leftX);
-
-			DrawLaneDirections(e, cursor, ref leftX);
-
-			DrawLaneSpeed(e, cursor, ref leftX);
-
-			grabberRectangle = new Rectangle(iconX + 8, 0, leftX-iconX, Height - 4);
-
-			var drawGrabberRect = new Rectangle(scale * 4, 0, Width - (scale + 2) * 19 - 18, Height - 4);
-
-			e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(_dragDropActive || grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : foreColor), drawGrabberRect.CenterR(10, 5));
-		}
-
-		private void DrawLaneSpeed(PaintEventArgs e, Point cursor, ref int leftX)
-		{
-			if (!Lane.Type.HasAnyFlag(LaneType.Bike, LaneType.Car, LaneType.Bus, LaneType.Tram, LaneType.Trolley, LaneType.Emergency))
-				return;
-
-			leftX -= 6 + scale;
-
-			var speedRectangle = new Rectangle(leftX, yIndex, scale, scale);
-
-			if (speedRectangle.Contains(cursor))
-				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), speedRectangle, 4);
-
-			ThumbnailHandler.DrawSpeedSignSmall(e.Graphics, Options.Current.Region, (int)(Lane.SpeedLimit ?? GlobalSpeed), speedRectangle);
-
-			_clickActions[speedRectangle] = SpeedLimitClick;
-		}
-
-		private void DrawLaneDirections(PaintEventArgs e, Point cursor, ref int leftX)
-		{
-			var directions = Lane.Type== LaneType.Parking ? new[] { LaneDirection.None, LaneDirection.Backwards, LaneDirection.Forward } : Lane.Type<= LaneType.Curb ? new LaneDirection[0] : new[] { LaneDirection.None, LaneDirection.Backwards, LaneDirection.Forward, LaneDirection.Both };
-
-			if (directions.Length == 0)
-				return;
-
-			leftX -= 6 + scale * directions.Length;
-
-			// Draw direction buttons
-			var ind = 0;
-			foreach (var direction in directions)
+			if (!(drgevent.Data.GetData(typeof(RoadLane)) is RoadLane item))
 			{
-				var rect = new Rectangle(leftX + scale * ind++, yIndex, scale, scale);
+				return;
+			}
 
-				if (rect.Contains(cursor))
-					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), rect, 4);
-				else if (Lane.Direction == direction)
-					DrawFocus(e.Graphics, rect, HoverState.Focused, 4);
+			if (drop)
+			{
+				item._dragDropActive = false;
+				item.Invalidate();
+			}
 
-				Bitmap icon;
+			drgevent.Effect = DragDropEffects.Move;
 
-				switch (direction)
+			var yIndex = item.Parent.PointToClient(Cursor.Position).Y + ((ScrollableControl)item.Parent).VerticalScroll.Value;
+			var calculatedIndex = item.Parent.Controls.Count - 1 - (int)Math.Floor((double)yIndex / item.Height).Between(0, item.Parent.Controls.Count - 1);
+
+			item.Parent.Controls.SetChildIndex(item, calculatedIndex);
+			item.RoadLaneChanged?.Invoke(item, EventArgs.Empty);
+		}
+
+		public RoadLane Duplicate()
+		{
+			return new RoadLane(new ThumbnailLaneInfo(Lane));
+		}
+
+		internal void ApplyLaneType()
+		{
+			if (Lane.Type < LaneType.Bike)
+			{
+				Lane.Direction = LaneDirection.Both;
+			}
+
+			if (Lane.Type.HasFlag(LaneType.Parking))
+			{
+				Lane.Type = LaneType.Parking;
+			}
+
+			if (Lane.Type.HasFlag(LaneType.Filler))
+			{
+				Lane.Type = LaneType.Filler;
+			}
+
+			Lane.ParkingAngle = Lane.Type == LaneType.Parking
+				? Parent.Controls.OfType<RoadLane>().FirstOrDefault(x => x != this && x.Lane.Type == LaneType.Parking)?.Lane.ParkingAngle ?? ParkingAngle.Vertical
+				: ParkingAngle.Vertical;
+
+			if (Lane.Decorations == LaneDecoration.None && (Lane.Type == LaneType.Bike || Lane.Type == LaneType.Bus || Lane.Type == LaneType.Trolley))
+			{
+				Lane.Decorations = LaneDecoration.Filler;
+			}
+
+			foreach (var decoration in Lane.Decorations.GetValues())
+			{
+				if (!decoration.IsCompatible(Lane.Type))
 				{
-					case LaneDirection.Both:
-						icon = Properties.Resources.I_2W;
-						break;
-					case LaneDirection.Forward:
-						icon = Properties.Resources.I_1WF;
-						break;
-					case LaneDirection.Backwards:
-						icon = Properties.Resources.I_1WB;
-						break;
-					default:
-						icon = Properties.Resources.I_Unavailable;
-						break;
+					Lane.Decorations &= ~decoration;
 				}
-
-				e.Graphics.DrawImage(icon.Color(rect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lane.Direction == direction ? FormDesign.Design.ActiveColor : foreColor), rect.CenterR(16, 16));
-
-				_clickActions[rect] = (_, __) =>
-				{
-					Lane.Direction = direction;
-					RefreshRoad();
-				};
 			}
 
-			DrawLine(e, leftX - 3);
+			RefreshRoad();
 		}
 
-		private void DrawLaneElevation(PaintEventArgs e, Point cursor, ref int leftX)
+		internal void RefreshRoad()
 		{
-			leftX -= 6 + scale * 2;
+			Invalidate();
 
-			var elevationMinusRectangle = new Rectangle(leftX, yIndex, scale, scale);
-			var elevationPlusRectangle = new Rectangle(leftX + scale, yIndex, scale, scale);
-
-			if (elevationMinusRectangle.Contains(cursor))
-				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), elevationMinusRectangle, 4);
-
-			e.Graphics.DrawImage(Properties.Resources.I_Down.Color(elevationMinusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), elevationMinusRectangle.CenterR(16, 16));
-
-			if (elevationPlusRectangle.Contains(cursor))
-				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), elevationPlusRectangle, 4);
-
-			e.Graphics.DrawImage(Properties.Resources.I_Up.Color(elevationPlusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), elevationPlusRectangle.CenterR(16, 16));
-
-			DrawFocus(e.Graphics, Lane.Elevation == null ? elevationMinusRectangle : elevationPlusRectangle, HoverState.Focused, 4);
-
-			DrawLine(e, leftX - 3);
-
-			_clickActions[elevationMinusRectangle] = ElevationMinusClick;
-			_clickActions[elevationPlusRectangle] = ElevationPlusClick;
+			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-		private void DrawLaneAdvancedElevation(PaintEventArgs e, Point cursor, ref int leftX)
+		protected override void OnDragDrop(DragEventArgs drgevent)
 		{
-			leftX -= 6 + scale * 3;
+			base.OnDragDrop(drgevent);
 
-			var elevationMinusRectangle = new Rectangle(leftX, yIndex, scale, scale);
-			var elevationRectangle = new Rectangle(leftX + scale, yIndex, scale, scale);
-			var elevationPlusRectangle = new Rectangle(leftX + scale * 2, yIndex, scale, scale);
-
-			var size = Lane.Elevation ?? GetDefaultElevation();
-			e.Graphics.DrawString($"{size:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(elevationRectangle.Contains(cursor) ? FormDesign.Design.RedColor : foreColor), elevationRectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
-
-			if (elevationMinusRectangle.Contains(cursor))
-				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), elevationMinusRectangle, 4);
-
-			e.Graphics.DrawImage(Properties.Resources.I_Down.Color(elevationMinusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), elevationMinusRectangle.CenterR(16, 16));
-
-			if (elevationPlusRectangle.Contains(cursor))
-				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), elevationPlusRectangle, 4);
-
-			e.Graphics.DrawImage(Properties.Resources.I_Up.Color(elevationPlusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), elevationPlusRectangle.CenterR(16, 16));
-
-			DrawLine(e, leftX - 3);
-
-			_clickActions[elevationMinusRectangle] = ElevationMinusClick;
-			_clickActions[elevationPlusRectangle] = ElevationPlusClick;
-			_clickActions[elevationRectangle] = ElevationResetClick;
+			HandleDragAction(drgevent, true);
 		}
 
-		private void DrawLaneWidth(PaintEventArgs e, Point cursor, ref int leftX)
+		protected override void OnDragEnter(DragEventArgs drgevent)
 		{
-			leftX -= 6 + scale * 3;
+			base.OnDragEnter(drgevent);
 
-			var sizeMinusRectangle = new Rectangle(leftX, yIndex, scale, scale);
-			var sizeRectangle = new Rectangle(leftX + scale, yIndex, scale, scale);
-			var sizePlusRectangle = new Rectangle(leftX + scale * 2, yIndex, scale, scale);
-
-			e.Graphics.DrawString($"{Lane.LaneWidth:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(sizeRectangle.Contains(cursor) ? FormDesign.Design.RedColor : foreColor), sizeRectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
-			
-			if (sizeMinusRectangle.Contains(cursor))
-				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), sizeMinusRectangle, 4);
-
-			e.Graphics.DrawImage(Properties.Resources.I_Minus.Color(sizeMinusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), sizeMinusRectangle.CenterR(16, 16));
-
-			if (sizePlusRectangle.Contains(cursor))
-				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), sizePlusRectangle, 4);
-
-			e.Graphics.DrawImage(Properties.Resources.I_Plus.Color(sizePlusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), sizePlusRectangle.CenterR(16, 16));
-
-			DrawLine(e, leftX - 3);
-
-			_clickActions[sizeMinusRectangle] = WidthMinusClick;
-			_clickActions[sizePlusRectangle] = WidthPlusClick;
-			_clickActions[sizeRectangle] = WidthResetClick;
-		}
-
-		private void DrawCopyButton(PaintEventArgs e, Point cursor, ref int leftX)
-		{
-			if (this.Lane.Type== LaneType.Curb)
-				return;
-
-			var foreColor = _dragDropActive ? Color.FromArgb(150, Lane.Color.GetAccentColor()) : FormDesign.Design.ForeColor;
-
-			var copyRectangle = new Rectangle(leftX + scale * 2, yIndex, scale, scale);
-
-			if (copyRectangle.Contains(cursor))
-				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), copyRectangle, 4);
-
-			e.Graphics.DrawImage(Properties.Resources.I_Copy.Color(copyRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), copyRectangle.CenterR(16, 16));
-
-			DrawLine(e, leftX - 3);
-
-			_clickActions[copyRectangle] = DuplicateLaneClick;
-		}
-
-		private int DrawDeleteOrInfoIcon(PaintEventArgs e, Point cursor)
-		{
-			var foreColor = _dragDropActive ? Color.FromArgb(150, Lane.Color.GetAccentColor()) : FormDesign.Design.ForeColor;
-
-			var deleteRectangle = new Rectangle(Width - scale, yIndex, scale, scale);
-
-			e.Graphics.DrawImage((this.Lane.Type!= LaneType.Curb ? Properties.Resources.I_X : Properties.Resources.I_Info).Color(deleteRectangle.Contains(cursor) ? (this.Lane.Type!= LaneType.Curb ? FormDesign.Design.RedColor : FormDesign.Design.ActiveColor) : foreColor), deleteRectangle.CenterR(16, 16));
-
-			if (this.Lane.Type!= LaneType.Curb && deleteRectangle.Contains(cursor))
-				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(25, FormDesign.Design.RedColor)), ClientRectangle.Pad(0, 0, 1, 7), 6);
-			else if (ClientRectangle.Pad(0, 0, 1, 7).Contains(cursor) && base.HoverState.HasFlag(HoverState.Hovered))
-				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(25, Lane.Color)), ClientRectangle.Pad(0, 0, 1, 7), 6);
-
-			DrawLine(e, Width - scale - 2);
-
-			if (this.Lane.Type!= LaneType.Curb)
-				_clickActions[deleteRectangle] = DeleteLaneClick;
-			else
-				_clickActions[deleteRectangle] = InfoLaneClick;
-
-			return deleteRectangle.X;
-		}
-
-		private int DrawIcon(PaintEventArgs e, Point cursor)
-		{
-			var laneColor = Lane.Color;
-			var icons = Lane.Icons(UI.FontScale <= 1.25, true);
-
-			var iconRectangle = new Rectangle(3, (Height - scale - 7) / 2, Math.Max(scale, icons.Count * scale), scale);
-
-			if (this.Lane.Type== LaneType.Empty)
-				e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 1.5F), iconRectangle, 6);
-			else
-				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(iconRectangle.Contains(cursor) && this.Lane.Type!= LaneType.Curb ? 50 : 100, laneColor)), iconRectangle, 6);
-
-			var iconX = 3;
-			var color = laneColor.GetAccentColor();
-			foreach (var icon in icons.Select(x => x.Value))
-			{
-				if (Lane.Type== LaneType.Curb && Lane.Direction == LaneDirection.Backwards)
-					icon.RotateFlip(RotateFlipType.RotateNoneFlipX);
-
-				using (icon)
-					e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 3 / 4, scale * 3 / 4));
-
-				iconX += scale;
-			}
-
-			if (iconRectangle.Contains(cursor) && this.Lane.Type!= LaneType.Curb)
-				DrawFocus(e.Graphics, iconRectangle.Pad(-1), HoverState.Focused, 6, this.Lane.Type== LaneType.Empty ? (Color?)null : laneColor);
-
-			if (this.Lane.Type!= LaneType.Curb)
-				_clickActions[iconRectangle] = LaneTypeClick;
-
-			return iconRectangle.Width + 12;
-		}
-
-		private void DrawDecoIcon(PaintEventArgs e, Point cursor, ref int iconX)
-		{
-			var icons = Lane.Decorations.GetValues().Select(x => ResourceManager.GetImage(x, UI.FontScale <= 1.25)).ToList();
-			var laneColor = ThumbnailLaneInfo.GetColor(Lane.Decorations);
-
-			iconX += 3;
-
-			var decoRectangle = new Rectangle(iconX, (Height - scale - 7) / 2, Math.Max(scale, icons.Count * scale), scale);
-
-			if (Lane.Decorations == LaneDecoration.None)
-				e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 1.5F), decoRectangle, 6);
-			else
-				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(decoRectangle.Contains(cursor) ? 50 : 100, laneColor)), decoRectangle, 6);
-
-			var color = laneColor.GetAccentColor();
-			foreach (var icon in icons)
-			{
-				if (Lane.Decorations == LaneDecoration.None)
-					icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor));
-
-				using (icon)
-					e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 3 / 4, scale * 3 / 4));
-
-				iconX += scale;
-			}
-
-			if (decoRectangle.Contains(cursor))
-				DrawFocus(e.Graphics, decoRectangle.Pad(-1), HoverState.Focused, 6, Lane.Decorations == LaneDecoration.None ? (Color?)null : laneColor);
-
-			iconX = decoRectangle.X + decoRectangle.Width + 12;
-
-			_clickActions[decoRectangle] = LaneDecoClick;
-		}
-
-		private Bitmap GetParkingDirectionIcon(int arg)
-		{
-			if (arg < 2)
-				return Properties.Resources.I_Vertical;
-
-			if (arg == 2)
-				return Properties.Resources.Icon_Horizontal;
-
-			if (arg == 3)
-				return Properties.Resources.I_Diagonal;
-
-			return Properties.Resources.Icon_IDiagonal;
-		}
-
-		private void DrawLine(PaintEventArgs e, int x)
-		{
-			var foreColor = _dragDropActive ? Color.FromArgb(150, Lane.Color.GetAccentColor()) : FormDesign.Design.AccentColor;
-
-			e.Graphics.DrawLine(new Pen(foreColor), x, 6, x, Height - 13);
-		}
-
-		private float GetDefaultElevation()
-		{
-			var leftSidewalk = Parent.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type== LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
-			var rightSidewalk = Parent.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type== LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
-
-			if (leftSidewalk != null && rightSidewalk != null)
-			{
-				var index = Parent.Controls.IndexOf(this);
-
-				if (index < Parent.Controls.IndexOf(leftSidewalk) && index > Parent.Controls.IndexOf(rightSidewalk))
-					return -0.3F;
-			}
-
-			return 0;
+			HandleDragAction(drgevent, false);
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)
@@ -391,14 +133,43 @@ namespace ThumbnailMaker.Controls
 				return;
 			}
 
-			base.OnMouseDown(e); }
+			base.OnMouseDown(e);
+		}
+
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			foreach (var item in _tooltips)
+			{
+				if (item.Key.Contains(e.Location))
+				{
+					SlickTip.SetTo(this, item.Value);
+
+					break;
+				}
+			}
+
+			foreach (var item in _clickActions)
+			{
+				if (item.Key.Contains(e.Location))
+				{
+					Cursor = Cursors.Hand;
+					return;
+				}
+			}
+
+			Cursor = grabberRectangle.Contains(e.Location) ? Cursors.SizeAll : Cursors.Default;
+		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
 
 			if (e.Button != MouseButtons.Left || _dragDropActive)
+			{
 				return;
+			}
 
 			foreach (var item in _clickActions)
 			{
@@ -411,36 +182,71 @@ namespace ThumbnailMaker.Controls
 			}
 		}
 
-		private void GrabberClick(object sender, MouseEventArgs e)
+		protected override void OnPaint(PaintEventArgs e)
 		{
-			_dragDropActive = true;
+			var cursor = PointToClient(Cursor.Position);
 
-			Refresh();
+			e.Graphics.Clear(BackColor);
 
-			DoDragDrop(this, DragDropEffects.Move);
+			_clickActions.Clear();
+			_tooltips.Clear();
 
-			_dragDropActive = false;
+			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+			if (_dragDropActive)
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(Lane.Type == LaneType.Empty ? FormDesign.Design.ActiveColor : Lane.Color), ClientRectangle.Pad(0, 0, 1, 7), 6);
+			}
+			else
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.AccentBackColor), ClientRectangle.Pad(0, 0, 1, 7), 6);
+			}
+
+			var iconX = DrawIcon(e, cursor);
+
+			if (Lane.Type != LaneType.Empty)
+			{
+				DrawDecoIcon(e, cursor, ref iconX);
+			}
+
+			var leftX = DrawDeleteOrInfoIcon(e, cursor);
+
+			DrawCopyButton(e, cursor, ref leftX);
+
+			DrawLaneWidth(e, cursor, ref leftX);
+
+			if (Options.Current.AdvancedElevation)
+			{
+				DrawLaneAdvancedElevation(e, cursor, ref leftX);
+			}
+			else
+			{
+				DrawLaneElevation(e, cursor, ref leftX);
+			}
+
+			DrawLaneDirections(e, cursor, ref leftX);
+
+			DrawParkingDirections(e, cursor, ref leftX);
+
+			DrawLaneSpeed(e, cursor, ref leftX);
+
+			grabberRectangle = new Rectangle(iconX + 8, 0, leftX - iconX, Height - 4);
+
+			var drawGrabberRect = new Rectangle(scale * 4, 0, Width - ((scale + 2) * 19) - 18, Height - 4);
+
+			e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(_dragDropActive || grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : foreColor), drawGrabberRect.CenterR(10, 5));
+
+			_tooltips[grabberRectangle] = $"Hold to drag this lane up or down";
+			_tooltips[ClientRectangle] = Lane.Type != LaneType.Curb ? $"{Lane.Type} Lane" : Lane.Direction == LaneDirection.Forward ? "Right Curb Delimiter" : "Left Curb Delimiter";
 		}
 
-		private void LaneTypeClick(object sender, MouseEventArgs e)
+		protected override void UIChanged()
 		{
-			new RoadTypeSelector(this);
+			base.UIChanged();
 
-			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
-		}
-
-		private void LaneDecoClick(object sender, MouseEventArgs e)
-		{
-			new DecoTypeSelector(this);
-
-			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
-		}
-
-		private void SpeedLimitClick(object sender, MouseEventArgs e)
-		{
-			new LaneSpeedSelector(this);
-
-			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
+			Height = (int)(35 * UI.UIScale) + 7;
+			scale = (int)(30 * UI.UIScale);
 		}
 
 		private void DeleteLaneClick(object sender, MouseEventArgs e)
@@ -450,39 +256,438 @@ namespace ThumbnailMaker.Controls
 			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-		private void InfoLaneClick(object sender, MouseEventArgs e)
+		private void DrawCopyButton(PaintEventArgs e, Point cursor, ref int leftX)
 		{
-			MessagePrompt.Show($"This is the {(Lane.Direction == LaneDirection.Forward ? "Right" : "Left")} Curb Delimiter;\r\n\r\nIt is used to separate what lanes are on the {(Lane.Direction == LaneDirection.Forward ? "right" : "left")} sidewalk and what lanes are on the asphalt.\r\n\r\nTry moving lanes and see how it affects the road in the preview.", PromptButtons.OK, PromptIcons.Info);
+			if (Lane.Type == LaneType.Curb)
+			{
+				return;
+			}
+
+			leftX -= 12 + scale;
+
+			var foreColor = _dragDropActive ? Color.FromArgb(150, Lane.Color.GetAccentColor()) : FormDesign.Design.ForeColor;
+
+			var copyRectangle = new Rectangle(leftX, yIndex, scale, scale);
+
+			if (copyRectangle.Contains(cursor))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), copyRectangle, 4);
+			}
+
+			e.Graphics.DrawImage(Properties.Resources.I_Copy.Color(copyRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), copyRectangle.CenterR(16, 16));
+
+			DrawLine(e, leftX - 6);
+
+			_tooltips[copyRectangle] = "Duplicate this lane";
+			_clickActions[copyRectangle] = DuplicateLaneClick;
 		}
 
-		private void WidthResetClick(object sender, MouseEventArgs e)
+		private void DrawDecoIcon(PaintEventArgs e, Point cursor, ref int iconX)
 		{
-			Lane.CustomWidth = null;
+			var icons = Lane.Decorations.GetValues().Select(x => ResourceManager.GetImage(x, UI.FontScale <= 1.25)).ToList();
+			var laneColor = ThumbnailLaneInfo.GetColor(Lane.Decorations);
+
+			iconX += 6;
+
+			var decoRectangle = new Rectangle(iconX, (Height - scale - 7) / 2, Math.Max(scale, icons.Count * scale), scale);
+
+			if (Lane.Decorations == LaneDecoration.None)
+			{
+				e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 1.5F), decoRectangle, 6);
+			}
+			else
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(decoRectangle.Contains(cursor) ? 50 : 100, laneColor)), decoRectangle, 6);
+			}
+
+			var color = laneColor.GetAccentColor();
+			foreach (var icon in icons)
+			{
+				if (Lane.Decorations == LaneDecoration.None)
+				{
+					_ = icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor));
+				}
+
+				using (icon)
+				{
+					e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 3 / 4, scale * 3 / 4));
+				}
+
+				iconX += scale;
+			}
+
+			if (decoRectangle.Contains(cursor))
+			{
+				DrawFocus(e.Graphics, decoRectangle.Pad(-1), HoverState.Focused, 6, Lane.Decorations == LaneDecoration.None ? (Color?)null : laneColor);
+			}
+
+			iconX = decoRectangle.X + decoRectangle.Width + 12;
+
+			_clickActions[decoRectangle] = LaneDecoClick;
+			_tooltips[decoRectangle] = Lane.Decorations == LaneDecoration.None ? "No Add-ons" : Lane.Decorations.ToString();
+		}
+
+		private int DrawDeleteOrInfoIcon(PaintEventArgs e, Point cursor)
+		{
+			var foreColor = _dragDropActive ? Color.FromArgb(150, Lane.Color.GetAccentColor()) : FormDesign.Design.ForeColor;
+
+			var deleteRectangle = new Rectangle(Width - (Lane.Type != LaneType.Curb ? scale : (2*scale+12)), yIndex, Lane.Type != LaneType.Curb ? scale : (2 * scale+12), scale);
+
+			e.Graphics.DrawImage((Lane.Type != LaneType.Curb ? Properties.Resources.I_X : Properties.Resources.I_Info).Color(deleteRectangle.Contains(cursor) ? (Lane.Type != LaneType.Curb ? FormDesign.Design.RedColor : FormDesign.Design.ActiveColor) : foreColor), deleteRectangle.CenterR(16, 16));
+
+			if (Lane.Type != LaneType.Curb && deleteRectangle.Contains(cursor))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(25, FormDesign.Design.RedColor)), ClientRectangle.Pad(0, 0, 1, 7), 6);
+			}
+			else if (ClientRectangle.Pad(0, 0, 1, 7).Contains(cursor) && base.HoverState.HasFlag(HoverState.Hovered))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(25, Lane.Color)), ClientRectangle.Pad(0, 0, 1, 7), 6);
+			}
+
+			if (Lane.Type != LaneType.Curb)
+				_clickActions[deleteRectangle] = DeleteLaneClick;
+			else
+				_clickActions[deleteRectangle] = InfoLaneClick;
+
+			_tooltips[deleteRectangle] = Lane.Type != LaneType.Curb ? "Delete Lane" : "More Info";
+
+			DrawLine(e, deleteRectangle.X - 6);
+
+			return deleteRectangle.X;
+		}
+
+		private int DrawIcon(PaintEventArgs e, Point cursor)
+		{
+			var laneColor = Lane.Color;
+			var icons = Lane.Icons(UI.FontScale <= 1.25, true);
+
+			var iconRectangle = new Rectangle(3, (Height - scale - 7) / 2, Math.Max(scale, icons.Count * scale), scale);
+
+			if (Lane.Type == LaneType.Empty)
+			{
+				e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor, 1.5F), iconRectangle, 6);
+			}
+			else
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(iconRectangle.Contains(cursor) && Lane.Type != LaneType.Curb ? 50 : 100, laneColor)), iconRectangle, 6);
+			}
+
+			var iconX = 3;
+			var color = laneColor.GetAccentColor();
+			foreach (var icon in icons.Select(x => x.Value))
+			{
+				if (Lane.Type == LaneType.Curb && Lane.Direction == LaneDirection.Backwards)
+				{
+					icon.RotateFlip(RotateFlipType.RotateNoneFlipX);
+				}
+
+				using (icon)
+				{
+					e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 3 / 4, scale * 3 / 4));
+				}
+
+				iconX += scale;
+			}
+
+			if (iconRectangle.Contains(cursor) && Lane.Type != LaneType.Curb)
+			{
+				DrawFocus(e.Graphics, iconRectangle.Pad(-1), HoverState.Focused, 6, Lane.Type == LaneType.Empty ? (Color?)null : laneColor);
+			}
+
+			if (Lane.Type != LaneType.Curb)
+			{
+				_clickActions[iconRectangle] = LaneTypeClick;
+			}
+
+			return iconRectangle.Width + 12;
+		}
+
+		private void DrawLaneAdvancedElevation(PaintEventArgs e, Point cursor, ref int leftX)
+		{
+			leftX -= 12 + (scale * 3);
+
+			var elevationMinusRectangle = new Rectangle(leftX, yIndex, scale, scale);
+			var elevationRectangle = new Rectangle(leftX + scale, yIndex, scale, scale);
+			var elevationPlusRectangle = new Rectangle(leftX + (scale * 2), yIndex, scale, scale);
+
+			var size = Lane.Elevation ?? GetDefaultElevation();
+			e.Graphics.DrawString($"{size:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(elevationRectangle.Contains(cursor) ? FormDesign.Design.RedColor : foreColor), elevationRectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+
+			if (elevationMinusRectangle.Contains(cursor))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), elevationMinusRectangle, 4);
+			}
+
+			e.Graphics.DrawImage(Properties.Resources.I_Down.Color(elevationMinusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), elevationMinusRectangle.CenterR(16, 16));
+
+			if (elevationPlusRectangle.Contains(cursor))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), elevationPlusRectangle, 4);
+			}
+
+			e.Graphics.DrawImage(Properties.Resources.I_Up.Color(elevationPlusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), elevationPlusRectangle.CenterR(16, 16));
+
+			DrawLine(e, leftX - 6);
+
+			_clickActions[elevationMinusRectangle] = ElevationMinusClick;
+			_clickActions[elevationPlusRectangle] = ElevationPlusClick;
+			_clickActions[elevationRectangle] = ElevationResetClick;
+
+			_tooltips[elevationMinusRectangle] = "Decrease lane elevation by 0.1\r\n\r\nUse Shift for 5x, Ctrl for 1x & Alt for 0.01x";
+			_tooltips[elevationPlusRectangle] = "Increase lane elevation by 0.1\r\n\r\nUse Shift for 5x, Ctrl for 1x & Alt for 0.01x";
+			_tooltips[elevationRectangle] = "Reset lane elevation to " + GetDefaultElevation();
+		}
+
+		private void DrawLaneDirections(PaintEventArgs e, Point cursor, ref int leftX)
+		{
+			if (Lane.Type < LaneType.Bike)
+			{
+				return;
+			}
+
+			var directions = new[] { LaneDirection.Both, LaneDirection.Backwards, LaneDirection.Forward };
+
+			leftX -= 12 + (scale * directions.Length);
+
+			// Draw direction buttons
+			var ind = 0;
+			foreach (var direction in directions)
+			{
+				var rect = new Rectangle(leftX + (scale * ind++), yIndex, scale, scale);
+
+				if (rect.Contains(cursor))
+				{
+					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), rect, 4);
+				}
+				else if (Lane.Direction == direction)
+				{
+					DrawSelection(e, rect);
+				}
+
+				Bitmap icon;
+
+				switch (direction)
+				{
+					case LaneDirection.Both:
+						icon = Properties.Resources.I_2W;
+						break;
+
+					case LaneDirection.Forward:
+						icon = Properties.Resources.I_1WF;
+						break;
+
+					case LaneDirection.Backwards:
+						icon = Properties.Resources.I_1WB;
+						break;
+
+					default:
+						icon = Properties.Resources.I_Unavailable;
+						break;
+				}
+
+				e.Graphics.DrawImage(icon.Color(rect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lane.Direction == direction ? FormDesign.Design.ActiveColor : foreColor), rect.CenterR(16, 16));
+
+				_tooltips[rect] = "Set this lane's direction to " + direction;
+				_clickActions[rect] = (_, __) =>
+				{
+					Lane.Direction = direction;
+					RefreshRoad();
+				};
+			}
+
+			DrawLine(e, leftX - 6);
+		}
+
+		private void DrawParkingDirections(PaintEventArgs e, Point cursor, ref int leftX)
+		{
+			if (Lane.Type != LaneType.Parking)
+			{
+				return;
+			}
+
+			var directions = new[] { ParkingAngle.Vertical, ParkingAngle.Horizontal, ParkingAngle.InvertedDiagonal, ParkingAngle.Diagonal };
+
+			leftX -= 12 + (scale * directions.Length);
+
+			// Draw direction buttons
+			var ind = 0;
+			foreach (var direction in directions)
+			{
+				var rect = new Rectangle(leftX + (scale * ind++), yIndex, scale, scale);
+
+				if (rect.Contains(cursor))
+				{
+					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), rect, 4);
+				}
+				else if (Lane.ParkingAngle == direction)
+				{
+					DrawSelection(e, rect);
+				}
+
+				Bitmap icon;
+
+				switch (direction)
+				{
+					case ParkingAngle.Horizontal:
+						icon = Properties.Resources.Icon_Horizontal;
+						break;
+					case ParkingAngle.Diagonal:
+						icon = Properties.Resources.I_Diagonal;
+						break;
+					case ParkingAngle.InvertedDiagonal:
+						icon = Properties.Resources.Icon_IDiagonal;
+						break;
+					default:
+						icon = Properties.Resources.I_Vertical;
+						break;
+				}
+
+				e.Graphics.DrawImage(icon.Color(rect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lane.ParkingAngle == direction ? FormDesign.Design.ActiveColor : foreColor), rect.CenterR(16, 16));
+
+				_tooltips[rect] = "Set the parking angle to " + direction.ToString().FormatWords();
+				_clickActions[rect] = (_, __) =>
+				{
+					foreach (var rl in Parent.Controls.OfType<RoadLane>().Where(x => x.Lane.Type == LaneType.Parking))
+					{
+						rl.Lane.ParkingAngle = direction;
+						rl.Invalidate();
+					}
+
+					RefreshRoad();
+				};
+			}
+
+			DrawLine(e, leftX - 6);
+		}
+
+		private void DrawLaneElevation(PaintEventArgs e, Point cursor, ref int leftX)
+		{
+			leftX -= 12 + (scale * 2);
+
+			var elevationMinusRectangle = new Rectangle(leftX, yIndex, scale, scale);
+			var elevationPlusRectangle = new Rectangle(leftX + scale, yIndex, scale, scale);
+
+			if (elevationMinusRectangle.Contains(cursor))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), elevationMinusRectangle, 4);
+			}
+
+			e.Graphics.DrawImage(Properties.Resources.I_Down.Color(elevationMinusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lane.Elevation == null ? FormDesign.Design.ActiveColor : foreColor), elevationMinusRectangle.CenterR(16, 16));
+
+			if (elevationPlusRectangle.Contains(cursor))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), elevationPlusRectangle, 4);
+			}
+
+			e.Graphics.DrawImage(Properties.Resources.I_Up.Color(elevationPlusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lane.Elevation != null ? FormDesign.Design.ActiveColor : foreColor), elevationPlusRectangle.CenterR(16, 16));
+
+			DrawSelection(e, Lane.Elevation == null ? elevationMinusRectangle : elevationPlusRectangle);
+
+			DrawLine(e, leftX - 6);
+
+			_clickActions[elevationMinusRectangle] = ElevationMinusClick;
+			_clickActions[elevationPlusRectangle] = ElevationPlusClick;
+
+			_tooltips[elevationMinusRectangle] = "Set this lane's elevation to its default, lowered value\r\n\r\nYou can change this behavior in the options";
+			_tooltips[elevationPlusRectangle] = "Set this lane's elevation to one step higher than its default value\r\n\r\nYou can change this behavior in the options";
+		}
+
+		private void DrawLaneSpeed(PaintEventArgs e, Point cursor, ref int leftX)
+		{
+			if (!Lane.Type.HasAnyFlag(LaneType.Bike, LaneType.Car, LaneType.Bus, LaneType.Tram, LaneType.Trolley, LaneType.Emergency))
+			{
+				return;
+			}
+
+			leftX -= 12 + scale;
+
+			var speedRectangle = new Rectangle(leftX, yIndex, scale, scale);
+
+			if (speedRectangle.Contains(cursor))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), speedRectangle, 4);
+			}
+
+			ThumbnailHandler.DrawSpeedSignSmall(e.Graphics, Options.Current.Region, (int)(Lane.SpeedLimit ?? GlobalSpeed), speedRectangle);
+
+			DrawLine(e, leftX - 6);
+
+			_clickActions[speedRectangle] = SpeedLimitClick;
+			_tooltips[speedRectangle] = "Change this lane's speed limit";
+		}
+
+		private void DrawLaneWidth(PaintEventArgs e, Point cursor, ref int leftX)
+		{
+			leftX -= 12 + (scale * 3);
+
+			var sizeMinusRectangle = new Rectangle(leftX, yIndex, scale, scale);
+			var sizeRectangle = new Rectangle(leftX + scale, yIndex, scale, scale);
+			var sizePlusRectangle = new Rectangle(leftX + (scale * 2), yIndex, scale, scale);
+
+			e.Graphics.DrawString($"{Lane.LaneWidth:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(sizeRectangle.Contains(cursor) ? FormDesign.Design.RedColor : foreColor), sizeRectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+
+			if (sizeMinusRectangle.Contains(cursor))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), sizeMinusRectangle, 4);
+			}
+
+			e.Graphics.DrawImage(Properties.Resources.I_Minus.Color(sizeMinusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), sizeMinusRectangle.CenterR(16, 16));
+
+			if (sizePlusRectangle.Contains(cursor))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), sizePlusRectangle, 4);
+			}
+
+			e.Graphics.DrawImage(Properties.Resources.I_Plus.Color(sizePlusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : foreColor), sizePlusRectangle.CenterR(16, 16));
+
+			DrawLine(e, leftX - 6);
+
+			_clickActions[sizeMinusRectangle] = WidthMinusClick;
+			_clickActions[sizePlusRectangle] = WidthPlusClick;
+			_clickActions[sizeRectangle] = WidthResetClick;
+
+			_tooltips[sizeMinusRectangle] = "Decrease lane width by 0.1\r\n\r\nUse Shift for 5x, Ctrl for 1x & Alt for 0.01x";
+			_tooltips[sizePlusRectangle] = "Increase lane width by 0.1\r\n\r\nUse Shift for 5x, Ctrl for 1x & Alt for 0.01x";
+			_tooltips[sizeRectangle] = "Reset lane width to " + Lane.DefaultLaneWidth();
+		}
+
+		private void DrawLine(PaintEventArgs e, int x)
+		{
+			var foreColor = _dragDropActive ? Color.FromArgb(150, Lane.Color.GetAccentColor()) : FormDesign.Design.AccentColor;
+
+			e.Graphics.DrawLine(new Pen(foreColor), x, 6, x, Height - 13);
+		}
+
+		private void DrawSelection(PaintEventArgs e, Rectangle rectangle)
+		{
+			e.Graphics.DrawLine(new Pen(FormDesign.Design.ActiveColor, 3.5F) { EndCap = System.Drawing.Drawing2D.LineCap.Round }, rectangle.X + 1, rectangle.Y + rectangle.Height - 3, rectangle.X + rectangle.Width - 2, rectangle.Y + rectangle.Height - 3);
+		}
+
+		private void DuplicateLaneClick(object sender, MouseEventArgs e)
+		{
+			var index = Parent.Controls.IndexOf(this);
+
+			var ctrl = new RoadLane(new ThumbnailLaneInfo(Lane));
+
+			Parent.Controls.Add(ctrl);
+			Parent.Controls.SetChildIndex(ctrl, index);
 
 			RefreshRoad();
 		}
 
-		private void WidthPlusClick(object sender, MouseEventArgs e)
+		private void ElevationMinusClick(object sender, MouseEventArgs e)
 		{
-			var change = ModifierKeys.HasFlag(Keys.Shift) ? 5F : ModifierKeys.HasFlag(Keys.Control) ? 1F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+			if (Options.Current.AdvancedElevation)
+			{
+				var change = ModifierKeys.HasFlag(Keys.Shift) ? 5F : ModifierKeys.HasFlag(Keys.Control) ? 1F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+				var defaultElevation = GetDefaultElevation();
 
-			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round(Lane.LaneWidth + change, 2));
-
-			RefreshRoad();
-		}
-
-		private void WidthMinusClick(object sender, MouseEventArgs e)
-		{
-			var change = ModifierKeys.HasFlag(Keys.Shift) ? 5F : ModifierKeys.HasFlag(Keys.Control) ? 1F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
-
-			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round(Lane.LaneWidth - change, 2));
-
-			RefreshRoad();
-		}
-
-		private void ElevationResetClick(object sender, MouseEventArgs e)
-		{
-			Lane.Elevation = null;
+				Lane.Elevation = (float)Math.Max(defaultElevation, Math.Round(Lane.Elevation ?? defaultElevation - change, 2));
+			}
+			else
+			{
+				Lane.Elevation = null;
+			}
 
 			RefreshRoad();
 		}
@@ -500,136 +705,95 @@ namespace ThumbnailMaker.Controls
 			{
 				var defaultElevation = GetDefaultElevation();
 
-				if (defaultElevation == 0)
-					Lane.Elevation = 0.2F;
-				else
-					Lane.Elevation = 0;
+				Lane.Elevation = defaultElevation == 0 ? 0.2F : (float?)0;
 			}
 
 			RefreshRoad();
 		}
 
-		private void ElevationMinusClick(object sender, MouseEventArgs e)
+		private void ElevationResetClick(object sender, MouseEventArgs e)
 		{
-			if (Options.Current.AdvancedElevation)
-			{
-				var change = ModifierKeys.HasFlag(Keys.Shift) ? 5F : ModifierKeys.HasFlag(Keys.Control) ? 1F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
-				var defaultElevation = GetDefaultElevation();
-				
-				Lane.Elevation = (float)Math.Max(defaultElevation, Math.Round(Lane.Elevation ?? defaultElevation - change, 2));
-			}
-			else
-			{
-				Lane.Elevation = null;
-			}
+			Lane.Elevation = null;
 
 			RefreshRoad();
 		}
 
-		private void DuplicateLaneClick(object sender, MouseEventArgs e)
+		private float GetDefaultElevation()
 		{
-			throw new NotImplementedException();
-		}
+			var leftSidewalk = Parent.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
+			var rightSidewalk = Parent.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
 
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			base.OnMouseMove(e);
-
-			foreach (var item in _clickActions)
+			if (leftSidewalk != null && rightSidewalk != null)
 			{
-				if (item.Key.Contains(e.Location))
+				var index = Parent.Controls.IndexOf(this);
+
+				if (index < Parent.Controls.IndexOf(leftSidewalk) && index > Parent.Controls.IndexOf(rightSidewalk))
 				{
-					Cursor = Cursors.Hand;
-					return;
+					return -0.3F;
 				}
 			}
 
-			Cursor = grabberRectangle.Contains(e.Location) ? Cursors.SizeAll : Cursors.Default;
+			return 0;
 		}
 
-		protected override void OnDragDrop(DragEventArgs drgevent)
+		private void GrabberClick(object sender, MouseEventArgs e)
 		{
-			base.OnDragDrop(drgevent);
+			_dragDropActive = true;
 
-			HandleDragAction(drgevent, true);
+			Refresh();
+
+			_ = DoDragDrop(this, DragDropEffects.Move);
+
+			_dragDropActive = false;
 		}
 
-		protected override void OnDragEnter(DragEventArgs drgevent)
+		private void InfoLaneClick(object sender, MouseEventArgs e)
 		{
-			base.OnDragEnter(drgevent);
-
-			HandleDragAction(drgevent, false);
+			_ = MessagePrompt.Show($"This is the {(Lane.Direction == LaneDirection.Forward ? "Right" : "Left")} Curb Delimiter;\r\n\r\nIt is used to separate what lanes are on the {(Lane.Direction == LaneDirection.Forward ? "right" : "left")} sidewalk and what lanes are on the asphalt.\r\n\r\nTry moving lanes and see how it affects the road in the preview.", PromptButtons.OK, PromptIcons.Info);
 		}
 
-		public static void HandleDragAction(DragEventArgs drgevent, bool drop)
+		private void LaneDecoClick(object sender, MouseEventArgs e)
 		{
-			var item = drgevent.Data.GetData(typeof(RoadLane)) as RoadLane;
-
-			if (item == null)
-				return;
-
-			if (drop)
-			{
-				item._dragDropActive = false;
-				item.Invalidate();
-			}
-
-			drgevent.Effect = DragDropEffects.Move;
-
-			var yIndex = item.Parent.PointToClient(Cursor.Position).Y + ((ScrollableControl)item.Parent).VerticalScroll.Value;
-			var calculatedIndex = item.Parent.Controls.Count - 1 - (int)Math.Floor((double)yIndex / item.Height).Between(0, item.Parent.Controls.Count - 1);
-
-			item.Parent.Controls.SetChildIndex(item, calculatedIndex);
-			item.RoadLaneChanged?.Invoke(item, EventArgs.Empty);
-		}
-
-		public RoadLane Duplicate() => new RoadLane(Lane);
-
-		internal void RefreshRoad()
-		{
-			Invalidate();
+			_ = new DecoTypeSelector(this);
 
 			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-		internal void ApplyLaneType()
+		private void LaneTypeClick(object sender, MouseEventArgs e)
 		{
-			if (Lane.Type < LaneType.Bike)
-			{
-				Lane.Direction = LaneDirection.None;
-			}
+			_ = new RoadTypeSelector(this);
 
-			if (Lane.Type.HasFlag(LaneType.Parking))
-			{
-				Lane.Type = LaneType.Parking;
-			}
+			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
+		}
 
-			if (Lane.Type.HasFlag(LaneType.Filler))
-			{
-				Lane.Type = LaneType.Filler;
-			}
+		private void SpeedLimitClick(object sender, MouseEventArgs e)
+		{
+			_ = new LaneSpeedSelector(this);
 
-			if (Lane.Type == LaneType.Parking)
-			{
-				Lane.ParkingAngle = Parent.Controls.OfType<RoadLane>().FirstOrDefault(x => x != this && x.Lane.Type == LaneType.Parking)?.Lane.ParkingAngle ?? ParkingAngle.Vertical;
-			}
-			else
-			{
-				Lane.ParkingAngle = ParkingAngle.Vertical;
-			}
+			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
+		}
 
-			if (Lane.Decorations == LaneDecoration.None && (Lane.Type == LaneType.Bike || Lane.Type == LaneType.Bus || Lane.Type == LaneType.Trolley))
-			{
-				Lane.Decorations = LaneDecoration.Filler;
-			}
+		private void WidthMinusClick(object sender, MouseEventArgs e)
+		{
+			var change = ModifierKeys.HasFlag(Keys.Shift) ? 5F : ModifierKeys.HasFlag(Keys.Control) ? 1F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 
-			foreach (var decoration in Lane.Decorations.GetValues())
-			{
-				if (!decoration.IsCompatible(Lane.Type))
-				{
-					Lane.Decorations &= ~decoration;
-				}
-			}
+			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round(Lane.LaneWidth - change, 2));
+
+			RefreshRoad();
+		}
+
+		private void WidthPlusClick(object sender, MouseEventArgs e)
+		{
+			var change = ModifierKeys.HasFlag(Keys.Shift) ? 5F : ModifierKeys.HasFlag(Keys.Control) ? 1F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+
+			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round(Lane.LaneWidth + change, 2));
+
+			RefreshRoad();
+		}
+
+		private void WidthResetClick(object sender, MouseEventArgs e)
+		{
+			Lane.CustomWidth = null;
 
 			RefreshRoad();
 		}

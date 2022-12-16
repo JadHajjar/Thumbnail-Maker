@@ -13,7 +13,7 @@ namespace ThumbnailMaker.Domain
 		public RegionType RegionType { get; set; }
 		public float RoadWidth { get; set; }
 		public float BufferWidth { get; set; }
-		public float SpeedLimit { get; set; }
+		public int SpeedLimit { get; set; }
 		public bool LHT { get; set; }
 		public List<LaneInfo> Lanes { get; set; }
 		public byte[] SmallThumbnail { get; set; }

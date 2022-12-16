@@ -27,16 +27,16 @@ namespace ThumbnailMaker
 
 			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
-				if (laneType == LaneType.Empty)
-					continue;
+				//if (laneType == LaneType.Train)
+				//	continue;
 
 				var ctrl = new LaneOptionControl(laneType);
 
 				TLP.Controls.Add(ctrl);
 			}
 
-			TLP.Controls.Add(new LaneOptionControl("Arrow"));
-			TLP.Controls.Add(new LaneOptionControl("Logo"));
+			//TLP.Controls.Add(new LaneOptionControl("Arrow"));
+			//TLP.Controls.Add(new LaneOptionControl("Logo"));
 
 			using (var fontsCollection = new InstalledFontCollection())
 			{

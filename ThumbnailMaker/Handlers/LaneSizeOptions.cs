@@ -18,12 +18,24 @@ namespace ThumbnailMaker.Domain
 
 		public float DiagonalParkingSize
 		{
-			get => _diagonalParkingSize;
+			get => _diagonalParkingSize; 
+			set
+			{
+				_diagonalParkingSize = value;
+
+				Save();
+			}
 		}
 
 		public float HorizontalParkingSize
 		{
 			get => _horizontalParkingSize;
+			set
+			{
+				_horizontalParkingSize = value;
+
+				Save();
+			}
 		}
 
 		public float this[LaneType l]
@@ -135,6 +147,7 @@ namespace ThumbnailMaker.Domain
 					return 4F;
 
 				case LaneType.Curb:
+				case LaneType.Empty:
 					return 1F;
 			}
 
