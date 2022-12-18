@@ -88,7 +88,7 @@ namespace ThumbnailMaker.Controls
 				{
 					var laneColor = ThumbnailLaneInfo.GetColor(laneType);
 
-					e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Lane.Decorations.HasFlag(laneType) ? laneColor : FormDesign.Design.AccentColor), rectangle, 16);
+					e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Lane.Decorations.HasFlag(laneType) ? Color.FromArgb(200, laneColor) : FormDesign.Design.AccentColor), rectangle, 16);
 
 					if (laneType == LaneDecoration.None ? (_roadLane.Lane.Decorations == LaneDecoration.None) : _roadLane.Lane.Decorations.HasFlag(laneType))
 						e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.ActiveColor, 2.5F), rectangle, 16);

@@ -46,7 +46,7 @@ namespace ThumbnailMaker.Controls
 				, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"));
 
 				var controls = P_Configs.Controls.OfType<RoadConfigControl>().ToDictionary(x => x.FileName);
-				var files = Directory.Exists(appdata) ? Directory.GetFiles(appdata, "*.xml") : new string[0];
+				var files = Directory.Exists(appdata) ? Directory.GetFiles(appdata, "*.xml", SearchOption.AllDirectories) : new string[0];
 
 				this.TryInvoke(() =>
 				{

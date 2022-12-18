@@ -11,6 +11,7 @@ namespace ThumbnailMaker.Domain
 		public LaneDirection Direction { get; set; }
 		public LaneDecoration Decorations { get; set; }
 		public ParkingAngle ParkingAngle { get; set; }
+		public PropAngle PropAngle { get; set; }
 
 		public float? Elevation { get; set; }
 		public float? CustomWidth { get; set; }

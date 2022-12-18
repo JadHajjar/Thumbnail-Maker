@@ -36,6 +36,7 @@ namespace ThumbnailMaker.Handlers
 		public List<ThumbnailLaneInfo> Lanes { get; set; }
 		public RegionType RegionType { get; set; }
 		public RoadType RoadType { get; set; }
+		public TextureType SideTexture { get; set; }
 
 		public Graphics Graphics { get; }
 		public int Height { get; }
@@ -44,6 +45,23 @@ namespace ThumbnailMaker.Handlers
 		private int PixelFactor { get; }
 
 		private float IdealWidthModifier;
+		private Color PavementColor
+		{
+			get
+			{
+				switch (SideTexture)
+				{
+					case TextureType.Pavement:
+						return Color.FromArgb(180, 180, 180);
+					case TextureType.Gravel:
+						return Color.FromArgb(143, 121, 97);
+					case TextureType.Ruined:
+						return Color.FromArgb(181, 176, 125);
+					default:
+						return Color.FromArgb(50, 50, 50);
+				}
+			}
+		}
 
 		public void Draw()
 		{
@@ -71,20 +89,19 @@ namespace ThumbnailMaker.Handlers
 
 			DrawBackground(availableSpace, laneRects);
 
+			using (var logo = ResourceManager.Logo(Small))
+			{
+				if (logo != null)
+					Graphics.DrawImage(logo, new Rectangle(new Point((Width - logo.Width) / 2, 0), logo.Size));
+
+				DrawCustomText(new Rectangle(0, 0, Width, Height).Pad(0, logo?.Height ?? 0, 0, 0));
+			}
+
 			foreach (var lane in Lanes.Where(x => (int)x.Type > 0))
 				DrawBackground(lane, laneRects[lane], availableSpace.Pad(0, 0, 0, LaneHeight(lane)));
-			
+
 			foreach (var lane in Lanes.Where(x => (int)x.Type > 0))
 				DrawLane(lane, laneRects[lane], availableSpace.Pad(0, 0, 0, LaneHeight(lane)), IdealWidthModifier);
-
-			if (string.IsNullOrWhiteSpace(CustomText))
-			{
-				using (var logo = ResourceManager.Logo(Small))
-					if (logo != null)
-						Graphics.DrawImage(logo, new Rectangle(new Point((Width - logo.Width) / 2, 0), logo.Size));
-			}
-			else
-				DrawCustomText(new Rectangle(0, 0, Width, Height), true);
 
 			DrawBottomContent();
 		}
@@ -97,23 +114,23 @@ namespace ThumbnailMaker.Handlers
 
 			Graphics.Clear(Color.FromArgb(50, 50, 50));
 
-			Graphics.FillRectangle(new SolidBrush(Color.FromArgb(174, 215, 242)), new Rectangle(0, 0, bottomArea.Width, bottomArea.Y + (int)(0.6F * PixelFactor * IdealWidthModifier)));
+			Graphics.FillRectangle(new SolidBrush(Color.FromArgb(174, 215, 242)), new Rectangle(0, 0, bottomArea.Width, bottomArea.Y + (RoadType == RoadType.Road ? (int)(0.6F * PixelFactor * IdealWidthModifier) : 0)));
 
 			if (leftSidewalk != null)
 			{
-				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(180, 180, 180)), new Rectangle(0, bottomArea.Y, laneRects[leftSidewalk].X + laneRects[leftSidewalk].Width, bottomArea.Height));
+				Graphics.FillRectangle(new SolidBrush(PavementColor), new Rectangle(0, bottomArea.Y, laneRects[leftSidewalk].X + laneRects[leftSidewalk].Width, bottomArea.Height));
 			}
 
 			if (rightSidewalk != null)
 			{
-				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(180, 180, 180)), new Rectangle(laneRects[rightSidewalk].X, bottomArea.Y, Width - laneRects[rightSidewalk].X, bottomArea.Height));
+				Graphics.FillRectangle(new SolidBrush(PavementColor), new Rectangle(laneRects[rightSidewalk].X, bottomArea.Y, Width - laneRects[rightSidewalk].X, bottomArea.Height));
 			}
 		}
 
 		private void DrawLane(ThumbnailLaneInfo lane, Rectangle rect, Rectangle availableSpace, float scale)
 		{
-			if (lane.Width < 1)
-				return;
+			if (rect.Width < 0.5F * PixelFactor * scale)
+				rect = rect.Pad(-(int)(0.5F * PixelFactor * scale - rect.Width) / 2, 0, -(int)(0.5F * PixelFactor * scale - rect.Width) / 2, 0);
 
 			var classIcons = lane.Icons(Small);
 
@@ -197,9 +214,9 @@ namespace ThumbnailMaker.Handlers
 			var rightLane = Lanes.Next(lane);
 			var bottomArea = new Rectangle(rect.X, availableSpace.Y + availableSpace.Height, rect.Width, Height - (availableSpace.Y + availableSpace.Height));
 
-			Graphics.FillRectangle(new SolidBrush(lane.Sidewalk ? Color.FromArgb(180, 180, 180) : Color.FromArgb(50, 50, 50)), bottomArea);
+			Graphics.FillRectangle(new SolidBrush(lane.Sidewalk ? PavementColor : Color.FromArgb(50, 50, 50)), bottomArea);
 
-			if (lane.Type == LaneType.Curb)
+			if (lane.Type == LaneType.Curb && RoadType != RoadType.Highway)
 				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(130, 130, 130)), lane.Direction == LaneDirection.Backwards ? new Rectangle(bottomArea.X + bottomArea.Width - (Small ? 3 : 7), bottomArea.Y, Small ? 3 : 7, bottomArea.Height) : new Rectangle(bottomArea.X, bottomArea.Y, Small ? 3 : 7, bottomArea.Height));
 
 			if (Options.Current.ShowLaneColorsOnThumbnail && lane.Type != LaneType.Curb && (!lane.Sidewalk || lane.Type != LaneType.Pedestrian))
@@ -267,8 +284,10 @@ namespace ThumbnailMaker.Handlers
 				return null;
 			}
 
-			if (style.HasAnyFlag(LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight) && lane.Direction == LaneDirection.Forward)
-				decorationIcon.RotateFlip(RotateFlipType.RotateNoneFlipX);
+			var flip = Lanes.IndexOf(lane) < Lanes.Count / 2;
+
+			if (lane.Decorations.HasFlag(style) && lane.PropAngle == PropAngle.Left)
+				flip = !flip;
 
 			if (style == LaneDecoration.TransitStop)
 			{
@@ -276,9 +295,11 @@ namespace ThumbnailMaker.Handlers
 				var left = index == 0 ? null : Lanes[index - 1];
 				var right = index == (Lanes.Count - 1) ? null : Lanes[index + 1];
 
-				if (left != null && (left.Direction == LaneDirection.Forward || right == null || !right.Type.HasAnyFlag(LaneType.Car, LaneType.Bus, LaneType.Trolley, LaneType.Tram)) && left.Type.HasAnyFlag(LaneType.Car, LaneType.Bus, LaneType.Trolley, LaneType.Tram))
-					 decorationIcon.RotateFlip(RotateFlipType.RotateNoneFlipX);
+				flip = left != null && (left.Direction == LaneDirection.Forward || right == null || !right.Type.HasAnyFlag(LaneType.Car, LaneType.Bus, LaneType.Trolley, LaneType.Tram)) && left.Type.HasAnyFlag(LaneType.Car, LaneType.Bus, LaneType.Trolley, LaneType.Tram);
 			}
+
+			if (flip)
+				decorationIcon.RotateFlip(RotateFlipType.RotateNoneFlipX);
 
 			var standardWidth = PixelFactor * GetStandardWidth(style);
 
@@ -311,13 +332,15 @@ namespace ThumbnailMaker.Handlers
 			switch (decorations)
 			{
 				case LaneDecoration.Benches:
-					return 1.75F;
+					return 1F;
 				case LaneDecoration.FlowerPots:
 					return 0.5F;
 				case LaneDecoration.Bollard:
 					return 0.25F;
 				case LaneDecoration.Hedge:
 					return 1.5F;
+				case LaneDecoration.TrashBin:
+					return 0.5F;
 			}
 
 			return 1F;
@@ -352,30 +375,6 @@ namespace ThumbnailMaker.Handlers
 
 		private void PrepareLanes()
 		{
-			//for (var i = 0; i < Lanes.Count; i++)
-			//{
-			//	if (Lanes[i].Type == LaneType.Filler || Lanes[i].Type == LaneType.Parking || Lanes[i].Lanes <= 1)
-			//		continue;
-
-			//	var bi = Lanes[i].Direction == LaneDirection.Both;
-
-			//	Lanes[i].Lanes--;
-
-			//	if (bi && Lanes[i].Lanes == 1)
-			//		Lanes[i].Direction = !Options.Current.LHT ? LaneDirection.Forward : LaneDirection.Backwards;
-
-			//	Lanes.Insert(i, new ThumbnailLaneInfo
-			//	{
-			//		Type = Lanes[i].Type,
-			//		Direction = bi ? (Options.Current.LHT ? LaneDirection.Forward : LaneDirection.Backwards) : Lanes[i].Direction,
-			//		CustomWidth = Lanes[i].CustomWidth,
-			//		SpeedLimit = Lanes[i].SpeedLimit,
-			//		Elevation = Lanes[i].Elevation,
-			//		ParkingAngle = Lanes[i].ParkingAngle,
-			//		Decorations = Lanes[i].Decorations,
-			//	});
-			//}
-
 			Lanes.ForEach(lane => { lane.Width = (int)(PixelFactor * lane.LaneWidth); lane.Sidewalk = false; });
 
 			var leftSidewalk = Lanes.FirstOrDefault(x => x.Type == LaneType.Curb && x.Direction == LaneDirection.Backwards);
@@ -389,20 +388,20 @@ namespace ThumbnailMaker.Handlers
 				for (var i = 0; i <= Lanes.IndexOf(leftSidewalk); i++)
 					Lanes[i].Sidewalk = true;
 
-				Lanes.Insert(Lanes.IndexOf(leftSidewalk) + 1, new ThumbnailLaneInfo { Type = (LaneType)(-1), Width = (int)(PixelFactor * BufferSize) });
+				Lanes.Insert(Lanes.IndexOf(leftSidewalk) + 1, new ThumbnailLaneInfo { Width = (int)(PixelFactor * BufferSize) });
 			}
 			else
-				Lanes.Insert(0, new ThumbnailLaneInfo { Type = (LaneType)(-1), Width = (int)(PixelFactor * BufferSize) });
+				Lanes.Insert(0, new ThumbnailLaneInfo { Width = (int)(PixelFactor * BufferSize) });
 
 			if (rightSidewalk != null)
 			{
 				for (var i = Lanes.IndexOf(rightSidewalk); i < Lanes.Count; i++)
 					Lanes[i].Sidewalk = true;
 
-				Lanes.Insert(Lanes.IndexOf(rightSidewalk), new ThumbnailLaneInfo { Type = (LaneType)(-1), Width = (int)(PixelFactor * BufferSize) });
+				Lanes.Insert(Lanes.IndexOf(rightSidewalk), new ThumbnailLaneInfo { Width = (int)(PixelFactor * BufferSize) });
 			}
 			else
-				Lanes.Insert(Lanes.Count, new ThumbnailLaneInfo { Type = (LaneType)(-1), Width = (int)(PixelFactor * BufferSize) });
+				Lanes.Insert(Lanes.Count, new ThumbnailLaneInfo { Width = (int)(PixelFactor * BufferSize) });
 
 			AsphaltWidth = Lanes.Where(x => !x.Sidewalk).Sum(lane => lane.LaneWidth);
 		}
@@ -483,10 +482,11 @@ namespace ThumbnailMaker.Handlers
 			DrawRoadIcon(new Rectangle(0, Height - (Small ? 30 : 120), size ? ((Width - roadSizeWidth) / 2 - (Small ? 3 : 24)) : speed ? ((Width - speedWidth) / 2 - (Small ? 3 : 24)) : Width, (Small ? 30 : 120)));
 		}
 
-		private void DrawCustomText(Rectangle containerRect, bool center)
+		private void DrawCustomText(Rectangle containerRect)
 		{
-			Graphics.DrawString(CustomText, new Font(Options.Current.SizeFont, Small ? 9F : 38F, FontStyle.Bold), Brushes.White, containerRect.Pad(0, Small ? 3 : 10, Small ? -1 : -3, Small ? -1 : -3), new StringFormat { Alignment = center ? StringAlignment.Center : StringAlignment.Far, LineAlignment = StringAlignment.Near });
-			Graphics.DrawString(CustomText, new Font(Options.Current.SizeFont, Small ? 9F : 38F, FontStyle.Bold), new SolidBrush(Color.FromArgb(40, 40, 40)), containerRect.Pad(0, Small ? 3 : 10, 0, 0), new StringFormat { Alignment = center ? StringAlignment.Center : StringAlignment.Far, LineAlignment = StringAlignment.Near });
+			if(!Small)
+			Graphics.DrawString(CustomText, new Font(Options.Current.SizeFont, Small ? 9F : 38F, FontStyle.Bold), Brushes.White, containerRect.Pad(0, Small ? 3 : 10, Small ? -1 : -3, Small ? -1 : -3), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near });
+			Graphics.DrawString(CustomText, new Font(Options.Current.SizeFont, Small ? 9F : 38F, FontStyle.Bold), new SolidBrush(Color.FromArgb(40, 40, 40)), containerRect.Pad(0, Small ? 3 : 10, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near });
 		}
 
 		private void DrawRoadIcon(Rectangle containerRect)

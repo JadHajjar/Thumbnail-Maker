@@ -56,8 +56,6 @@ namespace ThumbnailMaker.Handlers
 					try
 					{
 						Utilities.ExportRoad(road, fileName);
-
-						File.Delete(fileName);
 					}
 					catch { }
 

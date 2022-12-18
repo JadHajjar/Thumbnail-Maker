@@ -42,6 +42,12 @@ namespace ThumbnailMaker.Domain
 		Hedge = 1024,
 
 		[StyleIdentity(14, 237, 186, 64)]
-		TransitStop = 2048
+		TransitStop = 2048,
+
+		[StyleIdentity(15, 194, 161, 83)]
+		TrashBin = 4096,
+
+		[StyleIdentity(16, 111, 187, 217)]
+		BikeParking = 8192,
 	}
 }

@@ -29,6 +29,7 @@ namespace ThumbnailMaker.Handlers
 			Directory.CreateDirectory(appdata);
 
 			road.Version = LegacyUtil.CURRENT_VERSION;
+			road.SpeedLimit = road.SpeedLimit.If(0, DefaultSpeedSign(road.RoadType, road.RegionType == RegionType.USA));
 			road.SmallThumbnail = getImage(true, false);
 			road.LargeThumbnail = getImage(false, false);
 			road.TooltipImage = getImage(true, true);
@@ -68,7 +69,7 @@ namespace ThumbnailMaker.Handlers
 			}
 		}
 
-		public static string GetRoadDescription<T>(List<T> lanes, string size, float bufferSize, int speedLimit, bool usa) where T : LaneInfo
+		public static string GetRoadDescription<T>(List<T> lanes, RoadType roadType, string size, float bufferSize, int speedLimit, bool usa) where T : LaneInfo
 		{
 			var skip = false;
 			var oneWay = IsOneWay(lanes);
@@ -110,7 +111,7 @@ namespace ThumbnailMaker.Handlers
 
 			if (speedLimit > 0)
 			{
-				speedLimit = DefaultSpeedSign(lanes, usa);
+				speedLimit = DefaultSpeedSign(lanes, roadType, usa);
 			}
 
 			var info = (size.Length == 0 ? "" : $"{size}m") +
@@ -123,9 +124,27 @@ namespace ThumbnailMaker.Handlers
 			return desc;
 		}
 
-		public static int DefaultSpeedSign<T>(List<T> lanes, bool usa) where T : LaneInfo
+		public static int DefaultSpeedSign<T>(List<T> lanes, RoadType type, bool mph) where T : LaneInfo
 		{
-			return lanes.Any(x => (x.Type & (LaneType.Car | LaneType.Bus | LaneType.Trolley | LaneType.Emergency | LaneType.Tram)) != 0) ? usa ? 25 : 40 : 0;
+			return lanes.Any(x => (x.Type & (LaneType.Car | LaneType.Bus | LaneType.Trolley | LaneType.Emergency | LaneType.Tram)) != 0)
+				? DefaultSpeedSign(type, mph) : 0;
+		}
+
+		public static int DefaultSpeedSign(RoadType type, bool mph)
+		{
+			switch (type)
+			{
+				case RoadType.Road:
+					return mph ? 25 : 40;
+				case RoadType.Highway:
+					return mph ? 55 : 80;
+				case RoadType.Pedestrian:
+					return mph ? 10 : 20;
+				case RoadType.Flat:
+					return mph ? 15 : 30;
+			}
+
+			return 0;
 		}
 
 		public static float CalculateRoadSize<T>(List<T> lanes, float bufferSize) where T : LaneInfo
@@ -206,12 +225,12 @@ namespace ThumbnailMaker.Handlers
 				{
 					case LaneType.Filler:
 					case LaneType.Curb:
-						if (deco.AnyOf(LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight, LaneDecoration.Filler))
+						if (deco.AnyOf(LaneDecoration.Filler))
 							return false;
 						break;
 
 					case LaneType.Pedestrian:
-						if (!deco.AnyOf(LaneDecoration.TransitStop, LaneDecoration.None, LaneDecoration.Filler, LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+						if (!deco.AnyOf(LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight, LaneDecoration.TransitStop, LaneDecoration.None, LaneDecoration.Filler, LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
 							return false;
 						break;
 

@@ -48,6 +48,7 @@ namespace ThumbnailMaker.Controls
 
 			if (drop)
 			{
+				item.HoverState = HoverState.Normal;
 				item._dragDropActive = false;
 				item.Invalidate();
 			}
@@ -184,7 +185,7 @@ namespace ThumbnailMaker.Controls
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			var cursor = PointToClient(Cursor.Position);
+			var cursor = HoverState.HasFlag(HoverState.Hovered) ? PointToClient(Cursor.Position) : new Point(-1,-1);
 
 			e.Graphics.Clear(BackColor);
 
@@ -230,6 +231,8 @@ namespace ThumbnailMaker.Controls
 			DrawParkingDirections(e, cursor, ref leftX);
 
 			DrawLaneSpeed(e, cursor, ref leftX);
+
+			DrawDecorationDirection(e, cursor, ref leftX);
 
 			grabberRectangle = new Rectangle(iconX + 8, 0, leftX - iconX, Height - 4);
 
@@ -411,7 +414,7 @@ namespace ThumbnailMaker.Controls
 			var elevationPlusRectangle = new Rectangle(leftX + (scale * 2), yIndex, scale, scale);
 
 			var size = Lane.Elevation ?? GetDefaultElevation();
-			e.Graphics.DrawString($"{size:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(elevationRectangle.Contains(cursor) ? FormDesign.Design.RedColor : foreColor), elevationRectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+			e.Graphics.DrawString($"{size:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(elevationRectangle.Contains(cursor) ? FormDesign.Design.RedColor : foreColor), elevationRectangle.Pad(-10), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 
 			if (elevationMinusRectangle.Contains(cursor))
 			{
@@ -433,8 +436,8 @@ namespace ThumbnailMaker.Controls
 			_clickActions[elevationPlusRectangle] = ElevationPlusClick;
 			_clickActions[elevationRectangle] = ElevationResetClick;
 
-			_tooltips[elevationMinusRectangle] = "Decrease lane elevation by 0.1\r\n\r\nUse Shift for 5x, Ctrl for 1x & Alt for 0.01x";
-			_tooltips[elevationPlusRectangle] = "Increase lane elevation by 0.1\r\n\r\nUse Shift for 5x, Ctrl for 1x & Alt for 0.01x";
+			_tooltips[elevationMinusRectangle] = "Decrease lane elevation by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.5x & Alt for 0.01x";
+			_tooltips[elevationPlusRectangle] = "Increase lane elevation by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.5x & Alt for 0.01x";
 			_tooltips[elevationRectangle] = "Reset lane elevation to " + GetDefaultElevation();
 		}
 
@@ -491,6 +494,62 @@ namespace ThumbnailMaker.Controls
 				_clickActions[rect] = (_, __) =>
 				{
 					Lane.Direction = direction;
+					RefreshRoad();
+				};
+			}
+
+			DrawLine(e, leftX - 6);
+		}
+
+		private void DrawDecorationDirection(PaintEventArgs e, Point cursor, ref int leftX)
+		{
+			if (Lane.Type != LaneType.Filler && Lane.Type != LaneType.Curb)
+			{
+				return;
+			}
+
+			var directions = new[] { PropAngle.Left, PropAngle.Right };
+
+			leftX -= 12 + (scale * directions.Length);
+
+			// Draw direction buttons
+			var ind = 0;
+			foreach (var direction in directions)
+			{
+				var rect = new Rectangle(leftX + (scale * ind++), yIndex, scale, scale);
+
+				if (rect.Contains(cursor))
+				{
+					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), rect, 4);
+				}
+				else if (Lane.PropAngle == direction)
+				{
+					DrawSelection(e, rect);
+				}
+
+				Bitmap icon;
+
+				switch (direction)
+				{
+					case PropAngle.Right:
+						icon = Properties.Resources.Icon_Horizontal;
+						break;
+
+					case PropAngle.Left:
+						icon = Properties.Resources.Icon_Horizontal;
+						icon.RotateFlip(RotateFlipType.RotateNoneFlipX);
+						break;
+
+					default:
+						continue;
+				}
+
+				e.Graphics.DrawImage(icon.Color(rect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lane.PropAngle == direction ? FormDesign.Design.ActiveColor : foreColor), rect.CenterR(16, 16));
+
+				_tooltips[rect] = "Change the direction of some decoration props to " + direction;
+				_clickActions[rect] = (_, __) =>
+				{
+					Lane.PropAngle = direction;
 					RefreshRoad();
 				};
 			}
@@ -624,7 +683,7 @@ namespace ThumbnailMaker.Controls
 			var sizeRectangle = new Rectangle(leftX + scale, yIndex, scale, scale);
 			var sizePlusRectangle = new Rectangle(leftX + (scale * 2), yIndex, scale, scale);
 
-			e.Graphics.DrawString($"{Lane.LaneWidth:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(sizeRectangle.Contains(cursor) ? FormDesign.Design.RedColor : foreColor), sizeRectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+			e.Graphics.DrawString($"{Lane.LaneWidth:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(sizeRectangle.Contains(cursor) ? FormDesign.Design.RedColor : foreColor), sizeRectangle.Pad(-10), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 
 			if (sizeMinusRectangle.Contains(cursor))
 			{
@@ -646,8 +705,8 @@ namespace ThumbnailMaker.Controls
 			_clickActions[sizePlusRectangle] = WidthPlusClick;
 			_clickActions[sizeRectangle] = WidthResetClick;
 
-			_tooltips[sizeMinusRectangle] = "Decrease lane width by 0.1\r\n\r\nUse Shift for 5x, Ctrl for 1x & Alt for 0.01x";
-			_tooltips[sizePlusRectangle] = "Increase lane width by 0.1\r\n\r\nUse Shift for 5x, Ctrl for 1x & Alt for 0.01x";
+			_tooltips[sizeMinusRectangle] = "Decrease lane width by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.5x & Alt for 0.01x";
+			_tooltips[sizePlusRectangle] = "Increase lane width by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.5x & Alt for 0.01x";
 			_tooltips[sizeRectangle] = "Reset lane width to " + Lane.DefaultLaneWidth();
 		}
 
@@ -679,7 +738,7 @@ namespace ThumbnailMaker.Controls
 		{
 			if (Options.Current.AdvancedElevation)
 			{
-				var change = ModifierKeys.HasFlag(Keys.Shift) ? 5F : ModifierKeys.HasFlag(Keys.Control) ? 1F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+				var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 				var defaultElevation = GetDefaultElevation();
 
 				Lane.Elevation = (float)Math.Max(defaultElevation, Math.Round(Lane.Elevation ?? defaultElevation - change, 2));
@@ -696,7 +755,7 @@ namespace ThumbnailMaker.Controls
 		{
 			if (Options.Current.AdvancedElevation)
 			{
-				var change = ModifierKeys.HasFlag(Keys.Shift) ? 5F : ModifierKeys.HasFlag(Keys.Control) ? 1F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+				var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 				var defaultElevation = GetDefaultElevation();
 
 				Lane.Elevation = (float)Math.Max(defaultElevation, Math.Round(Lane.Elevation ?? defaultElevation + change, 2));
@@ -745,6 +804,7 @@ namespace ThumbnailMaker.Controls
 			_ = DoDragDrop(this, DragDropEffects.Move);
 
 			_dragDropActive = false;
+			Invalidate();
 		}
 
 		private void InfoLaneClick(object sender, MouseEventArgs e)
@@ -775,18 +835,18 @@ namespace ThumbnailMaker.Controls
 
 		private void WidthMinusClick(object sender, MouseEventArgs e)
 		{
-			var change = ModifierKeys.HasFlag(Keys.Shift) ? 5F : ModifierKeys.HasFlag(Keys.Control) ? 1F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+			var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 
-			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round(Lane.LaneWidth - change, 2));
+			Lane.CustomWidth = (float)Math.Max(0, Math.Round(Lane.LaneWidth - change, 2));
 
 			RefreshRoad();
 		}
 
 		private void WidthPlusClick(object sender, MouseEventArgs e)
 		{
-			var change = ModifierKeys.HasFlag(Keys.Shift) ? 5F : ModifierKeys.HasFlag(Keys.Control) ? 1F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+			var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 
-			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round(Lane.LaneWidth + change, 2));
+			Lane.CustomWidth = (float)Math.Max(0, Math.Round(Lane.LaneWidth + change, 2));
 
 			RefreshRoad();
 		}

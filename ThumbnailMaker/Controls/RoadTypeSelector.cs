@@ -94,7 +94,7 @@ namespace ThumbnailMaker.Controls
 				using (var icon = ResourceManager.GetImage(laneType, false))
 				{
 					if (icon != null)
-						e.Graphics.DrawIcon(icon, rectangle, new Size(80, 80));
+						e.Graphics.DrawIcon(laneType == LaneType.Empty ? icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor)) : icon, rectangle, new Size(80, 80));
 					else if (!_roadLane.Lane.Type.HasFlag(laneType))
 						e.Graphics.DrawRoundedRectangle(new Pen(ThumbnailLaneInfo.GetColor(laneType), 2.5F), rectangle, 16);
 				}

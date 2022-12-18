@@ -46,7 +46,7 @@ namespace ThumbnailMaker.Controls
 				using (var ms = new MemoryStream(Road.SmallThumbnail))
 					Image = new Bitmap(ms);
 
-				RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(Road.Lanes, Road.RegionType == RegionType.USA).If(x => x == 0, x => "", x => x.ToString()) : Road.SpeedLimit.ToString();
+				RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(Road.Lanes, Road.RoadType, Road.RegionType == RegionType.USA).If(x => x == 0, x => "", x => x.ToString()) : Road.SpeedLimit.ToString();
 				RoadSize = Road.RoadWidth <= 0F ? Utilities.CalculateRoadSize(Road.Lanes, Road.BufferWidth).If(x => x == 0F, x => "", x => x.ToString("0.#")) : Road.RoadWidth.ToString();
 
 				Height = 64;

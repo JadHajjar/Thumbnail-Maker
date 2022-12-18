@@ -85,6 +85,9 @@
     <Compile Include="Controls\LaneOptionControl.Designer.cs">
       <DependentUpon>LaneOptionControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OptionSelectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\RoadConfigContainer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -108,6 +111,8 @@
     </Compile>
     <Compile Include="Domain\LaneDecoration.cs" />
     <Compile Include="Domain\ParkingAngle.cs" />
+    <Compile Include="Domain\PropAngle.cs" />
+    <Compile Include="Domain\TextureType.cs" />
     <Compile Include="Handlers\LaneSizeOptions.cs" />
     <Compile Include="Domain\RoadType.cs" />
     <Compile Include="Domain\RegionType.cs" />
@@ -183,6 +188,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\L_D_16.png" />
+    <None Include="Resources\S_D_16.png" />
+    <None Include="Resources\L_D_15.png" />
+    <None Include="Resources\S_D_15.png" />
     <None Include="Resources\S_C_10.png" />
     <None Include="Resources\L_C_10.png" />
     <None Include="Resources\I_Copy.png" />

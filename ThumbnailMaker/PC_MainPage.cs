@@ -20,9 +20,6 @@ using ThumbnailMaker.Controls;
 using ThumbnailMaker.Domain;
 using ThumbnailMaker.Handlers;
 
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
-
 namespace ThumbnailMaker
 {
 	public partial class PC_MainPage : PanelContent
@@ -30,6 +27,29 @@ namespace ThumbnailMaker
 		public PC_MainPage()
 		{
 			InitializeComponent();
+
+			RoadTypeControl = new OptionSelectionControl<RoadType>(t => ResourceManager.GetRoadType(t, false)) { Dock = DockStyle.Top };
+			GB_RoadType.Controls.Add(RoadTypeControl);
+			RegionTypeControl = new OptionSelectionControl<RegionType>((g, r, t) => ThumbnailHandler.DrawSpeedSignSmall(g, t, 20, r)) { Dock = DockStyle.Top };
+			GB_Region.Controls.Add(RegionTypeControl);
+			SideTextureControl = new OptionSelectionControl<TextureType>(GetTextureIcon) { Dock = DockStyle.Top };
+			GB_SideTexture.Controls.Add(SideTextureControl);
+			BridgeSideTextureControl = new OptionSelectionControl<BridgeTextureType>(GetTextureIcon) { Dock = DockStyle.Top };
+			GB_BridgeSideTexture.Controls.Add(BridgeSideTextureControl);
+
+			RoadTypeControl.SelectedValueChanged += (s, e) => SetupType(RoadTypeControl.SelectedValue);
+			SideTextureControl.SelectedValueChanged += (s, e) => RefreshPreview();
+			RegionTypeControl.SelectedValueChanged += (s, e) => 
+			{
+				TB_SpeedLimit.LabelText = $"Speed Limit ({(RegionTypeControl.SelectedValue == RegionType.USA ? "mph" : "km/h")})";
+
+				Options.Current.Region = GetRegion();
+				Options.Save();
+
+				RefreshPreview();
+			};
+
+			SetupType(RoadTypeControl.SelectedValue);
 
 			using (var img = new Bitmap(24, 24))
 			using (var g = Graphics.FromImage(img))
@@ -42,19 +62,6 @@ namespace ThumbnailMaker
 			}
 
 			TB_BufferSize.Text = 0.25F.ToString();
-
-			RB_Europe.Checked = Options.Current.Region == RegionType.Europe;
-			RB_Canada.Checked = Options.Current.Region == RegionType.Canada;
-			RB_USA.Checked = Options.Current.Region == RegionType.USA;
-			RB_Road.Checked = true;
-
-			SlickTip.SetTo(RB_Road, "A normal road with curbs & sidewalks");
-			SlickTip.SetTo(RB_Highway, "A flat road with no pavement and highway rules");
-			SlickTip.SetTo(RB_Pedestrian, "A flat pedestrian road");
-
-			SlickTip.SetTo(RB_Europe, "Use a European styled speed limit sign, as well as km/h as the speed measurement");
-			SlickTip.SetTo(RB_USA, "Use a US styled speed limit sign, as well as mph as the speed measurement");
-			SlickTip.SetTo(RB_Canada, "Use a Canadian styled speed limit sign, as well as km/h as the speed measurement");
 
 			SlickTip.SetTo(TB_Size, "Manually specify the total road width, which includes the asphalt and pavement");
 			SlickTip.SetTo(TB_BufferSize, "Represents the distance between the sidewalks and the lanes next to them");
@@ -72,6 +79,36 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(B_AddLane, "Add a new empty lane");
 
 			FormDesign.DesignChanged += FormDesign_DesignChanged;
+		}
+
+		private Image GetTextureIcon(TextureType arg3)
+		{
+			switch (arg3)
+			{
+				case TextureType.Pavement:
+					return Properties.Resources.L_D_2;
+				case TextureType.Gravel:
+					return Properties.Resources.L_D_3;
+				case TextureType.Ruined:
+					return Properties.Resources.L_D_2;
+				case TextureType.Asphalt:
+					break;
+			}
+
+			return null;
+		}
+
+		private Image GetTextureIcon(BridgeTextureType arg3)
+		{
+			switch (arg3)
+			{
+				case BridgeTextureType.Pavement:
+					return Properties.Resources.L_D_2;
+				case BridgeTextureType.Asphalt:
+					break;
+			}
+
+			return null;
 		}
 
 		private void FormDesign_DesignChanged(FormDesign design)
@@ -116,11 +153,12 @@ namespace ThumbnailMaker
 				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? "BRB " + Utilities.IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle(lanes)).WhereNotEmpty().ListStrings("+") : TB_RoadName.Text;
 				L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
 
-				var speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, RB_USA.Checked) : TB_SpeedLimit.Text.SmartParse();
+				var speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse();
 
 				if (speed != RoadLane.GlobalSpeed)
 				{
 					RoadLane.GlobalSpeed = speed;
+
 					foreach (Control item in P_Lanes.Controls)
 						item.Invalidate();
 				}
@@ -137,76 +175,32 @@ namespace ThumbnailMaker
 				BufferSize = Math.Max(0, TB_BufferSize.Text.SmartParseF()),
 				RegionType = GetRegion(),
 				RoadType = GetRoadType(),
-				Speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, RB_USA.Checked) : TB_SpeedLimit.Text.SmartParse(),
+				SideTexture = SideTextureControl.SelectedValue,
+				Speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse(),
 				Lanes = new List<ThumbnailLaneInfo>(lanes)
 			}.Draw();
 		}
 
-		private void RB_CheckedChanged(object sender, EventArgs e)
-		{
-			if (RB_Road == sender && RB_Road.Checked)
-				SetupType(RoadType.Road);
-			else if (RB_Highway == sender && RB_Highway.Checked)
-				SetupType(RoadType.Highway);
-			else if (RB_FlatRoad == sender && RB_FlatRoad.Checked)
-				SetupType(RoadType.Flat);
-			else if (RB_Pedestrian == sender && RB_Pedestrian.Checked)
-				SetupType(RoadType.Pedestrian);
-
-			foreach (var item in P_Lanes.Controls.OfType<RoadLane>())
-				item.Invalidate();
-
-			RefreshPreview();
-
-			TB_SpeedLimit.LabelText = $"Speed Limit ({(RB_USA.Checked ? "mph" : "km/h")})";
-
-			Options.Current.Region = GetRegion();
-			Options.Save();
-		}
-
 		private void SetupType(RoadType road)
 		{
-			if (road == RoadType.Road || road == RoadType.Flat)
+			var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
+			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
+
+			if (leftSidewalk == null)
 			{
-				var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
-				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
-				
-				if (leftSidewalk == null)
-				{
-					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Backwards }).SendToBack();
+				AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Backwards }).SendToBack();
+
+				if (road != RoadType.Highway)
 					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian }).SendToBack();
-				}
-
-				if (rightSidewalk == null)
-				{
-					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Forward });
-					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian });
-				}
 			}
 
-			if (road == RoadType.Highway)
+			if (rightSidewalk == null)
 			{
-				var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
-				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
+				AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Forward });
 
-				var leftIndex = leftSidewalk == null ? P_Lanes.Controls.Count : P_Lanes.Controls.IndexOf(leftSidewalk);
-				var rightIndex = rightSidewalk == null ? -1 : P_Lanes.Controls.IndexOf(rightSidewalk);
-
-				while (leftIndex < P_Lanes.Controls.Count)
-				{
-					P_Lanes.Controls[leftIndex].Dispose();
-				}
-
-				while (rightIndex >= 0)
-				{
-					P_Lanes.Controls[rightIndex--].Dispose();
-				}
+				if (road != RoadType.Highway)
+					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian });
 			}
-		}
-
-		protected override void OnVisibleChanged(EventArgs e)
-		{
-			base.OnVisibleChanged(e);
 
 			RefreshPreview();
 		}
@@ -221,7 +215,7 @@ namespace ThumbnailMaker
 			TB_RoadName.Text = string.Empty;
 			P_Lanes.Controls.Clear(true);
 
-			RB_CheckedChanged(tableLayoutPanel3.Controls.OfType<SlickRadioButton>().FirstOrDefault(x => x.Checked), e);
+			SetupType(RoadTypeControl.SelectedValue);
 		}
 
 		private void B_Options_Click(object sender, EventArgs e)
@@ -233,19 +227,12 @@ namespace ThumbnailMaker
 		{
 			var ctrl = new RoadLane();
 
-			ctrl.RoadLaneChanged += TB_Name_TextChanged;
-
 			P_Lanes.Controls.Add(ctrl);
 
-			if (RB_Road.Checked || RB_FlatRoad.Checked)
-			{
-				var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
+			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
 
-				if (rightSidewalk != null)
-					P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.GetChildIndex(rightSidewalk) + 1);
-				else
-					ctrl.BringToFront();
-			}
+			if (rightSidewalk != null)
+				P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.GetChildIndex(rightSidewalk) + 1);
 			else
 				ctrl.BringToFront();
 
@@ -297,8 +284,6 @@ namespace ThumbnailMaker
 					ctrl.Lane.Direction = LaneDirection.Forward;
 
 				ctrl.Dock = DockStyle.Top;
-
-				ctrl.RoadLaneChanged += TB_Name_TextChanged;
 
 				P_Lanes.Controls.Add(ctrl);
 
@@ -364,7 +349,7 @@ namespace ThumbnailMaker
 
 		private void B_CopyDesc_Click(object sender, EventArgs e)
 		{
-			var desc = Utilities.GetRoadDescription(GetLanes(), TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RB_USA.Checked);
+			var desc = Utilities.GetRoadDescription(GetLanes(), GetRoadType(), TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RegionTypeControl.SelectedValue == RegionType.USA);
 
 			Clipboard.SetText(desc);
 		}
@@ -404,13 +389,15 @@ namespace ThumbnailMaker
 				var roadInfo = new RoadInfo
 				{
 					Name = L_RoadName.Text,
-					Description = Utilities.GetRoadDescription(lanes, TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RB_USA.Checked),
+					Description = Utilities.GetRoadDescription(lanes, GetRoadType(), TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RegionTypeControl.SelectedValue == RegionType.USA),
 					CustomText = TB_CustomText.Text,
 					BufferWidth = TB_BufferSize.Text.SmartParseF(0.25f),
 					RoadWidth = TB_Size.Text.SmartParseF(),
 					RegionType = GetRegion(),
 					RoadType = GetRoadType(),
-					SpeedLimit = (int)(TB_SpeedLimit.Text.SmartParse() * (RB_USA.Checked ? 1.609F : 1F)),
+					SideTexture = SideTextureControl.SelectedValue,
+					BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
+					SpeedLimit = (int)(TB_SpeedLimit.Text.SmartParse() * (RegionTypeControl.SelectedValue == RegionType.USA ? 1.609F : 1F)),
 					Lanes = lanes.Select(x => x.AsLaneInfo()).ToList(),
 					LHT = Options.Current.LHT
 				};
@@ -422,30 +409,9 @@ namespace ThumbnailMaker
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 		}
 
-		private RoadType GetRoadType()
-		{
-			if (RB_Pedestrian.Checked)
-				return RoadType.Pedestrian;
+		private RoadType GetRoadType() => RoadTypeControl.SelectedValue;
 
-			if (RB_Highway.Checked)
-				return RoadType.Highway;
-
-			if (RB_FlatRoad.Checked)
-				return RoadType.Flat;
-
-			return RoadType.Road;
-		}
-
-		private RegionType GetRegion()
-		{
-			if (RB_Canada.Checked)
-				return RegionType.Canada;
-
-			if (RB_USA.Checked)
-				return RegionType.USA;
-
-			return RegionType.Europe;
-		}
+		private RegionType GetRegion() => RegionTypeControl.SelectedValue;
 
 		private void RCC_LoadConfiguration(object sender, RoadInfo r)
 		{
@@ -461,34 +427,8 @@ namespace ThumbnailMaker
 				AddLaneControl(new ThumbnailLaneInfo(item));
 			}
 
-			switch (r.RoadType)
-			{
-				case RoadType.Road:
-					RB_Road.Checked = true;
-					break;
-				case RoadType.Highway:
-					RB_Highway.Checked = true;
-					break;
-				case RoadType.Pedestrian:
-					RB_Pedestrian.Checked = true;
-					break;
-				case RoadType.Flat:
-					RB_FlatRoad.Checked = true;
-					break;
-			}
-
-			switch (r.RegionType)
-			{
-				case RegionType.Europe:
-					RB_Europe.Checked = true;
-					break;
-				case RegionType.USA:
-					RB_USA.Checked = true;
-					break;
-				case RegionType.Canada:
-					RB_Canada.Checked = true;
-					break;
-			}
+			RoadTypeControl.SelectedValue = r.RoadType;
+			RegionTypeControl.SelectedValue = r.RegionType;
 
 			RefreshPreview();
 		}
@@ -496,8 +436,6 @@ namespace ThumbnailMaker
 		private RoadLane AddLaneControl(ThumbnailLaneInfo item)
 		{
 			var ctrl = new RoadLane(item);
-
-			ctrl.RoadLaneChanged += TB_Name_TextChanged;
 
 			P_Lanes.Controls.Add(ctrl);
 
@@ -577,6 +515,12 @@ namespace ThumbnailMaker
 				e.SuppressKeyPress = true;
 				e.Handled = true;
 			}
+		}
+
+		private void P_Lanes_ControlAdded(object sender, ControlEventArgs e)
+		{
+			if (e.Control is RoadLane roadLane)
+				roadLane.RoadLaneChanged += TB_Name_TextChanged;
 		}
 	}
 }
