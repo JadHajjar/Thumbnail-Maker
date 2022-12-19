@@ -18,6 +18,7 @@ namespace ThumbnailMaker.Handlers
 		public ThumbnailHandler(Graphics graphics, bool small, bool toolTip)
 		{
 			Graphics = graphics;
+			ToolTip = toolTip;
 			Small = small || toolTip;
 			Width = toolTip ? 492 : Small ? 109 : 512;
 			Height = toolTip ? 147 : Small ? 100 : 512;
@@ -54,14 +55,15 @@ namespace ThumbnailMaker.Handlers
 		public TextureType SideTexture { get; set; }
 
 		public Graphics Graphics { get; }
+		public bool ToolTip { get; }
 		public int Height { get; }
 		public int Width { get; }
 		public bool Small { get; }
 		private int PixelFactor { get; }
 
-
 		private float IdealWidthModifier;
 		private static readonly FontFamily _font;
+		private static FontFamily FontFamily => string.IsNullOrWhiteSpace(Options.Current.TextFont) ? _font : new FontFamily(Options.Current.TextFont);
 		private Color PavementColor
 		{
 			get
@@ -95,7 +97,7 @@ namespace ThumbnailMaker.Handlers
 
 			var lanesWidth = Lanes.Sum(x => x.Width);
 			var maxWidth = Lanes.Any() ? Lanes.Max(x => x.Width) : 50;
-			var availableSpace = new Rectangle(0, 0, Width, Height - (Small ? 60 : 275));
+			var availableSpace = new Rectangle(0, 0, Width, Height - (ToolTip ? 80 : Small ? 60 : 275));
 			var xIndex = (Width - lanesWidth) / 2;
 			var laneRects = new Dictionary<ThumbnailLaneInfo, Rectangle>();
 
@@ -111,6 +113,11 @@ namespace ThumbnailMaker.Handlers
 			foreach (var lane in Lanes.Where(x => x.Type != LaneType.Empty))
 			{
 				DrawBackground(lane, laneRects[lane], availableSpace.Pad(0, 0, 0, LaneHeight(lane)));
+			}
+
+			foreach (var lane in Lanes.Where(x => x.Type != LaneType.Empty))
+			{
+				DrawLaneLines(lane, laneRects[lane], availableSpace.Pad(0, 0, 0, LaneHeight(lane)));
 			}
 
 			using (var logo = ResourceManager.Logo(Small))
@@ -140,6 +147,21 @@ namespace ThumbnailMaker.Handlers
 			Graphics.Clear(Color.FromArgb(50, 50, 50));
 
 			Graphics.FillRectangle(new SolidBrush(Color.FromArgb(174, 215, 242)), new Rectangle(0, 0, bottomArea.Width, bottomArea.Y - LaneHeight(new ThumbnailLaneInfo())));
+
+			if (Small)
+			{
+				Graphics.DrawImage(Properties.Resources.L_Clouds_1, new Rectangle(Width/2-50, 0, 16, 16));
+				Graphics.DrawImage(Properties.Resources.L_Clouds_2, new Rectangle(Width / 2 + 25, 7, 16, 16));
+				Graphics.DrawImage(Properties.Resources.L_Clouds_3, new Rectangle(Width / 2 - 30, 5, 16, 16));
+			}
+			else
+			{
+				Graphics.DrawImage(Properties.Resources.L_Clouds_1, new Rectangle(25, 15, 64, 64));
+				Graphics.DrawImage(Properties.Resources.L_Clouds_2, new Rectangle(410, 35, 64, 64));
+				Graphics.DrawImage(Properties.Resources.L_Clouds_3, new Rectangle(90, 25, 64, 64));
+			}
+
+			Graphics.FillRectangle(new SolidBrush(Color.FromArgb(50, 174, 215, 242)), new Rectangle(0, 0, bottomArea.Width, bottomArea.Y - LaneHeight(new ThumbnailLaneInfo())));
 
 			if (leftSidewalk != null)
 			{
@@ -195,8 +217,8 @@ namespace ThumbnailMaker.Handlers
 					y += (int)(icon.Height * 2 / scale / 1.25 / icons.Count);
 				}
 
-				decoY = arrowY + (Small ? 2 : 8);
-				arrowY += (int)((Small ? 1 : 7) * (1 - icons.Count) + (1 - scale) * 20);
+				decoY = arrowY + (Small ? -4 : 8);
+				arrowY += (int)((Small ? 2 : 7) * (1 - icons.Count) + ( scale) * (Small?6:20));
 
 				if (DisplaysArrows(lane))
 				{
@@ -233,6 +255,7 @@ namespace ThumbnailMaker.Handlers
 
 			decoIcons.Insert(0, GetDecorationIcon(lane, GetLightType(lane), rect, scale));
 
+			var first = true;
 			foreach (var decoIcon in decoIcons)
 			{
 				if (decoIcon == null)
@@ -240,21 +263,28 @@ namespace ThumbnailMaker.Handlers
 					continue;
 				}
 
-				if (decoY == availableSpace.Y + availableSpace.Height)
+				if (first)
 				{
 					decoY -= decoIcon.Height;
 				}
 
 				Graphics.DrawImage(decoIcon, new Rectangle(new Point(rect.X + (rect.Width - decoIcon.Width) / 2, decoY), decoIcon.Size));
 
-				decoY += decoIcon.Height + (Small ? 2 : 8);
+				if (!first)
+				{
+					decoY += (Height - availableSpace.Height - (ToolTip ? 36 : Small ? 30 : 120) / 2) / decoIcons.Count;
+				}
+				else
+				{
+					decoY += decoIcon.Height;
+				}
+
+				first = false;
 			}
 		}
 
 		private void DrawBackground(ThumbnailLaneInfo lane, Rectangle rect, Rectangle availableSpace)
 		{
-			var leftLane = Lanes.Previous(lane);
-			var rightLane = Lanes.Next(lane);
 			var bottomArea = new Rectangle(rect.X, availableSpace.Y + availableSpace.Height, rect.Width, Height - (availableSpace.Y + availableSpace.Height));
 
 			Graphics.FillRectangle(new SolidBrush(lane.Sidewalk ? PavementColor : Color.FromArgb(50, 50, 50)), bottomArea);
@@ -273,14 +303,21 @@ namespace ThumbnailMaker.Handlers
 			{
 				var fillArea = new Rectangle(rect.X, availableSpace.Y + availableSpace.Height - (lane.Sidewalk || lane.Type != LaneType.Filler ? 0 : (int)(0.3F * PixelFactor)), rect.Width, Height);
 
-				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(160, 160, 160)), fillArea.Pad(1, 0, 1, 0));
-				Graphics.FillRectangle(new SolidBrush(ThumbnailLaneInfo.GetColor(lane.Decorations & (LaneDecoration.Grass | LaneDecoration.Gravel | LaneDecoration.Pavement))), Small ? fillArea.Pad(2, 0, 2, 0) : fillArea.Pad(5, 0, 5, 0));
+				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(160, 160, 160)), Small ? fillArea.Pad(1, 0, 1, 0) : fillArea.Pad(3, 0, 3, 0));
+				Graphics.FillRectangle(new SolidBrush(ThumbnailLaneInfo.GetColor(lane.Decorations & (LaneDecoration.Grass | LaneDecoration.Gravel | LaneDecoration.Pavement))), Small ? fillArea.Pad(2, 0, 2, 0) : fillArea.Pad(6, 0, 6, 0));
 			}
 
 			if (lane.Decorations.HasFlag(LaneDecoration.Filler))
 			{
 				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(125, lane.Color)), bottomArea);
 			}
+		}
+
+		private void DrawLaneLines(ThumbnailLaneInfo lane, Rectangle rect, Rectangle availableSpace)
+		{
+			var bottomArea = new Rectangle(rect.X, availableSpace.Y + availableSpace.Height, rect.Width, Height - (availableSpace.Y + availableSpace.Height));
+			var leftLane = Lanes.Previous(lane);
+			var rightLane = Lanes.Next(lane);
 
 			if (lane.Type.HasFlag(LaneType.Tram) || lane.Type.HasFlag(LaneType.Train))
 			{
@@ -298,17 +335,17 @@ namespace ThumbnailMaker.Handlers
 			{
 				if (lane.Type >= LaneType.Bike && leftLane.Type == lane.Type && lane.Direction != leftLane.Direction)
 				{
-					Graphics.DrawLine(new Pen(Color.FromArgb(213, 157, 37), Small ? 1F : 2F), rect.X + (Small ? 0 : 4), bottomArea.Y, rect.X + (Small ? 0 : 4), bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 213, 157, 37), Small ? 1F : 2F), rect.X + (Small ? 0 : 4), bottomArea.Y, rect.X + (Small ? 0 : 4), bottomArea.Y + bottomArea.Height);
 				}
 
 				if (lane.Type >= LaneType.Bike && leftLane.Type != lane.Type)
 				{
-					Graphics.DrawLine(new Pen(Color.FromArgb(200, 200, 200), Small ? 1F : 2F), rect.X, bottomArea.Y, rect.X, bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 200, 200, 200), Small ? 1F : 2F), rect.X, bottomArea.Y, rect.X, bottomArea.Y + bottomArea.Height);
 				}
 
 				if (lane.Type == LaneType.Car && leftLane.Type == LaneType.Car && leftLane.Direction == lane.Direction)
 				{
-					Graphics.DrawLine(new Pen(Color.FromArgb(200, 200, 200), Small ? 1F : 2F) { DashPattern = Small ? new[] { 5F, 4F } : new[] { 15F, 6F } }, rect.X, bottomArea.Y, rect.X, bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 200, 200, 200), Small ? 1F : 2F) { DashPattern = Small ? new[] { 5F, 4F } : new[] { 15F, 6F } }, rect.X, bottomArea.Y, rect.X, bottomArea.Y + bottomArea.Height);
 				}
 			}
 
@@ -316,17 +353,17 @@ namespace ThumbnailMaker.Handlers
 			{
 				if (lane.Type >= LaneType.Bike && rightLane.Type == lane.Type && lane.Direction != rightLane.Direction)
 				{
-					Graphics.DrawLine(new Pen(Color.FromArgb(213, 157, 37), Small ? 1F : 2F), rect.X + rect.Width - (Small ? 0 : 4), bottomArea.Y, rect.X + rect.Width - (Small ? 0 : 4), bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 213, 157, 37), Small ? 1F : 2F), rect.X + rect.Width - (Small ? 0 : 4), bottomArea.Y, rect.X + rect.Width - (Small ? 0 : 4), bottomArea.Y + bottomArea.Height);
 				}
 
 				if (lane.Type >= LaneType.Bike && rightLane.Type != lane.Type)
 				{
-					Graphics.DrawLine(new Pen(Color.FromArgb(200, 200, 200), Small ? 1F : 2F), rect.X + rect.Width, bottomArea.Y, rect.X + rect.Width, bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 200, 200, 200), Small ? 1F : 2F), rect.X + rect.Width, bottomArea.Y, rect.X + rect.Width, bottomArea.Y + bottomArea.Height);
 				}
 
 				if (lane.Type == LaneType.Car && rightLane.Type == LaneType.Car && rightLane.Direction == lane.Direction)
 				{	
-					Graphics.DrawLine(new Pen(Color.FromArgb(200, 200, 200), Small ? 1F : 2F) { DashPattern = Small ? new[] { 5F, 4F } : new[] { 15F, 6F } }, rect.X + rect.Width, bottomArea.Y, rect.X + rect.Width, bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 200, 200, 200), Small ? 1F : 2F) { DashPattern = Small ? new[] { 5F, 4F } : new[] { 15F, 6F } }, rect.X + rect.Width, bottomArea.Y, rect.X + rect.Width, bottomArea.Y + bottomArea.Height);
 				}
 			}
 		}
@@ -551,35 +588,32 @@ namespace ThumbnailMaker.Handlers
 		#region BottomContents
 		private void DrawBottomContent()
 		{
-			var speed = Speed > 0;
-			var size = RoadWidth > 0;
+			var width = ToolTip ? 150 : Small ? 109 : 512;
+			var height = ToolTip ? 36 : Small ? 30 : 120;
 
-			var speedWidth = speed ? GetSpeedWidth() : 0;
-			var roadSizeWidth = size ? GetRoadSizeWidth() : 0;
+			if (RoadWidth > 0)
+			{
+				DrawRoadWidth(new Rectangle(0, Height - height, Width, height));
+			}
 
-			if (speed)
+			if (Speed > 0)
 			{
 				if (Small)
 				{
-					DrawSpeedSignSmall(Graphics, RegionType, Speed, new Rectangle(size ? (Width / 2 + roadSizeWidth / 2 + (Small ? 3 : 24)) : (Width - speedWidth) / 2, Height - 28, speedWidth, 30));
+					DrawSpeedSignSmall(Graphics, RegionType, Speed, new Rectangle((Width + width) / 2 - height, Height - height, height, height));
 				}
 				else
 				{
-					DrawSpeedSignLarge(Graphics, RegionType, Speed, new Rectangle(size ? (Width / 2 + roadSizeWidth / 2 + (Small ? 3 : 24)) : (Width - speedWidth) / 2, Height - 120, speedWidth, 120));
+					DrawSpeedSignLarge(Graphics, RegionType, Speed, new Rectangle((Width + width) / 2 - height, Height - height, height, height));
 				}
 			}
 
-			if (size)
-			{
-				DrawRoadWidth(new Rectangle(0, Height - (Small ? 30 : 120), Width, (Small ? 30 : 120)));
-			}
-
-			DrawRoadIcon(new Rectangle(0, Height - (Small ? 30 : 120), size ? ((Width - roadSizeWidth) / 2 - (Small ? 3 : 24)) : speed ? ((Width - speedWidth) / 2 - (Small ? 3 : 24)) : Width, (Small ? 30 : 120)));
+			DrawRoadIcon(new Rectangle((Width - width) / 2, Height - height, height, height));
 		}
 
 		private void DrawCustomText(Rectangle containerRect)
 		{
-			var font = string.IsNullOrWhiteSpace(Options.Current.TextFont) ? new Font(_font, Small ? 9F : 38F, FontStyle.Bold) : new Font(Options.Current.TextFont, Small ? 9F : 38F, FontStyle.Bold);
+			var font = string.IsNullOrWhiteSpace(Options.Current.TextFont) ? new Font(FontFamily, ToolTip ? 12.75F: Small ? 9F : 38F, FontStyle.Bold) : new Font(Options.Current.TextFont, Small ? 9F : 38F, FontStyle.Bold);
 		
 			if (!Small)
 			{
@@ -602,11 +636,11 @@ namespace ThumbnailMaker.Handlers
 
 		private void DrawRoadWidth(Rectangle containerRect)
 		{
-			var sizeSize = (int)(Graphics.MeasureString($"{RoadWidth:0.#}m", new Font(_font, Small ? 11F : 40F, FontStyle.Bold)).Width);
-			var rect = containerRect.Pad(0, Small ? 4 : 14, 0, 0).CenterR(sizeSize + (Small ? 4 : 38), Small ? 20 : 80);
+			var sizeSize = (int)(Graphics.MeasureString($"{RoadWidth:0.#}m", new Font(FontFamily, ToolTip ? 14F : Small ? 11F : 40F, FontStyle.Bold)).Width);
+			var rect = containerRect.Pad(0, Small ? 4 : 14, 0, 0).CenterR(sizeSize + (Small ? 4 : 38), ToolTip ? 30 : Small ? 20 : 80);
 
 			Graphics.SmoothingMode = SmoothingMode.HighQuality;
-			Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(200, 49, 49, 54)), rect, Small ? 2 : 8);
+			Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(150, 49, 49, 54)), rect, Small ? 2 : 8);
 			Graphics.SmoothingMode = SmoothingMode.Default;
 
 			using (var sizePen = new Pen(Color.FromArgb(170, 221, 170, 98), Small ? 1F : 3F))
@@ -617,11 +651,13 @@ namespace ThumbnailMaker.Handlers
 				}
 			}
 
-			Graphics.DrawString($"{RoadWidth:0.#}m", new Font(_font, Small ? 10.5F : 40F, FontStyle.Bold), Brushes.White, rect.Pad(0, 0, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+			Graphics.DrawString($"{RoadWidth:0.#}m", new Font(FontFamily, ToolTip ? 14F : Small ? 10.5F : 40F, FontStyle.Bold), Brushes.White, rect.Pad(0, 0, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
 		}
 
 		public static void DrawSpeedSignLarge(Graphics Graphics, RegionType RegionType, int Speed, Rectangle containerRect)
 		{
+			Speed = Speed.Between(-1, 999);
+
 			Graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 			if (RegionType == RegionType.Europe)
@@ -635,7 +671,7 @@ namespace ThumbnailMaker.Handlers
 				Graphics.FillEllipse(Brushes.White, rect.Pad(12));
 				if (Speed > 0)
 				{
-					Graphics.DrawString(Speed.ToString(), new Font(_font, Speed > 99 ? 20F : 25F, FontStyle.Bold), Brushes.Black, Speed > 99 ? rect.Pad(0, 7, -3, -1) : rect.Pad(4, 8, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(FontFamily, Speed > 99 ? 20F : 25F, FontStyle.Bold), Brushes.Black, Speed > 99 ? rect.Pad(0, 7, -3, -1) : rect.Pad(4, 8, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 				}
 			}
 			else if (RegionType == RegionType.USA)
@@ -645,11 +681,11 @@ namespace ThumbnailMaker.Handlers
 				Graphics.FillRoundedRectangle(Brushes.White, rect, 7);
 				Graphics.FillRoundedRectangle(Brushes.Black, rect.Pad(2), 7);
 				Graphics.FillRoundedRectangle(Brushes.White, rect.Pad(4), 7);
-				Graphics.DrawString("SPEED", new Font(_font, 10F), Brushes.Black, rect.Pad(3 - 5, 8, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
-				Graphics.DrawString("LIMIT", new Font(_font, 10f), Brushes.Black, rect.Pad(3 - 5, 24, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
+				Graphics.DrawString("SPEED", new Font(FontFamily, 10F), Brushes.Black, rect.Pad(3 - 5, 8, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
+				Graphics.DrawString("LIMIT", new Font(FontFamily, 10f), Brushes.Black, rect.Pad(3 - 5, 24, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
 				if (Speed > 0)
 				{
-					Graphics.DrawString(Speed.ToString(), new Font(_font, Speed > 99 ? 18F : 24F, FontStyle.Bold), Brushes.Black, rect.Pad(0, 0, -3, Speed > 99 ? 1 : -6), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(FontFamily, Speed > 99 ? 18F : 24F, FontStyle.Bold), Brushes.Black, rect.Pad(0, 0, -3, Speed > 99 ? 1 : -6), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 				}
 			}
 			else if (RegionType == RegionType.Canada)
@@ -659,11 +695,11 @@ namespace ThumbnailMaker.Handlers
 				Graphics.FillRoundedRectangle(Brushes.White, rect, 7);
 				Graphics.FillRoundedRectangle(Brushes.Black, rect.Pad(1), 7);
 				Graphics.FillRoundedRectangle(Brushes.White, rect.Pad(3, 3, 3, 23), 7);
-				Graphics.DrawString("MAXIMUM", new Font(_font, 8f), Brushes.Black, rect.Pad(3, 7, 0, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
-				Graphics.DrawString("km/ h", new Font(_font, 12f), Brushes.White, rect.Pad(3, 30, 0, -2), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
+				Graphics.DrawString("MAXIMUM", new Font(FontFamily, 8f), Brushes.Black, rect.Pad(3, 7, 0, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
+				Graphics.DrawString("km/ h", new Font(FontFamily, 12f), Brushes.White, rect.Pad(3, 30, 0, -2), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 				if (Speed > 0)
 				{
-					Graphics.DrawString(Speed.ToString(), new Font(_font, Speed > 99 ? 24F : 28F, FontStyle.Bold), Brushes.Black, rect.Pad(0, 0, -3, Speed > 99 ? 14 : 10), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(FontFamily, Speed > 99 ? 24F : 28F, FontStyle.Bold), Brushes.Black, rect.Pad(-2, 0, -5, Speed > 99 ? 14 : 10), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 				}
 			}
 
@@ -672,6 +708,8 @@ namespace ThumbnailMaker.Handlers
 
 		public static void DrawSpeedSignSmall(Graphics Graphics, RegionType RegionType, int Speed, Rectangle containerRect)
 		{
+			Speed = Speed.Between(-1, 999);
+
 			Graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 			if (RegionType == RegionType.Europe)
@@ -684,7 +722,7 @@ namespace ThumbnailMaker.Handlers
 				Graphics.FillEllipse(Brushes.White, rect.Pad(4));
 				if (Speed > 0)
 				{
-					Graphics.DrawString(Speed.ToString(), new Font(_font, Speed > 99 ? 6F : 7.75F), Brushes.Black, rect.Pad(-1, Speed > 99 ? 2 : 0, -3, -1), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(FontFamily, Speed > 99 ? 6F : 7.75F), Brushes.Black, rect.Pad(-1, Speed > 99 ? 2 : 0, -3, -1), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 				}
 			}
 			else if (RegionType == RegionType.USA)
@@ -693,11 +731,11 @@ namespace ThumbnailMaker.Handlers
 
 				Graphics.FillRoundedRectangle(Brushes.Black, rect, 2);
 				Graphics.FillRoundedRectangle(Brushes.White, rect.Pad(1), 2);
-				Graphics.DrawString("SPEED", new Font(_font, 3f), Brushes.Black, rect.Pad(1 - 5, 2, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
-				Graphics.DrawString("LIMIT", new Font(_font, 3f), Brushes.Black, rect.Pad(1 - 5, 6, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
+				Graphics.DrawString("SPEED", new Font(FontFamily, 3f), Brushes.Black, rect.Pad(1 - 5, 2, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
+				Graphics.DrawString("LIMIT", new Font(FontFamily, 3f), Brushes.Black, rect.Pad(1 - 5, 6, -5, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
 				if (Speed > 0)
 				{
-					Graphics.DrawString(Speed.ToString(), new Font(_font, Speed > 99 ? 6F : 7.75F), Brushes.Black, rect.Pad(-1, 0, -3, Speed > 99 ? 1 : -1), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(FontFamily, Speed > 99 ? 6F : 7.75F), Brushes.Black, rect.Pad(-1, 0, -3, Speed > 99 ? 1 : -1), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 				}
 			}
 			else if (RegionType == RegionType.Canada)
@@ -706,62 +744,15 @@ namespace ThumbnailMaker.Handlers
 
 				Graphics.FillRoundedRectangle(Brushes.Black, rect, 2);
 				Graphics.FillRoundedRectangle(Brushes.White, rect.Pad(1, 1, 1, 7), 2);
-				Graphics.DrawString("MAXIMUM", new Font(_font, 2f), Brushes.Black, rect.Pad(0, 2, 0, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
-				Graphics.DrawString("km/ h", new Font(_font, 4f), Brushes.White, rect.Pad(1, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
+				Graphics.DrawString("MAXIMUM", new Font(FontFamily, 2f), Brushes.Black, rect.Pad(0, 2, 0, 0), new StringFormat { LineAlignment = StringAlignment.Near, Alignment = StringAlignment.Center });
+				Graphics.DrawString("km/ h", new Font(FontFamily, 4f), Brushes.White, rect.Pad(1, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 				if (Speed > 0)
 				{
-					Graphics.DrawString(Speed.ToString(), new Font(_font, Speed > 99 ? 6.5F : 8.25F), Brushes.Black, rect.Pad(-1, 0, -3, Speed > 99 ? 5 : 4), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
+					Graphics.DrawString(Speed.ToString(), new Font(FontFamily, Speed > 99 ? 6.5F : 8.25F), Brushes.Black, rect.Pad(-1, 0, -3, Speed > 99 ? 5 : 4), new StringFormat { LineAlignment = StringAlignment.Far, Alignment = StringAlignment.Center });
 				}
 			}
 
 			Graphics.SmoothingMode = SmoothingMode.Default;
-		}
-
-		private int GetRoadSizeWidth()
-		{
-			var sizeSize = (int)Graphics.MeasureString($"{RoadWidth:0.#}m", new Font(_font, Small ? 11F : 40F, FontStyle.Bold)).Width;
-
-			return sizeSize + (Small ? 4 : 38);
-		}
-
-		private int GetSpeedWidth()
-		{
-			if (Small)
-			{
-				if (RegionType == RegionType.Europe)
-				{
-					return 24;
-				}
-
-				if (RegionType == RegionType.USA)
-				{
-					return 20;
-				}
-
-				if (RegionType == RegionType.Canada)
-				{
-					return 22;
-				}
-			}
-			else
-			{
-				if (RegionType == RegionType.Europe)
-				{
-					return 100;
-				}
-
-				if (RegionType == RegionType.USA)
-				{
-					return 70;
-				}
-
-				if (RegionType == RegionType.Canada)
-				{
-					return 85;
-				}
-			}
-
-			return 0;
 		}
 		#endregion
 	}

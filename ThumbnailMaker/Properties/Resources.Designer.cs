@@ -93,6 +93,16 @@ namespace ThumbnailMaker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap I_Asphalt {
+            get {
+                object obj = ResourceManager.GetObject("I_Asphalt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap I_Copy {
             get {
                 object obj = ResourceManager.GetObject("I_Copy", resourceCulture);
@@ -186,6 +196,16 @@ namespace ThumbnailMaker.Properties {
         internal static System.Drawing.Bitmap I_Plus {
             get {
                 object obj = ResourceManager.GetObject("I_Plus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap I_Ruined {
+            get {
+                object obj = ResourceManager.GetObject("I_Ruined", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -396,6 +416,36 @@ namespace ThumbnailMaker.Properties {
         internal static System.Drawing.Bitmap L_C_9 {
             get {
                 object obj = ResourceManager.GetObject("L_C_9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap L_Clouds_1 {
+            get {
+                object obj = ResourceManager.GetObject("L_Clouds_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap L_Clouds_2 {
+            get {
+                object obj = ResourceManager.GetObject("L_Clouds_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap L_Clouds_3 {
+            get {
+                object obj = ResourceManager.GetObject("L_Clouds_3", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -726,6 +776,26 @@ namespace ThumbnailMaker.Properties {
         internal static System.Drawing.Bitmap S_C_9 {
             get {
                 object obj = ResourceManager.GetObject("S_C_9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap S_Clouds_1 {
+            get {
+                object obj = ResourceManager.GetObject("S_Clouds_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap S_Clouds_2 {
+            get {
+                object obj = ResourceManager.GetObject("S_Clouds_2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

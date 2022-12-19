@@ -133,6 +133,9 @@
   <data name="I_2W" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_2W.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="I_Asphalt" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\I_Asphalt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="I_Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_Copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -163,6 +166,9 @@
   <data name="I_Plus" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_Plus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="I_Ruined" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\I_Ruined.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="I_Size" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_Size.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -183,6 +189,15 @@
   </data>
   <data name="L_Arrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\L_Arrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="L_Clouds_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\L_Clouds_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="L_Clouds_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\L_Clouds_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="L_Clouds_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\L_Clouds_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="L_C_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\L_C_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -282,6 +297,12 @@
   </data>
   <data name="S_Arrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S_Arrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="S_Clouds_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\S_Clouds_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="S_Clouds_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\S_Clouds_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="S_C_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S_C_0 .png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

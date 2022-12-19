@@ -90,9 +90,9 @@ namespace ThumbnailMaker
 				case TextureType.Gravel:
 					return Properties.Resources.L_D_3;
 				case TextureType.Ruined:
-					return Properties.Resources.L_D_2;
+					return Properties.Resources.I_Ruined;
 				case TextureType.Asphalt:
-					break;
+					return Properties.Resources.I_Asphalt;
 			}
 
 			return null;
@@ -105,7 +105,7 @@ namespace ThumbnailMaker
 				case BridgeTextureType.Pavement:
 					return Properties.Resources.L_D_2;
 				case BridgeTextureType.Asphalt:
-					break;
+					return Properties.Resources.I_Asphalt;
 			}
 
 			return null;
@@ -142,7 +142,7 @@ namespace ThumbnailMaker
 				var lanes = GetLanes();
 
 				var toolTip = false;
-				var small = true;
+				var small = false;
 				var width = toolTip ? 492 : small ? 109 : 512;
 				var height = toolTip ? 147 : small ? 100 : 512;
 
@@ -153,7 +153,7 @@ namespace ThumbnailMaker
 					DrawThumbnail(g, lanes, small || toolTip, toolTip);
 
 					PB.Image = img;
-					PB.SizeMode = small ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
+					PB.SizeMode = small&&!toolTip ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
 				}
 
 				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? $"RB{GetRoadType().ToString()[0]} " + Utilities.IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle(lanes)).WhereNotEmpty().ListStrings("+") : TB_RoadName.Text;
@@ -435,6 +435,8 @@ namespace ThumbnailMaker
 
 			RoadTypeControl.SelectedValue = r.RoadType;
 			RegionTypeControl.SelectedValue = r.RegionType;
+			SideTextureControl.SelectedValue = r.SideTexture;
+			BridgeSideTextureControl.SelectedValue = r.BridgeSideTexture;
 
 			RefreshPreview();
 		}
@@ -456,12 +458,17 @@ namespace ThumbnailMaker
 			{
 				var lanes = GetLanes();
 
-				using (var img = new Bitmap(512, 512, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+				var toolTip = false;
+				var small = false;
+				var width = toolTip ? 492 : small ? 109 : 512;
+				var height = toolTip ? 147 : small ? 100 : 512;
+
+				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 				using (var g = Graphics.FromImage(img))
 				{
-					DrawThumbnail(g, lanes, false, false);
+					DrawThumbnail(g, lanes, small, toolTip);
 
-					Clipboard.SetDataObject(new Bitmap(img, 256, 256));
+					Clipboard.SetDataObject(small || toolTip ? new Bitmap(img) : new Bitmap(img, 256, 256));
 				}
 
 				Notification.Create("Thumbnail copied to clipboard", "", PromptIcons.None, () => { }, NotificationSound.None, new Size(240, 32))

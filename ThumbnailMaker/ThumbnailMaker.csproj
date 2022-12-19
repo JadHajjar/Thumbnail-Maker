@@ -188,6 +188,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\L_Clouds_3.png" />
+    <None Include="Resources\S_Clouds_2.png" />
+    <None Include="Resources\S_Clouds_1.png" />
+    <None Include="Resources\L_Clouds_1.png" />
+    <None Include="Resources\L_Clouds_2.png" />
+    <None Include="Resources\I_Ruined.png" />
+    <None Include="Resources\I_Asphalt.png" />
     <EmbeddedResource Include="Resources\Gogh.ttf" />
     <None Include="Resources\S_D_17.png" />
     <None Include="Resources\L_D_17.png" />

@@ -55,12 +55,13 @@ namespace ThumbnailMaker.Handlers
 				{
 					new ThumbnailHandler(g, small, toolTip)
 					{
-						RoadWidth = road.RoadWidth,
+						RoadWidth = road.RoadWidth <= 0 ? CalculateRoadSize(road.Lanes, road.BufferWidth) : road.RoadWidth,
 						CustomText = road.CustomText,
 						BufferSize = Math.Max(0, road.BufferWidth),
 						RegionType = road.RegionType,
 						RoadType = road.RoadType,
 						Speed = road.SpeedLimit,
+						SideTexture = road.SideTexture,
 						Lanes = road.Lanes.Select(x => new ThumbnailLaneInfo(x)).ToList()
 					}.Draw();
 
@@ -138,8 +139,8 @@ namespace ThumbnailMaker.Handlers
 					return mph ? 25 : 40;
 				case RoadType.Highway:
 					return mph ? 55 : 80;
-				case RoadType.Pedestrian:
-					return mph ? 10 : 20;
+				//case RoadType.Pedestrian:
+				//	return mph ? 10 : 20;
 				case RoadType.Flat:
 					return mph ? 15 : 30;
 			}
@@ -230,7 +231,7 @@ namespace ThumbnailMaker.Handlers
 						break;
 
 					case LaneType.Pedestrian:
-						if (!deco.AnyOf(LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight, LaneDecoration.TransitStop, LaneDecoration.None, LaneDecoration.Filler, LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+						if (!deco.AnyOf(LaneDecoration.StreetAds, LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight, LaneDecoration.TransitStop, LaneDecoration.None, LaneDecoration.Filler, LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
 							return false;
 						break;
 
