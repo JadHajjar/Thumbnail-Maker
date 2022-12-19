@@ -17,7 +17,7 @@ namespace ThumbnailMaker
 		public static Options Current { get; set; }
 
 		public Dictionary<LaneType, Color> LaneColors { get; set; } = new Dictionary<LaneType, Color>();
-		public string SizeFont { get; set; } = "Century Gothic";
+		public string TextFont { get; set; }
 		public string ExportFolder { get; set; }
 		public RegionType Region { get; set; }
 		public bool LHT { get; set; }

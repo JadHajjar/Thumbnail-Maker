@@ -31,16 +31,16 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PC_Options));
 			this.TLP = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.slickSpacer1 = new SlickControls.SlickSpacer();
-			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.slickScroll1 = new SlickControls.SlickScroll();
 			this.B_Theme = new SlickControls.SlickButton();
+			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.DD_Font = new SlickControls.SlickDropdown();
 			this.TB_ExportFolder = new SlickControls.SlickPathTextBox();
+			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.CB_LHT = new SlickControls.SlickCheckbox();
 			this.CB_ColoredLanes = new SlickControls.SlickCheckbox();
 			this.CB_AdvancedElevartion = new SlickControls.SlickCheckbox();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.slickScroll1 = new SlickControls.SlickScroll();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -99,51 +99,6 @@
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(908, 137);
 			this.tableLayoutPanel2.TabIndex = 13;
 			// 
-			// slickSpacer1
-			// 
-			this.tableLayoutPanel2.SetColumnSpan(this.slickSpacer1, 2);
-			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.slickSpacer1.Location = new System.Drawing.Point(3, 133);
-			this.slickSpacer1.Name = "slickSpacer1";
-			this.slickSpacer1.Size = new System.Drawing.Size(902, 1);
-			this.slickSpacer1.TabIndex = 0;
-			this.slickSpacer1.TabStop = false;
-			this.slickSpacer1.Text = "slickSpacer1";
-			// 
-			// flowLayoutPanel1
-			// 
-			this.flowLayoutPanel1.Controls.Add(this.CB_LHT);
-			this.flowLayoutPanel1.Controls.Add(this.CB_ColoredLanes);
-			this.flowLayoutPanel1.Controls.Add(this.CB_AdvancedElevartion);
-			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-			this.tableLayoutPanel2.SetRowSpan(this.flowLayoutPanel1, 3);
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(454, 130);
-			this.flowLayoutPanel1.TabIndex = 16;
-			// 
-			// panel1
-			// 
-			this.panel1.Controls.Add(this.TLP);
-			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(5, 167);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(908, 458);
-			this.panel1.TabIndex = 14;
-			// 
-			// slickScroll1
-			// 
-			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
-			this.slickScroll1.LinkedControl = this.TLP;
-			this.slickScroll1.Location = new System.Drawing.Point(907, 167);
-			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(6, 458);
-			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
-			this.slickScroll1.TabIndex = 15;
-			this.slickScroll1.TabStop = false;
-			this.slickScroll1.Text = "slickScroll1";
-			// 
 			// B_Theme
 			// 
 			this.B_Theme.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -161,6 +116,17 @@
 			this.B_Theme.Text = "Theme & UI Scaling";
 			this.B_Theme.Click += new System.EventHandler(this.B_Theme_Click);
 			// 
+			// slickSpacer1
+			// 
+			this.tableLayoutPanel2.SetColumnSpan(this.slickSpacer1, 2);
+			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.slickSpacer1.Location = new System.Drawing.Point(3, 133);
+			this.slickSpacer1.Name = "slickSpacer1";
+			this.slickSpacer1.Size = new System.Drawing.Size(902, 1);
+			this.slickSpacer1.TabIndex = 0;
+			this.slickSpacer1.TabStop = false;
+			this.slickSpacer1.Text = "slickSpacer1";
+			// 
 			// DD_Font
 			// 
 			this.DD_Font.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -169,7 +135,7 @@
 			this.DD_Font.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.DD_Font.Image = ((System.Drawing.Image)(resources.GetObject("DD_Font.Image")));
 			this.DD_Font.Items = null;
-			this.DD_Font.LabelText = "Road Size Font";
+			this.DD_Font.LabelText = "Custom Thumbnail Font";
 			this.DD_Font.Location = new System.Drawing.Point(474, 36);
 			this.DD_Font.Margin = new System.Windows.Forms.Padding(20, 3, 20, 0);
 			this.DD_Font.MaximumSize = new System.Drawing.Size(9999, 0);
@@ -177,7 +143,7 @@
 			this.DD_Font.MinimumSize = new System.Drawing.Size(50, 0);
 			this.DD_Font.Name = "DD_Font";
 			this.DD_Font.Password = false;
-			this.DD_Font.Placeholder = "Font used for the road\'s size";
+			this.DD_Font.Placeholder = "Font used for the road\'s size, speed sign & custom text";
 			this.DD_Font.ReadOnly = false;
 			this.DD_Font.Required = false;
 			this.DD_Font.SelectAllOnFocus = false;
@@ -223,6 +189,19 @@
 			this.TB_ExportFolder.ValidationCustom = null;
 			this.TB_ExportFolder.ValidationRegex = "";
 			this.TB_ExportFolder.TextChanged += new System.EventHandler(this.TB_ExportFolder_TextChanged);
+			// 
+			// flowLayoutPanel1
+			// 
+			this.flowLayoutPanel1.Controls.Add(this.CB_LHT);
+			this.flowLayoutPanel1.Controls.Add(this.CB_ColoredLanes);
+			this.flowLayoutPanel1.Controls.Add(this.CB_AdvancedElevartion);
+			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+			this.tableLayoutPanel2.SetRowSpan(this.flowLayoutPanel1, 3);
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(454, 130);
+			this.flowLayoutPanel1.TabIndex = 16;
 			// 
 			// CB_LHT
 			// 
@@ -292,6 +271,27 @@
 			this.CB_AdvancedElevartion.Text = "Advanced Lane Elevation";
 			this.CB_AdvancedElevartion.UncheckedText = null;
 			this.CB_AdvancedElevartion.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.TLP);
+			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel1.Location = new System.Drawing.Point(5, 167);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(908, 458);
+			this.panel1.TabIndex = 14;
+			// 
+			// slickScroll1
+			// 
+			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
+			this.slickScroll1.LinkedControl = this.TLP;
+			this.slickScroll1.Location = new System.Drawing.Point(906, 167);
+			this.slickScroll1.Name = "slickScroll1";
+			this.slickScroll1.Size = new System.Drawing.Size(7, 458);
+			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
+			this.slickScroll1.TabIndex = 15;
+			this.slickScroll1.TabStop = false;
+			this.slickScroll1.Text = "slickScroll1";
 			// 
 			// PC_Options
 			// 

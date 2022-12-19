@@ -45,7 +45,7 @@ namespace ThumbnailMaker
 			}
 
 			DD_Font.FontDropdown = true;
-			DD_Font.SelectedItem = Options.Current.SizeFont;
+			DD_Font.SelectedItem = Options.Current.TextFont;
 
 			TB_ExportFolder.Text = Options.Current.ExportFolder;
 			CB_LHT.Checked = Options.Current.LHT;
@@ -61,11 +61,8 @@ namespace ThumbnailMaker
 
 		private void DD_Font_TextChanged(object sender, EventArgs e)
 		{
-			if (new Font(DD_Font.Text, 8.25F).FontFamily.Name.Equals(DD_Font.Text, StringComparison.CurrentCultureIgnoreCase))
-			{
-				Options.Current.SizeFont = DD_Font.Text;
-				Options.Save();
-			}
+			Options.Current.TextFont = DD_Font.Text;
+			Options.Save();
 		}
 
 		private void B_Theme_Click(object sender, EventArgs e)

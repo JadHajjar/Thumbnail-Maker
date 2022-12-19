@@ -141,16 +141,22 @@ namespace ThumbnailMaker
 			{
 				var lanes = GetLanes();
 
-				var img = new Bitmap(512, 512, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				var toolTip = false;
+				var small = true;
+				var width = toolTip ? 492 : small ? 109 : 512;
+				var height = toolTip ? 147 : small ? 100 : 512;
+
+				var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 				using (var g = Graphics.FromImage(img))
 				{
-					DrawThumbnail(g, lanes, false, false);
+					DrawThumbnail(g, lanes, small || toolTip, toolTip);
 
 					PB.Image = img;
+					PB.SizeMode = small ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
 				}
 
-				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? "BRB " + Utilities.IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle(lanes)).WhereNotEmpty().ListStrings("+") : TB_RoadName.Text;
+				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? $"RB{GetRoadType().ToString()[0]} " + Utilities.IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle(lanes)).WhereNotEmpty().ListStrings("+") : TB_RoadName.Text;
 				L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
 
 				var speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse();

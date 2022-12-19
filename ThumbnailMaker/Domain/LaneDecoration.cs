@@ -49,5 +49,8 @@ namespace ThumbnailMaker.Domain
 
 		[StyleIdentity(16, 111, 187, 217)]
 		BikeParking = 8192,
+
+		[StyleIdentity(17, 132, 138, 177)]
+		StreetAds = 16384,
 	}
 }
