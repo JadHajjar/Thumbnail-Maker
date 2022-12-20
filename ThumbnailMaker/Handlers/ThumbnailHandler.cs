@@ -335,7 +335,7 @@ namespace ThumbnailMaker.Handlers
 			{
 				if (lane.Type >= LaneType.Bike && leftLane.Type == lane.Type && lane.Direction != leftLane.Direction)
 				{
-					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 213, 157, 37), Small ? 1F : 2F), rect.X + (Small ? 0 : 4), bottomArea.Y, rect.X + (Small ? 0 : 4), bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 213, 157, 37), Small ? 1F : 2F), rect.X + (Small ? 0 : 3), bottomArea.Y, rect.X + (Small ? 0 : 3), bottomArea.Y + bottomArea.Height);
 				}
 
 				if (lane.Type >= LaneType.Bike && leftLane.Type != lane.Type)
@@ -353,7 +353,7 @@ namespace ThumbnailMaker.Handlers
 			{
 				if (lane.Type >= LaneType.Bike && rightLane.Type == lane.Type && lane.Direction != rightLane.Direction)
 				{
-					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 213, 157, 37), Small ? 1F : 2F), rect.X + rect.Width - (Small ? 0 : 4), bottomArea.Y, rect.X + rect.Width - (Small ? 0 : 4), bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 213, 157, 37), Small ? 1F : 2F), rect.X + rect.Width - (Small ? 0 : 3), bottomArea.Y, rect.X + rect.Width - (Small ? 0 : 3), bottomArea.Y + bottomArea.Height);
 				}
 
 				if (lane.Type >= LaneType.Bike && rightLane.Type != lane.Type)
@@ -659,6 +659,8 @@ namespace ThumbnailMaker.Handlers
 			Speed = Speed.Between(-1, 999);
 
 			Graphics.SmoothingMode = SmoothingMode.HighQuality;
+			Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+			Graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 
 			if (RegionType == RegionType.Europe)
 			{
@@ -711,6 +713,8 @@ namespace ThumbnailMaker.Handlers
 			Speed = Speed.Between(-1, 999);
 
 			Graphics.SmoothingMode = SmoothingMode.HighQuality;
+			Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+			Graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 
 			if (RegionType == RegionType.Europe)
 			{

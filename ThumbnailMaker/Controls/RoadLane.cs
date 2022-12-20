@@ -241,7 +241,7 @@ namespace ThumbnailMaker.Controls
 			e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(_dragDropActive || grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : foreColor), drawGrabberRect.CenterR(10, 5));
 
 			_tooltips[grabberRectangle] = $"Hold to drag this lane up or down";
-			_tooltips[ClientRectangle] = Lane.Type != LaneType.Curb ? $"{Lane.Type} Lane" : Lane.Direction == LaneDirection.Forward ? "Right Curb Delimiter" : "Left Curb Delimiter";
+			_tooltips[ClientRectangle] = Lane.Type != LaneType.Curb ? $"{Lane.Type.ToString().FormatWords()} Lane" : Lane.Direction == LaneDirection.Forward ? "Right Curb Delimiter" : "Left Curb Delimiter";
 		}
 
 		protected override void UIChanged()
@@ -327,7 +327,7 @@ namespace ThumbnailMaker.Controls
 			iconX = decoRectangle.X + decoRectangle.Width + 12;
 
 			_clickActions[decoRectangle] = LaneDecoClick;
-			_tooltips[decoRectangle] = Lane.Decorations == LaneDecoration.None ? "No Add-ons" : Lane.Decorations.ToString();
+			_tooltips[decoRectangle] = Lane.Decorations == LaneDecoration.None ? "No Add-ons" : Lane.Decorations.ToString().FormatWords();
 		}
 
 		private int DrawDeleteOrInfoIcon(PaintEventArgs e, Point cursor)

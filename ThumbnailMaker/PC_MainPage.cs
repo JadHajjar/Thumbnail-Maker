@@ -1,19 +1,14 @@
 ﻿using Extensions;
 
-using Newtonsoft.Json;
-
 using SlickControls;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Controls;
@@ -24,6 +19,8 @@ namespace ThumbnailMaker
 {
 	public partial class PC_MainPage : PanelContent
 	{
+		private bool refreshPaused = true;
+
 		public PC_MainPage()
 		{
 			InitializeComponent();
@@ -130,13 +127,25 @@ namespace ThumbnailMaker
 		{
 			base.OnCreateControl();
 
+			refreshPaused = false;
 			RefreshPreview();
+		}
+
+		protected override void OnVisibleChanged(EventArgs e)
+		{
+			base.OnVisibleChanged(e);
+
+			if (Visible)
+				RefreshPreview();
 		}
 
 		private List<ThumbnailLaneInfo> GetLanes() => P_Lanes.Controls.OfType<RoadLane>().Reverse().Select(x => x.Lane).ToList();
 
 		private void RefreshPreview()
 		{
+			if (refreshPaused)
+				return;
+
 			try
 			{
 				var lanes = GetLanes();
@@ -421,24 +430,37 @@ namespace ThumbnailMaker
 
 		private void RCC_LoadConfiguration(object sender, RoadInfo r)
 		{
-			P_Lanes.Controls.Clear(true);
-
-			TB_Size.Text = r.RoadWidth == 0 ? string.Empty : r.RoadWidth.ToString();
-			TB_BufferSize.Text = r.BufferWidth.ToString();
-			TB_SpeedLimit.Text = r.SpeedLimit == 0 ? string.Empty : r.SpeedLimit.ToString();
-			TB_CustomText.Text = r.CustomText;
-
-			foreach (var item in r.Lanes)
+			try
 			{
-				AddLaneControl(new ThumbnailLaneInfo(item));
+				refreshPaused = true;
+				P_Lanes.SuspendDrawing();
+				P_Lanes.Controls.Clear(true);
+
+				TB_Size.Text = r.RoadWidth == 0 ? string.Empty : r.RoadWidth.ToString();
+				TB_BufferSize.Text = r.BufferWidth.ToString();
+				TB_SpeedLimit.Text = r.SpeedLimit == 0 ? string.Empty : r.SpeedLimit.ToString();
+				TB_CustomText.Text = r.CustomText;
+
+				foreach (var item in r.Lanes)
+				{
+					AddLaneControl(new ThumbnailLaneInfo(item));
+				}
+
+				RoadTypeControl.SelectedValue = r.RoadType;
+				RegionTypeControl.SelectedValue = r.RegionType;
+				SideTextureControl.SelectedValue = r.SideTexture;
+				BridgeSideTextureControl.SelectedValue = r.BridgeSideTexture;
 			}
-
-			RoadTypeControl.SelectedValue = r.RoadType;
-			RegionTypeControl.SelectedValue = r.RegionType;
-			SideTextureControl.SelectedValue = r.SideTexture;
-			BridgeSideTextureControl.SelectedValue = r.BridgeSideTexture;
-
-			RefreshPreview();
+			catch (Exception ex)
+			{
+				ShowPrompt(ex.Message, "Failed to load this configuration", PromptButtons.OK, PromptIcons.Error);
+			}
+			finally
+			{
+				P_Lanes.ResumeDrawing();
+				refreshPaused = false;
+				RefreshPreview();
+			}
 		}
 
 		private RoadLane AddLaneControl(ThumbnailLaneInfo item)
