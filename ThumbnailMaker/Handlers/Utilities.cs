@@ -34,8 +34,7 @@ namespace ThumbnailMaker.Handlers
 			road.LargeThumbnail = getImage(false, false);
 			road.TooltipImage = getImage(true, true);
 
-			if (road.LHT && IsOneWay(road.Lanes) != true)
-				road.Lanes.Reverse();
+			road.Lanes.Reverse();
 
 			var guid = Guid.NewGuid().ToString();
 			var xML = new System.Xml.Serialization.XmlSerializer(typeof(RoadInfo));
@@ -193,21 +192,17 @@ namespace ThumbnailMaker.Handlers
 
 		public static bool? IsOneWay<T>(IEnumerable<T> lanes) where T : LaneInfo
 		{
-			var car = lanes.FirstOrDefault(x => x.Type.HasAnyFlag(LaneType.Car, LaneType.Bus, LaneType.Tram, LaneType.Trolley));
-			var bike = lanes.FirstOrDefault(x => x.Type.HasFlag(LaneType.Bike));
+			var types = new[] { LaneType.Bike, LaneType.Car, LaneType.Bus, LaneType.Tram, LaneType.Trolley, LaneType.Emergency };
+			var firstLane = lanes.FirstOrDefault(x => x.Type.HasAnyFlag(types));
 
-			if (car != null)
+			if (firstLane != null)
 			{
-				return car.Direction != LaneDirection.Both && lanes
-					.Where(x => x.Type.HasAnyFlag(LaneType.Car, LaneType.Bus, LaneType.Tram, LaneType.Trolley))
-					.All(x => x.Direction == car.Direction);
+				return firstLane.Direction != LaneDirection.Both && lanes
+					.Where(x => x.Type.HasAnyFlag(types))
+					.All(x => x.Direction == firstLane.Direction);
 			}
 
-			return bike != null
-				? bike.Direction != LaneDirection.Both && lanes
-					.Where(x => x.Type.HasFlag(LaneType.Bike))
-					.All(x => x.Direction == bike.Direction)
-				: (bool?)null;
+			return null;
 		}
 
 		public static void DrawIcon(this Graphics g, Image img, Rectangle rect, Size? size = null)

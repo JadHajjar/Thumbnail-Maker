@@ -39,9 +39,18 @@ namespace ThumbnailMaker
 
 					for (var i = 0; i < files.Length; i++)
 					{
-						LegacyUtil.LoadRoad(files[i]);
+						var road = LegacyUtil.LoadRoad(files[i]);
 
-						File.Delete(files[i]);
+						try
+						{
+							if (road != null)
+							{
+								Utilities.ExportRoad(road, Path.GetFileName(files[i]));
+
+								File.Delete(files[i]);
+							}
+						}
+						catch { }
 					}
 
 					DeleteAll(appdata);

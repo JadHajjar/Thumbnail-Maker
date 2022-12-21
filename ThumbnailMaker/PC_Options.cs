@@ -51,7 +51,10 @@ namespace ThumbnailMaker
 			CB_AdvancedElevartion.Checked = Options.Current.AdvancedElevation;
 
 			SlickTip.SetTo(B_ReExport, "Re-generates all of your exported roads' thumbnails, useful in case you changed color or style options");
-			SlickTip.SetTo(B_ReExport, "Re-generates all of your exported roads' thumbnails, useful in case you changed color or style options");
+			SlickTip.SetTo(B_Theme, "Change the theme colors and UI scaling of the App");
+			SlickTip.SetTo(CB_LHT, "Automatically flips the road once exported so it has the correct directions when using it in LHT mode");
+			SlickTip.SetTo(CB_ColoredLanes, "Adds a colored background to the lanes on the thumbnail");
+			SlickTip.SetTo(CB_AdvancedElevartion, "Allows you to manually set the elevation value of a lane");
 		}
 
 

@@ -209,7 +209,6 @@ namespace ThumbnailMaker.Legacy
 		public float CustomSpeedLimit { get; set; }
 		public bool AddStopToFiller { get; set; }
 
-
 		public static explicit operator LaneInfo_V0(TmLane_V0 l) => new LaneInfo_V0
 		{
 			Type = l.LaneType,
@@ -217,7 +216,7 @@ namespace ThumbnailMaker.Legacy
 			Lanes = l.Lanes,
 			AddStopToFiller = l.AddStopToFiller,
 			CustomWidth = l.CustomLaneWidth == -1 ? 0 : l.CustomLaneWidth,
-			Elevation = l.CustomVerticalOffset == -1 ? (float?)null : l.CustomLaneWidth,
+			Elevation = l.CustomVerticalOffset == -1 ? (float?)null : l.CustomVerticalOffset,
 			SpeedLimit = l.CustomSpeedLimit == -1 ? (float?)null : l.CustomSpeedLimit
 		};
 	}

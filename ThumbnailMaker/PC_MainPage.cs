@@ -452,7 +452,7 @@ namespace ThumbnailMaker
 				TB_SpeedLimit.Text = r.SpeedLimit == 0 ? string.Empty : r.SpeedLimit.ToString();
 				TB_CustomText.Text = r.CustomText;
 
-				foreach (var item in r.Lanes)
+				foreach (var item in r.LHT && Options.Current.LHT? (r.Lanes as IEnumerable<LaneInfo>).Reverse(): r.Lanes)
 				{
 					AddLaneControl(new ThumbnailLaneInfo(item));
 				}
