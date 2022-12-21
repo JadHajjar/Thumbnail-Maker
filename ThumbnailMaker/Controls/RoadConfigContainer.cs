@@ -13,6 +13,7 @@ using System.Timers;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
+using ThumbnailMaker.Handlers;
 
 using Timer = System.Timers.Timer;
 
@@ -34,8 +35,7 @@ namespace ThumbnailMaker.Controls
 			_systemWatcher = new Timer(1000);
 			_systemWatcher.AutoReset = false;
 			_systemWatcher.Elapsed += (s, e) => RefreshConfigs();
-
-			RefreshConfigs();
+			_systemWatcher.Start();
 		}
 
 		public void RefreshConfigs(string fileToRefresh = null)
@@ -43,13 +43,21 @@ namespace ThumbnailMaker.Controls
 			try
 			{
 				var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-				, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"));
+				, "Colossal Order", "Cities_Skylines", "RoadBuilder", "Roads"));
 
 				var controls = P_Configs.Controls.OfType<RoadConfigControl>().ToDictionary(x => x.FileName);
 				var files = Directory.Exists(appdata) ? Directory.GetFiles(appdata, "*.xml", SearchOption.AllDirectories) : new string[0];
+				var contents = files.ToDictionary(x => x, x =>
+				{
+					try { return LegacyUtil.LoadRoad(x); }
+					catch { return null; }
+				});
 
 				this.TryInvoke(() =>
 				{
+					Loader.Hide();
+
+					P_Configs.SuspendDrawing();
 					if (!string.IsNullOrEmpty(fileToRefresh) && controls.ContainsKey(fileToRefresh))
 					{
 						controls[fileToRefresh].Dispose();
@@ -58,7 +66,7 @@ namespace ThumbnailMaker.Controls
 
 					for (var i = 0; i < files.Length; i++)
 					{
-						if (!controls.ContainsKey(files[i]))
+						if (!controls.ContainsKey(files[i]) && contents[files[i]] != null)
 							createControl(files[i]);
 					}
 
@@ -70,7 +78,7 @@ namespace ThumbnailMaker.Controls
 
 					void createControl(string file)
 					{
-						var ctrl = new RoadConfigControl(file, out var valid);
+						var ctrl = new RoadConfigControl(file, contents[file], out var valid);
 
 						if (!valid)
 						{
@@ -85,6 +93,8 @@ namespace ThumbnailMaker.Controls
 					}
 
 					P_Configs.OrderBy(x => (x as RoadConfigControl).TimeSaved);
+					P_Configs.ResumeDrawing();
+					P_Configs.Parent.PerformLayout();
 				});
 			}
 			catch { }

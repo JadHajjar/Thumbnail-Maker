@@ -55,7 +55,7 @@ namespace ThumbnailMaker.Handlers
 
 					try
 					{
-						Utilities.ExportRoad(road, fileName);
+						Utilities.ExportRoad(road, Path.GetFileName(fileName));
 					}
 					catch { }
 

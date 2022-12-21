@@ -13,8 +13,6 @@ namespace ThumbnailMaker
 {
 	public class ResourceManager
 	{
-		public static Image Logo(bool small) => GetImage(nameof(Logo), small);
-
 		public static Image Arrow(bool small) => GetImage(nameof(Arrow), small);
 
 		public static Image GetRoadType(RoadType type, bool small) => GetImage($"RT_{(int)type}", small);
@@ -65,15 +63,39 @@ namespace ThumbnailMaker
 			}
 		}
 
-		public static void SetImage(LaneType lane, bool small, string fileName)
+		public static void SetLogo(bool small, string fileName)
 		{
-			var field = lane.GetType().GetField(Enum.GetName(typeof(LaneType), lane));
-
-			var attribute = Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) as StyleIdentityAttribute;
-
-			//SetImage(attribute.Id.ToString(), small, fileName);
+			var path = $"{Utilities.Folder}\\Resources\\{(small ? "S" : "L")}_Logo.png";
+			
+			if (string.IsNullOrWhiteSpace(fileName) || !File.Exists(fileName))
+			{
+				if (File.Exists(path))
+					File.Delete(path);
+			}
+			else
+				File.Copy(fileName, path, true);
 		}
 
-		public static void SetLogo(LaneType lane, bool small, string fileName) { }// => SetImage(nameof(Logo), small, fileName);
+		public static Image Logo(bool small)
+		{
+			try
+			{
+				var path = $"{Utilities.Folder}\\Resources\\{(small ? "S" : "L")}_Logo.png";
+
+				if (!File.Exists(path))
+					return null;
+
+				using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
+				{
+					var img = new byte[fileStream.Length];
+
+					fileStream.Read(img, 0, img.Length);
+					fileStream.Close();
+
+					return Image.FromStream(new MemoryStream(img));
+				}
+			}
+			catch { return null; }
+		}
 	}
 }

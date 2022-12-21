@@ -34,14 +34,13 @@ namespace ThumbnailMaker.Controls
 
 		public event System.EventHandler<RoadInfo> LoadConfiguration;
 
-		public RoadConfigControl(string fileName, out bool valid)
+		public RoadConfigControl(string fileName, RoadInfo road, out bool valid)
 		{
 			try
 			{
 				FileName = fileName;
 				TimeSaved = new FileInfo(fileName).LastWriteTime;
-
-				Road = LegacyUtil.LoadRoad(fileName);
+				Road = road;
 
 				using (var ms = new MemoryStream(Road.SmallThumbnail))
 					Image = new Bitmap(ms);

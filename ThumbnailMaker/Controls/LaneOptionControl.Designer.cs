@@ -30,12 +30,11 @@
 		{
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickSpacer3 = new SlickControls.SlickSpacer();
+			this.PB_512 = new SlickControls.SlickPictureBox();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.SS_Width = new SlickControls.SlickSlider();
 			this.label3 = new System.Windows.Forms.Label();
-			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.PB_512 = new SlickControls.SlickPictureBox();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.slickIcon1 = new SlickControls.SlickIcon();
 			this.slickIcon2 = new SlickControls.SlickIcon();
 			this.slickIcon3 = new SlickControls.SlickIcon();
@@ -96,6 +95,32 @@
 			this.slickSpacer3.TabStop = false;
 			this.slickSpacer3.Text = "slickSpacer3";
 			// 
+			// PB_512
+			// 
+			this.PB_512.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.PB_512.Location = new System.Drawing.Point(342, 11);
+			this.PB_512.Margin = new System.Windows.Forms.Padding(10, 3, 10, 3);
+			this.PB_512.Name = "PB_512";
+			this.PB_512.Size = new System.Drawing.Size(48, 48);
+			this.PB_512.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.PB_512.TabIndex = 0;
+			this.PB_512.TabStop = false;
+			this.PB_512.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_512_Paint);
+			this.PB_512.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PB_100_MouseClick);
+			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.pictureBox1.Location = new System.Drawing.Point(10, 19);
+			this.pictureBox1.Margin = new System.Windows.Forms.Padding(10);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(32, 32);
+			this.pictureBox1.TabIndex = 2;
+			this.pictureBox1.TabStop = false;
+			this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
+			this.pictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseClick);
+			// 
 			// label1
 			// 
 			this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -140,38 +165,6 @@
 			this.label3.Size = new System.Drawing.Size(38, 13);
 			this.label3.TabIndex = 1;
 			this.label3.Text = "Width:";
-			// 
-			// openFileDialog
-			// 
-			this.openFileDialog.DefaultExt = "png";
-			this.openFileDialog.Filter = "PNG File|*.png";
-			this.openFileDialog.Title = "Select Image";
-			// 
-			// PB_512
-			// 
-			this.PB_512.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.PB_512.Location = new System.Drawing.Point(342, 11);
-			this.PB_512.Margin = new System.Windows.Forms.Padding(10, 3, 10, 3);
-			this.PB_512.Name = "PB_512";
-			this.PB_512.Size = new System.Drawing.Size(48, 48);
-			this.PB_512.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.PB_512.TabIndex = 0;
-			this.PB_512.TabStop = false;
-			this.PB_512.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_512_Paint);
-			this.PB_512.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PB_100_MouseClick);
-			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.pictureBox1.Location = new System.Drawing.Point(10, 19);
-			this.pictureBox1.Margin = new System.Windows.Forms.Padding(10);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(32, 32);
-			this.pictureBox1.TabIndex = 2;
-			this.pictureBox1.TabStop = false;
-			this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
-			this.pictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseClick);
 			// 
 			// slickIcon1
 			// 
@@ -324,7 +317,6 @@
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private SlickControls.SlickPictureBox PB_512;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.OpenFileDialog openFileDialog;
 		private SlickControls.SlickSlider SS_Width;
 		private SlickControls.SlickSpacer slickSpacer3;
 		private System.Windows.Forms.Label label3;

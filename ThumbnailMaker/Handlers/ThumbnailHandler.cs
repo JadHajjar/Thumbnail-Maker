@@ -181,7 +181,10 @@ namespace ThumbnailMaker.Handlers
 				rect = rect.Pad(-(int)(0.5F * PixelFactor * scale - rect.Width) / 2, 0, -(int)(0.5F * PixelFactor * scale - rect.Width) / 2, 0);
 			}
 
-			var classIcons = lane.Icons(Small);
+			var classIcons = lane.Type.GetValues().Where(x => x > LaneType.Curb)
+				.ToDictionary(x => x, x => ResourceManager.GetImage(x, Small))
+				.Where(x => x.Value != null)
+				.ToList();
 
 			var icons = classIcons.OrderByDescending(LaneTypeImportance).Select(x =>
 			{
@@ -287,7 +290,8 @@ namespace ThumbnailMaker.Handlers
 		{
 			var bottomArea = new Rectangle(rect.X, availableSpace.Y + availableSpace.Height, rect.Width, Height - (availableSpace.Y + availableSpace.Height));
 
-			Graphics.FillRectangle(new SolidBrush(lane.Sidewalk ? PavementColor : Color.FromArgb(50, 50, 50)), bottomArea);
+			if (!lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+				Graphics.FillRectangle(new SolidBrush(lane.Sidewalk ? PavementColor : Color.FromArgb(50, 50, 50)), bottomArea);
 
 			if (lane.Type == LaneType.Curb && RoadType != RoadType.Highway)
 			{
@@ -301,7 +305,7 @@ namespace ThumbnailMaker.Handlers
 
 			if (lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
 			{
-				var fillArea = new Rectangle(rect.X, availableSpace.Y + availableSpace.Height - (lane.Sidewalk || lane.Type != LaneType.Filler ? 0 : (int)(0.3F * PixelFactor)), rect.Width, Height);
+				var fillArea = bottomArea;// new Rectangle(rect.X, availableSpace.Y + availableSpace.Height - (lane.Sidewalk || lane.Type != LaneType.Filler ? 0 : (int)(0.3F * PixelFactor)), rect.Width, Height);
 
 				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(160, 160, 160)), Small ? fillArea.Pad(1, 0, 1, 0) : fillArea.Pad(3, 0, 3, 0));
 				Graphics.FillRectangle(new SolidBrush(ThumbnailLaneInfo.GetColor(lane.Decorations & (LaneDecoration.Grass | LaneDecoration.Gravel | LaneDecoration.Pavement))), Small ? fillArea.Pad(2, 0, 2, 0) : fillArea.Pad(6, 0, 6, 0));
@@ -310,6 +314,34 @@ namespace ThumbnailMaker.Handlers
 			if (lane.Decorations.HasFlag(LaneDecoration.Filler))
 			{
 				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(125, lane.Color)), bottomArea);
+			}
+
+			if (lane.Decorations.HasFlag(LaneDecoration.Barrier))
+			{
+				var barrierWidth = Math.Min(PixelFactor * 12 / 10, bottomArea.Width);
+				var barrierRect = bottomArea.Pad((bottomArea.Width - barrierWidth) / 2, -PixelFactor, (bottomArea.Width - barrierWidth) / 2, 0);
+
+				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(128, 130, 135)), barrierRect.Pad(0, PixelFactor, 0, 0));
+
+				Graphics.SetClip(barrierRect.Pad(PixelFactor * 25 / 100, 0, PixelFactor * 25 / 100, 0));
+
+				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(201, 204, 212)), barrierRect);
+				
+				using (var pen = new Pen(Color.FromArgb(213, 157, 37), Small ? 2.5F : 6))
+				{
+					var w = 4 + PixelFactor * 8 / 10;
+					var x = -2 + barrierRect.X + (barrierRect.Width - w) / 2;
+					var y = barrierRect.Y + w / 4;
+					while (y < barrierRect.Y + barrierRect.Height)
+					{
+						Graphics.DrawLine(pen, x, y, x + w, y + w * 3 / 4);
+
+						y += Small ? (w - 2) : w;
+					}
+				}
+				Graphics.ResetClip();
+
+				Graphics.DrawLine(new Pen(Color.FromArgb(60, 60, 60), Small ? 1.5F : 4) { DashPattern = new[] { 3F, 4F, 3F, 10F } }, barrierRect.X + barrierRect.Width / 2, barrierRect.Y, barrierRect.X + barrierRect.Width / 2, barrierRect.Y + barrierRect.Height);
 			}
 		}
 
@@ -370,7 +402,7 @@ namespace ThumbnailMaker.Handlers
 
 		private Image GetDecorationIcon(ThumbnailLaneInfo lane, LaneDecoration style, Rectangle rect, float scale)
 		{
-			if (style == LaneDecoration.Grass || style == LaneDecoration.Gravel || style == LaneDecoration.Pavement || style == LaneDecoration.Filler || style == LaneDecoration.None)
+			if (style == LaneDecoration.Barrier || style == LaneDecoration.Grass || style == LaneDecoration.Gravel || style == LaneDecoration.Pavement || style == LaneDecoration.Filler || style == LaneDecoration.None)
 			{
 				return null;
 			}
@@ -581,6 +613,9 @@ namespace ThumbnailMaker.Handlers
 		private int LaneHeight(ThumbnailLaneInfo lane)
 		{
 			var @base = lane.Elevation ?? (lane.Sidewalk || RoadType != RoadType.Road ? 0F : -0.3F);
+
+			if (lane.Elevation == null && lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+				@base = @base == 0F ? 0.2F : 0F;
 
 			return (int)(@base * (Small ? 40 : 70) * IdealWidthModifier);
 		}

@@ -54,7 +54,7 @@ namespace ThumbnailMaker.Domain
 			try
 			{
 				var appdata = Directory.GetParent(Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-					, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"))).FullName;
+					, "Colossal Order", "Cities_Skylines", "RoadBuilder", "Roads"))).FullName;
 
 				var xML = new XmlSerializer(typeof(SavedSettings));
 
@@ -80,7 +80,7 @@ namespace ThumbnailMaker.Domain
 			try
 			{
 				var appdata = Directory.GetParent(Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-					, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"))).FullName;
+					, "Colossal Order", "Cities_Skylines", "RoadBuilder", "Roads"))).FullName;
 
 				if (File.Exists(Path.Combine(appdata, "LaneSizes.xml")))
 				{

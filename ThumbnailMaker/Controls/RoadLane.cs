@@ -362,7 +362,10 @@ namespace ThumbnailMaker.Controls
 		private int DrawIcon(PaintEventArgs e, Point cursor)
 		{
 			var laneColor = Lane.Color;
-			var icons = Lane.Icons(UI.FontScale <= 1.25, true);
+			var icons = Lane.Type.GetValues()
+				.ToDictionary(x => x, x => ResourceManager.GetImage(x, UI.FontScale <= 1.25))
+				.Where(x => x.Value != null)
+				.ToList();
 
 			var iconRectangle = new Rectangle(3, (Height - scale - 7) / 2, Math.Max(scale, icons.Count * scale), scale);
 
@@ -625,30 +628,31 @@ namespace ThumbnailMaker.Controls
 
 			var elevationMinusRectangle = new Rectangle(leftX, yIndex, scale, scale);
 			var elevationPlusRectangle = new Rectangle(leftX + scale, yIndex, scale, scale);
+			var isLow = Lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement) ? Lane.Elevation != null : Lane.Elevation == null;
 
 			if (elevationMinusRectangle.Contains(cursor))
 			{
 				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), elevationMinusRectangle, 4);
 			}
 
-			e.Graphics.DrawImage(Properties.Resources.I_Down.Color(elevationMinusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lane.Elevation == null ? FormDesign.Design.ActiveColor : foreColor), elevationMinusRectangle.CenterR(16, 16));
+			e.Graphics.DrawImage(Properties.Resources.I_Down.Color(elevationMinusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : isLow ? FormDesign.Design.ActiveColor : foreColor), elevationMinusRectangle.CenterR(16, 16));
 
 			if (elevationPlusRectangle.Contains(cursor))
 			{
 				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), elevationPlusRectangle, 4);
 			}
 
-			e.Graphics.DrawImage(Properties.Resources.I_Up.Color(elevationPlusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lane.Elevation != null ? FormDesign.Design.ActiveColor : foreColor), elevationPlusRectangle.CenterR(16, 16));
+			e.Graphics.DrawImage(Properties.Resources.I_Up.Color(elevationPlusRectangle.Contains(cursor) ? FormDesign.Design.ActiveForeColor : !isLow ? FormDesign.Design.ActiveColor : foreColor), elevationPlusRectangle.CenterR(16, 16));
 
-			DrawSelection(e, Lane.Elevation == null ? elevationMinusRectangle : elevationPlusRectangle);
+			DrawSelection(e, isLow ? elevationMinusRectangle : elevationPlusRectangle);
 
 			DrawLine(e, leftX - 6);
 
 			_clickActions[elevationMinusRectangle] = ElevationMinusClick;
 			_clickActions[elevationPlusRectangle] = ElevationPlusClick;
 
-			_tooltips[elevationMinusRectangle] = "Set this lane's elevation to its default, lowered value\r\n\r\nYou can change this behavior in the options";
-			_tooltips[elevationPlusRectangle] = "Set this lane's elevation to one step higher than its default value\r\n\r\nYou can change this behavior in the options";
+			_tooltips[elevationMinusRectangle] = "Set this lane's elevation to a lowered value\r\n\r\nYou can change this behavior in the options";
+			_tooltips[elevationPlusRectangle] = "Set this lane's elevation to a higher value\r\n\r\nYou can change this behavior in the options";
 		}
 
 		private void DrawLaneSpeed(PaintEventArgs e, Point cursor, ref int leftX)
@@ -745,7 +749,16 @@ namespace ThumbnailMaker.Controls
 			}
 			else
 			{
-				Lane.Elevation = null;
+				if (Lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+				{
+					var defaultElevation = GetDefaultElevation();
+
+					Lane.Elevation = defaultElevation == 0 ? -0.3F : (float?)0;
+				}
+				else
+				{
+					Lane.Elevation = null;
+				}
 			}
 
 			RefreshRoad();
@@ -762,9 +775,16 @@ namespace ThumbnailMaker.Controls
 			}
 			else
 			{
-				var defaultElevation = GetDefaultElevation();
+				if (Lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+				{
+					Lane.Elevation = null;
+				}
+				else
+				{
+					var defaultElevation = GetDefaultElevation();
 
-				Lane.Elevation = defaultElevation == 0 ? 0.2F : (float?)0;
+					Lane.Elevation = defaultElevation == 0 ? 0.2F : (float?)0;
+				}
 			}
 
 			RefreshRoad();
@@ -788,11 +808,13 @@ namespace ThumbnailMaker.Controls
 
 				if (index < Parent.Controls.IndexOf(leftSidewalk) && index > Parent.Controls.IndexOf(rightSidewalk))
 				{
-					return -0.3F;
+					return Lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement)
+						? 0 : -0.3F;
 				}
 			}
 
-			return 0;
+			return Lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement)
+				? 0.2F : 0F;
 		}
 
 		private void GrabberClick(object sender, MouseEventArgs e)

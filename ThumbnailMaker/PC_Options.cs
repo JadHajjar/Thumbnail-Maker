@@ -16,6 +16,7 @@ using System.Windows.Forms;
 
 using ThumbnailMaker.Controls;
 using ThumbnailMaker.Domain;
+using ThumbnailMaker.Handlers;
 
 namespace ThumbnailMaker
 {
@@ -25,18 +26,15 @@ namespace ThumbnailMaker
 		{
 			InitializeComponent();
 
+			PB_Small.Image = ResourceManager.Logo(true);
+			PB_Large.Image = ResourceManager.Logo(false);
+
 			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
-				//if (laneType == LaneType.Train)
-				//	continue;
-
 				var ctrl = new LaneOptionControl(laneType);
 
 				TLP.Controls.Add(ctrl);
 			}
-
-			//TLP.Controls.Add(new LaneOptionControl("Arrow"));
-			//TLP.Controls.Add(new LaneOptionControl("Logo"));
 
 			using (var fontsCollection = new InstalledFontCollection())
 			{
@@ -51,6 +49,9 @@ namespace ThumbnailMaker
 			CB_LHT.Checked = Options.Current.LHT;
 			CB_ColoredLanes.Checked = Options.Current.ShowLaneColorsOnThumbnail;
 			CB_AdvancedElevartion.Checked = Options.Current.AdvancedElevation;
+
+			SlickTip.SetTo(B_ReExport, "Re-generates all of your exported roads' thumbnails, useful in case you changed color or style options");
+			SlickTip.SetTo(B_ReExport, "Re-generates all of your exported roads' thumbnails, useful in case you changed color or style options");
 		}
 
 
@@ -82,6 +83,66 @@ namespace ThumbnailMaker
 			Options.Current.ShowLaneColorsOnThumbnail = CB_ColoredLanes.Checked;
 			Options.Current.AdvancedElevation = CB_AdvancedElevartion.Checked;
 			Options.Save();
+		}
+
+		private void PB_Logo_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (openFileDialog.ShowDialog() == DialogResult.OK)
+				{
+					ResourceManager.SetLogo(sender == PB_Small, openFileDialog.FileName);
+				}
+				else return;
+			}
+			else
+				ResourceManager.SetLogo(sender == PB_Small, null);
+
+			PB_Small.Image = ResourceManager.Logo(true);
+			PB_Large.Image = ResourceManager.Logo(false);
+		}
+
+		private void PB_Small_Paint(object sender, PaintEventArgs e)
+		{
+			var pb = sender as SlickPictureBox;
+
+			if (pb.Image == null)
+			{
+				e.Graphics.DrawIcon(Properties.Resources.I_EditImage.Color(pb.HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor : FormDesign.Design.IconColor), pb.ClientRectangle);
+			}
+		}
+
+		private void B_ReExport_Click(object sender, EventArgs e)
+		{
+			if (B_ReExport.Loading)
+				return;
+
+			var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+				, "Colossal Order", "Cities_Skylines", "RoadBuilder", "Roads"));
+			
+			B_ReExport.Loading = true;
+			
+			new Action(() =>
+			{
+				var files = Directory.Exists(appdata) ? Directory.GetFiles(appdata, "*.xml", SearchOption.AllDirectories) : new string[0];
+				var contents = files.ToDictionary(x => x, x =>
+				{
+					try
+					{
+						var road = LegacyUtil.LoadRoad(x);
+
+						Utilities.ExportRoad(road, Path.GetFileName(x));
+
+						return road;
+					}
+					catch { return null; }
+				});
+
+				B_ReExport.Loading = false;
+
+				MessagePrompt.Show($"Thumbnail generation complete, {contents.Count(x => x.Value != null)} roads rebuilt." +
+					(contents.Any(x => x.Value == null) ? "\r\nSome roads failed to be rebuilt.":""), PromptButtons.OK, PromptIcons.Info);
+			}).RunInBackground();
 		}
 	}
 }

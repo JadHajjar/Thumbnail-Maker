@@ -165,7 +165,7 @@ namespace ThumbnailMaker
 					PB.SizeMode = small&&!toolTip ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
 				}
 
-				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? $"RB{GetRoadType().ToString()[0]} " + Utilities.IsOneWay(lanes).Switch(true, "1W ", false, string.Empty, string.Empty) + lanes.Select(x => x.GetTitle(lanes)).WhereNotEmpty().ListStrings("+") : TB_RoadName.Text;
+				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? Utilities.GetRoadName(GetRoadType(), lanes) : TB_RoadName.Text;
 				L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
 
 				var speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse();
@@ -215,6 +215,17 @@ namespace ThumbnailMaker
 
 				if (road != RoadType.Highway)
 					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian });
+			}
+
+			if (road == RoadType.Highway)
+			{
+				SideTextureControl.SelectedValue = TextureType.Gravel;
+				BridgeSideTextureControl.SelectedValue = BridgeTextureType.Asphalt;
+			}
+			else
+			{
+				SideTextureControl.SelectedValue = TextureType.Pavement;
+				BridgeSideTextureControl.SelectedValue = BridgeTextureType.Pavement;
 			}
 
 			RefreshPreview();

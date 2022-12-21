@@ -118,6 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="GB_RoadType.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAKlJREFUOE/N
+        kkEOAUEQRfsCWLIh7NyCg7DkGGJJXI0Fd3ADCULCqymVdI3WbcdLXvKnUvMXnQp/xRrP+CgoOyt844oN
+        jVlaeNHokfY6HWxrdKR2k8MlLjQ6vi444F6jI1swxTvKd6zMJijYriMejvGI9rPkERrFAmGHVrCVQUSx
+        YIAnnOH8lftoFAt6ONRYIbmrsSJZIIfU1Jjl4yFtMPX6dW+YPOVfEMITTzk+36mQ/ZYAAAAASUVORK5C
+        YII=
+</value>
+  </data>
   <data name="B_Theme.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
@@ -170,6 +179,21 @@
         l06/mbYv7zXqjdKfVIZNVIZNWJHIXM5yk/sL9E7CbCzPF/DwXlYykG555X4jbbEPtcR6O0kIF7IUGwqR
         T1wW9jKKi/TL0ONrB5eFvZyiEJbtB0B+dVnYKyjYON7mB1C3giPFTN7twdhlYW9KwSmwo+zsUFgaV+7X
         4k/BeluJrdERzjaXuv+AmUx45o9+5a9Vhp9LowdMTOFzQGeuNQAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <metadata name="openFileDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="B_ReExport.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAE7SURBVDhPpdNLK4VBGMDxs3BZuISUQj6EspHLQjhWNj7C
+        Cd/FSkrYS3JZuCWXnQVfQbkksRA2Fmzk/695p8EsTix+vc88887zzjNnTqk8VfmXXHIYm3jCS3huYAi/
+        3k8HNVjGJabRhdbwnMEdFlGLbIEVHKEhyaVacAo/EvNF4Lav0RTGZZzhAVvog/lm3GIwjGOBdbht4wm4
+        3VEcYg8W7ofzs1gLcSzwiO4QX2AMFt1FI3ZwAOd7cB/iWOADdSF+QztcsB0c4xXO1+M9xLGAvXra9vaM
+        DvjiPmzBts7hu9kduN052EpxQG2w9xFcwYM1nz2DAfjl8R9jt+qXi8X+CjcoDjQW0AJOMAm32It0vrgH
+        80nuWwFv2BI8LNvphHmf6U30xsZ1MUh4qVbhhfmErVT1X/iTbLJ6ldIXqUI/2NBZeKkAAAAASUVORK5C
+        YII=
 </value>
   </data>
 </root>

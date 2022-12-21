@@ -32,10 +32,12 @@
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.TB_Size = new SlickControls.SlickTextBox();
 			this.panel2 = new System.Windows.Forms.Panel();
-			this.P_Configs = new System.Windows.Forms.Panel();
 			this.slickScroll2 = new SlickControls.SlickScroll();
+			this.P_Configs = new System.Windows.Forms.Panel();
+			this.Loader = new SlickControls.SlickPictureBox();
 			this.panel1.SuspendLayout();
 			this.panel2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Loader)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// panel1
@@ -88,15 +90,6 @@
 			this.panel2.Size = new System.Drawing.Size(266, 229);
 			this.panel2.TabIndex = 6;
 			// 
-			// P_Configs
-			// 
-			this.P_Configs.AutoSize = true;
-			this.P_Configs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.P_Configs.Location = new System.Drawing.Point(0, 0);
-			this.P_Configs.Name = "P_Configs";
-			this.P_Configs.Size = new System.Drawing.Size(0, 0);
-			this.P_Configs.TabIndex = 6;
-			// 
 			// slickScroll2
 			// 
 			this.slickScroll2.Dock = System.Windows.Forms.DockStyle.Right;
@@ -109,9 +102,29 @@
 			this.slickScroll2.TabStop = false;
 			this.slickScroll2.Text = "slickScroll2";
 			// 
+			// P_Configs
+			// 
+			this.P_Configs.AutoSize = true;
+			this.P_Configs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.P_Configs.Location = new System.Drawing.Point(0, 0);
+			this.P_Configs.Name = "P_Configs";
+			this.P_Configs.Size = new System.Drawing.Size(0, 0);
+			this.P_Configs.TabIndex = 6;
+			// 
+			// Loader
+			// 
+			this.Loader.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.Loader.Loading = true;
+			this.Loader.Location = new System.Drawing.Point(117, 124);
+			this.Loader.Name = "Loader";
+			this.Loader.Size = new System.Drawing.Size(32, 32);
+			this.Loader.TabIndex = 8;
+			this.Loader.TabStop = false;
+			// 
 			// RoadConfigContainer
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.Controls.Add(this.Loader);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
 			this.Name = "RoadConfigContainer";
@@ -119,6 +132,7 @@
 			this.panel1.ResumeLayout(false);
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.Loader)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -131,5 +145,6 @@
 		private System.Windows.Forms.Panel panel2;
 		private SlickControls.SlickScroll slickScroll2;
 		private System.Windows.Forms.Panel P_Configs;
+		private SlickControls.SlickPictureBox Loader;
 	}
 }
