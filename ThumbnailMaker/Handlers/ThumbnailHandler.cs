@@ -53,6 +53,7 @@ namespace ThumbnailMaker.Handlers
 		public RegionType RegionType { get; set; }
 		public RoadType RoadType { get; set; }
 		public TextureType SideTexture { get; set; }
+		public bool LHT { get; set; }
 
 		public Graphics Graphics { get; }
 		public bool ToolTip { get; }
@@ -427,7 +428,7 @@ namespace ThumbnailMaker.Handlers
 				var left = index == 0 ? null : Lanes[index - 1];
 				var right = index == (Lanes.Count - 1) ? null : Lanes[index + 1];
 
-				flip = left != null && (left.Direction == LaneDirection.Forward || right == null || !right.Type.HasAnyFlag(LaneType.Car, LaneType.Bus, LaneType.Trolley, LaneType.Tram)) && left.Type.HasAnyFlag(LaneType.Car, LaneType.Bus, LaneType.Trolley, LaneType.Tram);
+				flip = !(left != null && (left.Direction == LaneDirection.Forward || right == null || !right.Type.HasAnyFlag(LaneType.Car, LaneType.Bus, LaneType.Trolley, LaneType.Tram)) && left.Type.HasAnyFlag(LaneType.Car, LaneType.Bus, LaneType.Trolley, LaneType.Tram));
 			}
 
 			if (flip)
@@ -665,6 +666,14 @@ namespace ThumbnailMaker.Handlers
 				if (icon != null)
 				{
 					Graphics.DrawImage(icon, containerRect.Pad(0, Small ? 4 : 20, 0, 0).CenterR(icon.Size));
+
+					if (LHT)
+					{
+						using (var lht = Small ? Properties.Resources.S_LHT : Properties.Resources.L_LHT)
+						{
+							Graphics.DrawImage(lht, new Rectangle(containerRect.Pad(0, Small ? 4 : 20, 0, 0).CenterR(icon.Size).Location, Size.Empty).CenterR(lht.Size));
+						}
+					}
 				}
 			}
 		}

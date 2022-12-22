@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Controls;
@@ -190,6 +191,7 @@ namespace ThumbnailMaker
 				BufferSize = Math.Max(0, TB_BufferSize.Text.SmartParseF()),
 				RegionType = GetRegion(),
 				RoadType = GetRoadType(),
+				LHT = Options.Current.LHT,
 				SideTexture = SideTextureControl.SelectedValue,
 				Speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse(),
 				Lanes = new List<ThumbnailLaneInfo>(lanes)
@@ -414,7 +416,7 @@ namespace ThumbnailMaker
 
 				var roadInfo = new RoadInfo
 				{
-					Name = L_RoadName.Text,
+					CustomName = TB_RoadName.Text,
 					Description = Utilities.GetRoadDescription(lanes, GetRoadType(), TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RegionTypeControl.SelectedValue == RegionType.USA),
 					CustomText = TB_CustomText.Text,
 					BufferWidth = TB_BufferSize.Text.SmartParseF(0.25f),
@@ -451,10 +453,29 @@ namespace ThumbnailMaker
 				TB_BufferSize.Text = r.BufferWidth.ToString();
 				TB_SpeedLimit.Text = r.SpeedLimit == 0 ? string.Empty : r.SpeedLimit.ToString();
 				TB_CustomText.Text = r.CustomText;
+				TB_RoadName.Text = r.Name;
 
-				foreach (var item in r.LHT && Options.Current.LHT? (r.Lanes as IEnumerable<LaneInfo>).Reverse(): r.Lanes)
+				//if (r.LHT)
+				//{
+				//	for (var i = r.Lanes.Count - 1; i >= 0; i--)
+				//	{
+				//		AddLaneControl(new ThumbnailLaneInfo(r.Lanes[i])
+				//		{
+				//			Direction = (r.LHT && r.Lanes[i].Type == LaneType.Curb) ? r.Lanes[i].Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward
+				//				: r.Lanes[i].Direction
+				//		});
+				//	}
+				//}
+				//else
 				{
-					AddLaneControl(new ThumbnailLaneInfo(item));
+					foreach (var lane in r.LHT&&Options.Current.LHT?(r.Lanes as IEnumerable<LaneInfo>).Reverse():r.Lanes)
+					{
+						AddLaneControl(new ThumbnailLaneInfo(lane)
+						{
+							Direction = (r.LHT && Options.Current.LHT && lane.Type == LaneType.Curb) ? lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward
+								: lane.Direction
+						});
+					}
 				}
 
 				RoadTypeControl.SelectedValue = r.RoadType;

@@ -68,6 +68,11 @@ namespace ThumbnailMaker.Controls
 					{
 						if (!controls.ContainsKey(files[i]) && contents[files[i]] != null)
 							createControl(files[i]);
+						else if (controls.ContainsKey(files[i]) && controls[files[i]].TimeSaved != new FileInfo(files[i]).LastWriteTime)
+						{
+							controls[files[i]].Dispose();
+							createControl(files[i]);
+						}
 					}
 
 					foreach (var item in controls)

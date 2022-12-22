@@ -139,8 +139,12 @@ namespace ThumbnailMaker.Controls
 					if (laneType == LaneDecoration.None)
 						_roadLane.Lane.Decorations = laneType;
 					else
-						_roadLane.Lane.Decorations = _roadLane.Lane.Decorations.HasFlag(laneType) ? _roadLane.Lane.Decorations & ~laneType : _roadLane.Lane.Decorations | laneType;
+					{
+						if (laneType <= LaneDecoration.Gravel && !_roadLane.Lane.Decorations.HasFlag(laneType))
+							_roadLane.Lane.Decorations &= ~LaneDecoration.Filler & ~LaneDecoration.Grass & ~LaneDecoration.Gravel & ~LaneDecoration.Pavement;
 
+						_roadLane.Lane.Decorations = _roadLane.Lane.Decorations.HasFlag(laneType) ? _roadLane.Lane.Decorations & ~laneType : _roadLane.Lane.Decorations | laneType;
+					}
 					Invalidate();
 					_roadLane.RefreshRoad();
 					return;

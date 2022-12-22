@@ -37,7 +37,6 @@
 			this.PB_Large = new SlickControls.SlickPictureBox();
 			this.slickGroupBox1 = new SlickControls.SlickGroupBox();
 			this.PB_Small = new SlickControls.SlickPictureBox();
-			this.B_Theme = new SlickControls.SlickButton();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.DD_Font = new SlickControls.SlickDropdown();
 			this.TB_ExportFolder = new SlickControls.SlickPathTextBox();
@@ -45,10 +44,11 @@
 			this.CB_LHT = new SlickControls.SlickCheckbox();
 			this.CB_ColoredLanes = new SlickControls.SlickCheckbox();
 			this.CB_AdvancedElevartion = new SlickControls.SlickCheckbox();
+			this.B_Theme = new SlickControls.SlickButton();
+			this.B_ReExport = new SlickControls.SlickButton();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.slickScroll1 = new SlickControls.SlickScroll();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.B_ReExport = new SlickControls.SlickButton();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.GB_RoadType.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
@@ -194,23 +194,6 @@
 			this.PB_Small.TabStop = false;
 			this.PB_Small.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_Small_Paint);
 			this.PB_Small.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PB_Logo_MouseClick);
-			// 
-			// B_Theme
-			// 
-			this.B_Theme.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.B_Theme.ColorShade = null;
-			this.B_Theme.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_Theme.IconSize = 16;
-			this.B_Theme.Image = ((System.Drawing.Image)(resources.GetObject("B_Theme.Image")));
-			this.B_Theme.Location = new System.Drawing.Point(803, 3);
-			this.B_Theme.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
-			this.B_Theme.Name = "B_Theme";
-			this.B_Theme.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.B_Theme.Size = new System.Drawing.Size(85, 27);
-			this.B_Theme.SpaceTriggersClick = true;
-			this.B_Theme.TabIndex = 14;
-			this.B_Theme.Text = "Theme & UI Scaling";
-			this.B_Theme.Click += new System.EventHandler(this.B_Theme_Click);
 			// 
 			// slickSpacer1
 			// 
@@ -370,6 +353,40 @@
 			this.CB_AdvancedElevartion.UncheckedText = null;
 			this.CB_AdvancedElevartion.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
 			// 
+			// B_Theme
+			// 
+			this.B_Theme.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.B_Theme.ColorShade = null;
+			this.B_Theme.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_Theme.IconSize = 16;
+			this.B_Theme.Image = ((System.Drawing.Image)(resources.GetObject("B_Theme.Image")));
+			this.B_Theme.Location = new System.Drawing.Point(803, 3);
+			this.B_Theme.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
+			this.B_Theme.Name = "B_Theme";
+			this.B_Theme.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_Theme.Size = new System.Drawing.Size(85, 27);
+			this.B_Theme.SpaceTriggersClick = true;
+			this.B_Theme.TabIndex = 14;
+			this.B_Theme.Text = "Theme & UI Scaling";
+			this.B_Theme.Click += new System.EventHandler(this.B_Theme_Click);
+			// 
+			// B_ReExport
+			// 
+			this.B_ReExport.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.B_ReExport.ColorShade = null;
+			this.B_ReExport.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_ReExport.IconSize = 16;
+			this.B_ReExport.Image = ((System.Drawing.Image)(resources.GetObject("B_ReExport.Image")));
+			this.B_ReExport.Location = new System.Drawing.Point(624, 3);
+			this.B_ReExport.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+			this.B_ReExport.Name = "B_ReExport";
+			this.B_ReExport.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_ReExport.Size = new System.Drawing.Size(85, 27);
+			this.B_ReExport.SpaceTriggersClick = true;
+			this.B_ReExport.TabIndex = 14;
+			this.B_ReExport.Text = "Re-Export Roads";
+			this.B_ReExport.Click += new System.EventHandler(this.B_ReExport_Click);
+			// 
 			// panel1
 			// 
 			this.panel1.Controls.Add(this.TLP);
@@ -396,23 +413,6 @@
 			this.openFileDialog.DefaultExt = "png";
 			this.openFileDialog.Filter = "PNG File|*.png";
 			this.openFileDialog.Title = "Select Image";
-			// 
-			// B_ReExport
-			// 
-			this.B_ReExport.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.B_ReExport.ColorShade = null;
-			this.B_ReExport.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_ReExport.IconSize = 16;
-			this.B_ReExport.Image = ((System.Drawing.Image)(resources.GetObject("B_ReExport.Image")));
-			this.B_ReExport.Location = new System.Drawing.Point(624, 3);
-			this.B_ReExport.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
-			this.B_ReExport.Name = "B_ReExport";
-			this.B_ReExport.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.B_ReExport.Size = new System.Drawing.Size(85, 27);
-			this.B_ReExport.SpaceTriggersClick = true;
-			this.B_ReExport.TabIndex = 14;
-			this.B_ReExport.Text = "Re-Export Roads";
-			this.B_ReExport.Click += new System.EventHandler(this.B_ReExport_Click);
 			// 
 			// PC_Options
 			// 

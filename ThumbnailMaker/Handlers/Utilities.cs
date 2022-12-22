@@ -29,12 +29,17 @@ namespace ThumbnailMaker.Handlers
 			Directory.CreateDirectory(appdata);
 
 			road.Version = LegacyUtil.CURRENT_VERSION;
+			road.Name = road.CustomName.IfEmpty(GetRoadName(road.RoadType, road.Lanes));
 			road.SpeedLimit = road.SpeedLimit.If(0, DefaultSpeedSign(road.RoadType, road.RegionType == RegionType.USA));
 			road.SmallThumbnail = getImage(true, false);
 			road.LargeThumbnail = getImage(false, false);
 			road.TooltipImage = getImage(true, true);
 
-			road.Lanes.Reverse();
+			if (road.LHT)
+			{
+				road.Lanes.Reverse();
+				road.Lanes.Where(x => x.Type == LaneType.Curb).Foreach(x => x.Direction = x.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward);
+			}
 
 			var guid = Guid.NewGuid().ToString();
 			var xML = new System.Xml.Serialization.XmlSerializer(typeof(RoadInfo));
@@ -61,6 +66,7 @@ namespace ThumbnailMaker.Handlers
 						RoadType = road.RoadType,
 						Speed = road.SpeedLimit,
 						SideTexture = road.SideTexture,
+						LHT = road.LHT,
 						Lanes = road.Lanes.Select(x => new ThumbnailLaneInfo(x)).ToList()
 					}.Draw();
 
@@ -210,7 +216,8 @@ namespace ThumbnailMaker.Handlers
 			if (img == null)
 				return;
 
-			rect = rect.CenterR(size??img.Size);
+			if (size != null)
+				rect = rect.CenterR((Size)size);
 
 			if (img.Width >= rect.Width || img.Height >= rect.Height)
 			{

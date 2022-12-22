@@ -52,6 +52,9 @@ namespace ThumbnailMaker.Controls
 				item.HoverState = HoverState.Normal;
 				item._dragDropActive = false;
 				item.Invalidate();
+
+				if (item.Lane.Type == LaneType.Curb)
+					item.FixCurbOrientation();
 			}
 
 			drgevent.Effect = DragDropEffects.Move;
@@ -61,6 +64,25 @@ namespace ThumbnailMaker.Controls
 
 			item.Parent.Controls.SetChildIndex(item, calculatedIndex);
 			item.RoadLaneChanged?.Invoke(item, EventArgs.Empty);
+		}
+
+		private void FixCurbOrientation()
+		{
+			var other = Parent.Controls.Where(x => (x as RoadLane).Lane.Type == LaneType.Curb && x != this).FirstOrDefault() as RoadLane;
+			var index = Parent.Controls.IndexOf(other);
+
+			if (index < Parent.Controls.IndexOf(this))
+			{
+				other.Lane.Direction = LaneDirection.Forward;
+				Lane.Direction = LaneDirection.Backwards;
+			}
+			else
+			{
+				Lane.Direction = LaneDirection.Forward;
+				other.Lane.Direction = LaneDirection.Backwards;
+			}
+
+			other.RefreshRoad();
 		}
 
 		public RoadLane Duplicate()
@@ -173,7 +195,7 @@ namespace ThumbnailMaker.Controls
 		{
 			base.OnMouseUp(e);
 
-			if (e.Button != MouseButtons.Left || _dragDropActive)
+			if (_dragDropActive)
 			{
 				return;
 			}
@@ -260,6 +282,9 @@ namespace ThumbnailMaker.Controls
 
 		private void DeleteLaneClick(object sender, MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left)
+				return;
+
 			Dispose();
 
 			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
@@ -319,7 +344,7 @@ namespace ThumbnailMaker.Controls
 
 				using (icon)
 				{
-					e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 3 / 4, scale * 3 / 4));
+					e.Graphics.DrawIcon(icon, new Rectangle(iconX, (Height - scale - 7) / 2, scale, scale).Pad(2), UI.FontScale <= 1.25 ? (Size?)null : new Size(scale * 3 / 4, scale * 3 / 4));
 				}
 
 				iconX += scale;
@@ -743,9 +768,15 @@ namespace ThumbnailMaker.Controls
 
 		private void DuplicateLaneClick(object sender, MouseEventArgs e)
 		{
+			if (e.Button == MouseButtons.Middle)
+				return;
+
 			var index = Parent.Controls.IndexOf(this);
 
 			var ctrl = new RoadLane(new ThumbnailLaneInfo(Lane));
+
+			if (e.Button == MouseButtons.Right && Lane.Direction != LaneDirection.Both)
+				ctrl.Lane.Direction = ctrl.Lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward;
 
 			Parent.Controls.Add(ctrl);
 			Parent.Controls.SetChildIndex(ctrl, index);
@@ -755,6 +786,9 @@ namespace ThumbnailMaker.Controls
 
 		private void ElevationMinusClick(object sender, MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left)
+				return;
+
 			if (Options.Current.AdvancedElevation)
 			{
 				var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
@@ -780,6 +814,9 @@ namespace ThumbnailMaker.Controls
 
 		private void ElevationPlusClick(object sender, MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left)
+				return;
+
 			if (Options.Current.AdvancedElevation)
 			{
 				var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
@@ -805,6 +842,9 @@ namespace ThumbnailMaker.Controls
 
 		private void ElevationResetClick(object sender, MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left)
+				return;
+
 			Lane.Elevation = null;
 
 			RefreshRoad();
@@ -832,44 +872,71 @@ namespace ThumbnailMaker.Controls
 
 		private void GrabberClick(object sender, MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left)
+				return;
+
 			_dragDropActive = true;
 
 			Refresh();
 
-			_ = DoDragDrop(this, DragDropEffects.Move);
+			DoDragDrop(this, DragDropEffects.Move);
 
 			_dragDropActive = false;
 			Invalidate();
+
+			if (Lane.Type == LaneType.Curb)
+				FixCurbOrientation();
 		}
 
 		private void InfoLaneClick(object sender, MouseEventArgs e)
 		{
-			_ = MessagePrompt.Show($"This is the {(Lane.Direction == LaneDirection.Forward ? "Right" : "Left")} Curb Delimiter;\r\n\r\nIt is used to separate what lanes are on the {(Lane.Direction == LaneDirection.Forward ? "right" : "left")} sidewalk and what lanes are on the asphalt.\r\n\r\nTry moving lanes and see how it affects the road in the preview.", PromptButtons.OK, PromptIcons.Info);
+			MessagePrompt.Show($"This is the {(Lane.Direction == LaneDirection.Forward ? "Right" : "Left")} Curb Delimiter;\r\n\r\nIt is used to separate what lanes are on the {(Lane.Direction == LaneDirection.Forward ? "right" : "left")} sidewalk and what lanes are on the asphalt.\r\n\r\nTry moving lanes and see how it affects the road in the preview.", PromptButtons.OK, PromptIcons.Info);
 		}
 
 		private void LaneDecoClick(object sender, MouseEventArgs e)
 		{
-			_ = new DecoTypeSelector(this);
+			if (e.Button == MouseButtons.Right)
+				return;
+
+			if (e.Button == MouseButtons.Middle)
+				Lane.Decorations = LaneDecoration.None;
+			else
+				new DecoTypeSelector(this);
 
 			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void LaneTypeClick(object sender, MouseEventArgs e)
 		{
-			_ = new RoadTypeSelector(this);
+			if (e.Button == MouseButtons.Right)
+				return;
+
+			if (e.Button == MouseButtons.Middle)
+				Lane.Type = LaneType.Empty;
+			else
+				new RoadTypeSelector(this);
 
 			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void SpeedLimitClick(object sender, MouseEventArgs e)
 		{
-			_ = new LaneSpeedSelector(this);
+			if (e.Button == MouseButtons.Right)
+				return;
+
+			if (e.Button == MouseButtons.Middle)
+				Lane.SpeedLimit = null;
+			else
+				new LaneSpeedSelector(this);
 
 			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void WidthMinusClick(object sender, MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left)
+				return;
+
 			var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 
 			Lane.CustomWidth = (float)Math.Max(0, Math.Round(Lane.LaneWidth - change, 2));
@@ -879,6 +946,9 @@ namespace ThumbnailMaker.Controls
 
 		private void WidthPlusClick(object sender, MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left)
+				return;
+
 			var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 
 			Lane.CustomWidth = (float)Math.Max(0, Math.Round(Lane.LaneWidth + change, 2));
@@ -888,6 +958,9 @@ namespace ThumbnailMaker.Controls
 
 		private void WidthResetClick(object sender, MouseEventArgs e)
 		{
+			if (e.Button != MouseButtons.Left)
+				return;
+
 			Lane.CustomWidth = null;
 
 			RefreshRoad();

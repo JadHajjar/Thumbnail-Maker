@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Extensions;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -55,6 +57,34 @@ namespace ThumbnailMaker.Handlers
 					throw new Exception("Unsupported Road Version");
 			}
 
+		}
+
+		public static void UpdateV1()
+		{
+			try
+			{
+				var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+					, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"));
+
+				var files = Directory.Exists(appdata) ? Directory.GetFiles(appdata, "*.xml", SearchOption.AllDirectories) : new string[0];
+
+				for (var i = 0; i < files.Length; i++)
+				{
+					try
+					{
+						var road = LegacyUtil.LoadRoad(files[i]);
+
+						if (road != null)
+						{
+							Utilities.ExportRoad(road, Path.GetFileName(files[i]));
+
+							File.Delete(files[i]);
+						}
+					}
+					catch { }
+				}
+			}
+			catch { }
 		}
 	}
 }

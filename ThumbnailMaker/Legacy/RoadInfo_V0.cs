@@ -44,6 +44,7 @@ namespace ThumbnailMaker.Legacy
 				LargeThumbnail = road.LargeThumbnail,
 				LHT = road.LHT,
 				Name = road.Name,
+				CustomName = road.Name.StartsWith("BRB ") || road.Name.StartsWith("BR4 ") ? string.Empty : road.Name,
 				RoadType = RoadType.Road,
 				SmallThumbnail = road.SmallThumbnail,
 				SpeedLimit = (int)road.SpeedLimit,

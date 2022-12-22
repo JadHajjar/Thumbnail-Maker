@@ -57,7 +57,6 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(CB_AdvancedElevartion, "Allows you to manually set the elevation value of a lane");
 		}
 
-
 		protected override void UIChanged()
 		{
 			base.UIChanged();
@@ -82,10 +81,13 @@ namespace ThumbnailMaker
 
 		private void CB_LHT_CheckChanged(object sender, EventArgs e)
 		{
-			Options.Current.LHT = CB_LHT.Checked;
-			Options.Current.ShowLaneColorsOnThumbnail = CB_ColoredLanes.Checked;
-			Options.Current.AdvancedElevation = CB_AdvancedElevartion.Checked;
-			Options.Save();
+			if (IsHandleCreated)
+			{
+				Options.Current.LHT = CB_LHT.Checked;
+				Options.Current.ShowLaneColorsOnThumbnail = CB_ColoredLanes.Checked;
+				Options.Current.AdvancedElevation = CB_AdvancedElevartion.Checked;
+				Options.Save();
+			}
 		}
 
 		private void PB_Logo_MouseClick(object sender, MouseEventArgs e)
