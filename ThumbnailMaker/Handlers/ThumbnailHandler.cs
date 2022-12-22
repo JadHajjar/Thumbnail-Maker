@@ -8,6 +8,7 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
 
@@ -111,6 +112,8 @@ namespace ThumbnailMaker.Handlers
 
 			DrawBackground(availableSpace, laneRects);
 
+			DrawFillers(availableSpace, laneRects);
+
 			foreach (var lane in Lanes.Where(x => x.Type != LaneType.Empty))
 			{
 				DrawBackground(lane, laneRects[lane], availableSpace.Pad(0, 0, 0, LaneHeight(lane)));
@@ -172,6 +175,40 @@ namespace ThumbnailMaker.Handlers
 			if (rightSidewalk != null)
 			{
 				Graphics.FillRectangle(new SolidBrush(PavementColor), new Rectangle(laneRects[rightSidewalk].X, bottomArea.Y, Width - laneRects[rightSidewalk].X, bottomArea.Height));
+			}
+		}
+
+		private void DrawFillers(Rectangle availableSpace, Dictionary<ThumbnailLaneInfo, Rectangle> laneRects)
+		{
+			var x = 0;
+			var elevation = 0;
+			var filler = LaneDecoration.None;
+			var lefpadding = FillerPadding.Unset;
+			var rightpadding = FillerPadding.Unset;
+
+			foreach (var lane in Lanes)
+			{
+				var laneFiller = lane.Decorations & (LaneDecoration.Grass | LaneDecoration.Gravel | LaneDecoration.Pavement);
+
+				if (laneFiller == filler && LaneHeight(lane) == elevation)
+				{
+					rightpadding = lane.FillerPadding;
+					continue;
+				}
+
+				if (filler != LaneDecoration.None)
+				{
+					var bottomArea = new Rectangle(x, availableSpace.Y + availableSpace.Height, laneRects[lane].X - x, Height - (availableSpace.Y + availableSpace.Height)).Pad(0, -elevation, 0, 0);
+					var fillArea = bottomArea.Pad(lefpadding.HasFlag(FillerPadding.Left) ? -1 : Small ? 2 : 5, 0, rightpadding.HasFlag(FillerPadding.Right) ? -1 : Small ? 2 : 5, 0);
+
+					Graphics.FillRectangle(new SolidBrush(Color.FromArgb(160, 160, 160)), fillArea);
+					Graphics.FillRectangle(new SolidBrush(ThumbnailLaneInfo.GetColor(filler & (LaneDecoration.Grass | LaneDecoration.Gravel | LaneDecoration.Pavement))), Small ? fillArea.Pad(2, 0, 2, 0) : fillArea.Pad(6, 0, 6, 0));
+				}
+
+				filler = laneFiller;
+				x = laneRects[lane].X;
+				elevation = LaneHeight(lane);
+				lefpadding = rightpadding = lane.FillerPadding;
 			}
 		}
 
@@ -259,7 +296,7 @@ namespace ThumbnailMaker.Handlers
 
 			decoIcons.Insert(0, GetDecorationIcon(lane, GetLightType(lane), rect, scale));
 
-			var first = true;
+			var first = icons.Count == 0;
 			foreach (var decoIcon in decoIcons)
 			{
 				if (decoIcon == null)
@@ -304,13 +341,13 @@ namespace ThumbnailMaker.Handlers
 				Graphics.FillRectangle(SlickControls.SlickControl.Gradient(rect, Color.FromArgb(175, lane.Color), 2), rect);
 			}
 
-			if (lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
-			{
-				var fillArea = bottomArea;// new Rectangle(rect.X, availableSpace.Y + availableSpace.Height - (lane.Sidewalk || lane.Type != LaneType.Filler ? 0 : (int)(0.3F * PixelFactor)), rect.Width, Height);
+			//if (lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+			//{
+			//	var fillArea = bottomArea.Pad(lane.FillerPadding.HasFlag(FillerPadding.Left)? -1:Small?2:5,0, lane.FillerPadding.HasFlag(FillerPadding.Right) ? -1 : Small ? 2 : 5, 0);// new Rectangle(rect.X, availableSpace.Y + availableSpace.Height - (lane.Sidewalk || lane.Type != LaneType.Filler ? 0 : (int)(0.3F * PixelFactor)), rect.Width, Height);
 
-				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(160, 160, 160)), Small ? fillArea.Pad(1, 0, 1, 0) : fillArea.Pad(3, 0, 3, 0));
-				Graphics.FillRectangle(new SolidBrush(ThumbnailLaneInfo.GetColor(lane.Decorations & (LaneDecoration.Grass | LaneDecoration.Gravel | LaneDecoration.Pavement))), Small ? fillArea.Pad(2, 0, 2, 0) : fillArea.Pad(6, 0, 6, 0));
-			}
+			//	Graphics.FillRectangle(new SolidBrush(Color.FromArgb(160, 160, 160)), fillArea);
+			//	Graphics.FillRectangle(new SolidBrush(ThumbnailLaneInfo.GetColor(lane.Decorations & (LaneDecoration.Grass | LaneDecoration.Gravel | LaneDecoration.Pavement))), Small ? fillArea.Pad(2, 0, 2, 0) : fillArea.Pad(6, 0, 6, 0));
+			//}
 
 			if (lane.Decorations.HasFlag(LaneDecoration.Filler))
 			{

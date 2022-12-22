@@ -34,6 +34,8 @@ namespace ThumbnailMaker.Controls
 
 		public static float GlobalSpeed { get; set; }
 
+		public static RoadType RoadType { get; set; }
+
 		public ThumbnailLaneInfo Lane { get; }
 
 		private Color foreColor => _dragDropActive ? Color.FromArgb(200, Lane.Color.GetAccentColor()) : FormDesign.Design.ForeColor;
@@ -220,7 +222,7 @@ namespace ThumbnailMaker.Controls
 			_clickActions.Clear();
 			_tooltips.Clear();
 
-			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+			e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
 			if (_dragDropActive)
@@ -261,6 +263,8 @@ namespace ThumbnailMaker.Controls
 			DrawLaneSpeed(e, cursor, ref leftX);
 
 			DrawDecorationDirection(e, cursor, ref leftX);
+
+			DrawFillerPadding(e, cursor, ref leftX);
 
 			grabberRectangle = new Rectangle(iconX + 8, 0, leftX - iconX, Height - 4);
 
@@ -457,7 +461,7 @@ namespace ThumbnailMaker.Controls
 			var elevationPlusRectangle = new Rectangle(leftX + (scale * 2), yIndex, scale, scale);
 
 			var size = Lane.Elevation ?? GetDefaultElevation(true);
-			e.Graphics.DrawString($"{size:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(elevationRectangle.Contains(cursor) ? FormDesign.Design.RedColor : foreColor), elevationRectangle.Pad(-10), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+			e.Graphics.DrawString($"{size:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(elevationRectangle.Contains(cursor) ? FormDesign.Design.RedColor : Lane.Elevation != null ? FormDesign.Design.ActiveColor : foreColor), elevationRectangle.Pad(-10), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 
 			if (elevationMinusRectangle.Contains(cursor))
 			{
@@ -553,6 +557,42 @@ namespace ThumbnailMaker.Controls
 
 			var directions = new[] { PropAngle.Left, PropAngle.Right };
 
+			leftX -= 12 + scale;
+
+			// Draw direction buttons
+			var rect = new Rectangle(leftX, yIndex, scale, scale);
+
+			if (rect.Contains(cursor))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), rect, 4);
+			}
+			else if (Lane.PropAngle == PropAngle.Left)
+			{
+				DrawSelection(e, rect);
+			}
+
+			e.Graphics.DrawImage(Properties.Resources.Icon_Flip.Color(rect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lane.PropAngle == PropAngle.Left ? FormDesign.Design.ActiveColor : foreColor), rect.CenterR(16, 16));
+
+			_tooltips[rect] = "Flips the direction some decorations are facing";
+			_clickActions[rect] = (_, __) =>
+			{
+				Lane.PropAngle = Lane.PropAngle == PropAngle.Left ? PropAngle.Right : PropAngle.Left;
+				RefreshRoad();
+			};
+
+			DrawLine(e, leftX - 6);
+		}
+
+		private void DrawFillerPadding(PaintEventArgs e, Point cursor, ref int leftX)
+		{
+			if (!Lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+			{
+				Lane.FillerPadding = FillerPadding.Unset;
+				return;
+			}
+
+			var directions = new[] { FillerPadding.Left, FillerPadding.Right };
+
 			leftX -= 12 + (scale * directions.Length);
 
 			// Draw direction buttons
@@ -565,7 +605,7 @@ namespace ThumbnailMaker.Controls
 				{
 					e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), rect, 4);
 				}
-				else if (Lane.PropAngle == direction)
+				else if (Lane.FillerPadding.HasFlag(direction))
 				{
 					DrawSelection(e, rect);
 				}
@@ -574,28 +614,33 @@ namespace ThumbnailMaker.Controls
 
 				switch (direction)
 				{
-					case PropAngle.Right:
-						icon = Properties.Resources.Icon_Horizontal;
+					case FillerPadding.Right:
+						icon = Properties.Resources.Icon_Curb;
+						icon.RotateFlip(RotateFlipType.RotateNoneFlipX);
 						break;
 
-					case PropAngle.Left:
-						icon = Properties.Resources.Icon_Horizontal;
-						icon.RotateFlip(RotateFlipType.RotateNoneFlipX);
+					case FillerPadding.Left:
+						icon = Properties.Resources.Icon_Curb;
 						break;
 
 					default:
 						continue;
 				}
 
-				e.Graphics.DrawImage(icon.Color(rect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lane.PropAngle == direction ? FormDesign.Design.ActiveColor : foreColor), rect.CenterR(16, 16));
+				e.Graphics.DrawImage(icon.Color(rect.Contains(cursor) ? FormDesign.Design.ActiveForeColor : Lane.FillerPadding.HasFlag(direction) ? FormDesign.Design.ActiveColor : foreColor), rect.CenterR(16, 16));
 
-				_tooltips[rect] = "Change the direction of some decoration props to " + direction;
+				_tooltips[rect] = $"{(Lane.FillerPadding.HasFlag(direction) ? "Reset" : "Remove")} padding on the {direction} of the {Lane.Decorations & (LaneDecoration.Grass | LaneDecoration.Gravel | LaneDecoration.Pavement)} filler";
 				_clickActions[rect] = (_, __) =>
 				{
-					Lane.PropAngle = direction;
+					if (Lane.FillerPadding.HasFlag(direction))
+						Lane.FillerPadding &= ~direction;
+					else
+						Lane.FillerPadding |= direction;
+
 					RefreshRoad();
 				};
 			}
+
 
 			DrawLine(e, leftX - 6);
 		}
@@ -713,6 +758,10 @@ namespace ThumbnailMaker.Controls
 
 			ThumbnailHandler.DrawSpeedSignSmall(e.Graphics, Options.Current.Region, (int)(Lane.SpeedLimit ?? GlobalSpeed), speedRectangle);
 
+			e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+			e.Graphics.InterpolationMode = InterpolationMode.Bilinear;
+
 			DrawLine(e, leftX - 6);
 
 			_clickActions[speedRectangle] = SpeedLimitClick;
@@ -727,7 +776,7 @@ namespace ThumbnailMaker.Controls
 			var sizeRectangle = new Rectangle(leftX + scale, yIndex, scale, scale);
 			var sizePlusRectangle = new Rectangle(leftX + (scale * 2), yIndex, scale, scale);
 
-			e.Graphics.DrawString($"{Lane.LaneWidth:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(sizeRectangle.Contains(cursor) ? FormDesign.Design.RedColor : foreColor), sizeRectangle.Pad(-10), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+			e.Graphics.DrawString($"{Lane.LaneWidth:0.##}m", new Font(UI.FontFamily, 8.25F), new SolidBrush(sizeRectangle.Contains(cursor) ? FormDesign.Design.RedColor : Lane.CustomWidth != null ? FormDesign.Design.ActiveColor : foreColor), sizeRectangle.Pad(-10), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 
 			if (sizeMinusRectangle.Contains(cursor))
 			{
@@ -852,22 +901,17 @@ namespace ThumbnailMaker.Controls
 
 		private float GetDefaultElevation(bool addFiller)
 		{
+			var index = Parent.Controls.IndexOf(this);
 			var leftSidewalk = Parent.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
 			var rightSidewalk = Parent.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
+			var sideWalk = !(leftSidewalk != null && rightSidewalk != null & index < Parent.Controls.IndexOf(leftSidewalk) && index > Parent.Controls.IndexOf(rightSidewalk));
 
-			if (leftSidewalk != null && rightSidewalk != null)
-			{
-				var index = Parent.Controls.IndexOf(this);
+			var @base = sideWalk || RoadType != RoadType.Road ? 0F : -0.3F;
 
-				if (index < Parent.Controls.IndexOf(leftSidewalk) && index > Parent.Controls.IndexOf(rightSidewalk))
-				{
-					return addFiller && Lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement)
-						? 0 : -0.3F;
-				}
-			}
+			if (Lane.Elevation == null && addFiller && Lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+				@base = @base == 0F ? 0.2F : 0F;
 
-			return addFiller && Lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement)
-				? 0.2F : 0F;
+			return @base;
 		}
 
 		private void GrabberClick(object sender, MouseEventArgs e)

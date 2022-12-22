@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 using ThumbnailMaker.Domain;
@@ -143,6 +144,9 @@ namespace ThumbnailMaker.Legacy
 
 			if (l.AddStopToFiller)
 				lane.Decorations |= LaneDecoration.TransitStop;
+
+			if (lane.CustomWidth == null && lane.Type == LaneType.Filler && l.Lanes != 0)
+				lane.CustomWidth = (float)Math.Round(Math.Ceiling(0.4 * lane.LaneWidth * (10 - Math.Min(l.Lanes, 9))) / 4, 2);
 
 			return lane;
 		}

@@ -59,7 +59,7 @@ namespace ThumbnailMaker.Handlers
 				{
 					new ThumbnailHandler(g, small, toolTip)
 					{
-						RoadWidth = road.RoadWidth <= 0 ? CalculateRoadSize(road.Lanes, road.BufferWidth) : road.RoadWidth,
+						RoadWidth = Math.Max(road.RoadWidth, CalculateRoadSize(road.Lanes, road.BufferWidth)),
 						CustomText = road.CustomText,
 						BufferSize = Math.Max(0, road.BufferWidth),
 						RegionType = road.RegionType,
@@ -80,9 +80,18 @@ namespace ThumbnailMaker.Handlers
 			var sb = new List<string>();
 			var current = (LaneInfo)null;
 			var currentCount = 0;
+			var _lanes = new List<T>(lanes);
 
-			foreach (var item in lanes)
+			if (_lanes.Count > 1 && _lanes[0].Type == LaneType.Pedestrian && _lanes[1].Type == LaneType.Curb)
+				_lanes.RemoveAt(0);
+
+			if (_lanes.Count > 1 && _lanes[_lanes.Count - 1].Type == LaneType.Pedestrian && _lanes[_lanes.Count - 2].Type == LaneType.Curb)
+				_lanes.RemoveAt(_lanes.Count - 1);
+
+			foreach (var item in _lanes)
 			{
+				if (item.Type == LaneType.Curb)
+					continue;
 
 				if (current != null && current.Type == item.Type && current.Direction == item.Direction)
 				{
@@ -103,7 +112,15 @@ namespace ThumbnailMaker.Handlers
 				}
 			}
 
-			return $"RB{roadType.ToString()[0]} {(IsOneWay(lanes) == true ? "1W " : string.Empty)}{sb.ListStrings("+")}";
+			if (current != null)
+			{
+				var title = ThumbnailLaneInfo.GetTitle(current);
+
+				if (!string.IsNullOrEmpty(title))
+					sb.Add(currentCount > 1 ? $"{currentCount}{title}" : title);
+			}
+
+			return $"RB{roadType.ToString()[0]} {(IsOneWay(_lanes) == true ? "1W " : string.Empty)}{sb.ListStrings("+")}";
 		}
 
 		public static string GetRoadDescription<T>(List<T> lanes, RoadType roadType, string size, float bufferSize, int speedLimit, bool usa) where T : LaneInfo

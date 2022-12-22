@@ -59,8 +59,6 @@ namespace ThumbnailMaker
 				PB.Cursor = new Cursor(img.GetHicon());
 			}
 
-			TB_BufferSize.Text = 0.25F.ToString();
-
 			SlickTip.SetTo(TB_Size, "Manually specify the total road width, which includes the asphalt and pavement");
 			SlickTip.SetTo(TB_BufferSize, "Represents the distance between the sidewalks and the lanes next to them");
 			SlickTip.SetTo(TB_SpeedLimit, "Manually specify the default speed limit of the road");
@@ -128,6 +126,7 @@ namespace ThumbnailMaker
 		{
 			base.OnCreateControl();
 
+			TB_BufferSize.Text = 0.25F.ToString();
 			refreshPaused = false;
 			RefreshPreview();
 		}
@@ -171,9 +170,10 @@ namespace ThumbnailMaker
 
 				var speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse();
 
-				if (speed != RoadLane.GlobalSpeed)
+				if (speed != RoadLane.GlobalSpeed || RoadLane.RoadType != GetRoadType())
 				{
 					RoadLane.GlobalSpeed = speed;
+					RoadLane.RoadType = GetRoadType();
 
 					foreach (Control item in P_Lanes.Controls)
 						item.Invalidate();
@@ -186,7 +186,7 @@ namespace ThumbnailMaker
 		{
 			new ThumbnailHandler(graphics, small, tooltip)
 			{
-				RoadWidth = TB_Size.Text.SmartParseF(Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text.SmartParseF())),
+				RoadWidth = Math.Max(TB_Size.Text.SmartParseF(), Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text.SmartParseF())),
 				CustomText = TB_CustomText.Text,
 				BufferSize = Math.Max(0, TB_BufferSize.Text.SmartParseF()),
 				RegionType = GetRegion(),
@@ -419,7 +419,7 @@ namespace ThumbnailMaker
 					CustomName = TB_RoadName.Text,
 					Description = Utilities.GetRoadDescription(lanes, GetRoadType(), TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RegionTypeControl.SelectedValue == RegionType.USA),
 					CustomText = TB_CustomText.Text,
-					BufferWidth = TB_BufferSize.Text.SmartParseF(0.25f),
+					BufferWidth = TB_BufferSize.Text.SmartParseF(),
 					RoadWidth = TB_Size.Text.SmartParseF(),
 					RegionType = GetRegion(),
 					RoadType = GetRoadType(),

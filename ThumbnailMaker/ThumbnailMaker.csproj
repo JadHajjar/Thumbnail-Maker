@@ -109,6 +109,7 @@
     <Compile Include="Controls\RoadTypeSelector.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Domain\FillerPadding.cs" />
     <Compile Include="Domain\LaneDecoration.cs" />
     <Compile Include="Domain\ParkingAngle.cs" />
     <Compile Include="Domain\PropAngle.cs" />
@@ -188,6 +189,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\Icon_Curb.png" />
+    <None Include="Resources\Icon_Flip.png" />
     <None Include="Resources\S_LHT.png" />
     <None Include="Resources\L_LHT.png" />
     <None Include="Resources\I_EditImage.png" />
