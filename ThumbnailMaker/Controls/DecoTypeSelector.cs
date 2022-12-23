@@ -73,6 +73,7 @@ namespace ThumbnailMaker.Controls
 			e.Graphics.Clear(FormDesign.Design.AccentBackColor);
 			e.Graphics.DrawRectangle(new Pen(FormDesign.Design.ActiveColor), ClientRectangle.Pad(0, 0, 1, 1));
 			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
 			var cursor = PointToClient(Cursor.Position);
 			var point = new Point(12, 12);

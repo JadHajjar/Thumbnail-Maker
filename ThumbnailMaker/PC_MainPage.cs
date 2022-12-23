@@ -455,33 +455,22 @@ namespace ThumbnailMaker
 				TB_CustomText.Text = r.CustomText;
 				TB_RoadName.Text = r.Name;
 
-				//if (r.LHT)
-				//{
-				//	for (var i = r.Lanes.Count - 1; i >= 0; i--)
-				//	{
-				//		AddLaneControl(new ThumbnailLaneInfo(r.Lanes[i])
-				//		{
-				//			Direction = (r.LHT && r.Lanes[i].Type == LaneType.Curb) ? r.Lanes[i].Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward
-				//				: r.Lanes[i].Direction
-				//		});
-				//	}
-				//}
-				//else
+				foreach (var lane in r.LHT && Options.Current.LHT ? (r.Lanes as IEnumerable<LaneInfo>).Reverse() : r.Lanes)
 				{
-					foreach (var lane in r.LHT&&Options.Current.LHT?(r.Lanes as IEnumerable<LaneInfo>).Reverse():r.Lanes)
+					AddLaneControl(new ThumbnailLaneInfo(lane)
 					{
-						AddLaneControl(new ThumbnailLaneInfo(lane)
-						{
-							Direction = (r.LHT && Options.Current.LHT && lane.Type == LaneType.Curb) ? lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward
-								: lane.Direction
-						});
-					}
+						Direction = (r.LHT && Options.Current.LHT && lane.Type == LaneType.Curb)
+							? lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward
+							: lane.Direction
+					});
 				}
 
 				RoadTypeControl.SelectedValue = r.RoadType;
 				RegionTypeControl.SelectedValue = r.RegionType;
 				SideTextureControl.SelectedValue = r.SideTexture;
 				BridgeSideTextureControl.SelectedValue = r.BridgeSideTexture;
+
+				P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb)?.FixCurbOrientation();
 			}
 			catch (Exception ex)
 			{

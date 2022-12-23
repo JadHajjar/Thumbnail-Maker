@@ -146,7 +146,7 @@ namespace ThumbnailMaker.Legacy
 				lane.Decorations |= LaneDecoration.TransitStop;
 
 			if (lane.CustomWidth == null && lane.Type == LaneType.Filler && l.Lanes != 0)
-				lane.CustomWidth = (float)Math.Round(Math.Ceiling(0.4 * lane.LaneWidth * (10 - Math.Min(l.Lanes, 9))) / 4, 2);
+				lane.CustomWidth = (float)Math.Round(Math.Ceiling(0.04 * lane.LaneWidth * 10 * (10 - Math.Min(l.Lanes, 9))) / 4, 2);
 
 			return lane;
 		}

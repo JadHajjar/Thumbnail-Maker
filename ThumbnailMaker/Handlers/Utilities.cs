@@ -201,16 +201,23 @@ namespace ThumbnailMaker.Handlers
 			return 0;
 		}
 
-		public static float CalculateRoadSize<T>(List<T> lanes, float bufferSize) where T : LaneInfo
+		public static float CalculateRoadSize<T>(List<T> sizeLanes, float bufferSize) where T : LaneInfo
 		{
-			if (lanes.Count == 0)
+			var leftCurb = sizeLanes.FirstOrDefault(x => x.Type == LaneType.Curb);
+			var rightCurb = sizeLanes.LastOrDefault(x => x.Type == LaneType.Curb);
+
+			if (leftCurb == null || rightCurb == null)
 			{
 				return 0;
 			}
 
-			var size = Math.Max(0, bufferSize * 2) + lanes.Sum(x => x.LaneWidth);
+			var leftPavementWidth = sizeLanes.Where(x => sizeLanes.IndexOf(x) <= sizeLanes.IndexOf(leftCurb)).Sum(x => x.LaneWidth);
+			var rightPavementWidth = sizeLanes.Where(x => sizeLanes.IndexOf(x) >= sizeLanes.IndexOf(rightCurb)).Sum(x => x.LaneWidth);
+			var PavementWidth = Math.Max(1.5F, Math.Max(leftPavementWidth, rightPavementWidth));
+			var AsphaltWidth = sizeLanes.Where(x => sizeLanes.IndexOf(x) > sizeLanes.IndexOf(leftCurb) && sizeLanes.IndexOf(x) < sizeLanes.IndexOf(rightCurb)).Sum(x => x.LaneWidth) + (2 * bufferSize);
+			var TotalWidth = 2 * PavementWidth + AsphaltWidth;
 
-			return (float)Math.Round(size, 1);
+			return (float)Math.Round(TotalWidth, 2);
 		}
 
 		public static bool? IsOneWay<T>(IEnumerable<T> lanes) where T : LaneInfo

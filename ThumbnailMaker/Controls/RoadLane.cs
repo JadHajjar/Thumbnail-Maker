@@ -68,7 +68,7 @@ namespace ThumbnailMaker.Controls
 			item.RoadLaneChanged?.Invoke(item, EventArgs.Empty);
 		}
 
-		private void FixCurbOrientation()
+		public void FixCurbOrientation()
 		{
 			var other = Parent.Controls.Where(x => (x as RoadLane).Lane.Type == LaneType.Curb && x != this).FirstOrDefault() as RoadLane;
 			var index = Parent.Controls.IndexOf(other);
@@ -273,7 +273,7 @@ namespace ThumbnailMaker.Controls
 			e.Graphics.DrawImage(Properties.Resources.I_Grabber.Color(_dragDropActive || grabberRectangle.Contains(cursor) ? FormDesign.Design.ActiveColor : foreColor), drawGrabberRect.CenterR(10, 5));
 
 			_tooltips[grabberRectangle] = $"Hold to drag this lane up or down";
-			_tooltips[ClientRectangle] = Lane.Type != LaneType.Curb ? $"{Lane.Type.ToString().FormatWords()} Lane" : Lane.Direction == LaneDirection.Forward ? "Right Curb Delimiter" : "Left Curb Delimiter";
+			_tooltips[ClientRectangle] = Lane.Type != LaneType.Curb ? $"{Lane.Type.ToString().FormatWords()} Lane\r\nMiddle-click to clear it" : Lane.Direction == LaneDirection.Forward ? "Right Curb Delimiter" : "Left Curb Delimiter";
 		}
 
 		protected override void UIChanged()
@@ -316,7 +316,7 @@ namespace ThumbnailMaker.Controls
 
 			DrawLine(e, leftX - 6);
 
-			_tooltips[copyRectangle] = "Duplicate this lane";
+			_tooltips[copyRectangle] = "Duplicate this lane, right-click to also flip its direction";
 			_clickActions[copyRectangle] = DuplicateLaneClick;
 		}
 
@@ -362,7 +362,7 @@ namespace ThumbnailMaker.Controls
 			iconX = decoRectangle.X + decoRectangle.Width + 12;
 
 			_clickActions[decoRectangle] = LaneDecoClick;
-			_tooltips[decoRectangle] = Lane.Decorations == LaneDecoration.None ? "No Add-ons" : Lane.Decorations.ToString().FormatWords();
+			_tooltips[decoRectangle] = Lane.Decorations == LaneDecoration.None ? "No Add-ons" : (Lane.Decorations.ToString().FormatWords() + "\r\nMiddle-click to clear it");
 		}
 
 		private int DrawDeleteOrInfoIcon(PaintEventArgs e, Point cursor)

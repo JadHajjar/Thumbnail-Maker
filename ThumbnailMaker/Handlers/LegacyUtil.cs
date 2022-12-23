@@ -63,8 +63,8 @@ namespace ThumbnailMaker.Handlers
 		{
 			try
 			{
-				var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-					, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads"));
+				var appdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+					, "Colossal Order", "Cities_Skylines", "BlankRoadBuilder", "Roads");
 
 				var files = Directory.Exists(appdata) ? Directory.GetFiles(appdata, "*.xml", SearchOption.AllDirectories) : new string[0];
 
@@ -72,7 +72,7 @@ namespace ThumbnailMaker.Handlers
 				{
 					try
 					{
-						var road = LegacyUtil.LoadRoad(files[i]);
+						var road = LoadRoad(files[i]);
 
 						if (road != null)
 						{

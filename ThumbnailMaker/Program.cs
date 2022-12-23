@@ -22,9 +22,10 @@ namespace ThumbnailMaker
 			{ Options.Current = ISave.Load<Options>("LaneOptions.tf"); }
 			catch { Options.Current = new Options(); }
 
+			LegacyUtil.UpdateV1();
+
 			if (args.Length > 0 && args[0] == "update")
 			{
-				LegacyUtil.UpdateV1();
 				return;
 			}
 

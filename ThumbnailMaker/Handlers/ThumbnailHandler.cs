@@ -732,6 +732,7 @@ namespace ThumbnailMaker.Handlers
 				}
 			}
 
+			Graphics.DrawString($"{RoadWidth:0.#}m", new Font(FontFamily, ToolTip ? 14F : Small ? 10.5F : 40F, FontStyle.Bold), Brushes.Black, rect.Pad(4, 4, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
 			Graphics.DrawString($"{RoadWidth:0.#}m", new Font(FontFamily, ToolTip ? 14F : Small ? 10.5F : 40F, FontStyle.Bold), Brushes.White, rect.Pad(0, 0, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
 		}
 
