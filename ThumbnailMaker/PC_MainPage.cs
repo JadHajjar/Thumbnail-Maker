@@ -128,7 +128,7 @@ namespace ThumbnailMaker
 
 			TB_BufferSize.Text = 0.25F.ToString();
 			refreshPaused = false;
-			RefreshPreview();
+			SetupType(GetRoadType());
 		}
 
 		protected override void OnVisibleChanged(EventArgs e)
