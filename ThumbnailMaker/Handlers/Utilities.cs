@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -30,6 +31,7 @@ namespace ThumbnailMaker.Handlers
 
 			road.Version = LegacyUtil.CURRENT_VERSION;
 			road.Name = road.CustomName.IfEmpty(GetRoadName(road.RoadType, road.Lanes));
+			road.Description = GetRoadDescription(road);
 			road.SpeedLimit = road.SpeedLimit.If(0, DefaultSpeedSign(road.RoadType, road.RegionType == RegionType.USA));
 			road.SmallThumbnail = getImage(true, false);
 			road.LargeThumbnail = getImage(false, false);
@@ -59,7 +61,7 @@ namespace ThumbnailMaker.Handlers
 				{
 					new ThumbnailHandler(g, small, toolTip)
 					{
-						RoadWidth = Math.Max(road.RoadWidth, CalculateRoadSize(road.Lanes, road.BufferWidth)),
+						RoadWidth = VanillaWidth(road.VanillaWidth, Math.Max(road.RoadWidth, CalculateRoadSize(road.Lanes, road.BufferWidth))),
 						CustomText = road.CustomText,
 						BufferSize = Math.Max(0, road.BufferWidth),
 						RegionType = road.RegionType,
@@ -73,6 +75,14 @@ namespace ThumbnailMaker.Handlers
 					return (byte[])new ImageConverter().ConvertTo(img, typeof(byte[]));
 				}
 			}
+		}
+
+		public static float VanillaWidth(bool vanillaWidths, float value)
+		{
+			if (!vanillaWidths)
+				return value;
+
+			return (float)(16 * Math.Ceiling(value / 16D));
 		}
 
 		public static string GetRoadName<T>(RoadType roadType, IEnumerable<T> lanes) where T : LaneInfo
@@ -123,59 +133,69 @@ namespace ThumbnailMaker.Handlers
 			return $"RB{roadType.ToString()[0]} {(IsOneWay(_lanes) == true ? "1W " : string.Empty)}{sb.ListStrings("+")}";
 		}
 
-		public static string GetRoadDescription<T>(List<T> lanes, RoadType roadType, string size, float bufferSize, int speedLimit, bool usa) where T : LaneInfo
+		public static string GetRoadDescription(RoadInfo road)
 		{
-			var skip = false;
-			var oneWay = IsOneWay(lanes);
-			var asymetrical = lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards).Count() != lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Forward).Count() && lanes.Any(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards);
-			var laneDescriptors = new List<string>();
+			var oneWay = IsOneWay(road.Lanes);
+			var asymetrical = road.Lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards).Count() != road.Lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Forward).Count() && road.Lanes.Any(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards);
+			var sb = new List<string>();
+			var lanes = new List<string>();
 
-			foreach (var lane in lanes)
+			if (asymetrical)
+				sb.Add("Asymmetrical");
+
+			sb.Add(oneWay.Switch(true, "One-Way ", false, "Two-Way ", string.Empty));
+
+			sb.Add($"{road.RoadType} Road,");
+
+			var current = (LaneInfo)null;
+			var currentCount = 0;
+			var _lanes = new List<LaneInfo>(road.Lanes);
+
+			if (_lanes.Count > 1 && _lanes[0].Type == LaneType.Pedestrian && _lanes[1].Type == LaneType.Curb)
+				_lanes.RemoveAt(0);
+
+			if (_lanes.Count > 1 && _lanes[_lanes.Count - 1].Type == LaneType.Pedestrian && _lanes[_lanes.Count - 2].Type == LaneType.Curb)
+				_lanes.RemoveAt(_lanes.Count - 1);
+
+			foreach (var item in _lanes)
 			{
-				if (skip || (lane.Type == LaneType.Pedestrian && (lane == lanes.First() || lane == lanes.Last())))
-				{
+				if (item.Type == LaneType.Curb)
 					continue;
-				}
 
-				var types = lane.Type.GetValues().Select(x => x.ToString());
-				var name = types.Count() > 1 ? $"Shared {types.ListStrings(" & ")}" : types.First();
-
-				if (lane.Type == LaneType.Filler)
+				if (current != null && current.Type == item.Type && current.Direction == item.Direction && current.Decorations == item.Decorations)
 				{
-					laneDescriptors.Add(lane.LaneWidth <= 1 ? "Separator" : "Median");
-				}
-				else if (lane.Type == LaneType.Parking && lane.ParkingAngle != ParkingAngle.Vertical)
-				{
-					laneDescriptors.Add(lane.ParkingAngle.ToString().FormatWords() + " Parking");
-				}
-				else if (lane.Direction == LaneDirection.Both && lane.Type != LaneType.Parking)
-				{
-					laneDescriptors.Add($"2W {name}");
+					currentCount++;
 				}
 				else
 				{
-					laneDescriptors.Add(name);
+					if (current != null)
+					{
+						lanes.Add(current.ToString(currentCount));
+					}
+
+					current = item;
+					currentCount = 1;
 				}
 			}
 
-			if (string.IsNullOrWhiteSpace(size))
+			if (current != null)
 			{
-				size = CalculateRoadSize(lanes, bufferSize).If(x => x == 0F, x => "", x => x.ToString("0.#"));
+				lanes.Add(current.ToString(currentCount));
 			}
 
-			if (speedLimit > 0)
-			{
-				speedLimit = DefaultSpeedSign(lanes, roadType, usa);
-			}
+			sb.Add(lanes.ListStrings(", "));
 
-			var info = (size.Length == 0 ? "" : $"{size}m") +
-				(speedLimit == 0 ? "" : $" - {speedLimit}{usa.If("mph", "km/h")}");
+			var size = Math.Max(road.RoadWidth, CalculateRoadSize(road.Lanes, road.BufferWidth));
+			var info = $"{size}m";
 
-			var desc = $"{(asymetrical ? "Asymmetrical " : oneWay.Switch(true, "One-Way ", false, "Two-Way ", string.Empty))}{lanes.Any(x => x.Type.HasFlag(LaneType.Bike)).If("Bike ")}Road.  " +
-				laneDescriptors.WhereNotEmpty().ListStrings(" + ") +
-				info.IfEmpty("", $"  ({info})") +
-				"  This road was automatically generated by Road Builder.";
-			return desc;
+			if (road.SpeedLimit != 0)
+				info += $" - {road.SpeedLimit}{(road.RegionType == RegionType.USA ? "mph" : "km/h")}";
+
+			sb.Add($"({info})");
+
+			sb.Add("This road was automatically generated by Road Builder.");
+
+			return string.Join(" ", sb).RemoveDoubleSpaces().Trim();
 		}
 
 		public static int DefaultSpeedSign<T>(List<T> lanes, RoadType type, bool mph) where T : LaneInfo

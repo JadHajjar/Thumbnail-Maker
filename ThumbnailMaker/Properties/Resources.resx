@@ -301,14 +301,26 @@
   <data name="L_RT_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\L_RT_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="L_RT_0_LHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\L_RT_0_LHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="L_RT_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\L_RT_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="L_RT_1_LHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\L_RT_1_LHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="L_RT_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\L_RT_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="L_RT_2_LHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\L_RT_2_LHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="L_RT_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\L_RT_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="L_RT_3_LHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\L_RT_3_LHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="S_Arrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S_Arrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -406,13 +418,25 @@
   <data name="S_RT_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S_RT_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="S_RT_0_LHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\S_RT_0_LHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="S_RT_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S_RT_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="S_RT_1_LHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\S_RT_1_LHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="S_RT_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S_RT_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="S_RT_2_LHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\S_RT_2_LHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="S_RT_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S_RT_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="S_RT_3_LHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\S_RT_3_LHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

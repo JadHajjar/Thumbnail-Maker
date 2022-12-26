@@ -13,11 +13,11 @@ namespace ThumbnailMaker
 {
 	public class ResourceManager
 	{
-		public static Image Arrow(bool small) => GetImage(nameof(Arrow), small);
+		public static Bitmap Arrow(bool small) => GetImage(nameof(Arrow), small);
 
-		public static Image GetRoadType(RoadType type, bool small) => GetImage($"RT_{(int)type}", small);
+		public static Bitmap GetRoadType(RoadType type, bool lht, bool small) => GetImage($"RT_{(int)type}" + (lht ? "_LHT" : ""), small);
 
-		public static Image GetImage(LaneType lane, bool small)
+		public static Bitmap GetImage(LaneType lane, bool small)
 		{
 			var name = Enum.GetName(typeof(LaneType), lane);
 
@@ -34,7 +34,7 @@ namespace ThumbnailMaker
 			return GetImage($"C_{attribute.Id}", small);
 		}
 
-		public static Image GetImage(LaneDecoration decorations, bool small)
+		public static Bitmap GetImage(LaneDecoration decorations, bool small)
 		{
 			var name = Enum.GetName(typeof(LaneDecoration), decorations);
 
@@ -51,7 +51,7 @@ namespace ThumbnailMaker
 			return GetImage($"D_{attribute.Id}", small);
 		}
 
-		public static Image GetImage(string name, bool small)
+		public static Bitmap GetImage(string name, bool small)
 		{
 			try
 			{

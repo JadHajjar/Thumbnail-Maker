@@ -46,6 +46,8 @@ namespace ThumbnailMaker.Domain
 			Elevation = laneInfo.Elevation;
 			ParkingAngle = laneInfo.ParkingAngle;
 			SpeedLimit = laneInfo.SpeedLimit;
+			FillerPadding = laneInfo.FillerPadding;
+			PropAngle = laneInfo.PropAngle;
 			Type = laneInfo.Type;
 		}
 
@@ -58,6 +60,8 @@ namespace ThumbnailMaker.Domain
 			ParkingAngle = ParkingAngle,
 			SpeedLimit = SpeedLimit,
 			Type = Type,
+			FillerPadding = FillerPadding,
+			PropAngle = PropAngle
 		};
 
 		public static Color GetColor(LaneType laneType)
@@ -65,26 +69,6 @@ namespace ThumbnailMaker.Domain
 			return Options.Current.LaneColors.ContainsKey(laneType)
 				? Options.Current.LaneColors[laneType]
 				: GetDefaultLaneColor(laneType);
-		}
-
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-
-			switch (Direction)
-			{
-				case LaneDirection.Forward:
-					sb.Append("1WF ");
-					break;
-
-				case LaneDirection.Backwards:
-					sb.Append("1WB ");
-					break;
-			}
-
-			sb.Append(Type.GetValues().Select(GetLaneAbbreviation).OrderBy(y => y).ListStrings("-"));
-
-			return sb.ToString();
 		}
 
 		public static string GetLaneAbbreviation(LaneType lane)

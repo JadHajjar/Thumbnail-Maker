@@ -483,8 +483,8 @@ namespace ThumbnailMaker.Controls
 			_clickActions[elevationPlusRectangle] = ElevationPlusClick;
 			_clickActions[elevationRectangle] = ElevationResetClick;
 
-			_tooltips[elevationMinusRectangle] = "Decrease lane elevation by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.5x & Alt for 0.01x";
-			_tooltips[elevationPlusRectangle] = "Increase lane elevation by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.5x & Alt for 0.01x";
+			_tooltips[elevationMinusRectangle] = "Decrease lane elevation by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.25x & Alt for 0.01x";
+			_tooltips[elevationPlusRectangle] = "Increase lane elevation by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.25x & Alt for 0.01x";
 			_tooltips[elevationRectangle] = "Reset lane elevation to " + GetDefaultElevation(true);
 		}
 
@@ -765,7 +765,7 @@ namespace ThumbnailMaker.Controls
 			DrawLine(e, leftX - 6);
 
 			_clickActions[speedRectangle] = SpeedLimitClick;
-			_tooltips[speedRectangle] = "Change this lane's speed limit";
+			_tooltips[speedRectangle] = "Change this lane's speed limit\r\nMiddle-click to clear it";
 		}
 
 		private void DrawLaneWidth(PaintEventArgs e, Point cursor, ref int leftX)
@@ -798,8 +798,8 @@ namespace ThumbnailMaker.Controls
 			_clickActions[sizePlusRectangle] = WidthPlusClick;
 			_clickActions[sizeRectangle] = WidthResetClick;
 
-			_tooltips[sizeMinusRectangle] = "Decrease lane width by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.5x & Alt for 0.01x";
-			_tooltips[sizePlusRectangle] = "Increase lane width by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.5x & Alt for 0.01x";
+			_tooltips[sizeMinusRectangle] = "Decrease lane width by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.25x & Alt for 0.01x";
+			_tooltips[sizePlusRectangle] = "Increase lane width by 0.1\r\n\r\nUse Shift for 1x, Ctrl for 0.25x & Alt for 0.01x";
 			_tooltips[sizeRectangle] = "Reset lane width to " + Lane.DefaultLaneWidth();
 		}
 
@@ -840,9 +840,9 @@ namespace ThumbnailMaker.Controls
 
 			if (Options.Current.AdvancedElevation)
 			{
-				var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+				var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.25F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 
-				Lane.Elevation = (float)Math.Max(GetDefaultElevation(false), Math.Round((Lane.Elevation ?? GetDefaultElevation(true)) - change, 2));
+				Lane.Elevation = (float)Math.Max(GetDefaultElevation(false), Math.Round(((Lane.Elevation ?? GetDefaultElevation(true)) - change) / change) * change);
 			}
 			else
 			{
@@ -868,9 +868,9 @@ namespace ThumbnailMaker.Controls
 
 			if (Options.Current.AdvancedElevation)
 			{
-				var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+				var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.25F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 
-				Lane.Elevation = (float)Math.Max(GetDefaultElevation(false), Math.Round((Lane.Elevation ?? GetDefaultElevation(true)) + change, 2));
+				Lane.Elevation = (float)Math.Max(GetDefaultElevation(false), Math.Round(((Lane.Elevation ?? GetDefaultElevation(true)) + change) / change) * change);
 			}
 			else
 			{
@@ -981,9 +981,9 @@ namespace ThumbnailMaker.Controls
 			if (e.Button != MouseButtons.Left)
 				return;
 
-			var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+			var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.25F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 
-			Lane.CustomWidth = (float)Math.Max(0, Math.Round(Lane.LaneWidth - change, 2));
+			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round((Lane.LaneWidth - change) / change) * change);
 
 			RefreshRoad();
 		}
@@ -993,9 +993,9 @@ namespace ThumbnailMaker.Controls
 			if (e.Button != MouseButtons.Left)
 				return;
 
-			var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.5F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+			var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.25F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 
-			Lane.CustomWidth = (float)Math.Max(0, Math.Round(Lane.LaneWidth + change, 2));
+			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round((Lane.LaneWidth + change) / change) * change);
 
 			RefreshRoad();
 		}

@@ -31,33 +31,34 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PC_Options));
 			this.TLP = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+			this.slickSpacer1 = new SlickControls.SlickSpacer();
+			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.slickScroll1 = new SlickControls.SlickScroll();
+			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.GB_RoadType = new SlickControls.SlickGroupBox();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickGroupBox2 = new SlickControls.SlickGroupBox();
 			this.PB_Large = new SlickControls.SlickPictureBox();
 			this.slickGroupBox1 = new SlickControls.SlickGroupBox();
 			this.PB_Small = new SlickControls.SlickPictureBox();
-			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.DD_Font = new SlickControls.SlickDropdown();
 			this.TB_ExportFolder = new SlickControls.SlickPathTextBox();
-			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.CB_LHT = new SlickControls.SlickCheckbox();
 			this.CB_ColoredLanes = new SlickControls.SlickCheckbox();
 			this.CB_AdvancedElevartion = new SlickControls.SlickCheckbox();
+			this.CB_VanillaWdiths = new SlickControls.SlickCheckbox();
 			this.B_Theme = new SlickControls.SlickButton();
 			this.B_ReExport = new SlickControls.SlickButton();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.slickScroll1 = new SlickControls.SlickScroll();
-			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.tableLayoutPanel2.SuspendLayout();
+			this.flowLayoutPanel1.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.GB_RoadType.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.slickGroupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PB_Large)).BeginInit();
 			this.slickGroupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PB_Small)).BeginInit();
-			this.flowLayoutPanel1.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// base_Text
@@ -116,6 +117,58 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(908, 137);
 			this.tableLayoutPanel2.TabIndex = 13;
+			// 
+			// slickSpacer1
+			// 
+			this.tableLayoutPanel2.SetColumnSpan(this.slickSpacer1, 3);
+			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.slickSpacer1.Location = new System.Drawing.Point(3, 133);
+			this.slickSpacer1.Name = "slickSpacer1";
+			this.slickSpacer1.Size = new System.Drawing.Size(749, 1);
+			this.slickSpacer1.TabIndex = 0;
+			this.slickSpacer1.TabStop = false;
+			this.slickSpacer1.Text = "slickSpacer1";
+			// 
+			// flowLayoutPanel1
+			// 
+			this.flowLayoutPanel1.Controls.Add(this.CB_LHT);
+			this.flowLayoutPanel1.Controls.Add(this.CB_ColoredLanes);
+			this.flowLayoutPanel1.Controls.Add(this.CB_AdvancedElevartion);
+			this.flowLayoutPanel1.Controls.Add(this.CB_VanillaWdiths);
+			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+			this.tableLayoutPanel2.SetRowSpan(this.flowLayoutPanel1, 3);
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(302, 130);
+			this.flowLayoutPanel1.TabIndex = 16;
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.TLP);
+			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel1.Location = new System.Drawing.Point(5, 167);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(908, 458);
+			this.panel1.TabIndex = 14;
+			// 
+			// slickScroll1
+			// 
+			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
+			this.slickScroll1.LinkedControl = this.TLP;
+			this.slickScroll1.Location = new System.Drawing.Point(907, 167);
+			this.slickScroll1.Name = "slickScroll1";
+			this.slickScroll1.Size = new System.Drawing.Size(6, 458);
+			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
+			this.slickScroll1.TabIndex = 15;
+			this.slickScroll1.TabStop = false;
+			this.slickScroll1.Text = "slickScroll1";
+			// 
+			// openFileDialog
+			// 
+			this.openFileDialog.DefaultExt = "png";
+			this.openFileDialog.Filter = "PNG File|*.png";
+			this.openFileDialog.Title = "Select Image";
 			// 
 			// GB_RoadType
 			// 
@@ -195,17 +248,6 @@
 			this.PB_Small.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_Small_Paint);
 			this.PB_Small.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PB_Logo_MouseClick);
 			// 
-			// slickSpacer1
-			// 
-			this.tableLayoutPanel2.SetColumnSpan(this.slickSpacer1, 3);
-			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.slickSpacer1.Location = new System.Drawing.Point(3, 133);
-			this.slickSpacer1.Name = "slickSpacer1";
-			this.slickSpacer1.Size = new System.Drawing.Size(749, 1);
-			this.slickSpacer1.TabIndex = 0;
-			this.slickSpacer1.TabStop = false;
-			this.slickSpacer1.Text = "slickSpacer1";
-			// 
 			// DD_Font
 			// 
 			this.DD_Font.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -271,19 +313,6 @@
 			this.TB_ExportFolder.ValidationRegex = "";
 			this.TB_ExportFolder.TextChanged += new System.EventHandler(this.TB_ExportFolder_TextChanged);
 			// 
-			// flowLayoutPanel1
-			// 
-			this.flowLayoutPanel1.Controls.Add(this.CB_LHT);
-			this.flowLayoutPanel1.Controls.Add(this.CB_ColoredLanes);
-			this.flowLayoutPanel1.Controls.Add(this.CB_AdvancedElevartion);
-			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-			this.tableLayoutPanel2.SetRowSpan(this.flowLayoutPanel1, 3);
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(302, 130);
-			this.flowLayoutPanel1.TabIndex = 16;
-			// 
 			// CB_LHT
 			// 
 			this.CB_LHT.ActiveColor = null;
@@ -297,8 +326,8 @@
 			this.CB_LHT.HideText = false;
 			this.CB_LHT.IconSize = 16;
 			this.CB_LHT.Image = ((System.Drawing.Image)(resources.GetObject("CB_LHT.Image")));
-			this.CB_LHT.Location = new System.Drawing.Point(15, 7);
-			this.CB_LHT.Margin = new System.Windows.Forms.Padding(15, 7, 3, 7);
+			this.CB_LHT.Location = new System.Drawing.Point(15, 5);
+			this.CB_LHT.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
 			this.CB_LHT.Name = "CB_LHT";
 			this.CB_LHT.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
 			this.CB_LHT.Size = new System.Drawing.Size(127, 26);
@@ -320,8 +349,8 @@
 			this.CB_ColoredLanes.HideText = false;
 			this.CB_ColoredLanes.IconSize = 16;
 			this.CB_ColoredLanes.Image = ((System.Drawing.Image)(resources.GetObject("CB_ColoredLanes.Image")));
-			this.CB_ColoredLanes.Location = new System.Drawing.Point(15, 47);
-			this.CB_ColoredLanes.Margin = new System.Windows.Forms.Padding(15, 7, 3, 7);
+			this.CB_ColoredLanes.Location = new System.Drawing.Point(15, 36);
+			this.CB_ColoredLanes.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
 			this.CB_ColoredLanes.Name = "CB_ColoredLanes";
 			this.CB_ColoredLanes.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
 			this.CB_ColoredLanes.Size = new System.Drawing.Size(114, 26);
@@ -343,8 +372,8 @@
 			this.CB_AdvancedElevartion.HideText = false;
 			this.CB_AdvancedElevartion.IconSize = 16;
 			this.CB_AdvancedElevartion.Image = ((System.Drawing.Image)(resources.GetObject("CB_AdvancedElevartion.Image")));
-			this.CB_AdvancedElevartion.Location = new System.Drawing.Point(15, 87);
-			this.CB_AdvancedElevartion.Margin = new System.Windows.Forms.Padding(15, 7, 3, 7);
+			this.CB_AdvancedElevartion.Location = new System.Drawing.Point(15, 67);
+			this.CB_AdvancedElevartion.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
 			this.CB_AdvancedElevartion.Name = "CB_AdvancedElevartion";
 			this.CB_AdvancedElevartion.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
 			this.CB_AdvancedElevartion.Size = new System.Drawing.Size(167, 26);
@@ -352,6 +381,29 @@
 			this.CB_AdvancedElevartion.Text = "Advanced Lane Elevation";
 			this.CB_AdvancedElevartion.UncheckedText = null;
 			this.CB_AdvancedElevartion.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
+			// 
+			// CB_VanillaWdiths
+			// 
+			this.CB_VanillaWdiths.ActiveColor = null;
+			this.CB_VanillaWdiths.AutoSize = true;
+			this.CB_VanillaWdiths.Center = false;
+			this.CB_VanillaWdiths.Checked = false;
+			this.CB_VanillaWdiths.CheckedText = null;
+			this.CB_VanillaWdiths.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.CB_VanillaWdiths.DefaultValue = false;
+			this.flowLayoutPanel1.SetFlowBreak(this.CB_VanillaWdiths, true);
+			this.CB_VanillaWdiths.HideText = false;
+			this.CB_VanillaWdiths.IconSize = 16;
+			this.CB_VanillaWdiths.Image = ((System.Drawing.Image)(resources.GetObject("CB_VanillaWdiths.Image")));
+			this.CB_VanillaWdiths.Location = new System.Drawing.Point(15, 98);
+			this.CB_VanillaWdiths.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
+			this.CB_VanillaWdiths.Name = "CB_VanillaWdiths";
+			this.CB_VanillaWdiths.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
+			this.CB_VanillaWdiths.Size = new System.Drawing.Size(216, 26);
+			this.CB_VanillaWdiths.TabIndex = 16;
+			this.CB_VanillaWdiths.Text = "Snap road width to vanilla settings";
+			this.CB_VanillaWdiths.UncheckedText = null;
+			this.CB_VanillaWdiths.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
 			// 
 			// B_Theme
 			// 
@@ -387,33 +439,6 @@
 			this.B_ReExport.Text = "Re-Export Roads";
 			this.B_ReExport.Click += new System.EventHandler(this.B_ReExport_Click);
 			// 
-			// panel1
-			// 
-			this.panel1.Controls.Add(this.TLP);
-			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(5, 167);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(908, 458);
-			this.panel1.TabIndex = 14;
-			// 
-			// slickScroll1
-			// 
-			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
-			this.slickScroll1.LinkedControl = this.TLP;
-			this.slickScroll1.Location = new System.Drawing.Point(898, 167);
-			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(15, 458);
-			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
-			this.slickScroll1.TabIndex = 15;
-			this.slickScroll1.TabStop = false;
-			this.slickScroll1.Text = "slickScroll1";
-			// 
-			// openFileDialog
-			// 
-			this.openFileDialog.DefaultExt = "png";
-			this.openFileDialog.Filter = "PNG File|*.png";
-			this.openFileDialog.Title = "Select Image";
-			// 
 			// PC_Options
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -429,16 +454,16 @@
 			this.Controls.SetChildIndex(this.panel1, 0);
 			this.Controls.SetChildIndex(this.slickScroll1, 0);
 			this.tableLayoutPanel2.ResumeLayout(false);
+			this.flowLayoutPanel1.ResumeLayout(false);
+			this.flowLayoutPanel1.PerformLayout();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.GB_RoadType.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.slickGroupBox2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PB_Large)).EndInit();
 			this.slickGroupBox1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PB_Small)).EndInit();
-			this.flowLayoutPanel1.ResumeLayout(false);
-			this.flowLayoutPanel1.PerformLayout();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -465,5 +490,6 @@
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
 		private SlickControls.SlickPictureBox PB_Small;
 		private SlickControls.SlickButton B_ReExport;
+		private SlickControls.SlickCheckbox CB_VanillaWdiths;
 	}
 }

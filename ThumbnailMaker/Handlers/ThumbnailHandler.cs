@@ -1,9 +1,11 @@
 ﻿using Extensions;
 
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.Linq;
 using System.Reflection;
@@ -154,7 +156,7 @@ namespace ThumbnailMaker.Handlers
 
 			if (Small)
 			{
-				Graphics.DrawImage(Properties.Resources.L_Clouds_1, new Rectangle(Width/2-50, 0, 16, 16));
+				Graphics.DrawImage(Properties.Resources.L_Clouds_1, new Rectangle(Width / 2 - 50, 0, 16, 16));
 				Graphics.DrawImage(Properties.Resources.L_Clouds_2, new Rectangle(Width / 2 + 25, 7, 16, 16));
 				Graphics.DrawImage(Properties.Resources.L_Clouds_3, new Rectangle(Width / 2 - 30, 5, 16, 16));
 			}
@@ -259,7 +261,7 @@ namespace ThumbnailMaker.Handlers
 				}
 
 				decoY = arrowY + (Small ? -4 : 8);
-				arrowY += (int)((Small ? 2 : 7) * (1 - icons.Count) + ( scale) * (Small?6:20));
+				arrowY += (int)((Small ? 2 : 7) * (1 - icons.Count) + (scale) * (Small ? 6 : 20));
 
 				if (DisplaysArrows(lane))
 				{
@@ -336,7 +338,7 @@ namespace ThumbnailMaker.Handlers
 				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(130, 130, 130)), lane.Direction == LaneDirection.Backwards ? new Rectangle(bottomArea.X + bottomArea.Width - (Small ? 2 : 7), bottomArea.Y, Small ? 2 : 7, bottomArea.Height) : new Rectangle(bottomArea.X, bottomArea.Y, Small ? 2 : 7, bottomArea.Height));
 			}
 
-			if (Options.Current.ShowLaneColorsOnThumbnail && lane.Type != LaneType.Curb && (!lane.Sidewalk || lane.Type != LaneType.Pedestrian))
+			if (Options.Current.ShowLaneColorsOnThumbnail && lane.Type != LaneType.Curb && (!lane.Sidewalk || lane.Type != LaneType.Pedestrian) && rect.Width > 0)
 			{
 				Graphics.FillRectangle(SlickControls.SlickControl.Gradient(rect, Color.FromArgb(175, lane.Color), 2), rect);
 			}
@@ -364,7 +366,7 @@ namespace ThumbnailMaker.Handlers
 				Graphics.SetClip(barrierRect.Pad(PixelFactor * 25 / 100, 0, PixelFactor * 25 / 100, 0));
 
 				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(201, 204, 212)), barrierRect);
-				
+
 				using (var pen = new Pen(Color.FromArgb(213, 157, 37), Small ? 2.5F : 6))
 				{
 					var w = 4 + PixelFactor * 8 / 10;
@@ -432,7 +434,7 @@ namespace ThumbnailMaker.Handlers
 				}
 
 				if (lane.Type == LaneType.Car && rightLane.Type == LaneType.Car && rightLane.Direction == lane.Direction)
-				{	
+				{
 					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 200, 200, 200), Small ? 1F : 2F) { DashPattern = Small ? new[] { 5F, 4F } : new[] { 15F, 6F } }, rect.X + rect.Width, bottomArea.Y, rect.X + rect.Width, bottomArea.Y + bottomArea.Height);
 				}
 			}
@@ -526,7 +528,7 @@ namespace ThumbnailMaker.Handlers
 			return 1F;
 		}
 
-		private int LaneTypeImportance(KeyValuePair<LaneType, Image> x)
+		private int LaneTypeImportance(KeyValuePair<LaneType, Bitmap> x)
 		{
 			switch (x.Key)
 			{
@@ -686,8 +688,8 @@ namespace ThumbnailMaker.Handlers
 
 		private void DrawCustomText(Rectangle containerRect)
 		{
-			var font = string.IsNullOrWhiteSpace(Options.Current.TextFont) ? new Font(FontFamily, ToolTip ? 12.75F: Small ? 9F : 38F, FontStyle.Bold) : new Font(Options.Current.TextFont, Small ? 9F : 38F, FontStyle.Bold);
-		
+			var font = string.IsNullOrWhiteSpace(Options.Current.TextFont) ? new Font(FontFamily, ToolTip ? 12.75F : Small ? 9F : 38F, FontStyle.Bold) : new Font(Options.Current.TextFont, Small ? 9F : 38F, FontStyle.Bold);
+
 			if (!Small)
 			{
 				Graphics.DrawString(CustomText, font, Brushes.White, containerRect.Pad(0, Small ? 3 : 10, Small ? -1 : -3, Small ? -1 : -3), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near });
@@ -698,19 +700,11 @@ namespace ThumbnailMaker.Handlers
 
 		private void DrawRoadIcon(Rectangle containerRect)
 		{
-			using (var icon = ResourceManager.GetRoadType(RoadType, Small))
+			using (var icon = ResourceManager.GetRoadType(RoadType, LHT, Small))
 			{
 				if (icon != null)
 				{
 					Graphics.DrawImage(icon, containerRect.Pad(0, Small ? 4 : 20, 0, 0).CenterR(icon.Size));
-
-					if (LHT)
-					{
-						using (var lht = Small ? Properties.Resources.S_LHT : Properties.Resources.L_LHT)
-						{
-							Graphics.DrawImage(lht, new Rectangle(containerRect.Pad(0, Small ? 4 : 20, 0, 0).CenterR(icon.Size).Location, Size.Empty).CenterR(lht.Size));
-						}
-					}
 				}
 			}
 		}

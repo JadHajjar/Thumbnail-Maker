@@ -189,6 +189,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\S_RT_0_LHT.png" />
+    <None Include="Resources\L_RT_3_LHT.png" />
+    <None Include="Resources\L_RT_2_LHT.png" />
+    <None Include="Resources\L_RT_1_LHT.png" />
+    <None Include="Resources\L_RT_0_LHT.png" />
+    <None Include="Resources\S_RT_3_LHT.png" />
+    <None Include="Resources\S_RT_2_LHT.png" />
+    <None Include="Resources\S_RT_1_LHT.png" />
     <None Include="Resources\Icon_Curb.png" />
     <None Include="Resources\Icon_Flip.png" />
     <None Include="Resources\S_LHT.png" />

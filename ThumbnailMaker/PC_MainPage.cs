@@ -26,7 +26,7 @@ namespace ThumbnailMaker
 		{
 			InitializeComponent();
 
-			RoadTypeControl = new OptionSelectionControl<RoadType>(t => ResourceManager.GetRoadType(t, false)) { Dock = DockStyle.Top };
+			RoadTypeControl = new OptionSelectionControl<RoadType>(t => ResourceManager.GetRoadType(t, false, false)) { Dock = DockStyle.Top };
 			GB_RoadType.Controls.Add(RoadTypeControl);
 			RegionTypeControl = new OptionSelectionControl<RegionType>((g, r, t) => ThumbnailHandler.DrawSpeedSignSmall(g, t, 20, r)) { Dock = DockStyle.Top };
 			GB_Region.Controls.Add(RegionTypeControl);
@@ -186,7 +186,7 @@ namespace ThumbnailMaker
 		{
 			new ThumbnailHandler(graphics, small, tooltip)
 			{
-				RoadWidth = Math.Max(TB_Size.Text.SmartParseF(), Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text.SmartParseF())),
+				RoadWidth = Utilities.VanillaWidth(Options.Current.VanillaWidths, Math.Max(TB_Size.Text.SmartParseF(), Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text.SmartParseF()))),
 				CustomText = TB_CustomText.Text,
 				BufferSize = Math.Max(0, TB_BufferSize.Text.SmartParseF()),
 				RegionType = GetRegion(),
@@ -241,6 +241,8 @@ namespace ThumbnailMaker
 		private void B_Clear_Click(object sender, EventArgs e)
 		{
 			TB_RoadName.Text = string.Empty;
+			TB_Size.Text = string.Empty;
+			TB_SpeedLimit.Text = string.Empty;
 			P_Lanes.Controls.Clear(true);
 
 			SetupType(RoadTypeControl.SelectedValue);
@@ -377,7 +379,23 @@ namespace ThumbnailMaker
 
 		private void B_CopyDesc_Click(object sender, EventArgs e)
 		{
-			var desc = Utilities.GetRoadDescription(GetLanes(), GetRoadType(), TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RegionTypeControl.SelectedValue == RegionType.USA);
+			var roadInfo = new RoadInfo
+			{
+				CustomName = TB_RoadName.Text,
+				CustomText = TB_CustomText.Text,
+				BufferWidth = TB_BufferSize.Text.SmartParseF(),
+				RoadWidth = TB_Size.Text.SmartParseF(),
+				RegionType = GetRegion(),
+				RoadType = GetRoadType(),
+				SideTexture = SideTextureControl.SelectedValue,
+				BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
+				SpeedLimit = (int)(TB_SpeedLimit.Text.SmartParse() * (RegionTypeControl.SelectedValue == RegionType.USA ? 1.609F : 1F)),
+				Lanes = GetLanes().Select(x => x.AsLaneInfo()).ToList(),
+				LHT = Options.Current.LHT,
+				VanillaWidth = Options.Current.VanillaWidths,
+			};
+
+			var desc = Utilities.GetRoadDescription(roadInfo);
 
 			Clipboard.SetText(desc);
 		}
@@ -417,7 +435,6 @@ namespace ThumbnailMaker
 				var roadInfo = new RoadInfo
 				{
 					CustomName = TB_RoadName.Text,
-					Description = Utilities.GetRoadDescription(lanes, GetRoadType(), TB_Size.Text, TB_BufferSize.Text.SmartParseF(), TB_SpeedLimit.Text.SmartParse(), RegionTypeControl.SelectedValue == RegionType.USA),
 					CustomText = TB_CustomText.Text,
 					BufferWidth = TB_BufferSize.Text.SmartParseF(),
 					RoadWidth = TB_Size.Text.SmartParseF(),
@@ -427,9 +444,10 @@ namespace ThumbnailMaker
 					BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
 					SpeedLimit = (int)(TB_SpeedLimit.Text.SmartParse() * (RegionTypeControl.SelectedValue == RegionType.USA ? 1.609F : 1F)),
 					Lanes = lanes.Select(x => x.AsLaneInfo()).ToList(),
-					LHT = Options.Current.LHT
+					LHT = Options.Current.LHT,
+					VanillaWidth = Options.Current.VanillaWidths,
 				};
-
+			
 				var file = Utilities.ExportRoad(roadInfo);
 
 				RCC.RefreshConfigs(file);
@@ -455,12 +473,11 @@ namespace ThumbnailMaker
 				TB_CustomText.Text = r.CustomText;
 				TB_RoadName.Text = r.Name;
 
-				foreach (var lane in r.LHT && Options.Current.LHT ? (r.Lanes as IEnumerable<LaneInfo>).Reverse() : r.Lanes)
+				foreach (var lane in Options.Current.LHT ? (r.Lanes as IEnumerable<LaneInfo>).Reverse() : r.Lanes)
 				{
 					AddLaneControl(new ThumbnailLaneInfo(lane)
 					{
-						Direction = (r.LHT && Options.Current.LHT && lane.Type == LaneType.Curb)
-							? lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward
+						Direction = (Options.Current.LHT && lane.Type == LaneType.Curb) ? lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward
 							: lane.Direction
 					});
 				}

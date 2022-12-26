@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using Extensions;
+
+using System.Linq;
 using System.Xml.Serialization;
 
 using ThumbnailMaker.Handlers;
@@ -35,6 +37,29 @@ namespace ThumbnailMaker.Domain
 			}
 
 			return Type.GetValues().Max(x => LaneSizeOptions.LaneSizes[x]);
+		}
+
+		public override string ToString() => ToString(0);
+
+		public string ToString(int lanes)
+		{
+			var name = string.Empty;
+			var types = Type.GetValues().Select(x => x.ToString());
+
+			if (Type > LaneType.Pedestrian && Type != LaneType.Parking)
+				name += Direction.Switch(LaneDirection.Forward, "1WF ", LaneDirection.Backwards, "1WB ", "2W ");
+
+			if (lanes > 1)
+				name += $"{lanes}L ";
+
+			name += types.Count() > 1 ? $"Shared {types.ListStrings(" & ")}" : types.First();
+
+			if (Decorations == LaneDecoration.None)
+				return name;
+
+			name += " with " + Decorations.GetValues().Select(x => x.ToString().FormatWords()).ListStrings(", ");
+
+			return name;
 		}
 	}
 }
