@@ -61,7 +61,7 @@ namespace ThumbnailMaker.Handlers
 				{
 					new ThumbnailHandler(g, small, toolTip)
 					{
-						RoadWidth = VanillaWidth(road.VanillaWidth, Math.Max(road.RoadWidth, CalculateRoadSize(road.Lanes, road.BufferWidth))),
+						RoadWidth = Math.Max(road.RoadWidth, VanillaWidth(road.VanillaWidth, CalculateRoadSize(road.Lanes, road.BufferWidth))),
 						CustomText = road.CustomText,
 						BufferSize = Math.Max(0, road.BufferWidth),
 						RegionType = road.RegionType,
@@ -82,7 +82,7 @@ namespace ThumbnailMaker.Handlers
 			if (!vanillaWidths)
 				return value;
 
-			return (float)(16 * Math.Ceiling(value / 16D));
+			return (float)(16 * Math.Ceiling((value - 1F) / 16D));
 		}
 
 		public static string GetRoadName<T>(RoadType roadType, IEnumerable<T> lanes) where T : LaneInfo

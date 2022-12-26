@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace ThumbnailMaker.Domain
@@ -10,6 +11,7 @@ namespace ThumbnailMaker.Domain
 		public string CustomName { get; set; }
 		public string Description { get; set; }
 		public string CustomText { get; set; }
+		public DateTime DateCreated { get; set; }
 		public RoadType RoadType { get; set; }
 		public RegionType RegionType { get; set; }
 		public TextureType SideTexture { get; set; }

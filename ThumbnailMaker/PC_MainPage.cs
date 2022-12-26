@@ -204,19 +204,31 @@ namespace ThumbnailMaker
 			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
 
 			if (leftSidewalk == null)
-			{
 				AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Backwards }).SendToBack();
-
-				if (road != RoadType.Highway)
-					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian }).SendToBack();
-			}
-
 			if (rightSidewalk == null)
-			{
 				AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Forward });
+			
+			if (!refreshPaused && P_Lanes.Controls.Count > 1)
+			{
+				var first = P_Lanes.Controls[0] as RoadLane;
+				var last = P_Lanes.Controls[P_Lanes.Controls.Count - 1] as RoadLane;
 
-				if (road != RoadType.Highway)
-					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian });
+				if (road == RoadType.Highway)
+				{
+					if (first.Lane.Type == LaneType.Pedestrian && first.Lane.Decorations == LaneDecoration.None)
+						first.Dispose();
+
+					if (last.Lane.Type == LaneType.Pedestrian && last.Lane.Decorations == LaneDecoration.None)
+						last.Dispose();
+				}
+				else
+				{
+					if (first.Lane.Type == LaneType.Curb)
+						AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian }).SendToBack();
+
+					if (last.Lane.Type == LaneType.Curb)
+						AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian });
+				}
 			}
 
 			if (road == RoadType.Highway)
@@ -446,6 +458,7 @@ namespace ThumbnailMaker
 					Lanes = lanes.Select(x => x.AsLaneInfo()).ToList(),
 					LHT = Options.Current.LHT,
 					VanillaWidth = Options.Current.VanillaWidths,
+					DateCreated = DateTime.Now,
 				};
 			
 				var file = Utilities.ExportRoad(roadInfo);

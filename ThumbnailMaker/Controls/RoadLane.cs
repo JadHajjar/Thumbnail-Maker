@@ -840,7 +840,7 @@ namespace ThumbnailMaker.Controls
 
 			if (Options.Current.AdvancedElevation)
 			{
-				var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.25F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+				var change = GetModifierValue();
 
 				Lane.Elevation = (float)Math.Max(GetDefaultElevation(false), Math.Round(((Lane.Elevation ?? GetDefaultElevation(true)) - change) / change) * change);
 			}
@@ -868,7 +868,7 @@ namespace ThumbnailMaker.Controls
 
 			if (Options.Current.AdvancedElevation)
 			{
-				var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.25F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+				var change = GetModifierValue();
 
 				Lane.Elevation = (float)Math.Max(GetDefaultElevation(false), Math.Round(((Lane.Elevation ?? GetDefaultElevation(true)) + change) / change) * change);
 			}
@@ -887,6 +887,11 @@ namespace ThumbnailMaker.Controls
 			}
 
 			RefreshRoad();
+		}
+
+		private static float GetModifierValue()
+		{
+			return ModifierKeys.HasFlag(Keys.Shift | Keys.Control) ? 5F : ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.25F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
 		}
 
 		private void ElevationResetClick(object sender, MouseEventArgs e)
@@ -981,7 +986,7 @@ namespace ThumbnailMaker.Controls
 			if (e.Button != MouseButtons.Left)
 				return;
 
-			var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.25F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+			var change = GetModifierValue();
 
 			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round((Lane.LaneWidth - change) / change) * change);
 
@@ -993,7 +998,7 @@ namespace ThumbnailMaker.Controls
 			if (e.Button != MouseButtons.Left)
 				return;
 
-			var change = ModifierKeys.HasFlag(Keys.Shift) ? 1F : ModifierKeys.HasFlag(Keys.Control) ? 0.25F : ModifierKeys.HasFlag(Keys.Alt) ? 0.01F : 0.1F;
+			var change = GetModifierValue();
 
 			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round((Lane.LaneWidth + change) / change) * change);
 

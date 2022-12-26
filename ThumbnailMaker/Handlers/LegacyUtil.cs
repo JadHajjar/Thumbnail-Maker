@@ -51,7 +51,13 @@ namespace ThumbnailMaker.Handlers
 					xml = new XmlSerializer(typeof(RoadInfo_V0));
 
 					using (var stream = File.OpenRead(fileName))
-						return (RoadInfo)(RoadInfo_V0)xml.Deserialize(stream);
+					{
+						var road = (RoadInfo)(RoadInfo_V0)xml.Deserialize(stream);
+
+						road.DateCreated = File.GetLastWriteTime(fileName);
+
+						return road;
+					}
 
 				default:
 					throw new Exception("Unsupported Road Version");
