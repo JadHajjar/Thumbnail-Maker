@@ -21,6 +21,7 @@ namespace ThumbnailMaker.Controls
 {
 	public partial class RoadConfigContainer : UserControl
 	{
+		public static RoadConfigContainer _instance;
 		private readonly Timer _systemWatcher;
 
 		public event System.EventHandler<RoadInfo> LoadConfiguration;
@@ -31,6 +32,8 @@ namespace ThumbnailMaker.Controls
 
 			if (Options.Current == null)
 				return;
+
+			_instance = this;
 
 			_systemWatcher = new Timer(1000);
 			_systemWatcher.AutoReset = false;
@@ -58,48 +61,50 @@ namespace ThumbnailMaker.Controls
 					Loader.Hide();
 
 					P_Configs.SuspendDrawing();
-					if (!string.IsNullOrEmpty(fileToRefresh) && controls.ContainsKey(fileToRefresh))
-					{
-						controls[fileToRefresh].Dispose();
-						controls.Remove(fileToRefresh);
-					}
 
-					for (var i = 0; i < files.Length; i++)
+					try
 					{
-						if (!controls.ContainsKey(files[i]) && contents[files[i]] != null)
-							createControl(files[i]);
-						else if (controls.ContainsKey(files[i]) && controls[files[i]].TimeSaved != new FileInfo(files[i]).LastWriteTime)
+						if (!string.IsNullOrEmpty(fileToRefresh) && controls.ContainsKey(fileToRefresh))
 						{
-							controls[files[i]].Dispose();
-							createControl(files[i]);
-						}
-					}
-
-					foreach (var item in controls)
-					{
-						if (!files.Any(x => x == item.Key))
-							item.Value.Dispose();
-					}
-
-					void createControl(string file)
-					{
-						var ctrl = new RoadConfigControl(file, contents[file], out var valid);
-
-						if (!valid)
-						{
-							return;
+							controls[fileToRefresh].Dispose();
+							controls.Remove(fileToRefresh);
 						}
 
-						ctrl.LoadConfiguration += Ctrl_LoadConfiguration;
+						for (var i = 0; i < files.Length; i++)
+						{
+							if (!controls.ContainsKey(files[i]) && contents[files[i]] != null)
+								createControl(files[i]);
+						}
 
-						P_Configs.Controls.Add(ctrl);
+						foreach (var item in controls)
+						{
+							if (!files.Any(x => x == item.Key))
+								item.Value.Dispose();
+						}
 
-						ctrl.BringToFront();
+						void createControl(string file)
+						{
+							var ctrl = new RoadConfigControl(file, contents[file], out var valid);
+
+							if (!valid)
+							{
+								return;
+							}
+
+							ctrl.LoadConfiguration += Ctrl_LoadConfiguration;
+
+							P_Configs.Controls.Add(ctrl);
+
+							ctrl.BringToFront();
+						}
+
+						P_Configs.OrderBy(x => (x as RoadConfigControl).Road.DateCreated);
 					}
-
-					P_Configs.OrderBy(x => (x as RoadConfigControl).TimeSaved);
-					P_Configs.ResumeDrawing();
-					P_Configs.Parent.PerformLayout();
+					finally
+					{
+						P_Configs.ResumeDrawing();
+						P_Configs.Parent.PerformLayout();
+					}
 				});
 			}
 			catch { }

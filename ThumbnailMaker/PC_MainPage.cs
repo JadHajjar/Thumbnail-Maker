@@ -200,6 +200,9 @@ namespace ThumbnailMaker
 
 		private void SetupType(RoadType road)
 		{
+			if (refreshPaused)
+				return;
+
 			var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
 			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
 
@@ -208,27 +211,24 @@ namespace ThumbnailMaker
 			if (rightSidewalk == null)
 				AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Forward });
 			
-			if (!refreshPaused && P_Lanes.Controls.Count > 1)
+			var first = P_Lanes.Controls[0] as RoadLane;
+			var last = P_Lanes.Controls[P_Lanes.Controls.Count - 1] as RoadLane;
+
+			if (road == RoadType.Highway)
 			{
-				var first = P_Lanes.Controls[0] as RoadLane;
-				var last = P_Lanes.Controls[P_Lanes.Controls.Count - 1] as RoadLane;
+				if (first.Lane.Type == LaneType.Pedestrian && first.Lane.Decorations == LaneDecoration.None)
+					first.Dispose();
 
-				if (road == RoadType.Highway)
-				{
-					if (first.Lane.Type == LaneType.Pedestrian && first.Lane.Decorations == LaneDecoration.None)
-						first.Dispose();
+				if (last.Lane.Type == LaneType.Pedestrian && last.Lane.Decorations == LaneDecoration.None)
+					last.Dispose();
+			}
+			else
+			{
+				if (first.Lane.Type == LaneType.Curb)
+					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian }).SendToBack();
 
-					if (last.Lane.Type == LaneType.Pedestrian && last.Lane.Decorations == LaneDecoration.None)
-						last.Dispose();
-				}
-				else
-				{
-					if (first.Lane.Type == LaneType.Curb)
-						AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian }).SendToBack();
-
-					if (last.Lane.Type == LaneType.Curb)
-						AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian });
-				}
+				if (last.Lane.Type == LaneType.Curb)
+					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian });
 			}
 
 			if (road == RoadType.Highway)

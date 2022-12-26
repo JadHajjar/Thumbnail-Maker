@@ -150,8 +150,13 @@ namespace ThumbnailMaker
 
 					B_ReExport.Loading = false;
 
-					MessagePrompt.Show($"Thumbnail generation complete, {contents.Count(x => x.Value != null)} roads rebuilt." +
-						(contents.Any(x => x.Value == null) ? "\r\nSome roads failed to be rebuilt." : ""), PromptButtons.OK, PromptIcons.Info);
+					this.TryInvoke(() =>
+					{
+						MessagePrompt.Show($"Thumbnail generation complete, {contents.Count(x => x.Value != null)} roads rebuilt." +
+							(contents.Any(x => x.Value == null) ? "\r\nSome roads failed to be rebuilt." : ""), PromptButtons.OK, PromptIcons.Info);
+
+						RoadConfigContainer._instance?.P_Configs.Controls.Clear(true);
+					});
 				}
 				catch { }
 			}).RunInBackground();

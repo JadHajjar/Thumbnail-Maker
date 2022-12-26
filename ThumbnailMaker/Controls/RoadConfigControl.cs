@@ -28,7 +28,6 @@ namespace ThumbnailMaker.Controls
 		public Bitmap Image { get; }
 		public RoadInfo Road { get; }
 		public string FileName { get; }
-		public DateTime TimeSaved { get; }
 		public string RoadSpeed { get; }
 		public string RoadSize { get; }
 
@@ -39,7 +38,6 @@ namespace ThumbnailMaker.Controls
 			try
 			{
 				FileName = fileName;
-				TimeSaved = new FileInfo(fileName).LastWriteTime;
 				Road = road;
 
 				using (var ms = new MemoryStream(Road.SmallThumbnail))

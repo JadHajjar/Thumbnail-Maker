@@ -144,7 +144,7 @@
 		private SlickControls.SlickTextBox TB_Size;
 		private System.Windows.Forms.Panel panel2;
 		private SlickControls.SlickScroll slickScroll2;
-		private System.Windows.Forms.Panel P_Configs;
+		public System.Windows.Forms.Panel P_Configs;
 		private SlickControls.SlickPictureBox Loader;
 	}
 }
