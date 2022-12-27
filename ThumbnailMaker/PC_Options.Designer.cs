@@ -115,7 +115,7 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(908, 137);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(908, 151);
 			this.tableLayoutPanel2.TabIndex = 13;
 			// 
 			// GB_RoadType
@@ -128,7 +128,7 @@
 			this.GB_RoadType.MinimumSize = new System.Drawing.Size(60, 20);
 			this.GB_RoadType.Name = "GB_RoadType";
 			this.tableLayoutPanel2.SetRowSpan(this.GB_RoadType, 3);
-			this.GB_RoadType.Size = new System.Drawing.Size(289, 124);
+			this.GB_RoadType.Size = new System.Drawing.Size(289, 138);
 			this.GB_RoadType.TabIndex = 17;
 			this.GB_RoadType.TabStop = false;
 			this.GB_RoadType.Text = "Custom Logo,   right-click to clear the logo";
@@ -145,7 +145,7 @@
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 1;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(283, 103);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(283, 117);
 			this.tableLayoutPanel1.TabIndex = 0;
 			// 
 			// slickGroupBox2
@@ -154,7 +154,7 @@
 			this.slickGroupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.slickGroupBox2.Location = new System.Drawing.Point(144, 3);
 			this.slickGroupBox2.Name = "slickGroupBox2";
-			this.slickGroupBox2.Size = new System.Drawing.Size(136, 97);
+			this.slickGroupBox2.Size = new System.Drawing.Size(136, 111);
 			this.slickGroupBox2.TabIndex = 1;
 			this.slickGroupBox2.TabStop = false;
 			this.slickGroupBox2.Text = "Large Logo (max width: 500px)";
@@ -165,7 +165,7 @@
 			this.PB_Large.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.PB_Large.Location = new System.Drawing.Point(3, 18);
 			this.PB_Large.Name = "PB_Large";
-			this.PB_Large.Size = new System.Drawing.Size(130, 76);
+			this.PB_Large.Size = new System.Drawing.Size(130, 90);
 			this.PB_Large.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.PB_Large.TabIndex = 0;
 			this.PB_Large.TabStop = false;
@@ -178,7 +178,7 @@
 			this.slickGroupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.slickGroupBox1.Location = new System.Drawing.Point(3, 3);
 			this.slickGroupBox1.Name = "slickGroupBox1";
-			this.slickGroupBox1.Size = new System.Drawing.Size(135, 97);
+			this.slickGroupBox1.Size = new System.Drawing.Size(135, 111);
 			this.slickGroupBox1.TabIndex = 0;
 			this.slickGroupBox1.TabStop = false;
 			this.slickGroupBox1.Text = "Small Logo (max width: 100px)";
@@ -189,7 +189,7 @@
 			this.PB_Small.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.PB_Small.Location = new System.Drawing.Point(3, 18);
 			this.PB_Small.Name = "PB_Small";
-			this.PB_Small.Size = new System.Drawing.Size(129, 76);
+			this.PB_Small.Size = new System.Drawing.Size(129, 90);
 			this.PB_Small.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.PB_Small.TabIndex = 0;
 			this.PB_Small.TabStop = false;
@@ -200,7 +200,7 @@
 			// 
 			this.tableLayoutPanel2.SetColumnSpan(this.slickSpacer1, 3);
 			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.slickSpacer1.Location = new System.Drawing.Point(3, 133);
+			this.slickSpacer1.Location = new System.Drawing.Point(3, 147);
 			this.slickSpacer1.Name = "slickSpacer1";
 			this.slickSpacer1.Size = new System.Drawing.Size(749, 1);
 			this.slickSpacer1.TabIndex = 0;
@@ -217,8 +217,8 @@
 			this.DD_Font.Image = ((System.Drawing.Image)(resources.GetObject("DD_Font.Image")));
 			this.DD_Font.Items = null;
 			this.DD_Font.LabelText = "Custom Thumbnail Font";
-			this.DD_Font.Location = new System.Drawing.Point(624, 36);
-			this.DD_Font.Margin = new System.Windows.Forms.Padding(20, 3, 20, 0);
+			this.DD_Font.Location = new System.Drawing.Point(624, 50);
+			this.DD_Font.Margin = new System.Windows.Forms.Padding(20, 10, 20, 0);
 			this.DD_Font.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.DD_Font.MaxLength = 32767;
 			this.DD_Font.MinimumSize = new System.Drawing.Size(50, 0);
@@ -250,7 +250,7 @@
 			this.TB_ExportFolder.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_ExportFolder.Image = ((System.Drawing.Image)(resources.GetObject("TB_ExportFolder.Image")));
 			this.TB_ExportFolder.LabelText = "Custom Export Folder";
-			this.TB_ExportFolder.Location = new System.Drawing.Point(624, 83);
+			this.TB_ExportFolder.Location = new System.Drawing.Point(624, 97);
 			this.TB_ExportFolder.Margin = new System.Windows.Forms.Padding(20, 15, 20, 15);
 			this.TB_ExportFolder.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.TB_ExportFolder.MaxLength = 32767;
@@ -283,7 +283,7 @@
 			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			this.tableLayoutPanel2.SetRowSpan(this.flowLayoutPanel1, 3);
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(302, 130);
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(302, 144);
 			this.flowLayoutPanel1.TabIndex = 16;
 			// 
 			// CB_LHT
@@ -386,7 +386,7 @@
 			this.B_Theme.IconSize = 16;
 			this.B_Theme.Image = ((System.Drawing.Image)(resources.GetObject("B_Theme.Image")));
 			this.B_Theme.Location = new System.Drawing.Point(803, 3);
-			this.B_Theme.Margin = new System.Windows.Forms.Padding(3, 3, 20, 3);
+			this.B_Theme.Margin = new System.Windows.Forms.Padding(3, 3, 20, 10);
 			this.B_Theme.Name = "B_Theme";
 			this.B_Theme.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
 			this.B_Theme.Size = new System.Drawing.Size(85, 27);
@@ -403,7 +403,7 @@
 			this.B_ReExport.IconSize = 16;
 			this.B_ReExport.Image = ((System.Drawing.Image)(resources.GetObject("B_ReExport.Image")));
 			this.B_ReExport.Location = new System.Drawing.Point(624, 3);
-			this.B_ReExport.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
+			this.B_ReExport.Margin = new System.Windows.Forms.Padding(20, 3, 3, 10);
 			this.B_ReExport.Name = "B_ReExport";
 			this.B_ReExport.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
 			this.B_ReExport.Size = new System.Drawing.Size(85, 27);
@@ -416,18 +416,18 @@
 			// 
 			this.panel1.Controls.Add(this.TLP);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(5, 167);
+			this.panel1.Location = new System.Drawing.Point(5, 181);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(908, 458);
+			this.panel1.Size = new System.Drawing.Size(908, 444);
 			this.panel1.TabIndex = 14;
 			// 
 			// slickScroll1
 			// 
 			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
 			this.slickScroll1.LinkedControl = this.TLP;
-			this.slickScroll1.Location = new System.Drawing.Point(907, 167);
+			this.slickScroll1.Location = new System.Drawing.Point(907, 181);
 			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(6, 458);
+			this.slickScroll1.Size = new System.Drawing.Size(6, 444);
 			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
 			this.slickScroll1.TabIndex = 15;
 			this.slickScroll1.TabStop = false;
