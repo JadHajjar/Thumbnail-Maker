@@ -66,6 +66,7 @@ namespace ThumbnailMaker
 			this.B_ClearLines = new SlickControls.SlickButton();
 			this.B_Options = new SlickControls.SlickButton();
 			this.TB_RoadName = new SlickControls.SlickTextBox();
+			this.GB_AsphaltTexture = new SlickControls.SlickGroupBox();
 			this.TLP_Main.SuspendLayout();
 			this.TLP_Right.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PB)).BeginInit();
@@ -283,6 +284,7 @@ namespace ThumbnailMaker
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
 			this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+			this.tableLayoutPanel6.Controls.Add(this.GB_AsphaltTexture, 4, 0);
 			this.tableLayoutPanel6.Controls.Add(this.GB_Region, 1, 0);
 			this.tableLayoutPanel6.Controls.Add(this.GB_RoadType, 0, 0);
 			this.tableLayoutPanel6.Controls.Add(this.GB_SideTexture, 2, 0);
@@ -692,6 +694,21 @@ namespace ThumbnailMaker
 			this.TB_RoadName.Leave += new System.EventHandler(this.TB_RoadName_Leave);
 			this.TB_RoadName.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.TB_RoadName_PreviewKeyDown);
 			// 
+			// GB_AsphaltTexture
+			// 
+			this.GB_AsphaltTexture.AutoSize = true;
+			this.GB_AsphaltTexture.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.GB_AsphaltTexture.Dock = System.Windows.Forms.DockStyle.Top;
+			this.GB_AsphaltTexture.Icon = ((System.Drawing.Image)(resources.GetObject("GB_AsphaltTexture.Icon")));
+			this.GB_AsphaltTexture.Location = new System.Drawing.Point(703, 3);
+			this.GB_AsphaltTexture.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
+			this.GB_AsphaltTexture.MinimumSize = new System.Drawing.Size(60, 20);
+			this.GB_AsphaltTexture.Name = "GB_AsphaltTexture";
+			this.GB_AsphaltTexture.Size = new System.Drawing.Size(162, 20);
+			this.GB_AsphaltTexture.TabIndex = 20;
+			this.GB_AsphaltTexture.TabStop = false;
+			this.GB_AsphaltTexture.Text = "Asphalt Texture";
+			// 
 			// PC_MainPage
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -752,8 +769,10 @@ namespace ThumbnailMaker
 		private Controls.OptionSelectionControl<RegionType> RegionTypeControl;
 		private Controls.OptionSelectionControl<TextureType> SideTextureControl;
 		private Controls.OptionSelectionControl<BridgeTextureType> BridgeSideTextureControl;
+		private Controls.OptionSelectionControl<AsphaltStyle> AsphaltTextureControl;
 		private SlickControls.SlickGroupBox GB_RoadType;
 		private SlickControls.SlickGroupBox GB_SideTexture;
 		private SlickControls.SlickGroupBox GB_BridgeSideTexture;
+		private SlickControls.SlickGroupBox GB_AsphaltTexture;
 	}
 }

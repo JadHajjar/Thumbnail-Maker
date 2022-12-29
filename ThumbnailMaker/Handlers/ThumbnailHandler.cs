@@ -56,6 +56,7 @@ namespace ThumbnailMaker.Handlers
 		public RegionType RegionType { get; set; }
 		public RoadType RoadType { get; set; }
 		public TextureType SideTexture { get; set; }
+		public AsphaltStyle AsphaltStyle { get; set; }
 		public bool LHT { get; set; }
 
 		public Graphics Graphics { get; }
@@ -150,7 +151,7 @@ namespace ThumbnailMaker.Handlers
 			var rightSidewalk = Lanes.LastOrDefault(x => x.Type == LaneType.Curb && x.Direction == LaneDirection.Forward);
 			var bottomArea = new Rectangle(availableSpace.X, availableSpace.Y + availableSpace.Height, availableSpace.Width, Height - (availableSpace.Y + availableSpace.Height)).Pad(0, 0, 0, 0);
 
-			Graphics.Clear(Color.FromArgb(50, 50, 50));
+			Graphics.Clear(AsphaltStyle == AsphaltStyle.None ? PavementColor : Color.FromArgb(50, 50, 50));
 
 			Graphics.FillRectangle(new SolidBrush(Color.FromArgb(174, 215, 242)), new Rectangle(0, 0, bottomArea.Width, bottomArea.Y - LaneHeight(new ThumbnailLaneInfo())));
 
@@ -188,7 +189,7 @@ namespace ThumbnailMaker.Handlers
 			var lefpadding = FillerPadding.Unset;
 			var rightpadding = FillerPadding.Unset;
 
-			foreach (var lane in Lanes)
+			foreach (var lane in Lanes.Where(l => !l.Buffer))
 			{
 				var laneFiller = lane.Decorations & (LaneDecoration.Grass | LaneDecoration.Gravel | LaneDecoration.Pavement);
 
@@ -211,6 +212,15 @@ namespace ThumbnailMaker.Handlers
 				x = laneRects[lane].X;
 				elevation = LaneHeight(lane);
 				lefpadding = rightpadding = lane.FillerPadding;
+			}
+
+			if (filler != LaneDecoration.None)
+			{
+				var bottomArea = new Rectangle(x, availableSpace.Y + availableSpace.Height, laneRects[Lanes.Last()].X+ laneRects[Lanes.Last()].Width - x, Height - (availableSpace.Y + availableSpace.Height)).Pad(0, -elevation, 0, 0);
+				var fillArea = bottomArea.Pad(lefpadding.HasFlag(FillerPadding.Left) ? -1 : Small ? 2 : 5, 0, rightpadding.HasFlag(FillerPadding.Right) ? -1 : Small ? 2 : 5, 0);
+
+				Graphics.FillRectangle(new SolidBrush(Color.FromArgb(160, 160, 160)), fillArea);
+				Graphics.FillRectangle(new SolidBrush(ThumbnailLaneInfo.GetColor(filler & (LaneDecoration.Grass | LaneDecoration.Gravel | LaneDecoration.Pavement))), Small ? fillArea.Pad(2, 0, 2, 0) : fillArea.Pad(6, 0, 6, 0));
 			}
 		}
 
@@ -331,7 +341,7 @@ namespace ThumbnailMaker.Handlers
 			var bottomArea = new Rectangle(rect.X, availableSpace.Y + availableSpace.Height, rect.Width, Height - (availableSpace.Y + availableSpace.Height));
 
 			if (!lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
-				Graphics.FillRectangle(new SolidBrush(lane.Sidewalk ? PavementColor : Color.FromArgb(50, 50, 50)), bottomArea);
+				Graphics.FillRectangle(new SolidBrush(lane.Sidewalk || AsphaltStyle == AsphaltStyle.None ? PavementColor : Color.FromArgb(50, 50, 50)), bottomArea);
 
 			if (lane.Type == LaneType.Curb && RoadType != RoadType.Highway)
 			{
@@ -574,11 +584,11 @@ namespace ThumbnailMaker.Handlers
 					Lanes[i].Sidewalk = true;
 				}
 
-				Lanes.Insert(Lanes.IndexOf(leftSidewalk) + 1, new ThumbnailLaneInfo { Width = (int)(PixelFactor * BufferSize) });
+				Lanes.Insert(Lanes.IndexOf(leftSidewalk) + 1, new ThumbnailLaneInfo { Buffer = true, Width = (int)(PixelFactor * BufferSize) });
 			}
 			else
 			{
-				Lanes.Insert(0, new ThumbnailLaneInfo { Width = (int)(PixelFactor * BufferSize) });
+				Lanes.Insert(0, new ThumbnailLaneInfo { Buffer = true, Width = (int)(PixelFactor * BufferSize) });
 			}
 
 			if (rightSidewalk != null)
@@ -588,11 +598,11 @@ namespace ThumbnailMaker.Handlers
 					Lanes[i].Sidewalk = true;
 				}
 
-				Lanes.Insert(Lanes.IndexOf(rightSidewalk), new ThumbnailLaneInfo { Width = (int)(PixelFactor * BufferSize) });
+				Lanes.Insert(Lanes.IndexOf(rightSidewalk), new ThumbnailLaneInfo { Buffer = true, Width = (int)(PixelFactor * BufferSize) });
 			}
 			else
 			{
-				Lanes.Insert(Lanes.Count, new ThumbnailLaneInfo { Width = (int)(PixelFactor * BufferSize) });
+				Lanes.Insert(Lanes.Count, new ThumbnailLaneInfo { Buffer = true, Width = (int)(PixelFactor * BufferSize) });
 			}
 
 			AsphaltWidth = Lanes.Where(x => !x.Sidewalk).Sum(lane => lane.LaneWidth);

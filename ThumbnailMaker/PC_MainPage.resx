@@ -155,6 +155,13 @@
         AAAASUVORK5CYII=
 </value>
   </data>
+  <data name="GB_AsphaltTexture.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAF9JREFUOE/t
+        j0EKgDAQA/dNnuvJJ/XL/mONEHRDoebYgwOBobspbaxDZnakuT6AwYacyOE4a0pdmPiOdFZe7kOkIZ+X
+        sKLUBcdZU+rCxP8vwFlR6oLjrCkYPM9zfAUiLkK8u/Wg8BRPAAAAAElFTkSuQmCC
+</value>
+  </data>
   <data name="GB_Region.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAUJJREFUOE/N

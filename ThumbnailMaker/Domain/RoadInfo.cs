@@ -16,6 +16,7 @@ namespace ThumbnailMaker.Domain
 		public RegionType RegionType { get; set; }
 		public TextureType SideTexture { get; set; }
 		public BridgeTextureType BridgeSideTexture { get; set; }
+		public AsphaltStyle AsphaltStyle { get; set; }
 		public float RoadWidth { get; set; }
 		public float BufferWidth { get; set; }
 		public int SpeedLimit { get; set; }

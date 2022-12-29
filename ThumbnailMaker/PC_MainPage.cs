@@ -34,9 +34,12 @@ namespace ThumbnailMaker
 			GB_SideTexture.Controls.Add(SideTextureControl);
 			BridgeSideTextureControl = new OptionSelectionControl<BridgeTextureType>(GetTextureIcon) { Dock = DockStyle.Top };
 			GB_BridgeSideTexture.Controls.Add(BridgeSideTextureControl);
+			AsphaltTextureControl = new OptionSelectionControl<AsphaltStyle>(GetTextureIcon) { Dock = DockStyle.Top };
+			GB_AsphaltTexture.Controls.Add(AsphaltTextureControl);
 
 			RoadTypeControl.SelectedValueChanged += (s, e) => SetupType(RoadTypeControl.SelectedValue);
 			SideTextureControl.SelectedValueChanged += (s, e) => RefreshPreview();
+			AsphaltTextureControl.SelectedValueChanged += (s, e) => RefreshPreview();
 			RegionTypeControl.SelectedValueChanged += (s, e) => 
 			{
 				TB_SpeedLimit.LabelText = $"Speed Limit ({(RegionTypeControl.SelectedValue == RegionType.USA ? "mph" : "km/h")})";
@@ -49,12 +52,17 @@ namespace ThumbnailMaker
 
 			SetupType(RoadTypeControl.SelectedValue);
 
-			using (var img = new Bitmap(24, 24))
+			using (var img = new Bitmap(65, 24))
 			using (var g = Graphics.FromImage(img))
 			{
 				g.SmoothingMode = SmoothingMode.AntiAlias;
-				g.FillRoundedRectangle(Brushes.Black, new Rectangle(0, 0, 23, 23), 6);
+				g.FillRoundedRectangle(Brushes.Black, new Rectangle(0, 0, 64, 23), 6);
 				g.DrawImage(B_CopyName.Image.Color(Color.White), new Rectangle(4, 4, 16, 16));
+				g.DrawString("COPY", new Font(UI.FontFamily, 8.25F), Brushes.White, new Rectangle(24, 0, 35, 24), new StringFormat
+				{
+					LineAlignment = StringAlignment.Center,
+					Alignment = StringAlignment.Center,
+				});
 
 				PB.Cursor = new Cursor(img.GetHicon());
 			}
@@ -101,6 +109,19 @@ namespace ThumbnailMaker
 				case BridgeTextureType.Pavement:
 					return Properties.Resources.L_D_2;
 				case BridgeTextureType.Asphalt:
+					return Properties.Resources.I_Asphalt;
+			}
+
+			return null;
+		}
+
+		private Image GetTextureIcon(AsphaltStyle arg3)
+		{
+			switch (arg3)
+			{
+				case AsphaltStyle.None:
+					return Properties.Resources.L_C_0;
+				case AsphaltStyle.Asphalt:
 					return Properties.Resources.I_Asphalt;
 			}
 
@@ -193,6 +214,7 @@ namespace ThumbnailMaker
 				RoadType = GetRoadType(),
 				LHT = Options.Current.LHT,
 				SideTexture = SideTextureControl.SelectedValue,
+				AsphaltStyle = AsphaltTextureControl.SelectedValue,
 				Speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse(),
 				Lanes = new List<ThumbnailLaneInfo>(lanes)
 			}.Draw();
@@ -252,11 +274,14 @@ namespace ThumbnailMaker
 
 		private void B_Clear_Click(object sender, EventArgs e)
 		{
+			refreshPaused = true;
 			TB_RoadName.Text = string.Empty;
 			TB_Size.Text = string.Empty;
 			TB_SpeedLimit.Text = string.Empty;
 			P_Lanes.Controls.Clear(true);
 
+			AsphaltTextureControl.SelectedValue = AsphaltStyle.Asphalt;
+			refreshPaused = false;
 			SetupType(RoadTypeControl.SelectedValue);
 		}
 
@@ -285,6 +310,7 @@ namespace ThumbnailMaker
 
 		private void B_FlipLanes_Click(object sender, EventArgs e)
 		{
+			refreshPaused = true;
 			foreach (var item in P_Lanes.Controls.OfType<RoadLane>().ToList())
 			{
 				item.BringToFront();
@@ -295,11 +321,13 @@ namespace ThumbnailMaker
 				item.Invalidate();
 			}
 
+			refreshPaused = false;
 			RefreshPreview();
 		}
 
 		private void B_DuplicateFlip_Click(object sender, EventArgs e)
 		{
+			refreshPaused = true;
 			var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
 			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
 			var lanes = P_Lanes.Controls.OfType<RoadLane>().Where(x =>
@@ -335,6 +363,7 @@ namespace ThumbnailMaker
 					ctrl.BringToFront();
 			}
 
+			refreshPaused = false;
 			RefreshPreview();
 		}
 
@@ -401,6 +430,7 @@ namespace ThumbnailMaker
 				RoadType = GetRoadType(),
 				SideTexture = SideTextureControl.SelectedValue,
 				BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
+				AsphaltStyle = AsphaltTextureControl.SelectedValue,
 				SpeedLimit = (int)(TB_SpeedLimit.Text.SmartParse() * (RegionTypeControl.SelectedValue == RegionType.USA ? 1.609F : 1F)),
 				Lanes = GetLanes().Select(x => x.AsLaneInfo()).ToList(),
 				LHT = Options.Current.LHT,
@@ -454,6 +484,7 @@ namespace ThumbnailMaker
 					RoadType = GetRoadType(),
 					SideTexture = SideTextureControl.SelectedValue,
 					BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
+					AsphaltStyle = AsphaltTextureControl.SelectedValue,
 					SpeedLimit = (int)(TB_SpeedLimit.Text.SmartParse() * (RegionTypeControl.SelectedValue == RegionType.USA ? 1.609F : 1F)),
 					Lanes = lanes.Select(x => x.AsLaneInfo()).ToList(),
 					LHT = Options.Current.LHT,
@@ -484,7 +515,7 @@ namespace ThumbnailMaker
 				TB_BufferSize.Text = r.BufferWidth.ToString();
 				TB_SpeedLimit.Text = r.SpeedLimit == 0 ? string.Empty : r.SpeedLimit.ToString();
 				TB_CustomText.Text = r.CustomText;
-				TB_RoadName.Text = r.Name;
+				TB_RoadName.Text = r.CustomName;
 
 				foreach (var lane in Options.Current.LHT ? (r.Lanes as IEnumerable<LaneInfo>).Reverse() : r.Lanes)
 				{

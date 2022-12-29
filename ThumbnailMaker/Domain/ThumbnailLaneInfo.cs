@@ -16,6 +16,7 @@ namespace ThumbnailMaker.Domain
 	{ 
 		public int Width { get; set; }
 		public bool Sidewalk { get; set; }
+		public bool Buffer { get; set; }
 		public Color Color
 		{
 			get

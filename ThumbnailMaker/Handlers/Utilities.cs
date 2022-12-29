@@ -68,6 +68,7 @@ namespace ThumbnailMaker.Handlers
 						RoadType = road.RoadType,
 						Speed = road.SpeedLimit,
 						SideTexture = road.SideTexture,
+						AsphaltStyle = road.AsphaltStyle,
 						LHT = road.LHT,
 						Lanes = road.Lanes.Select(x => new ThumbnailLaneInfo(x)).ToList()
 					}.Draw();
@@ -293,12 +294,6 @@ namespace ThumbnailMaker.Handlers
 			{
 				switch (item)
 				{
-					case LaneType.Filler:
-					case LaneType.Curb:
-						if (deco.AnyOf(LaneDecoration.Filler))
-							return false;
-						break;
-
 					case LaneType.Pedestrian:
 						if (!deco.AnyOf(LaneDecoration.TrashBin, LaneDecoration.StreetAds, LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight, LaneDecoration.TransitStop, LaneDecoration.None, LaneDecoration.Filler, LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
 							return false;
