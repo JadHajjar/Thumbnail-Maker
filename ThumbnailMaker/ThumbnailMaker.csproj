@@ -167,18 +167,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -200,14 +200,10 @@
     <None Include="Resources\S_RT_1_LHT.png" />
     <None Include="Resources\Icon_Curb.png" />
     <None Include="Resources\Icon_Flip.png" />
-    <None Include="Resources\S_LHT.png" />
-    <None Include="Resources\L_LHT.png" />
     <None Include="Resources\I_EditImage.png" />
     <None Include="Resources\S_D_18.png" />
     <None Include="Resources\L_D_18.png" />
     <None Include="Resources\L_Clouds_3.png" />
-    <None Include="Resources\S_Clouds_2.png" />
-    <None Include="Resources\S_Clouds_1.png" />
     <None Include="Resources\L_Clouds_1.png" />
     <None Include="Resources\L_Clouds_2.png" />
     <None Include="Resources\I_Ruined.png" />
@@ -266,8 +262,6 @@
     <None Include="Resources\L_D_1.png" />
     <None Include="Resources\L_D_2.png" />
     <None Include="Resources\L_D_3.png" />
-    <None Include="Resources\L_D_5.png" />
-    <None Include="Resources\L_D_6.png" />
     <None Include="Resources\L_D_7.png" />
     <None Include="Resources\L_D_10.png" />
     <None Include="Resources\L_D_11.png" />
@@ -277,8 +271,6 @@
     <None Include="Resources\S_D_2.png" />
     <None Include="Resources\S_D_3.png" />
     <None Include="Resources\S_D_4.png" />
-    <None Include="Resources\S_D_5.png" />
-    <None Include="Resources\S_D_6.png" />
     <None Include="Resources\S_D_7.png" />
     <None Include="Resources\S_D_8.png" />
     <None Include="Resources\S_D_9.png" />

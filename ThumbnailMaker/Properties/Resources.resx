@@ -295,9 +295,6 @@
   <data name="L_D_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\L_D_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="L_LHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\L_LHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="L_RT_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\L_RT_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -411,9 +408,6 @@
   </data>
   <data name="S_D_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S_D_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="S_LHT" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\S_LHT.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="S_RT_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\S_RT_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
