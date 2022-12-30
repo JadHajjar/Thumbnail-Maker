@@ -494,7 +494,7 @@ namespace ThumbnailMaker
 			
 				var file = Utilities.ExportRoad(roadInfo);
 
-				RCC.RefreshConfigs(file);
+				RCC.RefreshConfigs();
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 		}

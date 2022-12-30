@@ -1,6 +1,7 @@
 ﻿using Extensions;
 
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -22,7 +23,6 @@ namespace ThumbnailMaker.Controls
 	public partial class RoadConfigContainer : UserControl
 	{
 		public static RoadConfigContainer _instance;
-		private readonly Timer _systemWatcher;
 
 		public event System.EventHandler<RoadInfo> LoadConfiguration;
 
@@ -35,24 +35,25 @@ namespace ThumbnailMaker.Controls
 
 			_instance = this;
 
-			_systemWatcher = new Timer(1000);
+			var _systemWatcher = new Timer(1000);
 			_systemWatcher.AutoReset = false;
-			_systemWatcher.Elapsed += (s, e) => RefreshConfigs();
+			_systemWatcher.Elapsed += (s, e) => RefreshConfigs(s as Timer);
 			_systemWatcher.Start();
 		}
 
-		public void RefreshConfigs(string fileToRefresh = null)
+		public void RefreshConfigs(Timer timer = null)
 		{
 			try
 			{
 				var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
 				, "Colossal Order", "Cities_Skylines", "RoadBuilder", "Roads"));
 
-				var controls = P_Configs.Controls.OfType<RoadConfigControl>().ToDictionary(x => x.FileName);
+				var controls = GetControlDictionary();
 				var files = Directory.Exists(appdata) ? Directory.GetFiles(appdata, "*.xml", SearchOption.AllDirectories) : new string[0];
 				var contents = files.ToDictionary(x => x, x =>
 				{
-					try { return LegacyUtil.LoadRoad(x); }
+					try
+					{ return LegacyUtil.LoadRoad(x); }
 					catch { return null; }
 				});
 
@@ -64,12 +65,6 @@ namespace ThumbnailMaker.Controls
 
 					try
 					{
-						if (!string.IsNullOrEmpty(fileToRefresh) && controls.ContainsKey(fileToRefresh))
-						{
-							controls[fileToRefresh].Dispose();
-							controls.Remove(fileToRefresh);
-						}
-
 						for (var i = 0; i < files.Length; i++)
 						{
 							if (!controls.ContainsKey(files[i]) && contents[files[i]] != null)
@@ -109,7 +104,26 @@ namespace ThumbnailMaker.Controls
 			}
 			catch { }
 
-			_systemWatcher.Start();
+			timer?.Start();
+		}
+
+		private Dictionary<string, RoadConfigControl> GetControlDictionary()
+		{
+			var dic = new Dictionary<string, RoadConfigControl>();
+
+			foreach (var item in P_Configs.Controls.OfType<RoadConfigControl>().ToList())
+			{
+				if (dic.ContainsKey(item.FileName))
+				{
+					item.TryInvoke(item.Dispose);
+				}
+				else
+				{
+					dic.Add(item.FileName, item);
+				}
+			}
+
+			return dic;
 		}
 
 		private void Ctrl_LoadConfiguration(object sender, Domain.RoadInfo e)
