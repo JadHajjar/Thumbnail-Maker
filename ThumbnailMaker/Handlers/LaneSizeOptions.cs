@@ -135,10 +135,10 @@ namespace ThumbnailMaker.Domain
 					return 3F;
 
 				case LaneType.Pedestrian:
-					return 2F;
+					return 1F;
 
 				case LaneType.Bike:
-					return 2F;
+					return 1.5F;
 
 				case LaneType.Parking:
 					return 2F;

@@ -32,7 +32,6 @@ namespace ThumbnailMaker.Handlers
 			road.Version = LegacyUtil.CURRENT_VERSION;
 			road.Name = road.CustomName.IfEmpty(GetRoadName(road.RoadType, road.Lanes));
 			road.Description = GetRoadDescription(road);
-			road.SpeedLimit = road.SpeedLimit.If(0, DefaultSpeedSign(road.RoadType, road.RegionType == RegionType.USA));
 			road.SmallThumbnail = getImage(true, false);
 			road.LargeThumbnail = getImage(false, false);
 			road.TooltipImage = getImage(true, true);
@@ -66,7 +65,7 @@ namespace ThumbnailMaker.Handlers
 						BufferSize = Math.Max(0, road.BufferWidth),
 						RegionType = road.RegionType,
 						RoadType = road.RoadType,
-						Speed = road.SpeedLimit,
+						Speed = road.SpeedLimit.If(0, DefaultSpeedSign(road.RoadType, road.RegionType == RegionType.USA)),
 						SideTexture = road.SideTexture,
 						AsphaltStyle = road.AsphaltStyle,
 						LHT = road.LHT,

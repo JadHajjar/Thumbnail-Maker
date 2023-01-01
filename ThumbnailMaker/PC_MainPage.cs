@@ -485,7 +485,7 @@ namespace ThumbnailMaker
 					SideTexture = SideTextureControl.SelectedValue,
 					BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
 					AsphaltStyle = AsphaltTextureControl.SelectedValue,
-					SpeedLimit = (int)(TB_SpeedLimit.Text.SmartParse() * (RegionTypeControl.SelectedValue == RegionType.USA ? 1.609F : 1F)),
+					SpeedLimit = TB_SpeedLimit.Text.SmartParse(),
 					Lanes = lanes.Select(x => x.AsLaneInfo()).ToList(),
 					LHT = Options.Current.LHT,
 					VanillaWidth = Options.Current.VanillaWidths,
@@ -530,6 +530,7 @@ namespace ThumbnailMaker
 				RegionTypeControl.SelectedValue = r.RegionType;
 				SideTextureControl.SelectedValue = r.SideTexture;
 				BridgeSideTextureControl.SelectedValue = r.BridgeSideTexture;
+				AsphaltTextureControl.SelectedValue = r.AsphaltStyle;
 
 				P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb)?.FixCurbOrientation();
 			}

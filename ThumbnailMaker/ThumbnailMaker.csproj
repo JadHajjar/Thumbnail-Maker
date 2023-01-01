@@ -190,6 +190,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\L_D_19.png" />
+    <None Include="Resources\S_D_19.png" />
     <None Include="Resources\S_RT_0_LHT.png" />
     <None Include="Resources\L_RT_3_LHT.png" />
     <None Include="Resources\L_RT_2_LHT.png" />

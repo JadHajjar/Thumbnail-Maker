@@ -61,8 +61,11 @@ namespace ThumbnailMaker
 
 		private void DD_Font_TextChanged(object sender, EventArgs e)
 		{
-			Options.Current.TextFont = DD_Font.Text;
-			Options.Save();
+			if (string.IsNullOrWhiteSpace(DD_Font.Text) || new Font(DD_Font.Text, 8.25F).FontFamily.Name.Equals(DD_Font.Text, StringComparison.CurrentCultureIgnoreCase))
+			{
+				Options.Current.TextFont = DD_Font.Text;
+				Options.Save();
+			}
 		}
 
 		private void B_Theme_Click(object sender, EventArgs e)

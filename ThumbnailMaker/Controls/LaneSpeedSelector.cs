@@ -74,7 +74,7 @@ namespace ThumbnailMaker.Controls
 			Location = new Point(_roadLane.PointToScreen(Point.Empty).X+ _roadLane.Width-Width, _roadLane.PointToScreen(Point.Empty).Y + _roadLane.Height);
 
 			if (Location.Y + Height > Screen.FromControl(this).WorkingArea.Height)
-				Top -= _roadLane.Height + Height;
+				Top = Math.Max(0, Top - (_roadLane.Height + Height));
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

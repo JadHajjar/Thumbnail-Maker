@@ -30,13 +30,13 @@ namespace ThumbnailMaker.Controls
 				if (!Utilities.IsCompatible(laneType, roadLane.Lane.Type))
 					continue;
 
-				if (point.X + 96 > 5 * 108 + 12)
+				if (point.X + 96 > 6 * 108 + 12)
 					point = new Point(12, point.Y + 108);
 
 				point.X += 108;
 			}
 
-			Size = new Size(5 * 108 + 12, point.Y + 108);
+			Size = new Size(6 * 108 + 12, point.Y + 108);
 			ShowIcon = false;
 			ShowInTaskbar = false;
 			DoubleBuffered = true;
@@ -54,7 +54,7 @@ namespace ThumbnailMaker.Controls
 			Location = new Point(_roadLane.PointToScreen(Point.Empty).X, _roadLane.PointToScreen(Point.Empty).Y + _roadLane.Height);
 
 			if (Location.Y + Height > Screen.FromControl(this).WorkingArea.Height)
-				Top -= _roadLane.Height + Height;
+				Top = Math.Max(0, Top - (_roadLane.Height + Height));
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
