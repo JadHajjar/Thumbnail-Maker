@@ -14,7 +14,7 @@ namespace ThumbnailMaker.Domain
 		[StyleIdentity(1, 154, 203, 96)]
 		Grass = 2,
 
-		[StyleIdentity(2, 99, 102, 107)]
+		[StyleIdentity(2, 121, 124, 130)]
 		Pavement = 4,
 
 		[StyleIdentity(3, 79, 61, 55)]

@@ -67,6 +67,8 @@ namespace ThumbnailMaker
 				PB.Cursor = new Cursor(img.GetHicon());
 			}
 
+			L_CurrentlyEditing.ActiveColor = () => L_CurrentlyEditing.HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.RedColor : FormDesign.Design.ActiveColor;
+
 			SlickTip.SetTo(TB_Size, "Manually specify the total road width, which includes the asphalt and pavement");
 			SlickTip.SetTo(TB_BufferSize, "Represents the distance between the sidewalks and the lanes next to them");
 			SlickTip.SetTo(TB_SpeedLimit, "Manually specify the default speed limit of the road");
@@ -81,8 +83,6 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(B_DuplicateFlip, "Duplicates the current lanes to the right and flips their direction");
 			SlickTip.SetTo(B_FlipLanes, "Flips the whole road to create its opposite variation");
 			SlickTip.SetTo(B_AddLane, "Add a new empty lane");
-
-			FormDesign.DesignChanged += FormDesign_DesignChanged;
 		}
 
 		private Image GetTextureIcon(TextureType arg3)
@@ -128,8 +128,12 @@ namespace ThumbnailMaker
 			return null;
 		}
 
-		private void FormDesign_DesignChanged(FormDesign design)
+		protected override void DesignChanged(FormDesign design)
 		{
+			base.DesignChanged(design);
+
+			L_CurrentlyEditing.ForeColor = design.ActiveColor;
+
 			RefreshPreview();
 		}
 
@@ -533,6 +537,10 @@ namespace ThumbnailMaker
 				AsphaltTextureControl.SelectedValue = r.AsphaltStyle;
 
 				P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb)?.FixCurbOrientation();
+
+				L_CurrentlyEditing.Text = $"Currently editing '{r.Name}'";
+				L_CurrentlyEditing.Image = Properties.Resources.I_Info;
+				L_CurrentlyEditing.Visible = true;
 			}
 			catch (Exception ex)
 			{
@@ -639,6 +647,21 @@ namespace ThumbnailMaker
 		{
 			if (e.Control is RoadLane roadLane)
 				roadLane.RoadLaneChanged += TB_Name_TextChanged;
+		}
+
+		private void L_CurrentlyEditing_Click(object sender, EventArgs e)
+		{
+			L_CurrentlyEditing.Visible = false;
+		}
+
+		private void L_CurrentlyEditing_MouseEnter(object sender, EventArgs e)
+		{
+			L_CurrentlyEditing.Image = Properties.Resources.I_Cancel;
+		}
+
+		private void L_CurrentlyEditing_MouseLeave(object sender, EventArgs e)
+		{
+			L_CurrentlyEditing.Image = Properties.Resources.I_Info;
 		}
 	}
 }
