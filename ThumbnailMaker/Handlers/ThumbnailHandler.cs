@@ -1,16 +1,13 @@
 ﻿using Extensions;
 
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
 
@@ -37,7 +34,7 @@ namespace ThumbnailMaker.Handlers
 			using (var stream = assembly.GetManifestResourceStream("ThumbnailMaker.Resources.Gogh.ttf"))
 			{
 				var streamData = new byte[stream.Length];
-				stream.Read(streamData, 0, streamData.Length);
+				_ = stream.Read(streamData, 0, streamData.Length);
 				var data = Marshal.AllocCoTaskMem(streamData.Length);
 				Marshal.Copy(streamData, 0, data, streamData.Length);
 				pfc.AddMemoryFont(data, streamData.Length);
@@ -90,7 +87,10 @@ namespace ThumbnailMaker.Handlers
 		public void Draw()
 		{
 			if (!Small)
+			{
 				Graphics.SmoothingMode = SmoothingMode.HighQuality;
+			}
+
 			Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 			Graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 
@@ -157,9 +157,9 @@ namespace ThumbnailMaker.Handlers
 
 			if (Small)
 			{
-				Graphics.DrawImage(Properties.Resources.L_Clouds_1, new Rectangle(Width / 2 - 50, 0, 16, 16));
-				Graphics.DrawImage(Properties.Resources.L_Clouds_2, new Rectangle(Width / 2 + 25, 7, 16, 16));
-				Graphics.DrawImage(Properties.Resources.L_Clouds_3, new Rectangle(Width / 2 - 30, 5, 16, 16));
+				Graphics.DrawImage(Properties.Resources.L_Clouds_1, new Rectangle((Width / 2) - 50, 0, 16, 16));
+				Graphics.DrawImage(Properties.Resources.L_Clouds_2, new Rectangle((Width / 2) + 25, 7, 16, 16));
+				Graphics.DrawImage(Properties.Resources.L_Clouds_3, new Rectangle((Width / 2) - 30, 5, 16, 16));
 			}
 			else
 			{
@@ -231,7 +231,7 @@ namespace ThumbnailMaker.Handlers
 		{
 			if (rect.Width < 0.5F * PixelFactor * scale)
 			{
-				rect = rect.Pad(-(int)(0.5F * PixelFactor * scale - rect.Width) / 2, 0, -(int)(0.5F * PixelFactor * scale - rect.Width) / 2, 0);
+				rect = rect.Pad(-(int)((0.5F * PixelFactor * scale) - rect.Width) / 2, 0, -(int)((0.5F * PixelFactor * scale) - rect.Width) / 2, 0);
 			}
 
 			var classIcons = lane.Type.GetValues().Where(x => x > LaneType.Curb)
@@ -253,7 +253,7 @@ namespace ThumbnailMaker.Handlers
 
 				using (x.Value)
 				{
-					return new Bitmap(x.Value, Math.Max(1, (int)(x.Value.Width * (rect.Width + standardWidth - scale * standardWidth) / standardWidth * scale)), Math.Max(1, (int)(x.Value.Height * (rect.Width + standardWidth - scale * standardWidth) / standardWidth * scale)));
+					return new Bitmap(x.Value, Math.Max(1, (int)(x.Value.Width * (rect.Width + standardWidth - (scale * standardWidth)) / standardWidth * scale)), Math.Max(1, (int)(x.Value.Height * (rect.Width + standardWidth - (scale * standardWidth)) / standardWidth * scale)));
 				}
 			}).ToList();
 
@@ -266,7 +266,7 @@ namespace ThumbnailMaker.Handlers
 
 				foreach (var icon in icons)
 				{
-					Graphics.DrawImage(icon, new Rectangle(new Point(rect.X + (rect.Width - icon.Width) / 2, y), icon.Size));
+					Graphics.DrawImage(icon, new Rectangle(new Point(rect.X + ((rect.Width - icon.Width) / 2), y), icon.Size));
 
 					arrowY = y + icon.Height;
 
@@ -274,7 +274,7 @@ namespace ThumbnailMaker.Handlers
 				}
 
 				decoY = arrowY + (Small ? -4 : 8);
-				arrowY += (int)((Small ? 2 : 7) * (1 - icons.Count) + (scale) * (Small ? 6 : 20));
+				arrowY += (int)(((Small ? 2 : 7) * (1 - icons.Count)) + (scale * (Small ? 6 : 20)));
 
 				if (DisplaysArrows(lane))
 				{
@@ -324,11 +324,11 @@ namespace ThumbnailMaker.Handlers
 					decoY -= decoIcon.Height;
 				}
 
-				Graphics.DrawImage(decoIcon, new Rectangle(new Point(rect.X + (rect.Width - decoIcon.Width) / 2, decoY), decoIcon.Size));
+				Graphics.DrawImage(decoIcon, new Rectangle(new Point(rect.X + ((rect.Width - decoIcon.Width) / 2), decoY), decoIcon.Size));
 
 				if (!first)
 				{
-					decoY += (Height - availableSpace.Height - (ToolTip ? 36 : Small ? 30 : 120) / 2) / decoIcons.Count;
+					decoY += (Height - availableSpace.Height - ((ToolTip ? 36 : Small ? 30 : 120) / 2)) / decoIcons.Count;
 				}
 				else
 				{
@@ -389,19 +389,20 @@ namespace ThumbnailMaker.Handlers
 
 				using (var pen = new Pen(Color.FromArgb(213, 157, 37), Small ? 2.5F : 6))
 				{
-					var w = 4 + PixelFactor * 8 / 10;
-					var x = -2 + barrierRect.X + (barrierRect.Width - w) / 2;
-					var y = barrierRect.Y + w / 4;
+					var w = 4 + (PixelFactor * 8 / 10);
+					var x = -2 + barrierRect.X + ((barrierRect.Width - w) / 2);
+					var y = barrierRect.Y + (w / 4);
 					while (y < barrierRect.Y + barrierRect.Height)
 					{
-						Graphics.DrawLine(pen, x, y, x + w, y + w * 3 / 4);
+						Graphics.DrawLine(pen, x, y, x + w, y + (w * 3 / 4));
 
 						y += Small ? (w - 2) : w;
 					}
 				}
+
 				Graphics.ResetClip();
 
-				Graphics.DrawLine(new Pen(Color.FromArgb(60, 60, 60), Small ? 1.5F : 4) { DashPattern = new[] { 3F, 4F, 3F, 10F } }, barrierRect.X + barrierRect.Width / 2, barrierRect.Y, barrierRect.X + barrierRect.Width / 2, barrierRect.Y + barrierRect.Height);
+				Graphics.DrawLine(new Pen(Color.FromArgb(60, 60, 60), Small ? 1.5F : 4) { DashPattern = new[] { 3F, 4F, 3F, 10F } }, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y + barrierRect.Height);
 			}
 		}
 
@@ -415,12 +416,12 @@ namespace ThumbnailMaker.Handlers
 			{
 				if (!Small)
 				{
-					Graphics.DrawLine(new Pen(Color.FromArgb(175, 150, 150, 150), 4F), rect.X + rect.Width / 4, bottomArea.Y, rect.X + rect.Width / 4, bottomArea.Y + bottomArea.Height);
-					Graphics.DrawLine(new Pen(Color.FromArgb(175, 150, 150, 150), 4F), rect.X + 3 * rect.Width / 4, bottomArea.Y, rect.X + 3 * rect.Width / 4, bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(175, 150, 150, 150), 4F), rect.X + (rect.Width / 4), bottomArea.Y, rect.X + (rect.Width / 4), bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(175, 150, 150, 150), 4F), rect.X + (3 * rect.Width / 4), bottomArea.Y, rect.X + (3 * rect.Width / 4), bottomArea.Y + bottomArea.Height);
 				}
 
-				Graphics.DrawLine(new Pen(Small ? Color.FromArgb(175, 150, 150, 150) : Color.FromArgb(175, 255, 255, 255), 1F), rect.X + rect.Width / 4, bottomArea.Y, rect.X + rect.Width / 4, bottomArea.Y + bottomArea.Height);
-				Graphics.DrawLine(new Pen(Small ? Color.FromArgb(175, 150, 150, 150) : Color.FromArgb(175, 255, 255, 255), 1F), rect.X + 3 * rect.Width / 4, bottomArea.Y, rect.X + 3 * rect.Width / 4, bottomArea.Y + bottomArea.Height);
+				Graphics.DrawLine(new Pen(Small ? Color.FromArgb(175, 150, 150, 150) : Color.FromArgb(175, 255, 255, 255), 1F), rect.X + (rect.Width / 4), bottomArea.Y, rect.X + (rect.Width / 4), bottomArea.Y + bottomArea.Height);
+				Graphics.DrawLine(new Pen(Small ? Color.FromArgb(175, 150, 150, 150) : Color.FromArgb(175, 255, 255, 255), 1F), rect.X + (3 * rect.Width / 4), bottomArea.Y, rect.X + (3 * rect.Width / 4), bottomArea.Y + bottomArea.Height);
 			}
 
 			if (leftLane != null)
@@ -474,7 +475,7 @@ namespace ThumbnailMaker.Handlers
 				return null;
 			}
 
-			var flip = Lanes.IndexOf(lane) < Lanes.Count / 2;
+			var flip = lane.Position < 0;
 
 			if (lane.Decorations.HasFlag(style) && lane.PropAngle == PropAngle.Left)
 			{
@@ -507,7 +508,7 @@ namespace ThumbnailMaker.Handlers
 
 			using (decorationIcon)
 			{
-				return new Bitmap(decorationIcon, Math.Max(1, (int)(decorationIcon.Width * (rect.Width + standardWidth - scale * standardWidth) / standardWidth * scale)), Math.Max(1, (int)(decorationIcon.Height * (rect.Width + standardWidth - scale * standardWidth) / standardWidth * scale)));
+				return new Bitmap(decorationIcon, Math.Max(1, (int)(decorationIcon.Width * (rect.Width + standardWidth - (scale * standardWidth)) / standardWidth * scale)), Math.Max(1, (int)(decorationIcon.Height * (rect.Width + standardWidth - (scale * standardWidth)) / standardWidth * scale)));
 			}
 		}
 
@@ -518,7 +519,7 @@ namespace ThumbnailMaker.Handlers
 				arrow.RotateFlip(RotateFlipType.RotateNoneFlipY);
 			}
 
-			var translate = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
+			var translate = new Point(rect.X + (rect.Width / 2), rect.Y + (rect.Height / 2));
 
 			Graphics.TranslateTransform(translate.X, translate.Y);
 			Graphics.RotateTransform(lane.ParkingAngle == ParkingAngle.InvertedDiagonal ? -45F : 45F);
@@ -577,7 +578,11 @@ namespace ThumbnailMaker.Handlers
 
 		private void PrepareLanes()
 		{
-			Lanes.ForEach(lane => { lane.Width = (int)(PixelFactor * lane.LaneWidth); lane.Sidewalk = false; });
+			Lanes.ForEach(lane =>
+			{
+				lane.Width = (int)(PixelFactor * lane.LaneWidth);
+				lane.Sidewalk = false;
+			});
 
 			var leftSidewalk = Lanes.FirstOrDefault(x => x.Type == LaneType.Curb && x.Direction == LaneDirection.Backwards);
 			var rightSidewalk = Lanes.LastOrDefault(x => x.Type == LaneType.Curb && x.Direction == LaneDirection.Forward);
@@ -607,13 +612,30 @@ namespace ThumbnailMaker.Handlers
 				rightSidewalk.Width += (int)(PixelFactor * BufferSize);
 			}
 
-			AsphaltWidth = (int)(PixelFactor * BufferSize * 2) +  Lanes.Where(x => !x.Sidewalk).Sum(lane => lane.LaneWidth);
+			AsphaltWidth = (BufferSize * 2) + Lanes.Where(x => !x.Sidewalk).Sum(lane => lane.LaneWidth);
+
+			var ind = AsphaltWidth / -2;
+
+			foreach (var lane in Lanes)
+			{
+				if (lane.Sidewalk)
+				{
+					lane.Position = ind;
+				}
+				else
+				{
+					lane.Position = ind + (lane.LaneWidth / 2);
+					ind += lane.LaneWidth;
+				}
+			}
 		}
 
 		private LaneDecoration GetLightType(ThumbnailLaneInfo lane)
 		{
 			if (Lanes.Any(x => x.Decorations.HasAnyFlag(LaneDecoration.StreetLight, LaneDecoration.StreetLight)))
+			{
 				return LaneDecoration.None;
+			}
 
 			var centerLane = GetCenterLane();
 
@@ -640,29 +662,15 @@ namespace ThumbnailMaker.Handlers
 
 		private ThumbnailLaneInfo GetCenterLane()
 		{
-			var stoppableVehicleLanes = LaneType.Car | LaneType.Bus | LaneType.Trolley | LaneType.Tram;
-			var fillerLanes = Lanes.Where(x => x.Type == LaneType.Filler && x.LaneWidth >= 2);
-			var validLanes = fillerLanes.Where(lane =>
-			{
-				var index = Lanes.IndexOf(lane);
-				var left = index == 0 ? null : Lanes[index - 1];
-				var right = index == (Lanes.Count - 1) ? null : Lanes[index + 1];
-
-				return ((left?.Type ?? LaneType.Empty) & stoppableVehicleLanes) != 0 && ((right?.Type ?? LaneType.Empty) & stoppableVehicleLanes) != 0 && left.Direction != right.Direction;
-			});
-
-			return validLanes.OrderBy(x => Math.Abs(Lanes.Count / 2 - Lanes.IndexOf(x))).FirstOrDefault();
+			return Lanes.Where(x => x.Type == LaneType.Filler && x.LaneWidth >= 1.5F && Math.Abs(x.Position) <= 3F)
+				.OrderBy(x => Math.Abs(x.Position))
+				.FirstOrDefault();
 		}
 
 		private bool DisplaysArrows(ThumbnailLaneInfo lane)
 		{
-			if (lane.Type.AnyOf(LaneType.Curb, LaneType.Pedestrian, LaneType.Filler)
-				|| lane.Direction == LaneDirection.Both)
-			{
-				return false;
-			}
-
-			return true;
+			return !lane.Type.AnyOf(LaneType.Curb, LaneType.Pedestrian, LaneType.Filler)
+				&& lane.Direction != LaneDirection.Both;
 		}
 
 		private int LaneHeight(ThumbnailLaneInfo lane)
@@ -670,7 +678,9 @@ namespace ThumbnailMaker.Handlers
 			var @base = lane.Elevation ?? (lane.Sidewalk || RoadType != RoadType.Road ? 0F : -0.3F);
 
 			if (lane.Elevation == null && lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+			{
 				@base = @base == 0F ? 0.2F : 0F;
+			}
 
 			return (int)(@base * (Small ? 40 : 70) * IdealWidthModifier);
 		}
@@ -690,11 +700,11 @@ namespace ThumbnailMaker.Handlers
 			{
 				if (Small)
 				{
-					DrawSpeedSignSmall(Graphics, RegionType, Speed, new Rectangle((Width + width) / 2 - height, Height - height, height, height));
+					DrawSpeedSignSmall(Graphics, RegionType, Speed, new Rectangle(((Width + width) / 2) - height, Height - height, height, height));
 				}
 				else
 				{
-					DrawSpeedSignLarge(Graphics, RegionType, Speed, new Rectangle((Width + width) / 2 - height, Height - height, height, height));
+					DrawSpeedSignLarge(Graphics, RegionType, Speed, new Rectangle(((Width + width) / 2) - height, Height - height, height, height));
 				}
 			}
 
@@ -726,7 +736,7 @@ namespace ThumbnailMaker.Handlers
 
 		private void DrawRoadWidth(Rectangle containerRect)
 		{
-			var sizeSize = (int)(Graphics.MeasureString($"{RoadWidth:0.#}m", new Font(FontFamily, ToolTip ? 14F : Small ? 11F : 40F, FontStyle.Bold)).Width);
+			var sizeSize = (int)Graphics.MeasureString($"{RoadWidth:0.#}m", new Font(FontFamily, ToolTip ? 14F : Small ? 11F : 40F, FontStyle.Bold)).Width;
 			var rect = containerRect.Pad(0, Small ? 4 : 14, 0, 0).CenterR(sizeSize + (Small ? 4 : 38), ToolTip ? 30 : Small ? 20 : 80);
 
 			Graphics.SmoothingMode = SmoothingMode.HighQuality;
@@ -735,9 +745,9 @@ namespace ThumbnailMaker.Handlers
 
 			using (var sizePen = new Pen(Color.FromArgb(170, 221, 170, 98), Small ? 1F : 3F))
 			{
-				for (int i = 0, x = rect.X + (Small ? 4 : 8) + (rect.Width - (Small ? 8 : 16)) % (Small ? 3 : 8) / 2; x < rect.X + rect.Width - (Small ? 4 : 8); x += Small ? 3 : 8, i++)
+				for (int i = 0, x = rect.X + (Small ? 4 : 8) + ((rect.Width - (Small ? 8 : 16)) % (Small ? 3 : 8) / 2); x < rect.X + rect.Width - (Small ? 4 : 8); x += Small ? 3 : 8, i++)
 				{
-					Graphics.DrawLine(sizePen, x, rect.Top + rect.Height, x, rect.Top + rect.Height - (i % 5 == 0 ? 2 : 1) * (Small ? 3 : 8));
+					Graphics.DrawLine(sizePen, x, rect.Top + rect.Height, x, rect.Top + rect.Height - ((i % 5 == 0 ? 2 : 1) * (Small ? 3 : 8)));
 				}
 			}
 

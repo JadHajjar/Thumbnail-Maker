@@ -13,7 +13,8 @@ using ThumbnailMaker.Handlers;
 namespace ThumbnailMaker.Domain
 {
 	public class ThumbnailLaneInfo : LaneInfo
-	{ 
+	{
+		public float Position { get; set; }
 		public int Width { get; set; }
 		public bool Sidewalk { get; set; }
 		public bool Buffer { get; set; }

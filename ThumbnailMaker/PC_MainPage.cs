@@ -21,6 +21,7 @@ namespace ThumbnailMaker
 	public partial class PC_MainPage : PanelContent
 	{
 		private bool refreshPaused = true;
+		private RoadConfigControl editedRoad;
 
 		public PC_MainPage()
 		{
@@ -278,6 +279,7 @@ namespace ThumbnailMaker
 
 		private void B_Clear_Click(object sender, EventArgs e)
 		{
+			editedRoad = null;
 			refreshPaused = true;
 			TB_RoadName.Text = string.Empty;
 			TB_Size.Text = string.Empty;
@@ -493,10 +495,12 @@ namespace ThumbnailMaker
 					Lanes = lanes.Select(x => x.AsLaneInfo()).ToList(),
 					LHT = Options.Current.LHT,
 					VanillaWidth = Options.Current.VanillaWidths,
-					DateCreated = DateTime.Now,
+					DateCreated = editedRoad?.Road.DateCreated ?? DateTime.Now,
 				};
 			
-				var file = Utilities.ExportRoad(roadInfo);
+				var file = Utilities.ExportRoad(roadInfo, editedRoad == null ? null : Path.GetFileName(editedRoad.FileName));
+
+				editedRoad?.Dispose();
 
 				RCC.RefreshConfigs();
 			}
@@ -538,7 +542,8 @@ namespace ThumbnailMaker
 
 				P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb)?.FixCurbOrientation();
 
-				L_CurrentlyEditing.Text = $"Currently editing '{r.Name}'";
+				editedRoad = sender as RoadConfigControl;
+				L_CurrentlyEditing.Text = $"Currently editing '{r.Name.RegexRemove("^B?R[B4][RHFP]").Trim()}'";
 				L_CurrentlyEditing.Image = Properties.Resources.I_Info;
 				L_CurrentlyEditing.Visible = true;
 			}
@@ -651,6 +656,7 @@ namespace ThumbnailMaker
 
 		private void L_CurrentlyEditing_Click(object sender, EventArgs e)
 		{
+			editedRoad = null;
 			L_CurrentlyEditing.Visible = false;
 		}
 
