@@ -8,9 +8,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
@@ -30,13 +27,13 @@ namespace ThumbnailMaker.Controls
 
 			foreach (var item in GetSpeedValues())
 			{
-				if (point.X + 96 > 5 * 108 + 12)
+				if (point.X + 96 > (5 * 108) + 12)
 					point = new Point(12, point.Y + 108);
 
 				point.X += 108;
 			}
 
-			Size = new Size(5 * 108 + 12, point.Y + 108);
+			Size = new Size((5 * 108) + 12, point.Y + 108);
 			ShowIcon = false;
 			ShowInTaskbar = false;
 			DoubleBuffered = true;
@@ -71,7 +68,7 @@ namespace ThumbnailMaker.Controls
 		{
 			base.OnCreateControl();
 
-			Location = new Point(_roadLane.PointToScreen(Point.Empty).X+ _roadLane.Width-Width, _roadLane.PointToScreen(Point.Empty).Y + _roadLane.Height);
+			Location = new Point(_roadLane.PointToScreen(Point.Empty).X + _roadLane.Width - Width, _roadLane.PointToScreen(Point.Empty).Y + _roadLane.Height);
 
 			if (Location.Y + Height > Screen.FromControl(this).WorkingArea.Height)
 				Top = Math.Max(0, Top - (_roadLane.Height + Height));
@@ -106,12 +103,12 @@ namespace ThumbnailMaker.Controls
 			if (_roadLane.Lane.SpeedLimit == null)
 				e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.ActiveColor, 2.5F), rectangle, 16);
 
-			using(var icon = ResourceManager.GetImage(LaneDecoration.None, false))
-			if (icon != null)
-			{
-				e.Graphics.DrawIcon(_roadLane.Lane.SpeedLimit == null ? icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor)) : icon
-					, rectangle, new Size(80, 80));
-			}
+			using (var icon = ResourceManager.GetImage(LaneDecoration.None, false))
+				if (icon != null)
+				{
+					e.Graphics.DrawIcon(_roadLane.Lane.SpeedLimit == null ? icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor)) : icon
+						, rectangle, new Size(80, 80));
+				}
 
 			if (rectangle.Contains(cursor))
 			{
@@ -120,7 +117,7 @@ namespace ThumbnailMaker.Controls
 			}
 			else if (_roadLane.Lane.SpeedLimit != null)
 				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
-			
+
 			point.X += 108;
 
 			foreach (var speed in GetSpeedValues().Skip(1))

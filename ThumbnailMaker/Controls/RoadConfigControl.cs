@@ -1,19 +1,12 @@
 ﻿using Extensions;
 
-using Newtonsoft.Json;
-
 using SlickControls;
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 
 using ThumbnailMaker.Domain;
 using ThumbnailMaker.Handlers;
@@ -66,8 +59,8 @@ namespace ThumbnailMaker.Controls
 		{
 			var deleteSize = UI.Scale(new Size(26, 26), UI.UIScale);
 
-			folderRect = new Rectangle(Width - deleteSize.Width - 6, Height / 6 - deleteSize.Height / 6 + 1, deleteSize.Width, deleteSize.Height);
-			deleteRect = new Rectangle(Width - deleteSize.Width - 6, Height * 5 / 6 - deleteSize.Height * 5 / 6 + 5, deleteSize.Width, deleteSize.Height);
+			folderRect = new Rectangle(Width - deleteSize.Width - 6, (Height / 6) - (deleteSize.Height / 6) + 1, deleteSize.Width, deleteSize.Height);
+			deleteRect = new Rectangle(Width - deleteSize.Width - 6, (Height * 5 / 6) - (deleteSize.Height * 5 / 6) + 5, deleteSize.Width, deleteSize.Height);
 
 			var mouse = PointToClient(Cursor.Position);
 			var deleteHovered = deleteRect.Contains(mouse);
@@ -80,13 +73,13 @@ namespace ThumbnailMaker.Controls
 			e.Graphics.FillRoundedRectangle(new SolidBrush(deleteHovered || folderHovered ? FormDesign.Design.AccentBackColor :
 				HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveColor :
 				HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor.MergeColor(FormDesign.Design.AccentBackColor, 35) : FormDesign.Design.AccentBackColor), ClientRectangle.Pad(3, 6, 3, 1), 4);
-			
+
 			SlickButton.DrawButton(e, deleteRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Delete, null, deleteHovered ? HoverState : HoverState.Normal, ColorStyle.Red);
 			SlickButton.DrawButton(e, folderRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Folder, null, folderHovered ? HoverState : HoverState.Normal, ColorStyle.Active);
 
 			var bottomY = Height - UI.Font(8.25F).Height - 6;
 			var foreColor = !deleteHovered && !folderHovered && HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
-			
+
 			e.Graphics.DrawString(Road.Name.RegexRemove("^B?R[B4][RHFP]").Trim()
 				, UI.Font(9.75F, FontStyle.Bold)
 				, new SolidBrush(foreColor)
@@ -95,11 +88,11 @@ namespace ThumbnailMaker.Controls
 
 			foreColor = foreColor.MergeColor(FormDesign.Design.AccentBackColor, 70);
 
-			var portion = (Width - startX + Width - deleteRect.X - 24 * 6) / 2;
+			var portion = (Width - startX + Width - deleteRect.X - (24 * 6)) / 2;
 
 			if (!string.IsNullOrEmpty(RoadSize))
 			{
-				e.Graphics.DrawImage(Properties.Resources.I_Size.Color(foreColor), new Rectangle(startX + 10, bottomY + (UI.Font(8.25F).Height - 14 )/ 2, 16, 16));
+				e.Graphics.DrawImage(Properties.Resources.I_Size.Color(foreColor), new Rectangle(startX + 10, bottomY + ((UI.Font(8.25F).Height - 14) / 2), 16, 16));
 
 				e.Graphics.DrawString(RoadSize + "m"
 					, UI.Font(8.25F)
@@ -109,7 +102,7 @@ namespace ThumbnailMaker.Controls
 
 			if (!string.IsNullOrEmpty(RoadSpeed))
 			{
-				e.Graphics.DrawImage(Properties.Resources.I_SpeedLimit.Color(foreColor), new Rectangle(startX + 29 + portion, bottomY + (UI.Font(8.25F).Height - 14) / 2, 16, 16));
+				e.Graphics.DrawImage(Properties.Resources.I_SpeedLimit.Color(foreColor), new Rectangle(startX + 29 + portion, bottomY + ((UI.Font(8.25F).Height - 14) / 2), 16, 16));
 
 				e.Graphics.DrawString(RoadSpeed + (Road.RegionType == RegionType.USA ? "mph" : "km/h")
 					, UI.Font(8.25F)
@@ -120,7 +113,7 @@ namespace ThumbnailMaker.Controls
 			if (!deleteHovered && !folderHovered)
 				DrawFocus(e.Graphics, ClientRectangle.Pad(3, 6, 3, 1), 4);
 
-			e.Graphics.TranslateTransform(7, 3 + (int)(Height - 50 * UI.UIScale) / 2);
+			e.Graphics.TranslateTransform(7, 3 + ((int)(Height - (50 * UI.UIScale)) / 2));
 
 			using (var image = new Bitmap(Image, UI.Scale(new Size(55, 50), UI.UIScale)))
 			using (var texture = new TextureBrush(image))

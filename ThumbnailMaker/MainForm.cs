@@ -3,14 +3,7 @@
 using SlickControls;
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Handlers;
@@ -29,12 +22,12 @@ namespace ThumbnailMaker
 
 			try
 			{ SetPanel<PC_MainPage>(panelItem1); }
-			catch(Exception ex)
-			{ MessagePrompt.Show(ex.ToString(),"Error"); }
+			catch (Exception ex)
+			{ MessagePrompt.Show(ex.ToString(), "Error"); }
 
 			var timer = new System.Timers.Timer(1000);
 
-			timer.Elapsed += (s, e) => 
+			timer.Elapsed += (s, e) =>
 			{
 				if (File.Exists(Path.Combine(Utilities.Folder, "Wake")))
 				{

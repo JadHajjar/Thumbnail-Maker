@@ -5,9 +5,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using System.Xml.Serialization;
 
 using ThumbnailMaker.Domain;
@@ -92,7 +89,7 @@ namespace ThumbnailMaker.Legacy
 				newRoad.Lanes[newRoad.Lanes.Count - 1].Decorations = LaneDecoration.None;
 
 			newRoad.Lanes.Insert(newRoad.Lanes.Count - 1, new LaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Forward });
-			
+
 			return newRoad;
 		}
 
@@ -214,16 +211,19 @@ namespace ThumbnailMaker.Legacy
 		public float CustomSpeedLimit { get; set; }
 		public bool AddStopToFiller { get; set; }
 
-		public static explicit operator LaneInfo_V0(TmLane_V0 l) => new LaneInfo_V0
+		public static explicit operator LaneInfo_V0(TmLane_V0 l)
 		{
-			Type = l.LaneType,
-			Direction = l.LaneDirection,
-			Lanes = l.Lanes,
-			AddStopToFiller = l.AddStopToFiller,
-			CustomWidth = l.CustomLaneWidth == -1 ? 0 : l.CustomLaneWidth,
-			Elevation = l.CustomVerticalOffset == -1 ? (float?)null : l.CustomVerticalOffset,
-			SpeedLimit = l.CustomSpeedLimit == -1 ? (float?)null : l.CustomSpeedLimit
-		};
+			return new LaneInfo_V0
+			{
+				Type = l.LaneType,
+				Direction = l.LaneDirection,
+				Lanes = l.Lanes,
+				AddStopToFiller = l.AddStopToFiller,
+				CustomWidth = l.CustomLaneWidth == -1 ? 0 : l.CustomLaneWidth,
+				Elevation = l.CustomVerticalOffset == -1 ? (float?)null : l.CustomVerticalOffset,
+				SpeedLimit = l.CustomSpeedLimit == -1 ? (float?)null : l.CustomSpeedLimit
+			};
+		}
 	}
 
 	public class LaneInfo_V0

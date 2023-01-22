@@ -1,12 +1,8 @@
 ﻿using Extensions;
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
 
 using ThumbnailMaker.Handlers;
 
@@ -53,18 +49,21 @@ namespace ThumbnailMaker.Domain
 			Type = laneInfo.Type;
 		}
 
-		public LaneInfo AsLaneInfo() => new LaneInfo
+		public LaneInfo AsLaneInfo()
 		{
-			CustomWidth = CustomWidth,
-			Decorations = Decorations,
-			Direction = Direction,
-			Elevation = Elevation,
-			ParkingAngle = ParkingAngle,
-			SpeedLimit = SpeedLimit,
-			Type = Type,
-			FillerPadding = FillerPadding,
-			PropAngle = PropAngle
-		};
+			return new LaneInfo
+			{
+				CustomWidth = CustomWidth,
+				Decorations = Decorations,
+				Direction = Direction,
+				Elevation = Elevation,
+				ParkingAngle = ParkingAngle,
+				SpeedLimit = SpeedLimit,
+				Type = Type,
+				FillerPadding = FillerPadding,
+				PropAngle = PropAngle
+			};
+		}
 
 		public static Color GetColor(LaneType laneType)
 		{

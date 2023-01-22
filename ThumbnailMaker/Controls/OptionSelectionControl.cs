@@ -7,11 +7,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using ThumbnailMaker.Domain;
 using ThumbnailMaker.Handlers;
 
 namespace ThumbnailMaker.Controls
@@ -22,7 +19,7 @@ namespace ThumbnailMaker.Controls
 
 		public Action<Graphics, Rectangle, T> DrawAction { get; private set; }
 		public Type EnumType { get; private set; }
-		public T SelectedValue 
+		public T SelectedValue
 		{
 			get => _selectedValue;
 			set
@@ -47,7 +44,8 @@ namespace ThumbnailMaker.Controls
 		public OptionSelectionControl(Func<T, Image> image) : this((g, r, t) =>
 		{
 			g.DrawIcon(image(t), r, r.Size);
-		}) { }
+		})
+		{ }
 
 		protected override void UIChanged()
 		{
@@ -108,7 +106,10 @@ namespace ThumbnailMaker.Controls
 			Show(_control.FindForm());
 		}
 
-		private IEnumerable<T> GetValues() => typeof(T).GetEnumValues().Cast<T>();
+		private IEnumerable<T> GetValues()
+		{
+			return typeof(T).GetEnumValues().Cast<T>();
+		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{

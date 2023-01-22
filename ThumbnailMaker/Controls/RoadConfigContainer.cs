@@ -1,16 +1,10 @@
 ﻿using Extensions;
 
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
@@ -35,8 +29,10 @@ namespace ThumbnailMaker.Controls
 
 			_instance = this;
 
-			var _systemWatcher = new Timer(1000);
-			_systemWatcher.AutoReset = false;
+			var _systemWatcher = new Timer(1000)
+			{
+				AutoReset = false
+			};
 			_systemWatcher.Elapsed += (s, e) => RefreshConfigs(s as Timer);
 			_systemWatcher.Start();
 		}

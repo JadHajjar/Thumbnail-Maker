@@ -1,11 +1,5 @@
-﻿using Extensions;
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -41,13 +35,13 @@ namespace ThumbnailMaker.Handlers
 
 			switch (version)
 			{
-				case CURRENT_VERSION: 
+				case CURRENT_VERSION:
 					xml = new XmlSerializer(typeof(RoadInfo));
 
 					using (var stream = File.OpenRead(fileName))
 						return (RoadInfo)xml.Deserialize(stream);
 
-				case 0: 
+				case 0:
 					xml = new XmlSerializer(typeof(RoadInfo_V0));
 
 					using (var stream = File.OpenRead(fileName))
@@ -62,7 +56,6 @@ namespace ThumbnailMaker.Handlers
 				default:
 					throw new Exception("Unsupported Road Version");
 			}
-
 		}
 
 		public static void UpdateV1()

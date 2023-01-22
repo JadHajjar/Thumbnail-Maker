@@ -3,11 +3,7 @@
 using SlickControls;
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
@@ -30,13 +26,13 @@ namespace ThumbnailMaker.Controls
 				if (!Utilities.IsCompatible(laneType, roadLane.Lane.Type))
 					continue;
 
-				if (point.X + 96 > 6 * 108 + 12)
+				if (point.X + 96 > (6 * 108) + 12)
 					point = new Point(12, point.Y + 108);
 
 				point.X += 108;
 			}
 
-			Size = new Size(6 * 108 + 12, point.Y + 108);
+			Size = new Size((6 * 108) + 12, point.Y + 108);
 			ShowIcon = false;
 			ShowInTaskbar = false;
 			DoubleBuffered = true;

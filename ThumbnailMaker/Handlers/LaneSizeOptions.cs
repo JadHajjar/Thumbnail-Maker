@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace ThumbnailMaker.Domain
@@ -18,7 +16,7 @@ namespace ThumbnailMaker.Domain
 
 		public float DiagonalParkingSize
 		{
-			get => _diagonalParkingSize; 
+			get => _diagonalParkingSize;
 			set
 			{
 				_diagonalParkingSize = value;
@@ -73,7 +71,10 @@ namespace ThumbnailMaker.Domain
 
 		public static LaneSizeOptions LaneSizes { get; private set; } = new LaneSizeOptions();
 
-		public static void Refresh() => LaneSizes = new LaneSizeOptions();
+		public static void Refresh()
+		{
+			LaneSizes = new LaneSizeOptions();
+		}
 
 		public LaneSizeOptions()
 		{

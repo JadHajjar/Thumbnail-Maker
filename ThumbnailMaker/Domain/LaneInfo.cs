@@ -39,7 +39,10 @@ namespace ThumbnailMaker.Domain
 			return Type.GetValues().Max(x => LaneSizeOptions.LaneSizes[x]);
 		}
 
-		public override string ToString() => ToString(0);
+		public override string ToString()
+		{
+			return ToString(0);
+		}
 
 		public string ToString(int lanes)
 		{

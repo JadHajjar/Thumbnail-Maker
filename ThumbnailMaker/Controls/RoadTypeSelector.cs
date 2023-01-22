@@ -3,11 +3,7 @@
 using SlickControls;
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
@@ -32,13 +28,13 @@ namespace ThumbnailMaker.Controls
 				if ((laneType & (LaneType.Curb | LaneType.Train)) != 0)
 					continue;
 
-				if (point.X + 96 > 5 * 108 + 12)
+				if (point.X + 96 > (5 * 108) + 12)
 					point = new Point(12, point.Y + 108);
 
 				point.X += 108;
 			}
 
-			Size = new Size(5 * 108 + 12, point.Y + 108);
+			Size = new Size((5 * 108) + 12, point.Y + 108);
 			ShowIcon = false;
 			ShowInTaskbar = false;
 			DoubleBuffered = true;
@@ -138,7 +134,7 @@ namespace ThumbnailMaker.Controls
 						_roadLane.Lane.Type = laneType;
 					else
 						_roadLane.Lane.Type = _roadLane.Lane.Type.HasFlag(laneType) ? _roadLane.Lane.Type & ~laneType : _roadLane.Lane.Type | laneType;
-				
+
 					Invalidate();
 					_roadLane.RefreshRoad();
 					return;

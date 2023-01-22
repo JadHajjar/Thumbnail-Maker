@@ -9,7 +9,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Security.AccessControl;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Controls;
@@ -41,7 +40,7 @@ namespace ThumbnailMaker
 			RoadTypeControl.SelectedValueChanged += (s, e) => SetupType(RoadTypeControl.SelectedValue);
 			SideTextureControl.SelectedValueChanged += (s, e) => RefreshPreview();
 			AsphaltTextureControl.SelectedValueChanged += (s, e) => RefreshPreview();
-			RegionTypeControl.SelectedValueChanged += (s, e) => 
+			RegionTypeControl.SelectedValueChanged += (s, e) =>
 			{
 				TB_SpeedLimit.LabelText = $"Speed Limit ({(RegionTypeControl.SelectedValue == RegionType.USA ? "mph" : "km/h")})";
 
@@ -165,7 +164,10 @@ namespace ThumbnailMaker
 				RefreshPreview();
 		}
 
-		private List<ThumbnailLaneInfo> GetLanes() => P_Lanes.Controls.OfType<RoadLane>().Reverse().Select(x => x.Lane).ToList();
+		private List<ThumbnailLaneInfo> GetLanes()
+		{
+			return P_Lanes.Controls.OfType<RoadLane>().Reverse().Select(x => x.Lane).ToList();
+		}
 
 		private void RefreshPreview()
 		{
@@ -188,7 +190,7 @@ namespace ThumbnailMaker
 					DrawThumbnail(g, lanes, small || toolTip, toolTip);
 
 					PB.Image = img;
-					PB.SizeMode = small&&!toolTip ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
+					PB.SizeMode = small && !toolTip ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
 				}
 
 				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? Utilities.GetRoadName(GetRoadType(), lanes) : TB_RoadName.Text;
@@ -237,7 +239,7 @@ namespace ThumbnailMaker
 				AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Backwards }).SendToBack();
 			if (rightSidewalk == null)
 				AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Forward });
-			
+
 			var first = P_Lanes.Controls[0] as RoadLane;
 			var last = P_Lanes.Controls[P_Lanes.Controls.Count - 1] as RoadLane;
 
@@ -497,19 +499,30 @@ namespace ThumbnailMaker
 					VanillaWidth = Options.Current.VanillaWidths,
 					DateCreated = editedRoad?.Road.DateCreated ?? DateTime.Now,
 				};
-			
+
 				var file = Utilities.ExportRoad(roadInfo, editedRoad == null ? null : Path.GetFileName(editedRoad.FileName));
 
 				editedRoad?.Dispose();
 
 				RCC.RefreshConfigs();
+
+				editedRoad = RCC.P_Configs.Controls.OfType<RoadConfigControl>().FirstOrDefault(x => x.FileName.Equals(file, StringComparison.InvariantCultureIgnoreCase));
+				L_CurrentlyEditing.Text = $"Currently editing '{roadInfo.Name.RegexRemove("^B?R[B4][RHFP]").Trim()}'";
+				L_CurrentlyEditing.Image = Properties.Resources.I_Info;
+				L_CurrentlyEditing.Visible = true;
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 		}
 
-		private RoadType GetRoadType() => RoadTypeControl.SelectedValue;
+		private RoadType GetRoadType()
+		{
+			return RoadTypeControl.SelectedValue;
+		}
 
-		private RegionType GetRegion() => RegionTypeControl.SelectedValue;
+		private RegionType GetRegion()
+		{
+			return RegionTypeControl.SelectedValue;
+		}
 
 		private void RCC_LoadConfiguration(object sender, RoadInfo r)
 		{
@@ -630,7 +643,7 @@ namespace ThumbnailMaker
 				e.IsInputKey = true;
 
 				TB_RoadName_Leave(sender, e);
-			}	
+			}
 		}
 
 		private void TB_RoadName_KeyDown(object sender, KeyEventArgs e)

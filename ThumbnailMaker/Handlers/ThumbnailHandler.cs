@@ -34,7 +34,7 @@ namespace ThumbnailMaker.Handlers
 			using (var stream = assembly.GetManifestResourceStream("ThumbnailMaker.Resources.Gogh.ttf"))
 			{
 				var streamData = new byte[stream.Length];
-				_ = stream.Read(streamData, 0, streamData.Length);
+				stream.Read(streamData, 0, streamData.Length);
 				var data = Marshal.AllocCoTaskMem(streamData.Length);
 				Marshal.Copy(streamData, 0, data, streamData.Length);
 				pfc.AddMemoryFont(data, streamData.Length);
@@ -632,7 +632,7 @@ namespace ThumbnailMaker.Handlers
 
 		private LaneDecoration GetLightType(ThumbnailLaneInfo lane)
 		{
-			if (Lanes.Any(x => x.Decorations.HasAnyFlag(LaneDecoration.StreetLight, LaneDecoration.StreetLight)))
+			if (Lanes.Any(x => x.Decorations.HasAnyFlag(LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight)))
 			{
 				return LaneDecoration.None;
 			}

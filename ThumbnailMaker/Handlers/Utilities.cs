@@ -1,20 +1,13 @@
 ﻿using Extensions;
 
-using SlickControls;
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 using ThumbnailMaker.Domain;
-
-using static System.Windows.Forms.AxHost;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ThumbnailMaker.Handlers
 {
@@ -26,7 +19,7 @@ namespace ThumbnailMaker.Handlers
 		{
 			var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
 				, "Colossal Order", "Cities_Skylines", "RoadBuilder", "Roads"));
-			
+
 			Directory.CreateDirectory(appdata);
 
 			road.Version = LegacyUtil.CURRENT_VERSION;
@@ -231,13 +224,12 @@ namespace ThumbnailMaker.Handlers
 				return 0;
 			}
 
-			var leftPavementWidth = sizeLanes.Where(x => sizeLanes.IndexOf(x) <= sizeLanes.IndexOf(leftCurb)).Sum(x => x.LaneWidth);
-			var rightPavementWidth = sizeLanes.Where(x => sizeLanes.IndexOf(x) >= sizeLanes.IndexOf(rightCurb)).Sum(x => x.LaneWidth);
-			var PavementWidth = Math.Max(1.5F, Math.Max(leftPavementWidth, rightPavementWidth));
-			var AsphaltWidth = sizeLanes.Where(x => sizeLanes.IndexOf(x) > sizeLanes.IndexOf(leftCurb) && sizeLanes.IndexOf(x) < sizeLanes.IndexOf(rightCurb)).Sum(x => x.LaneWidth) + (2 * bufferSize);
-			var TotalWidth = 2 * PavementWidth + AsphaltWidth;
+			var leftPavementWidth = Math.Max(1.5F, sizeLanes.Where(x => sizeLanes.IndexOf(x) <= sizeLanes.IndexOf(leftCurb)).Sum(x => x.LaneWidth));
+			var rightPavementWidth = Math.Max(1.5F, sizeLanes.Where(x => sizeLanes.IndexOf(x) >= sizeLanes.IndexOf(rightCurb)).Sum(x => x.LaneWidth));
+			var asphaltWidth = sizeLanes.Where(x => sizeLanes.IndexOf(x) > sizeLanes.IndexOf(leftCurb) && sizeLanes.IndexOf(x) < sizeLanes.IndexOf(rightCurb)).Sum(x => x.LaneWidth) + (2 * bufferSize);
+			var totalWidth = leftPavementWidth + rightPavementWidth + asphaltWidth;
 
-			return (float)Math.Round(TotalWidth, 2);
+			return (float)Math.Round(totalWidth, 2);
 		}
 
 		public static bool? IsOneWay<T>(IEnumerable<T> lanes) where T : LaneInfo
@@ -321,7 +313,7 @@ namespace ThumbnailMaker.Handlers
 			{
 				yield return @enum;
 				yield break;
-			}	
+			}
 
 			foreach (T value in Enum.GetValues(typeof(T)))
 			{

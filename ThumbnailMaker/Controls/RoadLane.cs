@@ -215,7 +215,7 @@ namespace ThumbnailMaker.Controls
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			var cursor = HoverState.HasFlag(HoverState.Hovered) ? PointToClient(Cursor.Position) : new Point(-1,-1);
+			var cursor = HoverState.HasFlag(HoverState.Hovered) ? PointToClient(Cursor.Position) : new Point(-1, -1);
 
 			e.Graphics.Clear(BackColor);
 
@@ -343,7 +343,7 @@ namespace ThumbnailMaker.Controls
 			{
 				if (Lane.Decorations == LaneDecoration.None)
 				{
-					_ = icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor));
+					icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor));
 				}
 
 				using (icon)
@@ -369,7 +369,7 @@ namespace ThumbnailMaker.Controls
 		{
 			var foreColor = _dragDropActive ? Color.FromArgb(150, Lane.Color.GetAccentColor()) : FormDesign.Design.ForeColor;
 
-			var deleteRectangle = new Rectangle(Width - (Lane.Type != LaneType.Curb ? scale : (2*scale+12)), yIndex, Lane.Type != LaneType.Curb ? scale : (2 * scale+12), scale);
+			var deleteRectangle = new Rectangle(Width - (Lane.Type != LaneType.Curb ? scale : ((2 * scale) + 12)), yIndex, Lane.Type != LaneType.Curb ? scale : ((2 * scale) + 12), scale);
 
 			e.Graphics.DrawImage((Lane.Type != LaneType.Curb ? Properties.Resources.I_X : Properties.Resources.I_Info).Color(deleteRectangle.Contains(cursor) ? (Lane.Type != LaneType.Curb ? FormDesign.Design.RedColor : FormDesign.Design.ActiveColor) : foreColor), deleteRectangle.CenterR(16, 16));
 
@@ -412,9 +412,9 @@ namespace ThumbnailMaker.Controls
 			{
 				if (!_dragDropActive)
 				{
-					using(var brush = new LinearGradientBrush(ClientRectangle.Pad(-1, -1, 0, 6), Lane.Color, Color.FromArgb(0, Lane.Color), Lane.Direction == LaneDirection.Forward?90:-90))
+					using (var brush = new LinearGradientBrush(ClientRectangle.Pad(-1, -1, 0, 6), Lane.Color, Color.FromArgb(0, Lane.Color), Lane.Direction == LaneDirection.Forward ? 90 : -90))
 					using (var pen = new Pen(brush, 2F))
-							e.Graphics.DrawRoundedRectangle(pen, ClientRectangle.Pad(0, 0, 1, 7), 6);
+						e.Graphics.DrawRoundedRectangle(pen, ClientRectangle.Pad(0, 0, 1, 7), 6);
 				}
 			}
 			else

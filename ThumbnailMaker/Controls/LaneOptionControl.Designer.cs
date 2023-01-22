@@ -105,8 +105,6 @@
 			this.PB_512.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.PB_512.TabIndex = 0;
 			this.PB_512.TabStop = false;
-			this.PB_512.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_512_Paint);
-			this.PB_512.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PB_100_MouseClick);
 			// 
 			// pictureBox1
 			// 
