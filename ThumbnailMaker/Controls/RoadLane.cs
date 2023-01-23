@@ -22,6 +22,7 @@ namespace ThumbnailMaker.Controls
 		private bool _dragDropActive;
 		private Rectangle grabberRectangle;
 		private int scale;
+		private Rectangle copyRectangle;
 
 		public RoadLane(ThumbnailLaneInfo lane = null)
 		{
@@ -164,6 +165,16 @@ namespace ThumbnailMaker.Controls
 				return;
 			}
 
+			if (copyRectangle.Contains(e.Location))
+			{
+				DuplicateLaneClick(this, e);
+
+				if (e.Button == MouseButtons.Left)
+					GrabberClick(this, e);
+
+				return;
+			}
+
 			base.OnMouseDown(e);
 		}
 
@@ -190,7 +201,7 @@ namespace ThumbnailMaker.Controls
 				}
 			}
 
-			Cursor = grabberRectangle.Contains(e.Location) ? Cursors.SizeAll : Cursors.Default;
+			Cursor = grabberRectangle.Contains(e.Location) ? Cursors.SizeAll : copyRectangle.Contains(e.Location) ? Cursors.Hand : Cursors.Default;
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
@@ -305,7 +316,7 @@ namespace ThumbnailMaker.Controls
 
 			var foreColor = _dragDropActive ? Color.FromArgb(150, Lane.Color.GetAccentColor()) : FormDesign.Design.ForeColor;
 
-			var copyRectangle = new Rectangle(leftX, yIndex, scale, scale);
+			copyRectangle = new Rectangle(leftX, yIndex, scale, scale);
 
 			if (copyRectangle.Contains(cursor))
 			{
@@ -317,7 +328,7 @@ namespace ThumbnailMaker.Controls
 			DrawLine(e, leftX - 6);
 
 			_tooltips[copyRectangle] = "Duplicate this lane, right-click to also flip its direction";
-			_clickActions[copyRectangle] = DuplicateLaneClick;
+			//_clickActions[copyRectangle] = DuplicateLaneClick;
 		}
 
 		private void DrawDecoIcon(PaintEventArgs e, Point cursor, ref int iconX)
