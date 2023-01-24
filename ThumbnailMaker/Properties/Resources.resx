@@ -139,6 +139,9 @@
   <data name="I_2W" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_2W.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="I_AddTag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\I_AddTag.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="I_Asphalt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_Asphalt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -181,6 +184,9 @@
   <data name="I_Plus" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_Plus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="I_RemoveTag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\I_RemoveTag.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="I_Ruined" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_Ruined.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -189,6 +195,9 @@
   </data>
   <data name="I_SpeedLimit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_SpeedLimit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="I_Tag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\I_Tag.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="I_Unavailable" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\I_Unavailable.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

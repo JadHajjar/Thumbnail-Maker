@@ -75,7 +75,7 @@ namespace ThumbnailMaker.Controls
 				HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor.MergeColor(FormDesign.Design.AccentBackColor, 35) : FormDesign.Design.AccentBackColor), ClientRectangle.Pad(3, 6, 3, 1), 4);
 
 			SlickButton.DrawButton(e, deleteRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Delete, null, deleteHovered ? HoverState : HoverState.Normal, ColorStyle.Red);
-			SlickButton.DrawButton(e, folderRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Folder, null, folderHovered ? HoverState : HoverState.Normal, ColorStyle.Active);
+			SlickButton.DrawButton(e, folderRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Copy, null, folderHovered ? HoverState : HoverState.Normal, ColorStyle.Active);
 
 			var bottomY = Height - UI.Font(8.25F).Height - 6;
 			var foreColor = !deleteHovered && !folderHovered && HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
@@ -139,11 +139,12 @@ namespace ThumbnailMaker.Controls
 
 			if (folderRect.Contains(e.Location))
 			{
-				Process.Start(new ProcessStartInfo
-				{
-					FileName = "explorer",
-					Arguments = $"/e, /select, \"{FileName}\""
-				});
+				Clipboard.SetFileDropList(new System.Collections.Specialized.StringCollection() { FileName });
+				//Process.Start(new ProcessStartInfo
+				//{
+				//	FileName = "explorer",
+				//	Arguments = $"/e, /select, \"{FileName}\""
+				//});
 
 				return;
 			}

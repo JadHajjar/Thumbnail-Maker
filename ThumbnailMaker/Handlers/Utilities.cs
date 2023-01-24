@@ -136,9 +136,12 @@ namespace ThumbnailMaker.Handlers
 			if (asymetrical)
 				sb.Add("Asymmetrical");
 
-			sb.Add(oneWay.Switch(true, "One-Way ", false, "Two-Way ", string.Empty));
+			sb.Add(oneWay.Switch(true, "One-Way", false, "Two-Way", string.Empty));
 
-			sb.Add($"{road.RoadType} Road,");
+			if (road.RoadType != RoadType.Road)
+				sb.Add($"{road.RoadType}");
+
+			sb.Add($"Road,");
 
 			var current = (LaneInfo)null;
 			var currentCount = 0;

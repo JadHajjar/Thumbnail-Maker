@@ -91,9 +91,9 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(B_AddLane, "Add a new empty lane");
 		}
 
-		private Image GetTextureIcon(TextureType arg3)
+		private Image GetTextureIcon(TextureType texture)
 		{
-			switch (arg3)
+			switch (texture)
 			{
 				case TextureType.Pavement:
 					return Properties.Resources.L_D_2;
@@ -108,9 +108,9 @@ namespace ThumbnailMaker
 			return null;
 		}
 
-		private Image GetTextureIcon(BridgeTextureType arg3)
+		private Image GetTextureIcon(BridgeTextureType texture)
 		{
-			switch (arg3)
+			switch (texture)
 			{
 				case BridgeTextureType.Pavement:
 					return Properties.Resources.L_D_2;
@@ -121,9 +121,9 @@ namespace ThumbnailMaker
 			return null;
 		}
 
-		private Image GetTextureIcon(AsphaltStyle arg3)
+		private Image GetTextureIcon(AsphaltStyle style)
 		{
-			switch (arg3)
+			switch (style)
 			{
 				case AsphaltStyle.None:
 					return Properties.Resources.L_C_0;
@@ -139,6 +139,8 @@ namespace ThumbnailMaker
 			base.DesignChanged(design);
 
 			L_CurrentlyEditing.ForeColor = design.ActiveColor;
+			L_RoadDesc.ForeColor = design.InfoColor;
+			L_NoTags.ForeColor = design.LabelColor;
 
 			RefreshPreview();
 		}
@@ -148,6 +150,7 @@ namespace ThumbnailMaker
 			base.UIChanged();
 
 			L_RoadName.Font = UI.Font(9.75F, FontStyle.Bold);
+			L_RoadDesc.Font = L_NoTags.Font = UI.Font(7.5F);
 
 			TLP_Main.ColumnStyles[TLP_Main.ColumnStyles.Count - 2].Width = (float)(276 * UI.UIScale);
 			PB.Size = UI.Scale(new Size(256, 256), UI.UIScale);
@@ -200,6 +203,7 @@ namespace ThumbnailMaker
 				}
 
 				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? Utilities.GetRoadName(GetRoadType(), lanes) : TB_RoadName.Text;
+				L_RoadDesc.Text = Utilities.GetRoadDescription(GetRoadInfo(lanes));
 				L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
 
 				var speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse();
@@ -487,24 +491,7 @@ namespace ThumbnailMaker
 					Notification.Create("Road name too Long", "Your road was exported, but the generated road name is too long for the game.\nPlease keep that in mind", PromptIcons.Info, null)
 						.Show(Form, 15);
 				}
-
-				var roadInfo = new RoadInfo
-				{
-					CustomName = TB_RoadName.Text,
-					CustomText = TB_CustomText.Text,
-					BufferWidth = TB_BufferSize.Text.SmartParseF(),
-					RoadWidth = TB_Size.Text.SmartParseF(),
-					RegionType = GetRegion(),
-					RoadType = GetRoadType(),
-					SideTexture = SideTextureControl.SelectedValue,
-					BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
-					AsphaltStyle = AsphaltTextureControl.SelectedValue,
-					SpeedLimit = TB_SpeedLimit.Text.SmartParse(),
-					Lanes = lanes.Select(x => x.AsLaneInfo()).ToList(),
-					LHT = Options.Current.LHT,
-					VanillaWidth = Options.Current.VanillaWidths,
-					DateCreated = editedRoad?.Road.DateCreated ?? DateTime.Now,
-				};
+				var roadInfo = GetRoadInfo(lanes);
 
 				var file = Utilities.ExportRoad(roadInfo, editedRoad == null ? null : Path.GetFileName(editedRoad.FileName));
 
@@ -518,6 +505,27 @@ namespace ThumbnailMaker
 				L_CurrentlyEditing.Visible = true;
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
+		}
+
+		private RoadInfo GetRoadInfo(List<ThumbnailLaneInfo> lanes = null)
+		{
+			return new RoadInfo
+			{
+				CustomName = TB_RoadName.Text,
+				CustomText = TB_CustomText.Text,
+				BufferWidth = TB_BufferSize.Text.SmartParseF(),
+				RoadWidth = TB_Size.Text.SmartParseF(),
+				RegionType = GetRegion(),
+				RoadType = GetRoadType(),
+				SideTexture = SideTextureControl.SelectedValue,
+				BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
+				AsphaltStyle = AsphaltTextureControl.SelectedValue,
+				SpeedLimit = TB_SpeedLimit.Text.SmartParse(),
+				Lanes = (lanes ?? GetLanes()).Select(x => x.AsLaneInfo()).ToList(),
+				LHT = Options.Current.LHT,
+				VanillaWidth = Options.Current.VanillaWidths,
+				DateCreated = editedRoad?.Road.DateCreated ?? DateTime.Now,
+			};
 		}
 
 		private RoadType GetRoadType()
@@ -616,12 +624,13 @@ namespace ThumbnailMaker
 
 		private void L_RoadName_MouseEnter(object sender, EventArgs e)
 		{
-			L_RoadName.ForeColor = FormDesign.Design.ActiveColor;
+			(sender as Label).ForeColor = FormDesign.Design.ActiveColor;
 		}
 
 		private void L_RoadName_MouseLeave(object sender, EventArgs e)
 		{
 			L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
+			L_RoadDesc.ForeColor = FormDesign.Design.InfoColor;
 		}
 
 		private void L_RoadName_Click(object sender, EventArgs e)
@@ -691,7 +700,7 @@ namespace ThumbnailMaker
 
 		private void B_ViewSavedRoads_Click(object sender, EventArgs e)
 		{
-			AnimationHandler.Animate(RCC, new Size(RCC.Width.If(0, 400, 0), 0), 5, AnimationOption.IgnoreHeight);
+			RCC.Width = RCC.Width.If(0, 400, 0);
 		}
 	}
 }
