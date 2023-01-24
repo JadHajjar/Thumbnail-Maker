@@ -52,19 +52,23 @@ namespace ThumbnailMaker
 
 			SetupType(RoadTypeControl.SelectedValue);
 
-			using (var img = new Bitmap(65, 24))
+			using (var img = new Bitmap(65 * 2, 24 * 2))
 			using (var g = Graphics.FromImage(img))
 			{
 				g.SmoothingMode = SmoothingMode.AntiAlias;
-				g.FillRoundedRectangle(Brushes.Black, new Rectangle(0, 0, 64, 23), 6);
-				g.DrawImage(B_CopyName.Image.Color(Color.White), new Rectangle(4, 4, 16, 16));
-				g.DrawString("COPY", new Font(UI.FontFamily, 8.25F), Brushes.White, new Rectangle(24, 0, 35, 24), new StringFormat
+				using (var path = new Rectangle(64, 24, 64, 23).RoundedRect(5, false))
+					g.FillPath(new SolidBrush(Color.FromArgb(35, 35, 40)), path);
+				g.DrawImage(Properties.Resources.I_Copy.Color(Color.White), new Rectangle(7 + 64, 4 + 24, 16, 16));
+				g.DrawString("COPY", new Font(UI.FontFamily, 8.25F), Brushes.White, new Rectangle(26 + 64, 0 + 24, 35, 24), new StringFormat
 				{
 					LineAlignment = StringAlignment.Center,
 					Alignment = StringAlignment.Center,
 				});
+				g.DrawLine(Pens.White, 66, 26, 69, 26);
+				g.DrawLine(Pens.White, 66, 26, 66, 29);
+				g.DrawLine(Pens.White, 66, 26, 68F, 28);
 
-				PB.Cursor = new Cursor(img.GetHicon());
+				PB.Cursor = L_RoadDesc.Cursor = L_RoadName.Cursor = new Cursor(img.GetHicon());
 			}
 
 			L_CurrentlyEditing.ActiveColor = () => L_CurrentlyEditing.HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.RedColor : FormDesign.Design.ActiveColor;
@@ -74,8 +78,10 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(TB_SpeedLimit, "Manually specify the default speed limit of the road");
 			SlickTip.SetTo(TB_CustomText, "Add custom text to the thumbnail");
 
-			SlickTip.SetTo(B_CopyName, "Copy the generated road name into your clipboard");
-			SlickTip.SetTo(B_CopyDesc, "Copy the generated road description into your clipboard");
+			SlickTip.SetTo(L_RoadName, "Copy the generated road name into your clipboard");
+			SlickTip.SetTo(L_RoadDesc, "Copy the generated road description into your clipboard");
+			SlickTip.SetTo(B_EditName, "Manually change the road's name");
+			SlickTip.SetTo(B_EditDesc, "Manually change the road's description");
 			SlickTip.SetTo(B_SaveThumb, "Saves the thumbnail on your desktop, or to the folder you have copied in your clipboard");
 			SlickTip.SetTo(B_Export, "Exports the road configuration to the Road Builder folder to be generated");
 
@@ -143,7 +149,7 @@ namespace ThumbnailMaker
 
 			L_RoadName.Font = UI.Font(9.75F, FontStyle.Bold);
 
-			TLP_Main.ColumnStyles[TLP_Main.ColumnStyles.Count - 1].Width = (float)(276 * UI.UIScale);
+			TLP_Main.ColumnStyles[TLP_Main.ColumnStyles.Count - 2].Width = (float)(276 * UI.UIScale);
 			PB.Size = UI.Scale(new Size(256, 256), UI.UIScale);
 		}
 
@@ -621,8 +627,8 @@ namespace ThumbnailMaker
 		private void L_RoadName_Click(object sender, EventArgs e)
 		{
 			L_RoadName.Parent = null;
-			B_CopyName.Parent = null;
-			TLP_Right.Controls.Add(TB_RoadName, 0, 0);
+			B_EditName.Parent = null;
+			TLP_Right.Controls.Add(TB_RoadName, 0, 1);
 			TLP_Right.SetColumnSpan(TB_RoadName, 2);
 			TB_RoadName.Focus();
 			TB_RoadName.MaxLength = 32;
@@ -632,8 +638,8 @@ namespace ThumbnailMaker
 		{
 			RefreshPreview();
 			TB_RoadName.Parent = null;
-			TLP_Right.Controls.Add(L_RoadName, 1, 0);
-			TLP_Right.Controls.Add(B_CopyName, 0, 0);
+			TLP_Right.Controls.Add(L_RoadName, 0, 1);
+			TLP_Right.Controls.Add(B_EditName, 1, 1);
 		}
 
 		private void TB_RoadName_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -681,6 +687,11 @@ namespace ThumbnailMaker
 		private void L_CurrentlyEditing_MouseLeave(object sender, EventArgs e)
 		{
 			L_CurrentlyEditing.Image = Properties.Resources.I_Info;
+		}
+
+		private void B_ViewSavedRoads_Click(object sender, EventArgs e)
+		{
+			AnimationHandler.Animate(RCC, new Size(RCC.Width.If(0, 400, 0), 0), 5, AnimationOption.IgnoreHeight);
 		}
 	}
 }

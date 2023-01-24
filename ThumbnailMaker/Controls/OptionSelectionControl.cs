@@ -70,11 +70,20 @@ namespace ThumbnailMaker.Controls
 
 			e.Graphics.FillRoundedRectangle(new SolidBrush(back), rect.Pad(1), 4);
 
-			var iconRect = new Rectangle(0, 0, rect.Height, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
+			if (rect.Width > 33 * UI.FontScale * 3)
+			{
+				var iconRect = new Rectangle(0, 0, rect.Height, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
 
-			DrawAction(e.Graphics, iconRect, _selectedValue);
+				DrawAction(e.Graphics, iconRect, _selectedValue);
 
-			e.Graphics.DrawString(_selectedValue.ToString().FormatWords(), UI.Font(9.75F, FontStyle.Bold), new SolidBrush(fore), rect.Pad(rect.Height, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center });
+				e.Graphics.DrawString(_selectedValue.ToString().FormatWords(), UI.Font(9.75F, FontStyle.Bold), new SolidBrush(fore), rect.Pad(rect.Height, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center });
+			}
+			else
+			{
+				var iconRect = new Rectangle(0, 0, rect.Width, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
+
+				DrawAction(e.Graphics, iconRect, _selectedValue);
+			}
 		}
 
 		protected override void OnMouseClick(MouseEventArgs e)
@@ -94,14 +103,15 @@ namespace ThumbnailMaker.Controls
 		{
 			_control = control;
 
-			Location = new Point(_control.Parent.PointToScreen(Point.Empty).X, _control.PointToScreen(Point.Empty).Y);
-			Size = new Size(_control.Parent.Width, GetValues().Count() * (_control.Height + 6));
 			ShowIcon = false;
 			ShowInTaskbar = false;
 			DoubleBuffered = true;
 			ResizeRedraw = true;
 			FormBorderStyle = FormBorderStyle.None;
 			StartPosition = FormStartPosition.Manual;
+			MinimumSize = Size.Empty;
+			Location = new Point(_control.Parent.PointToScreen(Point.Empty).X, _control.PointToScreen(Point.Empty).Y);
+			Size = new Size(_control.Parent.Width, GetValues().Count() * (_control.Height + 6));
 
 			Show(_control.FindForm());
 		}
@@ -141,11 +151,20 @@ namespace ThumbnailMaker.Controls
 
 				e.Graphics.FillRoundedRectangle(new SolidBrush(back), rect.Pad(1), 4);
 
-				var iconRect = new Rectangle(3, y, rect.Height, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
+				if (rect.Width > 33 * UI.FontScale * 3)
+				{
+					var iconRect = new Rectangle(3, y, rect.Height, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
 
-				_control.DrawAction(e.Graphics, iconRect, item);
+					_control.DrawAction(e.Graphics, iconRect, item);
 
-				e.Graphics.DrawString(item.ToString().FormatWords(), UI.Font(9.75F, FontStyle.Bold), new SolidBrush(fore), rect.Pad(rect.Height, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center });
+					e.Graphics.DrawString(item.ToString().FormatWords(), UI.Font(9.75F, FontStyle.Bold), new SolidBrush(fore), rect.Pad(rect.Height, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center });
+				}
+				else
+				{
+					var iconRect = new Rectangle(0, y, rect.Width, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
+
+					_control.DrawAction(e.Graphics, iconRect, item);
+				}
 
 				y += rect.Height + 6;
 			}

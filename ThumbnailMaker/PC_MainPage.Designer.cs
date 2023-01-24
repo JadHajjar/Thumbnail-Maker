@@ -33,16 +33,19 @@ namespace ThumbnailMaker
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PC_MainPage));
 			this.TLP_Main = new System.Windows.Forms.TableLayoutPanel();
+			this.RCC = new ThumbnailMaker.Controls.RoadConfigContainer();
 			this.slickSpacer2 = new SlickControls.SlickSpacer();
 			this.TLP_Right = new System.Windows.Forms.TableLayoutPanel();
-			this.PB = new System.Windows.Forms.PictureBox();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.B_CopyDesc = new SlickControls.SlickButton();
 			this.B_Export = new SlickControls.SlickButton();
 			this.B_SaveThumb = new SlickControls.SlickButton();
 			this.L_CurrentlyEditing = new SlickControls.SlickLabel();
+			this.B_ViewSavedRoads = new SlickControls.SlickButton();
 			this.L_RoadName = new System.Windows.Forms.Label();
-			this.B_CopyName = new SlickControls.SlickButton();
+			this.L_RoadDesc = new System.Windows.Forms.Label();
+			this.B_EditDesc = new SlickControls.SlickButton();
+			this.B_EditName = new SlickControls.SlickButton();
+			this.PB = new System.Windows.Forms.PictureBox();
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
 			this.GB_AsphaltTexture = new SlickControls.SlickGroupBox();
 			this.GB_Region = new SlickControls.SlickGroupBox();
@@ -54,6 +57,8 @@ namespace ThumbnailMaker
 			this.TB_CustomText = new SlickControls.SlickTextBox();
 			this.TB_SpeedLimit = new SlickControls.SlickTextBox();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.slickScroll1 = new SlickControls.SlickScroll();
+			this.P_Lanes = new ThumbnailMaker.Controls.RoadLaneContainer();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickSpacer3 = new SlickControls.SlickSpacer();
@@ -63,13 +68,10 @@ namespace ThumbnailMaker
 			this.B_ClearLines = new SlickControls.SlickButton();
 			this.B_Options = new SlickControls.SlickButton();
 			this.TB_RoadName = new SlickControls.SlickTextBox();
-			this.RCC = new ThumbnailMaker.Controls.RoadConfigContainer();
-			this.slickScroll1 = new SlickControls.SlickScroll();
-			this.P_Lanes = new ThumbnailMaker.Controls.RoadLaneContainer();
 			this.TLP_Main.SuspendLayout();
 			this.TLP_Right.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.PB)).BeginInit();
 			this.tableLayoutPanel2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.PB)).BeginInit();
 			this.tableLayoutPanel6.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.tableLayoutPanel4.SuspendLayout();
@@ -88,7 +90,7 @@ namespace ThumbnailMaker
 			this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
 			this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 276F));
-			this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 400F));
+			this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.TLP_Main.Controls.Add(this.RCC, 5, 0);
 			this.TLP_Main.Controls.Add(this.slickSpacer2, 3, 0);
 			this.TLP_Main.Controls.Add(this.TLP_Right, 4, 0);
@@ -107,14 +109,24 @@ namespace ThumbnailMaker
 			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.TLP_Main.Size = new System.Drawing.Size(1176, 569);
 			this.TLP_Main.TabIndex = 8;
+			// 
+			// RCC
+			// 
+			this.RCC.Dock = System.Windows.Forms.DockStyle.Right;
+			this.RCC.Location = new System.Drawing.Point(1177, 0);
+			this.RCC.Margin = new System.Windows.Forms.Padding(0);
+			this.RCC.Name = "RCC";
+			this.TLP_Main.SetRowSpan(this.RCC, 5);
+			this.RCC.Size = new System.Drawing.Size(0, 569);
+			this.RCC.TabIndex = 16;
+			this.RCC.LoadConfiguration += new System.EventHandler<ThumbnailMaker.Domain.RoadInfo>(this.RCC_LoadConfiguration);
 			// 
 			// slickSpacer2
 			// 
 			this.slickSpacer2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-			this.slickSpacer2.Location = new System.Drawing.Point(494, 3);
+			this.slickSpacer2.Location = new System.Drawing.Point(894, 3);
 			this.slickSpacer2.Name = "slickSpacer2";
 			this.TLP_Main.SetRowSpan(this.slickSpacer2, 5);
 			this.slickSpacer2.Size = new System.Drawing.Size(1, 563);
@@ -125,40 +137,26 @@ namespace ThumbnailMaker
 			// TLP_Right
 			// 
 			this.TLP_Right.ColumnCount = 2;
-			this.TLP_Right.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.TLP_Right.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.TLP_Right.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.TLP_Right.Controls.Add(this.tableLayoutPanel2, 0, 3);
-			this.TLP_Right.Controls.Add(this.B_CopyName, 0, 2);
+			this.TLP_Right.Controls.Add(this.L_RoadName, 0, 1);
+			this.TLP_Right.Controls.Add(this.L_RoadDesc, 0, 2);
+			this.TLP_Right.Controls.Add(this.B_EditDesc, 1, 2);
+			this.TLP_Right.Controls.Add(this.B_EditName, 1, 1);
 			this.TLP_Right.Controls.Add(this.PB, 0, 0);
-			this.TLP_Right.Controls.Add(this.L_RoadName, 1, 2);
 			this.TLP_Right.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.TLP_Right.Location = new System.Drawing.Point(500, 0);
+			this.TLP_Right.Location = new System.Drawing.Point(900, 0);
 			this.TLP_Right.Margin = new System.Windows.Forms.Padding(0);
 			this.TLP_Right.Name = "TLP_Right";
-			this.TLP_Right.RowCount = 5;
+			this.TLP_Right.RowCount = 4;
 			this.TLP_Main.SetRowSpan(this.TLP_Right, 5);
 			this.TLP_Right.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP_Right.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP_Right.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP_Right.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.TLP_Right.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.TLP_Right.Size = new System.Drawing.Size(276, 569);
 			this.TLP_Right.TabIndex = 17;
-			// 
-			// PB
-			// 
-			this.PB.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.TLP_Right.SetColumnSpan(this.PB, 2);
-			this.PB.Location = new System.Drawing.Point(10, 5);
-			this.PB.Margin = new System.Windows.Forms.Padding(5);
-			this.PB.Name = "PB";
-			this.PB.Size = new System.Drawing.Size(256, 256);
-			this.PB.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.PB.TabIndex = 2;
-			this.PB.TabStop = false;
-			this.PB.Click += new System.EventHandler(this.PB_Click);
-			this.PB.MouseEnter += new System.EventHandler(this.TB_Name_TextChanged);
-			this.PB.MouseLeave += new System.EventHandler(this.TB_Name_TextChanged);
 			// 
 			// tableLayoutPanel2
 			// 
@@ -167,34 +165,20 @@ namespace ThumbnailMaker
 			this.TLP_Right.SetColumnSpan(this.tableLayoutPanel2, 2);
 			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel2.Controls.Add(this.B_CopyDesc, 0, 0);
 			this.tableLayoutPanel2.Controls.Add(this.B_Export, 0, 1);
 			this.tableLayoutPanel2.Controls.Add(this.B_SaveThumb, 1, 0);
 			this.tableLayoutPanel2.Controls.Add(this.L_CurrentlyEditing, 0, 2);
+			this.tableLayoutPanel2.Controls.Add(this.B_ViewSavedRoads, 0, 0);
 			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 305);
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 338);
+			this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 3;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(270, 98);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(276, 231);
 			this.tableLayoutPanel2.TabIndex = 15;
-			// 
-			// B_CopyDesc
-			// 
-			this.B_CopyDesc.ColorShade = null;
-			this.B_CopyDesc.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_CopyDesc.IconSize = 16;
-			this.B_CopyDesc.Image = ((System.Drawing.Image)(resources.GetObject("B_CopyDesc.Image")));
-			this.B_CopyDesc.Location = new System.Drawing.Point(3, 3);
-			this.B_CopyDesc.Name = "B_CopyDesc";
-			this.B_CopyDesc.Padding = new System.Windows.Forms.Padding(10, 5, 5, 5);
-			this.B_CopyDesc.Size = new System.Drawing.Size(125, 27);
-			this.B_CopyDesc.SpaceTriggersClick = true;
-			this.B_CopyDesc.TabIndex = 6;
-			this.B_CopyDesc.Text = "Copy Desc.";
-			this.B_CopyDesc.Click += new System.EventHandler(this.B_CopyDesc_Click);
 			// 
 			// B_Export
 			// 
@@ -208,7 +192,7 @@ namespace ThumbnailMaker
 			this.B_Export.Location = new System.Drawing.Point(3, 36);
 			this.B_Export.Name = "B_Export";
 			this.B_Export.Padding = new System.Windows.Forms.Padding(10, 5, 5, 5);
-			this.B_Export.Size = new System.Drawing.Size(264, 27);
+			this.B_Export.Size = new System.Drawing.Size(270, 27);
 			this.B_Export.SpaceTriggersClick = true;
 			this.B_Export.TabIndex = 5;
 			this.B_Export.Text = "Export configuration to Road Builder";
@@ -221,7 +205,7 @@ namespace ThumbnailMaker
 			this.B_SaveThumb.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.B_SaveThumb.IconSize = 16;
 			this.B_SaveThumb.Image = ((System.Drawing.Image)(resources.GetObject("B_SaveThumb.Image")));
-			this.B_SaveThumb.Location = new System.Drawing.Point(167, 3);
+			this.B_SaveThumb.Location = new System.Drawing.Point(173, 3);
 			this.B_SaveThumb.Name = "B_SaveThumb";
 			this.B_SaveThumb.Padding = new System.Windows.Forms.Padding(10, 5, 5, 5);
 			this.B_SaveThumb.Size = new System.Drawing.Size(100, 27);
@@ -245,44 +229,106 @@ namespace ThumbnailMaker
 			this.L_CurrentlyEditing.Location = new System.Drawing.Point(3, 69);
 			this.L_CurrentlyEditing.Name = "L_CurrentlyEditing";
 			this.L_CurrentlyEditing.Padding = new System.Windows.Forms.Padding(10, 5, 5, 5);
-			this.L_CurrentlyEditing.Size = new System.Drawing.Size(264, 26);
+			this.L_CurrentlyEditing.Size = new System.Drawing.Size(270, 26);
 			this.L_CurrentlyEditing.TabIndex = 7;
 			this.L_CurrentlyEditing.Visible = false;
 			this.L_CurrentlyEditing.Click += new System.EventHandler(this.L_CurrentlyEditing_Click);
 			this.L_CurrentlyEditing.MouseEnter += new System.EventHandler(this.L_CurrentlyEditing_MouseEnter);
 			this.L_CurrentlyEditing.MouseLeave += new System.EventHandler(this.L_CurrentlyEditing_MouseLeave);
 			// 
+			// B_ViewSavedRoads
+			// 
+			this.B_ViewSavedRoads.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.B_ViewSavedRoads.ColorShade = null;
+			this.B_ViewSavedRoads.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_ViewSavedRoads.IconSize = 16;
+			this.B_ViewSavedRoads.Image = ((System.Drawing.Image)(resources.GetObject("B_ViewSavedRoads.Image")));
+			this.B_ViewSavedRoads.Location = new System.Drawing.Point(35, 3);
+			this.B_ViewSavedRoads.Name = "B_ViewSavedRoads";
+			this.B_ViewSavedRoads.Padding = new System.Windows.Forms.Padding(10, 5, 5, 5);
+			this.B_ViewSavedRoads.Size = new System.Drawing.Size(100, 27);
+			this.B_ViewSavedRoads.SpaceTriggersClick = true;
+			this.B_ViewSavedRoads.TabIndex = 5;
+			this.B_ViewSavedRoads.Text = "Save Thumb.";
+			this.B_ViewSavedRoads.Click += new System.EventHandler(this.B_ViewSavedRoads_Click);
+			// 
 			// L_RoadName
 			// 
 			this.L_RoadName.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.L_RoadName.AutoSize = true;
 			this.L_RoadName.Cursor = System.Windows.Forms.Cursors.IBeam;
-			this.L_RoadName.Location = new System.Drawing.Point(46, 277);
+			this.L_RoadName.Location = new System.Drawing.Point(10, 277);
 			this.L_RoadName.Margin = new System.Windows.Forms.Padding(10, 0, 3, 0);
 			this.L_RoadName.Name = "L_RoadName";
 			this.L_RoadName.Size = new System.Drawing.Size(36, 13);
 			this.L_RoadName.TabIndex = 14;
 			this.L_RoadName.Tag = "NoMouseDown";
 			this.L_RoadName.Text = "Lanes";
-			this.L_RoadName.Click += new System.EventHandler(this.L_RoadName_Click);
+			this.L_RoadName.Click += new System.EventHandler(this.B_CopyRoadName_Click);
 			this.L_RoadName.MouseEnter += new System.EventHandler(this.L_RoadName_MouseEnter);
 			this.L_RoadName.MouseLeave += new System.EventHandler(this.L_RoadName_MouseLeave);
 			// 
-			// B_CopyName
+			// L_RoadDesc
 			// 
-			this.B_CopyName.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.B_CopyName.ColorShade = null;
-			this.B_CopyName.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_CopyName.HandleUiScale = false;
-			this.B_CopyName.IconSize = 16;
-			this.B_CopyName.Image = ((System.Drawing.Image)(resources.GetObject("B_CopyName.Image")));
-			this.B_CopyName.Location = new System.Drawing.Point(3, 269);
-			this.B_CopyName.Name = "B_CopyName";
-			this.B_CopyName.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.B_CopyName.Size = new System.Drawing.Size(30, 30);
-			this.B_CopyName.SpaceTriggersClick = true;
-			this.B_CopyName.TabIndex = 14;
-			this.B_CopyName.Click += new System.EventHandler(this.B_CopyRoadName_Click);
+			this.L_RoadDesc.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.L_RoadDesc.AutoSize = true;
+			this.L_RoadDesc.Cursor = System.Windows.Forms.Cursors.IBeam;
+			this.L_RoadDesc.Location = new System.Drawing.Point(10, 313);
+			this.L_RoadDesc.Margin = new System.Windows.Forms.Padding(10, 0, 3, 0);
+			this.L_RoadDesc.Name = "L_RoadDesc";
+			this.L_RoadDesc.Size = new System.Drawing.Size(36, 13);
+			this.L_RoadDesc.TabIndex = 14;
+			this.L_RoadDesc.Tag = "NoMouseDown";
+			this.L_RoadDesc.Text = "Lanes";
+			this.L_RoadDesc.Click += new System.EventHandler(this.B_CopyDesc_Click);
+			this.L_RoadDesc.MouseEnter += new System.EventHandler(this.L_RoadName_MouseEnter);
+			this.L_RoadDesc.MouseLeave += new System.EventHandler(this.L_RoadName_MouseLeave);
+			// 
+			// B_EditDesc
+			// 
+			this.B_EditDesc.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.B_EditDesc.ColorShade = null;
+			this.B_EditDesc.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_EditDesc.HandleUiScale = false;
+			this.B_EditDesc.IconSize = 16;
+			this.B_EditDesc.Image = ((System.Drawing.Image)(resources.GetObject("B_EditDesc.Image")));
+			this.B_EditDesc.Location = new System.Drawing.Point(243, 305);
+			this.B_EditDesc.Name = "B_EditDesc";
+			this.B_EditDesc.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_EditDesc.Size = new System.Drawing.Size(30, 30);
+			this.B_EditDesc.SpaceTriggersClick = true;
+			this.B_EditDesc.TabIndex = 14;
+			// 
+			// B_EditName
+			// 
+			this.B_EditName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.B_EditName.ColorShade = null;
+			this.B_EditName.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_EditName.HandleUiScale = false;
+			this.B_EditName.IconSize = 16;
+			this.B_EditName.Image = ((System.Drawing.Image)(resources.GetObject("B_EditName.Image")));
+			this.B_EditName.Location = new System.Drawing.Point(243, 269);
+			this.B_EditName.Name = "B_EditName";
+			this.B_EditName.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_EditName.Size = new System.Drawing.Size(30, 30);
+			this.B_EditName.SpaceTriggersClick = true;
+			this.B_EditName.TabIndex = 14;
+			this.B_EditName.Click += new System.EventHandler(this.L_RoadName_Click);
+			// 
+			// PB
+			// 
+			this.PB.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.TLP_Right.SetColumnSpan(this.PB, 2);
+			this.PB.Location = new System.Drawing.Point(10, 5);
+			this.PB.Margin = new System.Windows.Forms.Padding(5);
+			this.PB.Name = "PB";
+			this.PB.Size = new System.Drawing.Size(256, 256);
+			this.PB.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.PB.TabIndex = 2;
+			this.PB.TabStop = false;
+			this.PB.Click += new System.EventHandler(this.PB_Click);
+			this.PB.MouseEnter += new System.EventHandler(this.TB_Name_TextChanged);
+			this.PB.MouseLeave += new System.EventHandler(this.TB_Name_TextChanged);
 			// 
 			// tableLayoutPanel6
 			// 
@@ -313,7 +359,7 @@ namespace ThumbnailMaker
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel6.Size = new System.Drawing.Size(475, 75);
+			this.tableLayoutPanel6.Size = new System.Drawing.Size(875, 74);
 			this.tableLayoutPanel6.TabIndex = 13;
 			// 
 			// GB_AsphaltTexture
@@ -322,11 +368,11 @@ namespace ThumbnailMaker
 			this.GB_AsphaltTexture.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.GB_AsphaltTexture.Dock = System.Windows.Forms.DockStyle.Top;
 			this.GB_AsphaltTexture.Icon = ((System.Drawing.Image)(resources.GetObject("GB_AsphaltTexture.Icon")));
-			this.GB_AsphaltTexture.Location = new System.Drawing.Point(383, 3);
+			this.GB_AsphaltTexture.Location = new System.Drawing.Point(703, 3);
 			this.GB_AsphaltTexture.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
 			this.GB_AsphaltTexture.MinimumSize = new System.Drawing.Size(60, 20);
 			this.GB_AsphaltTexture.Name = "GB_AsphaltTexture";
-			this.GB_AsphaltTexture.Size = new System.Drawing.Size(82, 21);
+			this.GB_AsphaltTexture.Size = new System.Drawing.Size(162, 20);
 			this.GB_AsphaltTexture.TabIndex = 20;
 			this.GB_AsphaltTexture.TabStop = false;
 			this.GB_AsphaltTexture.Text = "Asphalt Texture";
@@ -337,11 +383,11 @@ namespace ThumbnailMaker
 			this.GB_Region.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.GB_Region.Dock = System.Windows.Forms.DockStyle.Top;
 			this.GB_Region.Icon = ((System.Drawing.Image)(resources.GetObject("GB_Region.Icon")));
-			this.GB_Region.Location = new System.Drawing.Point(98, 3);
+			this.GB_Region.Location = new System.Drawing.Point(178, 3);
 			this.GB_Region.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
 			this.GB_Region.MinimumSize = new System.Drawing.Size(60, 20);
 			this.GB_Region.Name = "GB_Region";
-			this.GB_Region.Size = new System.Drawing.Size(82, 21);
+			this.GB_Region.Size = new System.Drawing.Size(162, 20);
 			this.GB_Region.TabIndex = 16;
 			this.GB_Region.TabStop = false;
 			this.GB_Region.Text = "Speed Sign Region";
@@ -356,7 +402,7 @@ namespace ThumbnailMaker
 			this.GB_RoadType.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
 			this.GB_RoadType.MinimumSize = new System.Drawing.Size(60, 20);
 			this.GB_RoadType.Name = "GB_RoadType";
-			this.GB_RoadType.Size = new System.Drawing.Size(82, 21);
+			this.GB_RoadType.Size = new System.Drawing.Size(162, 20);
 			this.GB_RoadType.TabIndex = 16;
 			this.GB_RoadType.TabStop = false;
 			this.GB_RoadType.Text = "Road Type";
@@ -367,11 +413,11 @@ namespace ThumbnailMaker
 			this.GB_SideTexture.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.GB_SideTexture.Dock = System.Windows.Forms.DockStyle.Top;
 			this.GB_SideTexture.Icon = ((System.Drawing.Image)(resources.GetObject("GB_SideTexture.Icon")));
-			this.GB_SideTexture.Location = new System.Drawing.Point(193, 3);
+			this.GB_SideTexture.Location = new System.Drawing.Point(353, 3);
 			this.GB_SideTexture.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
 			this.GB_SideTexture.MinimumSize = new System.Drawing.Size(60, 20);
 			this.GB_SideTexture.Name = "GB_SideTexture";
-			this.GB_SideTexture.Size = new System.Drawing.Size(82, 21);
+			this.GB_SideTexture.Size = new System.Drawing.Size(162, 20);
 			this.GB_SideTexture.TabIndex = 18;
 			this.GB_SideTexture.TabStop = false;
 			this.GB_SideTexture.Text = "Ground Side Texture";
@@ -384,7 +430,7 @@ namespace ThumbnailMaker
 			this.TB_Size.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_Size.Image = ((System.Drawing.Image)(resources.GetObject("TB_Size.Image")));
 			this.TB_Size.LabelText = "Road Size (m)";
-			this.TB_Size.Location = new System.Drawing.Point(3, 37);
+			this.TB_Size.Location = new System.Drawing.Point(3, 36);
 			this.TB_Size.Margin = new System.Windows.Forms.Padding(3, 10, 10, 3);
 			this.TB_Size.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.TB_Size.MaxLength = 32767;
@@ -398,7 +444,7 @@ namespace ThumbnailMaker
 			this.TB_Size.SelectedText = "";
 			this.TB_Size.SelectionLength = 0;
 			this.TB_Size.SelectionStart = 0;
-			this.TB_Size.Size = new System.Drawing.Size(82, 35);
+			this.TB_Size.Size = new System.Drawing.Size(162, 35);
 			this.TB_Size.TabIndex = 2;
 			this.TB_Size.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			this.TB_Size.Validation = SlickControls.ValidationType.Decimal;
@@ -412,11 +458,11 @@ namespace ThumbnailMaker
 			this.GB_BridgeSideTexture.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.GB_BridgeSideTexture.Dock = System.Windows.Forms.DockStyle.Top;
 			this.GB_BridgeSideTexture.Icon = ((System.Drawing.Image)(resources.GetObject("GB_BridgeSideTexture.Icon")));
-			this.GB_BridgeSideTexture.Location = new System.Drawing.Point(288, 3);
+			this.GB_BridgeSideTexture.Location = new System.Drawing.Point(528, 3);
 			this.GB_BridgeSideTexture.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
 			this.GB_BridgeSideTexture.MinimumSize = new System.Drawing.Size(60, 20);
 			this.GB_BridgeSideTexture.Name = "GB_BridgeSideTexture";
-			this.GB_BridgeSideTexture.Size = new System.Drawing.Size(82, 21);
+			this.GB_BridgeSideTexture.Size = new System.Drawing.Size(162, 20);
 			this.GB_BridgeSideTexture.TabIndex = 19;
 			this.GB_BridgeSideTexture.TabStop = false;
 			this.GB_BridgeSideTexture.Text = "Bridge Side Texture";
@@ -429,7 +475,7 @@ namespace ThumbnailMaker
 			this.TB_BufferSize.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_BufferSize.Image = ((System.Drawing.Image)(resources.GetObject("TB_BufferSize.Image")));
 			this.TB_BufferSize.LabelText = "Buffer Size (m)";
-			this.TB_BufferSize.Location = new System.Drawing.Point(98, 37);
+			this.TB_BufferSize.Location = new System.Drawing.Point(178, 36);
 			this.TB_BufferSize.Margin = new System.Windows.Forms.Padding(3, 10, 10, 3);
 			this.TB_BufferSize.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.TB_BufferSize.MaxLength = 32767;
@@ -443,7 +489,7 @@ namespace ThumbnailMaker
 			this.TB_BufferSize.SelectedText = "";
 			this.TB_BufferSize.SelectionLength = 0;
 			this.TB_BufferSize.SelectionStart = 0;
-			this.TB_BufferSize.Size = new System.Drawing.Size(82, 35);
+			this.TB_BufferSize.Size = new System.Drawing.Size(162, 35);
 			this.TB_BufferSize.TabIndex = 2;
 			this.TB_BufferSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			this.TB_BufferSize.Validation = SlickControls.ValidationType.Decimal;
@@ -460,7 +506,7 @@ namespace ThumbnailMaker
 			this.TB_CustomText.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_CustomText.Image = ((System.Drawing.Image)(resources.GetObject("TB_CustomText.Image")));
 			this.TB_CustomText.LabelText = "Text";
-			this.TB_CustomText.Location = new System.Drawing.Point(288, 37);
+			this.TB_CustomText.Location = new System.Drawing.Point(528, 36);
 			this.TB_CustomText.Margin = new System.Windows.Forms.Padding(3, 10, 10, 3);
 			this.TB_CustomText.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.TB_CustomText.MaxLength = 32767;
@@ -474,7 +520,7 @@ namespace ThumbnailMaker
 			this.TB_CustomText.SelectedText = "";
 			this.TB_CustomText.SelectionLength = 0;
 			this.TB_CustomText.SelectionStart = 0;
-			this.TB_CustomText.Size = new System.Drawing.Size(177, 35);
+			this.TB_CustomText.Size = new System.Drawing.Size(337, 35);
 			this.TB_CustomText.TabIndex = 2;
 			this.TB_CustomText.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			this.TB_CustomText.Validation = SlickControls.ValidationType.None;
@@ -490,7 +536,7 @@ namespace ThumbnailMaker
 			this.TB_SpeedLimit.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_SpeedLimit.Image = ((System.Drawing.Image)(resources.GetObject("TB_SpeedLimit.Image")));
 			this.TB_SpeedLimit.LabelText = "Speed Limit";
-			this.TB_SpeedLimit.Location = new System.Drawing.Point(193, 37);
+			this.TB_SpeedLimit.Location = new System.Drawing.Point(353, 36);
 			this.TB_SpeedLimit.Margin = new System.Windows.Forms.Padding(3, 10, 10, 3);
 			this.TB_SpeedLimit.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.TB_SpeedLimit.MaxLength = 32767;
@@ -504,7 +550,7 @@ namespace ThumbnailMaker
 			this.TB_SpeedLimit.SelectedText = "";
 			this.TB_SpeedLimit.SelectionLength = 0;
 			this.TB_SpeedLimit.SelectionStart = 0;
-			this.TB_SpeedLimit.Size = new System.Drawing.Size(82, 35);
+			this.TB_SpeedLimit.Size = new System.Drawing.Size(162, 35);
 			this.TB_SpeedLimit.TabIndex = 2;
 			this.TB_SpeedLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			this.TB_SpeedLimit.Validation = SlickControls.ValidationType.Number;
@@ -518,19 +564,43 @@ namespace ThumbnailMaker
 			this.panel1.Controls.Add(this.slickScroll1);
 			this.panel1.Controls.Add(this.P_Lanes);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(15, 135);
+			this.panel1.Location = new System.Drawing.Point(15, 134);
 			this.panel1.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(475, 434);
+			this.panel1.Size = new System.Drawing.Size(875, 435);
 			this.panel1.TabIndex = 8;
+			// 
+			// slickScroll1
+			// 
+			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
+			this.slickScroll1.LinkedControl = this.P_Lanes;
+			this.slickScroll1.Location = new System.Drawing.Point(869, 0);
+			this.slickScroll1.Name = "slickScroll1";
+			this.slickScroll1.Size = new System.Drawing.Size(6, 435);
+			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
+			this.slickScroll1.TabIndex = 1;
+			this.slickScroll1.TabStop = false;
+			this.slickScroll1.Text = "slickScroll1";
+			// 
+			// P_Lanes
+			// 
+			this.P_Lanes.AllowDrop = true;
+			this.P_Lanes.AutoSize = true;
+			this.P_Lanes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.P_Lanes.Location = new System.Drawing.Point(0, 0);
+			this.P_Lanes.MinimumSize = new System.Drawing.Size(0, 22);
+			this.P_Lanes.Name = "P_Lanes";
+			this.P_Lanes.Size = new System.Drawing.Size(0, 22);
+			this.P_Lanes.TabIndex = 0;
+			this.P_Lanes.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.P_Lanes_ControlAdded);
 			// 
 			// slickSpacer1
 			// 
 			this.TLP_Main.SetColumnSpan(this.slickSpacer1, 3);
 			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.slickSpacer1.Location = new System.Drawing.Point(18, 123);
+			this.slickSpacer1.Location = new System.Drawing.Point(18, 122);
 			this.slickSpacer1.Name = "slickSpacer1";
-			this.slickSpacer1.Size = new System.Drawing.Size(469, 1);
+			this.slickSpacer1.Size = new System.Drawing.Size(869, 1);
 			this.slickSpacer1.TabIndex = 9;
 			this.slickSpacer1.TabStop = false;
 			this.slickSpacer1.Text = "slickSpacer1";
@@ -555,7 +625,7 @@ namespace ThumbnailMaker
 			this.tableLayoutPanel4.Controls.Add(this.B_ClearLines, 2, 0);
 			this.tableLayoutPanel4.Controls.Add(this.B_Options, 0, 0);
 			this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel4.Location = new System.Drawing.Point(15, 82);
+			this.tableLayoutPanel4.Location = new System.Drawing.Point(15, 81);
 			this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0, 7, 0, 5);
 			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
 			this.tableLayoutPanel4.RowCount = 1;
@@ -564,13 +634,13 @@ namespace ThumbnailMaker
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(475, 33);
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(875, 33);
 			this.tableLayoutPanel4.TabIndex = 2;
 			// 
 			// slickSpacer3
 			// 
 			this.slickSpacer3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-			this.slickSpacer3.Location = new System.Drawing.Point(185, 3);
+			this.slickSpacer3.Location = new System.Drawing.Point(585, 3);
 			this.slickSpacer3.Name = "slickSpacer3";
 			this.slickSpacer3.Size = new System.Drawing.Size(1, 27);
 			this.slickSpacer3.TabIndex = 19;
@@ -584,7 +654,7 @@ namespace ThumbnailMaker
 			this.B_FlipLanes.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.B_FlipLanes.IconSize = 16;
 			this.B_FlipLanes.Image = global::ThumbnailMaker.Properties.Resources.I_2W;
-			this.B_FlipLanes.Location = new System.Drawing.Point(290, 3);
+			this.B_FlipLanes.Location = new System.Drawing.Point(690, 3);
 			this.B_FlipLanes.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
 			this.B_FlipLanes.Name = "B_FlipLanes";
 			this.B_FlipLanes.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
@@ -601,7 +671,7 @@ namespace ThumbnailMaker
 			this.B_DuplicateFlip.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.B_DuplicateFlip.IconSize = 16;
 			this.B_DuplicateFlip.Image = ((System.Drawing.Image)(resources.GetObject("B_DuplicateFlip.Image")));
-			this.B_DuplicateFlip.Location = new System.Drawing.Point(196, 3);
+			this.B_DuplicateFlip.Location = new System.Drawing.Point(596, 3);
 			this.B_DuplicateFlip.Margin = new System.Windows.Forms.Padding(5, 3, 10, 3);
 			this.B_DuplicateFlip.Name = "B_DuplicateFlip";
 			this.B_DuplicateFlip.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
@@ -619,7 +689,7 @@ namespace ThumbnailMaker
 			this.B_AddLane.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.B_AddLane.IconSize = 16;
 			this.B_AddLane.Image = ((System.Drawing.Image)(resources.GetObject("B_AddLane.Image")));
-			this.B_AddLane.Location = new System.Drawing.Point(384, 3);
+			this.B_AddLane.Location = new System.Drawing.Point(784, 3);
 			this.B_AddLane.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
 			this.B_AddLane.Name = "B_AddLane";
 			this.B_AddLane.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
@@ -637,7 +707,7 @@ namespace ThumbnailMaker
 			this.B_ClearLines.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.B_ClearLines.IconSize = 16;
 			this.B_ClearLines.Image = ((System.Drawing.Image)(resources.GetObject("B_ClearLines.Image")));
-			this.B_ClearLines.Location = new System.Drawing.Point(95, 3);
+			this.B_ClearLines.Location = new System.Drawing.Point(495, 3);
 			this.B_ClearLines.Margin = new System.Windows.Forms.Padding(3, 3, 5, 3);
 			this.B_ClearLines.Name = "B_ClearLines";
 			this.B_ClearLines.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
@@ -696,41 +766,6 @@ namespace ThumbnailMaker
 			this.TB_RoadName.Leave += new System.EventHandler(this.TB_RoadName_Leave);
 			this.TB_RoadName.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.TB_RoadName_PreviewKeyDown);
 			// 
-			// RCC
-			// 
-			this.RCC.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.RCC.Location = new System.Drawing.Point(776, 0);
-			this.RCC.Margin = new System.Windows.Forms.Padding(0);
-			this.RCC.Name = "RCC";
-			this.TLP_Main.SetRowSpan(this.RCC, 5);
-			this.RCC.Size = new System.Drawing.Size(400, 569);
-			this.RCC.TabIndex = 16;
-			this.RCC.LoadConfiguration += new System.EventHandler<ThumbnailMaker.Domain.RoadInfo>(this.RCC_LoadConfiguration);
-			// 
-			// slickScroll1
-			// 
-			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
-			this.slickScroll1.LinkedControl = this.P_Lanes;
-			this.slickScroll1.Location = new System.Drawing.Point(469, 0);
-			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(6, 434);
-			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
-			this.slickScroll1.TabIndex = 1;
-			this.slickScroll1.TabStop = false;
-			this.slickScroll1.Text = "slickScroll1";
-			// 
-			// P_Lanes
-			// 
-			this.P_Lanes.AllowDrop = true;
-			this.P_Lanes.AutoSize = true;
-			this.P_Lanes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.P_Lanes.Location = new System.Drawing.Point(0, 0);
-			this.P_Lanes.MinimumSize = new System.Drawing.Size(0, 22);
-			this.P_Lanes.Name = "P_Lanes";
-			this.P_Lanes.Size = new System.Drawing.Size(0, 22);
-			this.P_Lanes.TabIndex = 0;
-			this.P_Lanes.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.P_Lanes_ControlAdded);
-			// 
 			// PC_MainPage
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -745,9 +780,9 @@ namespace ThumbnailMaker
 			this.TLP_Main.PerformLayout();
 			this.TLP_Right.ResumeLayout(false);
 			this.TLP_Right.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.PB)).EndInit();
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.tableLayoutPanel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.PB)).EndInit();
 			this.tableLayoutPanel6.ResumeLayout(false);
 			this.tableLayoutPanel6.PerformLayout();
 			this.panel1.ResumeLayout(false);
@@ -774,9 +809,8 @@ namespace ThumbnailMaker
 		private SlickControls.SlickGroupBox GB_Region;
 		private SlickControls.SlickTextBox TB_SpeedLimit;
 		private SlickControls.SlickTextBox TB_CustomText;
-		private SlickControls.SlickButton B_CopyDesc;
 		private System.Windows.Forms.TableLayoutPanel TLP_Right;
-		private SlickControls.SlickButton B_CopyName;
+		private SlickControls.SlickButton B_EditName;
 		private System.Windows.Forms.Label L_RoadName;
 		private SlickControls.SlickTextBox TB_BufferSize;
 		private SlickControls.SlickButton B_ClearLines;
@@ -798,5 +832,8 @@ namespace ThumbnailMaker
 		private SlickControls.SlickGroupBox GB_BridgeSideTexture;
 		private SlickControls.SlickGroupBox GB_AsphaltTexture;
 		private SlickControls.SlickLabel L_CurrentlyEditing;
+		private System.Windows.Forms.Label L_RoadDesc;
+		private SlickControls.SlickButton B_EditDesc;
+		private SlickControls.SlickButton B_ViewSavedRoads;
 	}
 }
