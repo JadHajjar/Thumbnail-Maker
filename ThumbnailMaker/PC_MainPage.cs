@@ -71,8 +71,6 @@ namespace ThumbnailMaker
 				PB.Cursor = L_RoadDesc.Cursor = L_RoadName.Cursor = new Cursor(img.GetHicon());
 			}
 
-			L_CurrentlyEditing.ActiveColor = () => L_CurrentlyEditing.HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.RedColor : FormDesign.Design.ActiveColor;
-
 			SlickTip.SetTo(TB_Size, "Manually specify the total road width, which includes the asphalt and pavement");
 			SlickTip.SetTo(TB_BufferSize, "Represents the distance between the sidewalks and the lanes next to them");
 			SlickTip.SetTo(TB_SpeedLimit, "Manually specify the default speed limit of the road");
@@ -82,8 +80,11 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(L_RoadDesc, "Copy the generated road description into your clipboard");
 			SlickTip.SetTo(B_EditName, "Manually change the road's name");
 			SlickTip.SetTo(B_EditDesc, "Manually change the road's description");
-			SlickTip.SetTo(B_SaveThumb, "Saves the thumbnail on your desktop, or to the folder you have copied in your clipboard");
+			SlickTip.SetTo(B_SaveThumb, "Saves the displayed thumbnail on your computer");
+			SlickTip.SetTo(B_ViewSavedRoads, "Show/Hide the saved roads panel");
 			SlickTip.SetTo(B_Export, "Exports the road configuration to the Road Builder folder to be generated");
+			SlickTip.SetTo(B_ClearCurrentlyEdited, "Stop editing this road");
+			SlickTip.SetTo(B_AddTag, "Add a custom tag to this road");
 
 			SlickTip.SetTo(B_Options, "Change the colors & icons of lane types as well as other options");
 			SlickTip.SetTo(B_DuplicateFlip, "Duplicates the current lanes to the right and flips their direction");
@@ -202,9 +203,12 @@ namespace ThumbnailMaker
 					PB.SizeMode = small && !toolTip ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
 				}
 
-				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? Utilities.GetRoadName(GetRoadType(), lanes) : TB_RoadName.Text;
-				L_RoadDesc.Text = Utilities.GetRoadDescription(GetRoadInfo(lanes));
+				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? Utilities.GetRoadName(GetRoadType(), lanes).Replace(" ", " ") : TB_RoadName.Text;
+				L_RoadDesc.Text = Utilities.GetRoadDescription(GetRoadInfo(lanes), false);
 				L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
+
+				L_RoadName.Text = L_RoadName.Text.Replace("&", "&&");
+				L_RoadDesc.Text = L_RoadDesc.Text.Replace("&", "&&");
 
 				var speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse();
 
@@ -389,7 +393,12 @@ namespace ThumbnailMaker
 		{
 			try
 			{
-				var folder = Clipboard.ContainsText() && Directory.Exists(Clipboard.GetText()) ? Clipboard.GetText() : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+				var frm = new SaveThumbDialog(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+				
+				if (frm.ShowDialog() != DialogResult.OK)
+					return;
+
+				var folder = frm.SelectedPath;
 				var matched = false;
 				var files = new List<(string, bool, bool)>
 				{
@@ -412,7 +421,7 @@ namespace ThumbnailMaker
 				}
 
 				if (!matched)
-					save(GetLanes().ListStrings(" + ") + ".png", false, false);
+					save(GetLanes().ListStrings(" + ") + ".png", frm.CB_Small.Checked, frm.CB_Tooltip.Checked);
 
 				void save(string filename, bool small, bool toolTip)
 				{
@@ -501,8 +510,7 @@ namespace ThumbnailMaker
 
 				editedRoad = RCC.P_Configs.Controls.OfType<RoadConfigControl>().FirstOrDefault(x => x.FileName.Equals(file, StringComparison.InvariantCultureIgnoreCase));
 				L_CurrentlyEditing.Text = $"Currently editing '{roadInfo.Name.RegexRemove("^B?R[B4][RHFP]").Trim()}'";
-				L_CurrentlyEditing.Image = Properties.Resources.I_Info;
-				L_CurrentlyEditing.Visible = true;
+				L_CurrentlyEditing.Visible = B_ClearCurrentlyEdited.Visible = true;
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 		}
@@ -571,8 +579,7 @@ namespace ThumbnailMaker
 
 				editedRoad = sender as RoadConfigControl;
 				L_CurrentlyEditing.Text = $"Currently editing '{r.Name.RegexRemove("^B?R[B4][RHFP]").Trim()}'";
-				L_CurrentlyEditing.Image = Properties.Resources.I_Info;
-				L_CurrentlyEditing.Visible = true;
+				L_CurrentlyEditing.Visible = B_ClearCurrentlyEdited.Visible = true;
 			}
 			catch (Exception ex)
 			{
@@ -686,20 +693,13 @@ namespace ThumbnailMaker
 		{
 			editedRoad = null;
 			L_CurrentlyEditing.Visible = false;
-		}
-
-		private void L_CurrentlyEditing_MouseEnter(object sender, EventArgs e)
-		{
-			L_CurrentlyEditing.Image = Properties.Resources.I_Cancel;
-		}
-
-		private void L_CurrentlyEditing_MouseLeave(object sender, EventArgs e)
-		{
-			L_CurrentlyEditing.Image = Properties.Resources.I_Info;
+			B_ClearCurrentlyEdited.Visible = false;
 		}
 
 		private void B_ViewSavedRoads_Click(object sender, EventArgs e)
 		{
+			B_ViewSavedRoads.Text = RCC.Width.If(0, "Hide Roads", "Load Road");
+			B_ViewSavedRoads.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
 			RCC.Width = RCC.Width.If(0, 400, 0);
 		}
 	}
