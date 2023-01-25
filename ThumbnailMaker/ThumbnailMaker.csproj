@@ -108,6 +108,9 @@
     <Compile Include="Controls\RoadTypeSelector.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls\TagControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Domain\AsphaltStyle.cs" />
     <Compile Include="Domain\FillerPadding.cs" />
     <Compile Include="Domain\LaneDecoration.cs" />

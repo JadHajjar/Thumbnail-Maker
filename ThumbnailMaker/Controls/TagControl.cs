@@ -1,0 +1,73 @@
+﻿using Extensions;
+
+using SlickControls;
+
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace ThumbnailMaker.Controls
+{
+	internal class TagControl : SlickLabel
+	{
+		public event EventHandler SelectionChanged;
+
+		public TagControl(string tag, bool display)
+		{
+			Image = Properties.Resources.I_Tag;
+			Display = display;
+			Text = tag;
+			Cursor = Cursors.Hand;
+
+			SlickTip.SetTo(this, Display ? "Filer by this tag" : "Remove this tag");
+		}
+
+		protected override void OnMouseClick(MouseEventArgs e)
+		{
+			base.OnMouseClick(e);
+
+			if (e.Button == MouseButtons.Left)
+			{
+				if (Display)
+				{
+					//Selected = !Selected;
+					SelectionChanged?.Invoke(this, EventArgs.Empty);
+				}
+				else
+				{
+					Dispose();
+				}
+			}
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+
+			//if (Display && Selected && disposing)
+			{
+				SelectionChanged?.Invoke(this, EventArgs.Empty);
+			}
+		}
+
+		protected override void OnMouseEnter(EventArgs e)
+		{
+			if (!Display)
+				Image = Properties.Resources.I_RemoveTag;
+
+			base.OnMouseEnter(e);
+		}
+
+		protected override void OnMouseLeave(EventArgs e)
+		{
+			if (!Display)
+				Image = Properties.Resources.I_Tag;
+
+			base.OnMouseLeave(e);
+		}
+	}
+}

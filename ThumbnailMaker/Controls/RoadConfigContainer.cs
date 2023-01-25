@@ -52,6 +52,7 @@ namespace ThumbnailMaker.Controls
 					{ return LegacyUtil.LoadRoad(x); }
 					catch { return null; }
 				});
+				var tags = contents.Values.SelectMany(x => x.Tags).Distinct().ToList();
 
 				this.TryInvoke(() =>
 				{
@@ -71,6 +72,22 @@ namespace ThumbnailMaker.Controls
 						{
 							if (!files.Any(x => x == item.Key))
 								item.Value.Dispose();
+						}
+
+						foreach (var item in tags)
+						{
+							if (!FLP_Tags.GetControls<TagControl>().Any(x => x.Text == item))
+							{
+								var ctrl = new TagControl(item, true);
+								ctrl.SelectionChanged += TB_Search_TextChanged;
+								FLP_Tags.Controls.Add(ctrl);
+							}
+						}
+
+						foreach (TagControl item in FLP_Tags.Controls)
+						{
+							if (!tags.Contains(item.Text))
+								item.Dispose();
 						}
 
 						void createControl(string file)
@@ -127,13 +144,16 @@ namespace ThumbnailMaker.Controls
 			LoadConfiguration?.Invoke(sender, e);
 		}
 
-		private void TB_Size_TextChanged(object sender, EventArgs e)
+		private void TB_Search_TextChanged(object sender, EventArgs e)
 		{
+			var selectedTags = FLP_Tags.GetControls<TagControl>().Where(x => /*x.Selected*/true).Select(x => x.Text).ToList();
+
 			foreach (var item in P_Configs.Controls.OfType<RoadConfigControl>().ToList())
 			{
-				item.Visible = string.IsNullOrWhiteSpace(TB_Size.Text)
-					|| item.Road.Name.SearchCheck(TB_Size.Text)
-					|| item.Road.Description.SearchCheck(TB_Size.Text);
+				item.Visible = !selectedTags.Any(x => !item.Road.Tags.Any(y => y == x))
+					&& (string.IsNullOrWhiteSpace(TB_Search.Text)
+					|| item.Road.Name.SearchCheck(TB_Search.Text)
+					|| item.Road.Description.SearchCheck(TB_Search.Text));
 			}
 		}
 	}

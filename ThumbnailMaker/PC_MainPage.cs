@@ -5,6 +5,7 @@ using SlickControls;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -435,10 +436,18 @@ namespace ThumbnailMaker
 					{
 						DrawThumbnail(g, lanes, small, toolTip);
 
-						img.Save(Path.Combine(folder, filename), System.Drawing.Imaging.ImageFormat.Png);
+						var FileName = Path.Combine(folder, filename);
 
-						Notification.Create("Thumbnail Saved", "Your thumbnail was saved at:\n" + Path.Combine(folder, filename), PromptIcons.Info, null)
-							.Show(Form, 15);
+						img.Save(FileName, System.Drawing.Imaging.ImageFormat.Png);
+
+						Notification.Create("Thumbnail Saved", "Your thumbnail was saved at:\n" + FileName, PromptIcons.Info, () =>
+						{
+							Process.Start(new ProcessStartInfo
+							{
+								FileName = "explorer",
+								Arguments = $"/e, /select, \"{FileName}\""
+							});
+						}).Show(Form, 15);
 					}
 				}
 			}
@@ -532,6 +541,7 @@ namespace ThumbnailMaker
 				Lanes = (lanes ?? GetLanes()).Select(x => x.AsLaneInfo()).ToList(),
 				LHT = Options.Current.LHT,
 				VanillaWidth = Options.Current.VanillaWidths,
+				Tags = FLP_Tags.Controls.OfType<TagControl>().Select(x => x.Text).ToList(),
 				DateCreated = editedRoad?.Road.DateCreated ?? DateTime.Now,
 			};
 		}
@@ -574,6 +584,11 @@ namespace ThumbnailMaker
 				SideTextureControl.SelectedValue = r.SideTexture;
 				BridgeSideTextureControl.SelectedValue = r.BridgeSideTexture;
 				AsphaltTextureControl.SelectedValue = r.AsphaltStyle;
+
+				FLP_Tags.Controls.Clear(true, x => x is TagControl);
+
+				if (r.Tags?.Any() ?? false)
+					FLP_Tags.Controls.AddRange(r.Tags.Select(x => new TagControl(x, false)).ToArray());
 
 				P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb)?.FixCurbOrientation();
 
@@ -700,7 +715,23 @@ namespace ThumbnailMaker
 		{
 			B_ViewSavedRoads.Text = RCC.Width.If(0, "Hide Roads", "Load Road");
 			B_ViewSavedRoads.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
-			RCC.Width = RCC.Width.If(0, 400, 0);
+			RCC.Width = RCC.Width.If(0, (int)(320 * UI.UIScale), 0);
+			RCC.Visible = RCC.Width != 0;
+		}
+
+		private void B_AddTag_Click(object sender, EventArgs e)
+		{
+			var result = ShowInputPrompt("Type in a tag to add", "Tag Input", "");
+
+			if (result.DialogResult == DialogResult.OK)
+			{
+				FLP_Tags.Controls.Add(new TagControl(result.Input, false));
+			}
+		}
+
+		private void FLP_Tags_ControlAdded(object sender, ControlEventArgs e)
+		{
+			L_NoTags.Visible = FLP_Tags.Controls.Count == 1;
 		}
 	}
 }
