@@ -33,11 +33,11 @@
 			this.slickScroll2 = new SlickControls.SlickScroll();
 			this.P_Configs = new System.Windows.Forms.Panel();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			this.TB_Search = new SlickControls.SlickTextBox();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.FLP_Tags = new System.Windows.Forms.FlowLayoutPanel();
-			this.Loader = new SlickControls.SlickPictureBox();
-			this.TB_Search = new SlickControls.SlickTextBox();
 			this.B_ClearCurrentlyEdited = new SlickControls.SlickButton();
+			this.Loader = new SlickControls.SlickPictureBox();
 			this.P_Container.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Loader)).BeginInit();
@@ -98,39 +98,6 @@
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(577, 496);
 			this.tableLayoutPanel1.TabIndex = 9;
 			// 
-			// slickSpacer1
-			// 
-			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Left;
-			this.slickSpacer1.Location = new System.Drawing.Point(3, 3);
-			this.slickSpacer1.Name = "slickSpacer1";
-			this.tableLayoutPanel1.SetRowSpan(this.slickSpacer1, 3);
-			this.slickSpacer1.Size = new System.Drawing.Size(1, 490);
-			this.slickSpacer1.TabIndex = 7;
-			this.slickSpacer1.TabStop = false;
-			this.slickSpacer1.Text = "slickSpacer1";
-			// 
-			// FLP_Tags
-			// 
-			this.FLP_Tags.AutoSize = true;
-			this.FLP_Tags.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanel1.SetColumnSpan(this.FLP_Tags, 2);
-			this.FLP_Tags.Dock = System.Windows.Forms.DockStyle.Top;
-			this.FLP_Tags.Location = new System.Drawing.Point(7, 54);
-			this.FLP_Tags.Margin = new System.Windows.Forms.Padding(0);
-			this.FLP_Tags.Name = "FLP_Tags";
-			this.FLP_Tags.Size = new System.Drawing.Size(570, 0);
-			this.FLP_Tags.TabIndex = 8;
-			// 
-			// Loader
-			// 
-			this.Loader.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.Loader.Loading = true;
-			this.Loader.Location = new System.Drawing.Point(272, 232);
-			this.Loader.Name = "Loader";
-			this.Loader.Size = new System.Drawing.Size(32, 32);
-			this.Loader.TabIndex = 8;
-			this.Loader.TabStop = false;
-			// 
 			// TB_Search
 			// 
 			this.TB_Search.Dock = System.Windows.Forms.DockStyle.Top;
@@ -160,6 +127,29 @@
 			this.TB_Search.ValidationRegex = "";
 			this.TB_Search.TextChanged += new System.EventHandler(this.TB_Search_TextChanged);
 			// 
+			// slickSpacer1
+			// 
+			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Left;
+			this.slickSpacer1.Location = new System.Drawing.Point(3, 3);
+			this.slickSpacer1.Name = "slickSpacer1";
+			this.tableLayoutPanel1.SetRowSpan(this.slickSpacer1, 3);
+			this.slickSpacer1.Size = new System.Drawing.Size(1, 490);
+			this.slickSpacer1.TabIndex = 7;
+			this.slickSpacer1.TabStop = false;
+			this.slickSpacer1.Text = "slickSpacer1";
+			// 
+			// FLP_Tags
+			// 
+			this.FLP_Tags.AutoSize = true;
+			this.FLP_Tags.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tableLayoutPanel1.SetColumnSpan(this.FLP_Tags, 2);
+			this.FLP_Tags.Dock = System.Windows.Forms.DockStyle.Top;
+			this.FLP_Tags.Location = new System.Drawing.Point(7, 54);
+			this.FLP_Tags.Margin = new System.Windows.Forms.Padding(0);
+			this.FLP_Tags.Name = "FLP_Tags";
+			this.FLP_Tags.Size = new System.Drawing.Size(570, 0);
+			this.FLP_Tags.TabIndex = 8;
+			// 
 			// B_ClearCurrentlyEdited
 			// 
 			this.B_ClearCurrentlyEdited.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -175,6 +165,16 @@
 			this.B_ClearCurrentlyEdited.Size = new System.Drawing.Size(30, 30);
 			this.B_ClearCurrentlyEdited.SpaceTriggersClick = true;
 			this.B_ClearCurrentlyEdited.TabIndex = 17;
+			// 
+			// Loader
+			// 
+			this.Loader.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.Loader.Loading = true;
+			this.Loader.Location = new System.Drawing.Point(272, 232);
+			this.Loader.Name = "Loader";
+			this.Loader.Size = new System.Drawing.Size(32, 32);
+			this.Loader.TabIndex = 8;
+			this.Loader.TabStop = false;
 			// 
 			// RoadConfigContainer
 			// 
