@@ -75,6 +75,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\AddTagForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\AddTagForm.Designer.cs">
+      <DependentUpon>AddTagForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LaneSpeedSelector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -158,6 +164,9 @@
     <Compile Include="SaveThumbDialog.Designer.cs">
       <DependentUpon>SaveThumbDialog.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Controls\AddTagForm.resx">
+      <DependentUpon>AddTagForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\LaneOptionControl.resx">
       <DependentUpon>LaneOptionControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -202,6 +211,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\I_Add.png" />
     <None Include="Resources\I_Tag.png" />
     <None Include="Resources\I_AddTag.png" />
     <None Include="Resources\I_RemoveTag.png" />

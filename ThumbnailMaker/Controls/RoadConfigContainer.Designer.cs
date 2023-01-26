@@ -29,48 +29,19 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RoadConfigContainer));
-			this.TB_Search = new SlickControls.SlickTextBox();
 			this.P_Container = new System.Windows.Forms.Panel();
 			this.slickScroll2 = new SlickControls.SlickScroll();
 			this.P_Configs = new System.Windows.Forms.Panel();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.FLP_Tags = new System.Windows.Forms.FlowLayoutPanel();
-			this.B_ClearCurrentlyEdited = new SlickControls.SlickButton();
 			this.Loader = new SlickControls.SlickPictureBox();
+			this.TB_Search = new SlickControls.SlickTextBox();
+			this.B_ClearCurrentlyEdited = new SlickControls.SlickButton();
 			this.P_Container.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Loader)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// TB_Search
-			// 
-			this.TB_Search.Dock = System.Windows.Forms.DockStyle.Top;
-			this.TB_Search.EnterTriggersClick = false;
-			this.TB_Search.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TB_Search.Image = ((System.Drawing.Image)(resources.GetObject("TB_Search.Image")));
-			this.TB_Search.LabelText = "Search Configurations";
-			this.TB_Search.Location = new System.Drawing.Point(17, 10);
-			this.TB_Search.Margin = new System.Windows.Forms.Padding(10, 10, 10, 5);
-			this.TB_Search.MaximumSize = new System.Drawing.Size(9999, 0);
-			this.TB_Search.MaxLength = 32767;
-			this.TB_Search.MinimumSize = new System.Drawing.Size(50, 0);
-			this.TB_Search.Name = "TB_Search";
-			this.TB_Search.Password = false;
-			this.TB_Search.Placeholder = "Type in to search your configurations";
-			this.TB_Search.ReadOnly = false;
-			this.TB_Search.Required = false;
-			this.TB_Search.SelectAllOnFocus = false;
-			this.TB_Search.SelectedText = "";
-			this.TB_Search.SelectionLength = 0;
-			this.TB_Search.SelectionStart = 0;
-			this.TB_Search.Size = new System.Drawing.Size(506, 39);
-			this.TB_Search.TabIndex = 3;
-			this.TB_Search.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.TB_Search.Validation = SlickControls.ValidationType.Decimal;
-			this.TB_Search.ValidationCustom = null;
-			this.TB_Search.ValidationRegex = "";
-			this.TB_Search.TextChanged += new System.EventHandler(this.TB_Search_TextChanged);
 			// 
 			// P_Container
 			// 
@@ -150,6 +121,45 @@
 			this.FLP_Tags.Size = new System.Drawing.Size(570, 0);
 			this.FLP_Tags.TabIndex = 8;
 			// 
+			// Loader
+			// 
+			this.Loader.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.Loader.Loading = true;
+			this.Loader.Location = new System.Drawing.Point(272, 232);
+			this.Loader.Name = "Loader";
+			this.Loader.Size = new System.Drawing.Size(32, 32);
+			this.Loader.TabIndex = 8;
+			this.Loader.TabStop = false;
+			// 
+			// TB_Search
+			// 
+			this.TB_Search.Dock = System.Windows.Forms.DockStyle.Top;
+			this.TB_Search.EnterTriggersClick = false;
+			this.TB_Search.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TB_Search.Image = ((System.Drawing.Image)(resources.GetObject("TB_Search.Image")));
+			this.TB_Search.LabelText = "Search Configurations";
+			this.TB_Search.Location = new System.Drawing.Point(17, 10);
+			this.TB_Search.Margin = new System.Windows.Forms.Padding(10, 10, 10, 5);
+			this.TB_Search.MaximumSize = new System.Drawing.Size(9999, 0);
+			this.TB_Search.MaxLength = 32767;
+			this.TB_Search.MinimumSize = new System.Drawing.Size(50, 0);
+			this.TB_Search.Name = "TB_Search";
+			this.TB_Search.Password = false;
+			this.TB_Search.Placeholder = "Type in to search your configurations";
+			this.TB_Search.ReadOnly = false;
+			this.TB_Search.Required = false;
+			this.TB_Search.SelectAllOnFocus = false;
+			this.TB_Search.SelectedText = "";
+			this.TB_Search.SelectionLength = 0;
+			this.TB_Search.SelectionStart = 0;
+			this.TB_Search.Size = new System.Drawing.Size(506, 39);
+			this.TB_Search.TabIndex = 3;
+			this.TB_Search.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+			this.TB_Search.Validation = SlickControls.ValidationType.Decimal;
+			this.TB_Search.ValidationCustom = null;
+			this.TB_Search.ValidationRegex = "";
+			this.TB_Search.TextChanged += new System.EventHandler(this.TB_Search_TextChanged);
+			// 
 			// B_ClearCurrentlyEdited
 			// 
 			this.B_ClearCurrentlyEdited.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -165,16 +175,6 @@
 			this.B_ClearCurrentlyEdited.Size = new System.Drawing.Size(30, 30);
 			this.B_ClearCurrentlyEdited.SpaceTriggersClick = true;
 			this.B_ClearCurrentlyEdited.TabIndex = 17;
-			// 
-			// Loader
-			// 
-			this.Loader.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.Loader.Loading = true;
-			this.Loader.Location = new System.Drawing.Point(272, 232);
-			this.Loader.Name = "Loader";
-			this.Loader.Size = new System.Drawing.Size(32, 32);
-			this.Loader.TabIndex = 8;
-			this.Loader.TabStop = false;
 			// 
 			// RoadConfigContainer
 			// 

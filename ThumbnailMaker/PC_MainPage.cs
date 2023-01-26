@@ -721,12 +721,22 @@ namespace ThumbnailMaker
 
 		private void B_AddTag_Click(object sender, EventArgs e)
 		{
-			var result = ShowInputPrompt("Type in a tag to add", "Tag Input", "");
+			var frm = new AddTagForm() { Location = FLP_Tags.PointToScreen(Point.Empty), MinimumSize = new Size(TLP_Right.Width - 5, 0) };
 
-			if (result.DialogResult == DialogResult.OK)
-			{
-				FLP_Tags.Controls.Add(new TagControl(result.Input, false));
-			}
+			frm.TagAdded += Frm_TagAdded;
+			frm.TagRemoved += Frm_TagRemoved;
+
+			frm.Show();
+		}
+
+		private void Frm_TagRemoved(object sender, string e)
+		{
+			FLP_Tags.Controls.Clear(true, x => x is TagControl tc && tc.Text.Equals(e, StringComparison.CurrentCultureIgnoreCase));
+		}
+
+		private void Frm_TagAdded(object sender, string e)
+		{
+			FLP_Tags.Controls.Add(new TagControl(e, false));
 		}
 
 		private void FLP_Tags_ControlAdded(object sender, ControlEventArgs e)

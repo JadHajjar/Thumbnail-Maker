@@ -34,7 +34,7 @@ namespace ThumbnailMaker.Controls
 			{
 				if (Display)
 				{
-					//Selected = !Selected;
+					Selected = !Selected;
 					SelectionChanged?.Invoke(this, EventArgs.Empty);
 				}
 				else
@@ -48,7 +48,7 @@ namespace ThumbnailMaker.Controls
 		{
 			base.Dispose(disposing);
 
-			//if (Display && Selected && disposing)
+			if (Display && Selected && disposing)
 			{
 				SelectionChanged?.Invoke(this, EventArgs.Empty);
 			}

@@ -76,7 +76,7 @@ namespace ThumbnailMaker.Controls
 
 						foreach (var item in tags)
 						{
-							if (!FLP_Tags.GetControls<TagControl>().Any(x => x.Text == item))
+							if (!FLP_Tags.GetControls<TagControl>().Any(x => x.Text.Equals(item, StringComparison.CurrentCultureIgnoreCase)))
 							{
 								var ctrl = new TagControl(item, true);
 								ctrl.SelectionChanged += TB_Search_TextChanged;
@@ -86,7 +86,7 @@ namespace ThumbnailMaker.Controls
 
 						foreach (TagControl item in FLP_Tags.Controls)
 						{
-							if (!tags.Contains(item.Text))
+							if (!tags.Contains(item.Text, StringComparer.CurrentCultureIgnoreCase))
 								item.Dispose();
 						}
 
@@ -150,7 +150,7 @@ namespace ThumbnailMaker.Controls
 
 			foreach (var item in P_Configs.Controls.OfType<RoadConfigControl>().ToList())
 			{
-				item.Visible = !selectedTags.Any(x => !item.Road.Tags.Any(y => y == x))
+				item.Visible = !selectedTags.Any(x => !item.Road.Tags.Any(y => y.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
 					&& (string.IsNullOrWhiteSpace(TB_Search.Text)
 					|| item.Road.Name.SearchCheck(TB_Search.Text)
 					|| item.Road.Description.SearchCheck(TB_Search.Text));
