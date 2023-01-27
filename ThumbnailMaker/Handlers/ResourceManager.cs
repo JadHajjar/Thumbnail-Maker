@@ -24,13 +24,17 @@ namespace ThumbnailMaker
 			var name = Enum.GetName(typeof(LaneType), lane);
 
 			if (name == null)
+			{
 				return null;
+			}
 
 			var field = lane.GetType().GetField(name);
 
 
 			if (!(Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) is StyleIdentityAttribute attribute))
+			{
 				return null;
+			}
 
 			return GetImage($"C_{attribute.Id}", small);
 		}
@@ -40,13 +44,17 @@ namespace ThumbnailMaker
 			var name = Enum.GetName(typeof(LaneDecoration), decorations);
 
 			if (name == null)
+			{
 				return null;
+			}
 
 			var field = decorations.GetType().GetField(name);
 
 
 			if (!(Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) is StyleIdentityAttribute attribute))
+			{
 				return null;
+			}
 
 			return GetImage($"D_{attribute.Id}", small);
 		}
@@ -70,10 +78,14 @@ namespace ThumbnailMaker
 			if (string.IsNullOrWhiteSpace(fileName) || !File.Exists(fileName))
 			{
 				if (File.Exists(path))
+				{
 					File.Delete(path);
+				}
 			}
 			else
+			{
 				File.Copy(fileName, path, true);
+			}
 		}
 
 		public static Image Logo(bool small)
@@ -83,7 +95,9 @@ namespace ThumbnailMaker
 				var path = $"{Utilities.Folder}\\Resources\\{(small ? "S" : "L")}_Logo.png";
 
 				if (!File.Exists(path))
+				{
 					return null;
+				}
 
 				using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
 				{

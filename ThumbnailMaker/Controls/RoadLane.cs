@@ -57,7 +57,9 @@ namespace ThumbnailMaker.Controls
 				item.Invalidate();
 
 				if (item.Lane.Type == LaneType.Curb)
+				{
 					item.FixCurbOrientation();
+				}
 			}
 
 			drgevent.Effect = DragDropEffects.Move;
@@ -170,7 +172,9 @@ namespace ThumbnailMaker.Controls
 				DuplicateLaneClick(this, e);
 
 				if (e.Button == MouseButtons.Left)
+				{
 					GrabberClick(this, e);
+				}
 
 				return;
 			}
@@ -298,7 +302,9 @@ namespace ThumbnailMaker.Controls
 		private void DeleteLaneClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			Dispose();
 
@@ -394,9 +400,13 @@ namespace ThumbnailMaker.Controls
 			}
 
 			if (Lane.Type != LaneType.Curb)
+			{
 				_clickActions[deleteRectangle] = DeleteLaneClick;
+			}
 			else
+			{
 				_clickActions[deleteRectangle] = InfoLaneClick;
+			}
 
 			_tooltips[deleteRectangle] = Lane.Type != LaneType.Curb ? "Delete Lane" : "More Info";
 
@@ -425,7 +435,9 @@ namespace ThumbnailMaker.Controls
 				{
 					using (var brush = new LinearGradientBrush(ClientRectangle.Pad(-1, -1, 0, 6), Lane.Color, Color.FromArgb(0, Lane.Color), Lane.Direction == LaneDirection.Forward ? 90 : -90))
 					using (var pen = new Pen(brush, 2F))
+					{
 						e.Graphics.DrawRoundedRectangle(pen, ClientRectangle.Pad(0, 0, 1, 7), 6);
+					}
 				}
 			}
 			else
@@ -644,9 +656,13 @@ namespace ThumbnailMaker.Controls
 				_clickActions[rect] = (_, __) =>
 				{
 					if (Lane.FillerPadding.HasFlag(direction))
+					{
 						Lane.FillerPadding &= ~direction;
+					}
 					else
+					{
 						Lane.FillerPadding |= direction;
+					}
 
 					RefreshRoad();
 				};
@@ -829,14 +845,18 @@ namespace ThumbnailMaker.Controls
 		private void DuplicateLaneClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Middle)
+			{
 				return;
+			}
 
 			var index = Parent.Controls.IndexOf(this);
 
 			var ctrl = new RoadLane(new ThumbnailLaneInfo(Lane));
 
 			if (e.Button == MouseButtons.Right && Lane.Direction != LaneDirection.Both)
+			{
 				ctrl.Lane.Direction = ctrl.Lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward;
+			}
 
 			Parent.Controls.Add(ctrl);
 			Parent.Controls.SetChildIndex(ctrl, index);
@@ -847,7 +867,9 @@ namespace ThumbnailMaker.Controls
 		private void ElevationMinusClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			if (Options.Current.AdvancedElevation)
 			{
@@ -875,7 +897,9 @@ namespace ThumbnailMaker.Controls
 		private void ElevationPlusClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			if (Options.Current.AdvancedElevation)
 			{
@@ -908,7 +932,9 @@ namespace ThumbnailMaker.Controls
 		private void ElevationResetClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			Lane.Elevation = null;
 
@@ -925,7 +951,9 @@ namespace ThumbnailMaker.Controls
 			var @base = sideWalk || RoadType != RoadType.Road ? 0F : -0.3F;
 
 			if (Lane.Elevation == null && addFiller && Lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+			{
 				@base = @base == 0F ? 0.2F : 0F;
+			}
 
 			return @base;
 		}
@@ -933,7 +961,9 @@ namespace ThumbnailMaker.Controls
 		private void GrabberClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			_dragDropActive = true;
 
@@ -945,7 +975,9 @@ namespace ThumbnailMaker.Controls
 			Invalidate();
 
 			if (Lane.Type == LaneType.Curb)
+			{
 				FixCurbOrientation();
+			}
 		}
 
 		private void InfoLaneClick(object sender, MouseEventArgs e)
@@ -956,12 +988,18 @@ namespace ThumbnailMaker.Controls
 		private void LaneDecoClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right)
+			{
 				return;
+			}
 
 			if (e.Button == MouseButtons.Middle)
+			{
 				Lane.Decorations = LaneDecoration.None;
+			}
 			else
+			{
 				new DecoTypeSelector(this);
+			}
 
 			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 		}
@@ -969,12 +1007,18 @@ namespace ThumbnailMaker.Controls
 		private void LaneTypeClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right)
+			{
 				return;
+			}
 
 			if (e.Button == MouseButtons.Middle)
+			{
 				Lane.Type = LaneType.Empty;
+			}
 			else
+			{
 				new RoadTypeSelector(this);
+			}
 
 			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 		}
@@ -982,12 +1026,18 @@ namespace ThumbnailMaker.Controls
 		private void SpeedLimitClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right)
+			{
 				return;
+			}
 
 			if (e.Button == MouseButtons.Middle)
+			{
 				Lane.SpeedLimit = null;
+			}
 			else
+			{
 				new LaneSpeedSelector(this);
+			}
 
 			RoadLaneChanged?.Invoke(this, EventArgs.Empty);
 		}
@@ -995,7 +1045,9 @@ namespace ThumbnailMaker.Controls
 		private void WidthMinusClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			var change = GetModifierValue();
 
@@ -1007,7 +1059,9 @@ namespace ThumbnailMaker.Controls
 		private void WidthPlusClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			var change = GetModifierValue();
 
@@ -1019,7 +1073,9 @@ namespace ThumbnailMaker.Controls
 		private void WidthResetClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			Lane.CustomWidth = null;
 

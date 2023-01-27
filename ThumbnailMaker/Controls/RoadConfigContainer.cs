@@ -18,6 +18,8 @@ namespace ThumbnailMaker.Controls
 	{
 		public static RoadConfigContainer _instance;
 
+		public List<string> LoadedTags { get; private set; }
+
 		public event System.EventHandler<RoadInfo> LoadConfiguration;
 
 		public RoadConfigContainer()
@@ -25,7 +27,9 @@ namespace ThumbnailMaker.Controls
 			InitializeComponent();
 
 			if (Options.Current == null)
+			{
 				return;
+			}
 
 			_instance = this;
 
@@ -52,7 +56,8 @@ namespace ThumbnailMaker.Controls
 					{ return LegacyUtil.LoadRoad(x); }
 					catch { return null; }
 				});
-				var tags = contents.Values.SelectMany(x => x.Tags).Distinct().ToList();
+
+				LoadedTags = contents.Values.SelectMany(x => x.Tags).Distinct((x, y) => x.Equals(y, StringComparison.CurrentCultureIgnoreCase)).ToList();
 
 				this.TryInvoke(() =>
 				{
@@ -65,16 +70,20 @@ namespace ThumbnailMaker.Controls
 						for (var i = 0; i < files.Length; i++)
 						{
 							if (!controls.ContainsKey(files[i]) && contents[files[i]] != null)
+							{
 								createControl(files[i]);
+							}
 						}
 
 						foreach (var item in controls)
 						{
 							if (!files.Any(x => x == item.Key))
+							{
 								item.Value.Dispose();
+							}
 						}
 
-						foreach (var item in tags)
+						foreach (var item in LoadedTags)
 						{
 							if (!FLP_Tags.GetControls<TagControl>().Any(x => x.Text.Equals(item, StringComparison.CurrentCultureIgnoreCase)))
 							{
@@ -86,8 +95,10 @@ namespace ThumbnailMaker.Controls
 
 						foreach (TagControl item in FLP_Tags.Controls)
 						{
-							if (!tags.Contains(item.Text, StringComparer.CurrentCultureIgnoreCase))
+							if (!LoadedTags.Contains(item.Text, StringComparer.CurrentCultureIgnoreCase))
+							{
 								item.Dispose();
+							}
 						}
 
 						void createControl(string file)
@@ -146,7 +157,7 @@ namespace ThumbnailMaker.Controls
 
 		private void TB_Search_TextChanged(object sender, EventArgs e)
 		{
-			var selectedTags = FLP_Tags.GetControls<TagControl>().Where(x => /*x.Selected*/true).Select(x => x.Text).ToList();
+			var selectedTags = FLP_Tags.GetControls<TagControl>().Where(x => x.Selected).Select(x => x.Text).ToList();
 
 			foreach (var item in P_Configs.Controls.OfType<RoadConfigControl>().ToList())
 			{

@@ -19,13 +19,17 @@ namespace ThumbnailMaker.Domain
 			get
 			{
 				if (Type == (LaneType.Car | LaneType.Tram) && !Options.Current.LaneColors.ContainsKey(LaneType.Car) && !Options.Current.LaneColors.ContainsKey(LaneType.Tram))
+				{
 					return Color.FromArgb(66, 185, 212);
+				}
 
 				var types = Type.GetValues().ToList();
 				var color = GetColor(types[0]);
 
 				for (var i = 1; i < types.Count; i++)
+				{
 					color = color.MergeColor(GetColor(types[i]), 30);
+				}
 
 				return color;
 			}
@@ -109,7 +113,9 @@ namespace ThumbnailMaker.Domain
 			var color = getColor(types[0]);
 
 			for (var i = 1; i < types.Count; i++)
+			{
 				color = color.MergeColor(getColor(types[i]), 30);
+			}
 
 			return color;
 

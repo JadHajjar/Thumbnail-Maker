@@ -57,7 +57,9 @@ namespace ThumbnailMaker.Controls
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			if (EnumType == null || DrawAction == null)
+			{
 				return;
+			}
 
 			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
@@ -91,7 +93,9 @@ namespace ThumbnailMaker.Controls
 			base.OnMouseClick(e);
 
 			if (e.Button == MouseButtons.Left)
+			{
 				new OptionSelectionForm<T>(this);
+			}
 		}
 	}
 
@@ -175,10 +179,14 @@ namespace ThumbnailMaker.Controls
 			base.OnMouseClick(e);
 
 			if (e.Button == MouseButtons.Right)
+			{
 				Close();
+			}
 
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			var y = 0;
 

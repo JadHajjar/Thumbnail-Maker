@@ -28,7 +28,9 @@ namespace ThumbnailMaker.Controls
 			foreach (var item in GetSpeedValues())
 			{
 				if (point.X + 96 > (5 * 108) + 12)
+				{
 					point = new Point(12, point.Y + 108);
+				}
 
 				point.X += 108;
 			}
@@ -71,7 +73,9 @@ namespace ThumbnailMaker.Controls
 			Location = new Point(_roadLane.PointToScreen(Point.Empty).X + _roadLane.Width - Width, _roadLane.PointToScreen(Point.Empty).Y + _roadLane.Height);
 
 			if (Location.Y + Height > Screen.FromControl(this).WorkingArea.Height)
+			{
 				Top = Math.Max(0, Top - (_roadLane.Height + Height));
+			}
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -101,14 +105,18 @@ namespace ThumbnailMaker.Controls
 			e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Lane.SpeedLimit == null ? laneColor : FormDesign.Design.AccentColor), rectangle, 16);
 
 			if (_roadLane.Lane.SpeedLimit == null)
+			{
 				e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.ActiveColor, 2.5F), rectangle, 16);
+			}
 
 			using (var icon = ResourceManager.GetImage(LaneDecoration.None, false))
+			{
 				if (icon != null)
 				{
 					e.Graphics.DrawIcon(_roadLane.Lane.SpeedLimit == null ? icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor)) : icon
 						, rectangle, new Size(80, 80));
 				}
+			}
 
 			if (rectangle.Contains(cursor))
 			{
@@ -116,7 +124,9 @@ namespace ThumbnailMaker.Controls
 				e.Graphics.DrawString("Default Speed Limit", new Font(UI.FontFamily, 11.25F, FontStyle.Bold), new SolidBrush(laneColor.GetAccentColor()), rectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 			}
 			else if (_roadLane.Lane.SpeedLimit != null)
+			{
 				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
+			}
 
 			point.X += 108;
 
@@ -132,12 +142,16 @@ namespace ThumbnailMaker.Controls
 				e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 				if (!rectangle.Contains(cursor) && (_roadLane.Lane.SpeedLimit ?? -1) != speed)
+				{
 					e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
+				}
 
 				point.X += 108;
 
 				if (point.X + 96 > ClientRectangle.Width)
+				{
 					point = new Point(12, point.Y + 108);
+				}
 			}
 		}
 
@@ -146,10 +160,14 @@ namespace ThumbnailMaker.Controls
 			base.OnMouseClick(e);
 
 			if (e.Button == MouseButtons.Right)
+			{
 				Close();
+			}
 
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			var point = new Point(8, 8);
 
@@ -168,7 +186,9 @@ namespace ThumbnailMaker.Controls
 				point.X += 108;
 
 				if (point.X + 96 > ClientRectangle.Width)
+				{
 					point = new Point(8, point.Y + 108);
+				}
 			}
 		}
 
@@ -191,7 +211,9 @@ namespace ThumbnailMaker.Controls
 				point.X += 108;
 
 				if (point.X + 96 > ClientRectangle.Width)
+				{
 					point = new Point(8, point.Y + 108);
+				}
 			}
 
 			Cursor = Cursors.Default;

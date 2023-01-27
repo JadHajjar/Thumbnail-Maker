@@ -21,7 +21,6 @@ namespace ThumbnailMaker
 	public partial class PC_MainPage : PanelContent
 	{
 		private bool refreshPaused = true;
-		private RoadConfigControl editedRoad;
 
 		public PC_MainPage()
 		{
@@ -58,7 +57,10 @@ namespace ThumbnailMaker
 			{
 				g.SmoothingMode = SmoothingMode.AntiAlias;
 				using (var path = new Rectangle(64, 24, 64, 23).RoundedRect(5, false))
+				{
 					g.FillPath(new SolidBrush(Color.FromArgb(35, 35, 40)), path);
+				}
+
 				g.DrawImage(Properties.Resources.I_Copy.Color(Color.White), new Rectangle(7 + 64, 4 + 24, 16, 16));
 				g.DrawString("COPY", new Font(UI.FontFamily, 8.25F), Brushes.White, new Rectangle(26 + 64, 0 + 24, 35, 24), new StringFormat
 				{
@@ -84,7 +86,6 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(B_SaveThumb, "Saves the displayed thumbnail on your computer");
 			SlickTip.SetTo(B_ViewSavedRoads, "Show/Hide the saved roads panel");
 			SlickTip.SetTo(B_Export, "Exports the road configuration to the Road Builder folder to be generated");
-			SlickTip.SetTo(B_ClearCurrentlyEdited, "Stop editing this road");
 			SlickTip.SetTo(B_AddTag, "Add a custom tag to this road");
 
 			SlickTip.SetTo(B_Options, "Change the colors & icons of lane types as well as other options");
@@ -140,7 +141,7 @@ namespace ThumbnailMaker
 		{
 			base.DesignChanged(design);
 
-			L_CurrentlyEditing.ForeColor = design.ActiveColor;
+			C_CurrentlyEditing.ForeColor = design.ActiveColor;
 			L_RoadDesc.ForeColor = design.InfoColor;
 			L_NoTags.ForeColor = design.LabelColor;
 
@@ -172,7 +173,9 @@ namespace ThumbnailMaker
 			base.OnVisibleChanged(e);
 
 			if (Visible)
+			{
 				RefreshPreview();
+			}
 		}
 
 		private List<ThumbnailLaneInfo> GetLanes()
@@ -183,7 +186,9 @@ namespace ThumbnailMaker
 		private void RefreshPreview()
 		{
 			if (refreshPaused)
+			{
 				return;
+			}
 
 			try
 			{
@@ -194,6 +199,7 @@ namespace ThumbnailMaker
 				var width = toolTip ? 492 : small ? 109 : 512;
 				var height = toolTip ? 147 : small ? 100 : 512;
 
+				var roadInfo = GetRoadInfo(lanes);
 				var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 				using (var g = Graphics.FromImage(img))
@@ -204,12 +210,13 @@ namespace ThumbnailMaker
 					PB.SizeMode = small && !toolTip ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
 				}
 
-				L_RoadName.Text = string.IsNullOrWhiteSpace(TB_RoadName.Text) ? Utilities.GetRoadName(GetRoadType(), lanes).Replace(" ", " ") : TB_RoadName.Text;
-				L_RoadDesc.Text = Utilities.GetRoadDescription(GetRoadInfo(lanes), false);
-				L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
+				roadInfo.Name = roadInfo.CustomName.IfEmpty(Utilities.GetRoadName(roadInfo.RoadType, roadInfo.Lanes));
+				roadInfo.Description = Utilities.GetRoadDescription(roadInfo, false);
 
-				L_RoadName.Text = L_RoadName.Text.Replace("&", "&&");
-				L_RoadDesc.Text = L_RoadDesc.Text.Replace("&", "&&");
+				L_RoadName.Text = roadInfo.Name.Replace("&", "&&");
+				L_RoadDesc.Text = roadInfo.Description.Replace("&", "&&");
+
+				C_Warnings.SetRoad(roadInfo);
 
 				var speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse();
 
@@ -219,7 +226,9 @@ namespace ThumbnailMaker
 					RoadLane.RoadType = GetRoadType();
 
 					foreach (Control item in P_Lanes.Controls)
+					{
 						item.Invalidate();
+					}
 				}
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
@@ -245,15 +254,22 @@ namespace ThumbnailMaker
 		private void SetupType(RoadType road)
 		{
 			if (refreshPaused)
+			{
 				return;
+			}
 
 			var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
 			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
 
 			if (leftSidewalk == null)
+			{
 				AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Backwards }).SendToBack();
+			}
+
 			if (rightSidewalk == null)
+			{
 				AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Forward });
+			}
 
 			var first = P_Lanes.Controls[0] as RoadLane;
 			var last = P_Lanes.Controls[P_Lanes.Controls.Count - 1] as RoadLane;
@@ -261,18 +277,26 @@ namespace ThumbnailMaker
 			if (road == RoadType.Highway)
 			{
 				if (first.Lane.Type == LaneType.Pedestrian && first.Lane.Decorations == LaneDecoration.None)
+				{
 					first.Dispose();
+				}
 
 				if (last.Lane.Type == LaneType.Pedestrian && last.Lane.Decorations == LaneDecoration.None)
+				{
 					last.Dispose();
+				}
 			}
 			else
 			{
 				if (first.Lane.Type == LaneType.Curb)
+				{
 					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian }).SendToBack();
+				}
 
 				if (last.Lane.Type == LaneType.Curb)
+				{
 					AddLaneControl(new ThumbnailLaneInfo { Type = LaneType.Pedestrian });
+				}
 			}
 
 			if (road == RoadType.Highway)
@@ -296,7 +320,7 @@ namespace ThumbnailMaker
 
 		private void B_Clear_Click(object sender, EventArgs e)
 		{
-			editedRoad = null;
+			C_CurrentlyEditing.Clear();
 			refreshPaused = true;
 			TB_RoadName.Text = string.Empty;
 			TB_Size.Text = string.Empty;
@@ -322,9 +346,13 @@ namespace ThumbnailMaker
 			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
 
 			if (rightSidewalk != null)
+			{
 				P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.GetChildIndex(rightSidewalk) + 1);
+			}
 			else
+			{
 				ctrl.BringToFront();
+			}
 
 			var frm = new RoadTypeSelector(ctrl, B_AddLane);
 
@@ -339,7 +367,9 @@ namespace ThumbnailMaker
 				item.BringToFront();
 
 				if (item.Lane.Type == LaneType.Curb)
+				{
 					item.Lane.Direction = item.Lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward;
+				}
 
 				item.Invalidate();
 			}
@@ -356,34 +386,48 @@ namespace ThumbnailMaker
 			var lanes = P_Lanes.Controls.OfType<RoadLane>().Where(x =>
 			{
 				if (leftSidewalk != null && P_Lanes.Controls.IndexOf(x) >= P_Lanes.Controls.IndexOf(leftSidewalk))
+				{
 					return false;
+				}
 
 				if (rightSidewalk != null && P_Lanes.Controls.IndexOf(x) <= P_Lanes.Controls.IndexOf(rightSidewalk))
+				{
 					return false;
+				}
 
 				return true;
 			}).ToList();
 
 			if (lanes.FirstOrDefault()?.Lane.Type == LaneType.Filler)
+			{
 				lanes.RemoveAt(0);
+			}
 
 			foreach (var item in lanes)
 			{
 				var ctrl = item.Duplicate();
 
 				if (ctrl.Lane.Direction == LaneDirection.Forward)
+				{
 					ctrl.Lane.Direction = LaneDirection.Backwards;
+				}
 				else if (ctrl.Lane.Direction == LaneDirection.Backwards)
+				{
 					ctrl.Lane.Direction = LaneDirection.Forward;
+				}
 
 				ctrl.Dock = DockStyle.Top;
 
 				P_Lanes.Controls.Add(ctrl);
 
 				if (rightSidewalk != null)
+				{
 					P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.IndexOf(rightSidewalk) + 1);
+				}
 				else
+				{
 					ctrl.BringToFront();
+				}
 			}
 
 			refreshPaused = false;
@@ -395,9 +439,11 @@ namespace ThumbnailMaker
 			try
 			{
 				var frm = new SaveThumbDialog(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-				
+
 				if (frm.ShowDialog() != DialogResult.OK)
+				{
 					return;
+				}
 
 				var folder = frm.SelectedPath;
 				var matched = false;
@@ -422,7 +468,9 @@ namespace ThumbnailMaker
 				}
 
 				if (!matched)
+				{
 					save(GetLanes().ListStrings(" + ") + ".png", frm.CB_Small.Checked, frm.CB_Tooltip.Checked);
+				}
 
 				void save(string filename, bool small, bool toolTip)
 				{
@@ -490,36 +538,19 @@ namespace ThumbnailMaker
 				var lanes = GetLanes();
 
 				if (lanes.Count == 0)
+				{
 					return;
-
-				if (lanes.Any(x => x.Type.HasFlag(LaneType.Train)))
-				{
-					Notification.Create("Train Lanes Detected", "Your road was exported, but it contains train lanes which have no effect.", PromptIcons.Info, null)
-						.Show(Form, 15);
 				}
 
-				if (lanes.Any(x => x.Decorations.HasFlag(LaneDecoration.TransitStop) && x.LaneWidth < 2))
-				{
-					Notification.Create("Invalid Stops Detected", "Your road was exported, some filler lanes that you've added stops to are too small to work.", PromptIcons.Info, null)
-						.Show(Form, 15);
-				}
-
-				if (L_RoadName.Text.Length > 32)
-				{
-					Notification.Create("Road name too Long", "Your road was exported, but the generated road name is too long for the game.\nPlease keep that in mind", PromptIcons.Info, null)
-						.Show(Form, 15);
-				}
 				var roadInfo = GetRoadInfo(lanes);
 
-				var file = Utilities.ExportRoad(roadInfo, editedRoad == null ? null : Path.GetFileName(editedRoad.FileName));
+				var file = Utilities.ExportRoad(roadInfo, C_CurrentlyEditing.Road == null ? null : Path.GetFileName(C_CurrentlyEditing.Control.FileName));
 
-				editedRoad?.Dispose();
+				C_CurrentlyEditing.Control?.Dispose();
 
 				RCC.RefreshConfigs();
 
-				editedRoad = RCC.P_Configs.Controls.OfType<RoadConfigControl>().FirstOrDefault(x => x.FileName.Equals(file, StringComparison.InvariantCultureIgnoreCase));
-				L_CurrentlyEditing.Text = $"Currently editing '{roadInfo.Name.RegexRemove("^B?R[B4][RHFP]").Trim()}'";
-				L_CurrentlyEditing.Visible = B_ClearCurrentlyEdited.Visible = true;
+				C_CurrentlyEditing.SetRoad(RCC.P_Configs.Controls.OfType<RoadConfigControl>().FirstOrDefault(x => x.FileName.Equals(file, StringComparison.InvariantCultureIgnoreCase)));
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
 		}
@@ -542,7 +573,7 @@ namespace ThumbnailMaker
 				LHT = Options.Current.LHT,
 				VanillaWidth = Options.Current.VanillaWidths,
 				Tags = FLP_Tags.Controls.OfType<TagControl>().Select(x => x.Text).ToList(),
-				DateCreated = editedRoad?.Road.DateCreated ?? DateTime.Now,
+				DateCreated = C_CurrentlyEditing.Road?.DateCreated ?? DateTime.Now,
 			};
 		}
 
@@ -588,13 +619,13 @@ namespace ThumbnailMaker
 				FLP_Tags.Controls.Clear(true, x => x is TagControl);
 
 				if (r.Tags?.Any() ?? false)
+				{
 					FLP_Tags.Controls.AddRange(r.Tags.Select(x => new TagControl(x, false)).ToArray());
+				}
 
 				P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb)?.FixCurbOrientation();
 
-				editedRoad = sender as RoadConfigControl;
-				L_CurrentlyEditing.Text = $"Currently editing '{r.Name.RegexRemove("^B?R[B4][RHFP]").Trim()}'";
-				L_CurrentlyEditing.Visible = B_ClearCurrentlyEdited.Visible = true;
+				C_CurrentlyEditing.SetRoad(sender as RoadConfigControl);
 			}
 			catch (Exception ex)
 			{
@@ -651,7 +682,7 @@ namespace ThumbnailMaker
 
 		private void L_RoadName_MouseLeave(object sender, EventArgs e)
 		{
-			L_RoadName.ForeColor = L_RoadName.Text.Length > 32 ? FormDesign.Design.RedColor : FormDesign.Design.ForeColor;
+			L_RoadName.ForeColor = FormDesign.Design.ForeColor;
 			L_RoadDesc.ForeColor = FormDesign.Design.InfoColor;
 		}
 
@@ -701,14 +732,9 @@ namespace ThumbnailMaker
 		private void P_Lanes_ControlAdded(object sender, ControlEventArgs e)
 		{
 			if (e.Control is RoadLane roadLane)
+			{
 				roadLane.RoadLaneChanged += TB_Name_TextChanged;
-		}
-
-		private void L_CurrentlyEditing_Click(object sender, EventArgs e)
-		{
-			editedRoad = null;
-			L_CurrentlyEditing.Visible = false;
-			B_ClearCurrentlyEdited.Visible = false;
+			}
 		}
 
 		private void B_ViewSavedRoads_Click(object sender, EventArgs e)
@@ -721,7 +747,7 @@ namespace ThumbnailMaker
 
 		private void B_AddTag_Click(object sender, EventArgs e)
 		{
-			var frm = new AddTagForm() { Location = FLP_Tags.PointToScreen(Point.Empty), MinimumSize = new Size(TLP_Right.Width - 5, 0) };
+			var frm = new AddTagForm(RCC.LoadedTags, FLP_Tags.GetControls<TagControl>().Select(x => x.Text)) { Location = FLP_Tags.PointToScreen(Point.Empty), MinimumSize = new Size(TLP_Right.Width - 5, 0) };
 
 			frm.TagAdded += Frm_TagAdded;
 			frm.TagRemoved += Frm_TagRemoved;

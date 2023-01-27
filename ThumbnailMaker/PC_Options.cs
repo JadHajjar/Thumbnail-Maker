@@ -102,10 +102,14 @@ namespace ThumbnailMaker
 						ResourceManager.SetLogo(sender == PB_Small, openFileDialog.FileName);
 					}
 					else
+					{
 						return;
+					}
 				}
 				else
+				{
 					ResourceManager.SetLogo(sender == PB_Small, null);
+				}
 
 				PB_Small.Image = ResourceManager.Logo(true);
 				PB_Large.Image = ResourceManager.Logo(false);
@@ -126,7 +130,9 @@ namespace ThumbnailMaker
 		private void B_ReExport_Click(object sender, EventArgs e)
 		{
 			if (B_ReExport.Loading)
+			{
 				return;
+			}
 
 			var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
 				, "Colossal Order", "Cities_Skylines", "RoadBuilder", "Roads"));

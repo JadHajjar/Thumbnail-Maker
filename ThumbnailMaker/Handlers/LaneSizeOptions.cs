@@ -57,6 +57,7 @@ namespace ThumbnailMaker.Domain
 				var xML = new XmlSerializer(typeof(SavedSettings));
 
 				using (var stream = File.Create(Path.Combine(appdata, "LaneSizes.xml")))
+				{
 					xML.Serialize(stream, new SavedSettings
 					{
 						Version = 1,
@@ -65,6 +66,7 @@ namespace ThumbnailMaker.Domain
 						LaneTypes = _sizes.Keys.Cast<int>().ToList(),
 						LaneSizes = _sizes.Values.ToList(),
 					});
+				}
 			}
 			catch { }
 		}
@@ -105,11 +107,15 @@ namespace ThumbnailMaker.Domain
 						foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 						{
 							if (!_sizes.ContainsKey(laneType))
+							{
 								_sizes[laneType] = GetDefaultLaneWidth(laneType);
+							}
 						}
 
 						if (savedSettings.Version < 1)
+						{
 							Save();
+						}
 					}
 
 					return;

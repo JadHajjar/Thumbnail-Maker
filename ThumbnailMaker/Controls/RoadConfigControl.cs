@@ -3,7 +3,6 @@
 using SlickControls;
 
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -34,7 +33,9 @@ namespace ThumbnailMaker.Controls
 				Road = road;
 
 				using (var ms = new MemoryStream(Road.SmallThumbnail))
+				{
 					Image = new Bitmap(ms);
+				}
 
 				RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(Road.Lanes, Road.RoadType, Road.RegionType == RegionType.USA).If(x => x == 0, x => "", x => x.ToString()) : Road.SpeedLimit.ToString();
 				RoadSize = Math.Max(Road.RoadWidth, Utilities.VanillaWidth(Road.VanillaWidth, Utilities.CalculateRoadSize(Road.Lanes, Road.BufferWidth))).If(x => x == 0F, x => "", x => x.ToString("0.#"));
@@ -111,19 +112,25 @@ namespace ThumbnailMaker.Controls
 			}
 
 			if (!deleteHovered && !folderHovered)
+			{
 				DrawFocus(e.Graphics, ClientRectangle.Pad(3, 6, 3, 1), 4);
+			}
 
 			e.Graphics.TranslateTransform(7, 3 + ((int)(Height - (50 * UI.UIScale)) / 2));
 
 			using (var image = new Bitmap(Image, UI.Scale(new Size(55, 50), UI.UIScale)))
 			using (var texture = new TextureBrush(image))
+			{
 				e.Graphics.FillRoundedRectangle(texture, new Rectangle(Point.Empty, UI.Scale(new Size(55, 50), UI.UIScale)), 6);
+			}
 		}
 
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
 			if (e.Button != MouseButtons.Left && e.Button != MouseButtons.None)
+			{
 				return;
+			}
 
 			if (deleteRect.Contains(e.Location))
 			{

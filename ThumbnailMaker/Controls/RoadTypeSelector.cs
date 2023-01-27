@@ -26,10 +26,14 @@ namespace ThumbnailMaker.Controls
 			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
 				if ((laneType & (LaneType.Curb | LaneType.Train)) != 0)
+				{
 					continue;
+				}
 
 				if (point.X + 96 > (5 * 108) + 12)
+				{
 					point = new Point(12, point.Y + 108);
+				}
 
 				point.X += 108;
 			}
@@ -52,7 +56,9 @@ namespace ThumbnailMaker.Controls
 			Location = new Point(_control.PointToScreen(Point.Empty).X - (_control is RoadLane ? 0 : Width - _control.Width), _control.PointToScreen(Point.Empty).Y + _control.Height + _control.Margin.Bottom);
 
 			if (Location.Y + Height > Screen.FromControl(this).WorkingArea.Height)
+			{
 				Top -= _control.Height + Height;
+			}
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -79,21 +85,29 @@ namespace ThumbnailMaker.Controls
 			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
 				if ((laneType & (LaneType.Curb | LaneType.Train)) != 0)
+				{
 					continue;
+				}
 
 				var rectangle = new Rectangle(point, new Size(96, 96));
 
 				e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Lane.Type.HasFlag(laneType) ? Color.FromArgb(175, ThumbnailLaneInfo.GetColor(laneType)) : FormDesign.Design.AccentColor), rectangle, 16);
 
 				if (laneType == LaneType.Empty ? (_roadLane.Lane.Type == LaneType.Empty) : _roadLane.Lane.Type.HasFlag(laneType))
+				{
 					e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.ActiveColor, 2.5F), rectangle, 16);
+				}
 
 				using (var icon = ResourceManager.GetImage(laneType, false))
 				{
 					if (icon != null)
+					{
 						e.Graphics.DrawIcon(laneType == LaneType.Empty ? icon.Color(FormDesign.Design.ForeColor.MergeColor(FormDesign.Design.AccentColor)) : icon, rectangle, new Size(80, 80));
+					}
 					else if (!_roadLane.Lane.Type.HasFlag(laneType))
+					{
 						e.Graphics.DrawRoundedRectangle(new Pen(ThumbnailLaneInfo.GetColor(laneType), 2.5F), rectangle, 16);
+					}
 				}
 
 				if (rectangle.Contains(cursor))
@@ -102,12 +116,16 @@ namespace ThumbnailMaker.Controls
 					e.Graphics.DrawString(laneType.ToString(), new Font(UI.FontFamily, 11.25F, FontStyle.Bold), new SolidBrush(ThumbnailLaneInfo.GetColor(laneType).GetAccentColor()), rectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 				}
 				else if (!_roadLane.Lane.Type.HasFlag(laneType))
+				{
 					e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
+				}
 
 				point.X += 108;
 
 				if (point.X + 96 > ClientRectangle.Width)
+				{
 					point = new Point(12, point.Y + 108);
+				}
 			}
 		}
 
@@ -116,24 +134,34 @@ namespace ThumbnailMaker.Controls
 			base.OnMouseClick(e);
 
 			if (e.Button == MouseButtons.Right)
+			{
 				Close();
+			}
 
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			var point = new Point(8, 8);
 
 			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
 				if ((laneType & (LaneType.Curb | LaneType.Train)) != 0)
+				{
 					continue;
+				}
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
 				{
 					if (!_roadLane.Lane.Type.HasFlag(laneType) && (laneType == LaneType.Empty || laneType == LaneType.Filler || laneType == LaneType.Parking))
+					{
 						_roadLane.Lane.Type = laneType;
+					}
 					else
+					{
 						_roadLane.Lane.Type = _roadLane.Lane.Type.HasFlag(laneType) ? _roadLane.Lane.Type & ~laneType : _roadLane.Lane.Type | laneType;
+					}
 
 					Invalidate();
 					_roadLane.RefreshRoad();
@@ -143,7 +171,9 @@ namespace ThumbnailMaker.Controls
 				point.X += 108;
 
 				if (point.X + 96 > ClientRectangle.Width)
+				{
 					point = new Point(8, point.Y + 108);
+				}
 			}
 		}
 
@@ -158,7 +188,9 @@ namespace ThumbnailMaker.Controls
 			foreach (LaneType laneType in Enum.GetValues(typeof(LaneType)))
 			{
 				if ((laneType & (LaneType.Curb | LaneType.Train)) != 0)
+				{
 					continue;
+				}
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
 				{
@@ -169,7 +201,9 @@ namespace ThumbnailMaker.Controls
 				point.X += 108;
 
 				if (point.X + 96 > ClientRectangle.Width)
+				{
 					point = new Point(8, point.Y + 108);
+				}
 			}
 
 			Cursor = Cursors.Default;

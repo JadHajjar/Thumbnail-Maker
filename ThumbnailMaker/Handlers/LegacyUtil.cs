@@ -39,7 +39,9 @@ namespace ThumbnailMaker.Handlers
 					xml = new XmlSerializer(typeof(RoadInfo));
 
 					using (var stream = File.OpenRead(fileName))
+					{
 						return (RoadInfo)xml.Deserialize(stream);
+					}
 
 				case 0:
 					xml = new XmlSerializer(typeof(RoadInfo_V0));

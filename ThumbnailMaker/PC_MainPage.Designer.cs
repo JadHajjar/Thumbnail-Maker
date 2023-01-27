@@ -36,13 +36,14 @@ namespace ThumbnailMaker
 			this.RCC = new ThumbnailMaker.Controls.RoadConfigContainer();
 			this.slickSpacer2 = new SlickControls.SlickSpacer();
 			this.TLP_Right = new System.Windows.Forms.TableLayoutPanel();
+			this.C_Warnings = new ThumbnailMaker.Controls.WarningsControl();
 			this.B_Export = new SlickControls.SlickButton();
 			this.slickSpacer4 = new SlickControls.SlickSpacer();
 			this.B_AddTag = new SlickControls.SlickButton();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_ViewSavedRoads = new SlickControls.SlickButton();
 			this.B_SaveThumb = new SlickControls.SlickButton();
-			this.L_CurrentlyEditing = new System.Windows.Forms.Label();
+			this.C_CurrentlyEditing = new ThumbnailMaker.Controls.CurrentlyEditingControl();
 			this.L_RoadName = new System.Windows.Forms.Label();
 			this.L_RoadDesc = new System.Windows.Forms.Label();
 			this.B_EditDesc = new SlickControls.SlickButton();
@@ -50,7 +51,6 @@ namespace ThumbnailMaker
 			this.PB = new System.Windows.Forms.PictureBox();
 			this.FLP_Tags = new System.Windows.Forms.FlowLayoutPanel();
 			this.L_NoTags = new System.Windows.Forms.Label();
-			this.B_ClearCurrentlyEdited = new SlickControls.SlickButton();
 			this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
 			this.GB_AsphaltTexture = new SlickControls.SlickGroupBox();
 			this.GB_Region = new SlickControls.SlickGroupBox();
@@ -146,24 +146,24 @@ namespace ThumbnailMaker
 			this.TLP_Right.ColumnCount = 2;
 			this.TLP_Right.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.TLP_Right.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.TLP_Right.Controls.Add(this.B_Export, 0, 6);
+			this.TLP_Right.Controls.Add(this.C_Warnings, 0, 5);
+			this.TLP_Right.Controls.Add(this.B_Export, 0, 7);
 			this.TLP_Right.Controls.Add(this.slickSpacer4, 0, 4);
 			this.TLP_Right.Controls.Add(this.B_AddTag, 1, 3);
-			this.TLP_Right.Controls.Add(this.tableLayoutPanel2, 0, 7);
-			this.TLP_Right.Controls.Add(this.L_CurrentlyEditing, 0, 5);
+			this.TLP_Right.Controls.Add(this.tableLayoutPanel2, 0, 8);
+			this.TLP_Right.Controls.Add(this.C_CurrentlyEditing, 0, 6);
 			this.TLP_Right.Controls.Add(this.L_RoadName, 0, 1);
 			this.TLP_Right.Controls.Add(this.L_RoadDesc, 0, 2);
 			this.TLP_Right.Controls.Add(this.B_EditDesc, 1, 2);
 			this.TLP_Right.Controls.Add(this.B_EditName, 1, 1);
 			this.TLP_Right.Controls.Add(this.PB, 0, 0);
 			this.TLP_Right.Controls.Add(this.FLP_Tags, 0, 3);
-			this.TLP_Right.Controls.Add(this.B_ClearCurrentlyEdited, 1, 5);
 			this.TLP_Right.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.TLP_Right.Location = new System.Drawing.Point(905, 0);
 			this.TLP_Right.Margin = new System.Windows.Forms.Padding(0);
 			this.TLP_Right.Name = "TLP_Right";
 			this.TLP_Right.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
-			this.TLP_Right.RowCount = 8;
+			this.TLP_Right.RowCount = 9;
 			this.TLP_Main.SetRowSpan(this.TLP_Right, 5);
 			this.TLP_Right.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP_Right.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -173,8 +173,19 @@ namespace ThumbnailMaker
 			this.TLP_Right.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP_Right.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP_Right.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.TLP_Right.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP_Right.Size = new System.Drawing.Size(276, 574);
 			this.TLP_Right.TabIndex = 17;
+			// 
+			// C_Warnings
+			// 
+			this.TLP_Right.SetColumnSpan(this.C_Warnings, 2);
+			this.C_Warnings.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.C_Warnings.Location = new System.Drawing.Point(3, 458);
+			this.C_Warnings.Name = "C_Warnings";
+			this.C_Warnings.Size = new System.Drawing.Size(265, 13);
+			this.C_Warnings.TabIndex = 19;
+			this.C_Warnings.Visible = false;
 			// 
 			// B_Export
 			// 
@@ -199,7 +210,7 @@ namespace ThumbnailMaker
 			this.slickSpacer4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TLP_Right.SetColumnSpan(this.slickSpacer4, 3);
-			this.slickSpacer4.Location = new System.Drawing.Point(7, 449);
+			this.slickSpacer4.Location = new System.Drawing.Point(7, 447);
 			this.slickSpacer4.Margin = new System.Windows.Forms.Padding(7);
 			this.slickSpacer4.Name = "slickSpacer4";
 			this.slickSpacer4.Size = new System.Drawing.Size(257, 1);
@@ -275,18 +286,15 @@ namespace ThumbnailMaker
 			this.B_SaveThumb.Text = "Save Thumb.";
 			this.B_SaveThumb.Click += new System.EventHandler(this.B_Save_Click);
 			// 
-			// L_CurrentlyEditing
+			// C_CurrentlyEditing
 			// 
-			this.L_CurrentlyEditing.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.L_CurrentlyEditing.AutoSize = true;
-			this.L_CurrentlyEditing.Location = new System.Drawing.Point(10, 468);
-			this.L_CurrentlyEditing.Margin = new System.Windows.Forms.Padding(10, 0, 3, 0);
-			this.L_CurrentlyEditing.Name = "L_CurrentlyEditing";
-			this.L_CurrentlyEditing.Size = new System.Drawing.Size(63, 13);
-			this.L_CurrentlyEditing.TabIndex = 7;
-			this.L_CurrentlyEditing.Text = "Last Edited";
-			this.L_CurrentlyEditing.Visible = false;
-			this.L_CurrentlyEditing.Click += new System.EventHandler(this.L_CurrentlyEditing_Click);
+			this.TLP_Right.SetColumnSpan(this.C_CurrentlyEditing, 2);
+			this.C_CurrentlyEditing.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.C_CurrentlyEditing.Location = new System.Drawing.Point(3, 477);
+			this.C_CurrentlyEditing.Name = "C_CurrentlyEditing";
+			this.C_CurrentlyEditing.Size = new System.Drawing.Size(265, 13);
+			this.C_CurrentlyEditing.TabIndex = 7;
+			this.C_CurrentlyEditing.Visible = false;
 			// 
 			// L_RoadName
 			// 
@@ -390,23 +398,6 @@ namespace ThumbnailMaker
 			this.L_NoTags.TabIndex = 14;
 			this.L_NoTags.Tag = "NoMouseDown";
 			this.L_NoTags.Text = "No Custom Tags";
-			// 
-			// B_ClearCurrentlyEdited
-			// 
-			this.B_ClearCurrentlyEdited.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.B_ClearCurrentlyEdited.ColorShade = null;
-			this.B_ClearCurrentlyEdited.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_ClearCurrentlyEdited.HandleUiScale = false;
-			this.B_ClearCurrentlyEdited.IconSize = 16;
-			this.B_ClearCurrentlyEdited.Image = global::ThumbnailMaker.Properties.Resources.I_Cancel;
-			this.B_ClearCurrentlyEdited.Location = new System.Drawing.Point(238, 460);
-			this.B_ClearCurrentlyEdited.Name = "B_ClearCurrentlyEdited";
-			this.B_ClearCurrentlyEdited.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.B_ClearCurrentlyEdited.Size = new System.Drawing.Size(30, 30);
-			this.B_ClearCurrentlyEdited.SpaceTriggersClick = true;
-			this.B_ClearCurrentlyEdited.TabIndex = 4;
-			this.B_ClearCurrentlyEdited.Visible = false;
-			this.B_ClearCurrentlyEdited.Click += new System.EventHandler(this.L_CurrentlyEditing_Click);
 			// 
 			// tableLayoutPanel6
 			// 
@@ -919,14 +910,14 @@ namespace ThumbnailMaker
 		private SlickControls.SlickGroupBox GB_SideTexture;
 		private SlickControls.SlickGroupBox GB_BridgeSideTexture;
 		private SlickControls.SlickGroupBox GB_AsphaltTexture;
-		private System.Windows.Forms.Label L_CurrentlyEditing;
+		private Controls.CurrentlyEditingControl C_CurrentlyEditing;
 		private System.Windows.Forms.Label L_RoadDesc;
 		private SlickControls.SlickButton B_EditDesc;
 		private SlickControls.SlickButton B_ViewSavedRoads;
 		private SlickControls.SlickButton B_AddTag;
 		private System.Windows.Forms.FlowLayoutPanel FLP_Tags;
 		private System.Windows.Forms.Label L_NoTags;
-		private SlickControls.SlickButton B_ClearCurrentlyEdited;
 		private SlickControls.SlickSpacer slickSpacer4;
+		private Controls.WarningsControl C_Warnings;
 	}
 }

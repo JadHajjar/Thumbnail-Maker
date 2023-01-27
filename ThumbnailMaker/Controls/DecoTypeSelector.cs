@@ -24,10 +24,14 @@ namespace ThumbnailMaker.Controls
 			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
 				if (!Utilities.IsCompatible(laneType, roadLane.Lane.Type))
+				{
 					continue;
+				}
 
 				if (point.X + 96 > (6 * 108) + 12)
+				{
 					point = new Point(12, point.Y + 108);
+				}
 
 				point.X += 108;
 			}
@@ -50,7 +54,9 @@ namespace ThumbnailMaker.Controls
 			Location = new Point(_roadLane.PointToScreen(Point.Empty).X, _roadLane.PointToScreen(Point.Empty).Y + _roadLane.Height);
 
 			if (Location.Y + Height > Screen.FromControl(this).WorkingArea.Height)
+			{
 				Top = Math.Max(0, Top - (_roadLane.Height + Height));
+			}
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -77,7 +83,9 @@ namespace ThumbnailMaker.Controls
 			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
+				{
 					continue;
+				}
 
 				var rectangle = new Rectangle(point, new Size(96, 96));
 
@@ -88,7 +96,9 @@ namespace ThumbnailMaker.Controls
 					e.Graphics.FillRoundedRectangle(new SolidBrush(_roadLane.Lane.Decorations.HasFlag(laneType) ? Color.FromArgb(200, laneColor) : FormDesign.Design.AccentColor), rectangle, 16);
 
 					if (laneType == LaneDecoration.None ? (_roadLane.Lane.Decorations == LaneDecoration.None) : _roadLane.Lane.Decorations.HasFlag(laneType))
+					{
 						e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.ActiveColor, 2.5F), rectangle, 16);
+					}
 
 					if (icon != null)
 					{
@@ -96,7 +106,9 @@ namespace ThumbnailMaker.Controls
 							, rectangle, new Size(80, 80));
 					}
 					else if (!_roadLane.Lane.Decorations.HasFlag(laneType))
+					{
 						e.Graphics.DrawRoundedRectangle(new Pen(laneColor, 2.5F), rectangle, 16);
+					}
 
 					if (rectangle.Contains(cursor))
 					{
@@ -104,13 +116,17 @@ namespace ThumbnailMaker.Controls
 						e.Graphics.DrawString(laneType.ToString().FormatWords(), new Font(UI.FontFamily, 11.25F, FontStyle.Bold), new SolidBrush(laneColor.GetAccentColor()), rectangle, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 					}
 					else if (!_roadLane.Lane.Decorations.HasFlag(laneType))
+					{
 						e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(100, FormDesign.Design.AccentColor)), rectangle, 16);
+					}
 				}
 
 				point.X += 108;
 
 				if (point.X + 96 > ClientRectangle.Width)
+				{
 					point = new Point(12, point.Y + 108);
+				}
 			}
 		}
 
@@ -119,26 +135,36 @@ namespace ThumbnailMaker.Controls
 			base.OnMouseClick(e);
 
 			if (e.Button == MouseButtons.Right)
+			{
 				Close();
+			}
 
 			if (e.Button != MouseButtons.Left)
+			{
 				return;
+			}
 
 			var point = new Point(8, 8);
 
 			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
+				{
 					continue;
+				}
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
 				{
 					if (laneType == LaneDecoration.None)
+					{
 						_roadLane.Lane.Decorations = laneType;
+					}
 					else
 					{
 						if (laneType <= LaneDecoration.Gravel && !_roadLane.Lane.Decorations.HasFlag(laneType))
+						{
 							_roadLane.Lane.Decorations &= ~LaneDecoration.Filler & ~LaneDecoration.Grass & ~LaneDecoration.Gravel & ~LaneDecoration.Pavement;
+						}
 
 						_roadLane.Lane.Decorations = _roadLane.Lane.Decorations.HasFlag(laneType) ? _roadLane.Lane.Decorations & ~laneType : _roadLane.Lane.Decorations | laneType;
 					}
@@ -150,7 +176,9 @@ namespace ThumbnailMaker.Controls
 				point.X += 108;
 
 				if (point.X + 96 > ClientRectangle.Width)
+				{
 					point = new Point(8, point.Y + 108);
+				}
 			}
 		}
 
@@ -165,7 +193,9 @@ namespace ThumbnailMaker.Controls
 			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
+				{
 					continue;
+				}
 
 				if (new Rectangle(point, new Size(96, 96)).Contains(e.Location))
 				{
@@ -176,7 +206,9 @@ namespace ThumbnailMaker.Controls
 				point.X += 108;
 
 				if (point.X + 96 > ClientRectangle.Width)
+				{
 					point = new Point(8, point.Y + 108);
+				}
 			}
 
 			Cursor = Cursors.Default;

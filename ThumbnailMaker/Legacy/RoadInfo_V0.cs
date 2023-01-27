@@ -68,25 +68,37 @@ namespace ThumbnailMaker.Legacy
 					var bi = l.Direction == LaneDirection_V0.Both;
 
 					if (bi && i >= l.Lanes / 2)
+					{
 						lane.Direction = !road.LHT ? LaneDirection.Forward : LaneDirection.Backwards;
+					}
 					else if (bi)
+					{
 						lane.Direction = road.LHT ? LaneDirection.Forward : LaneDirection.Backwards;
+					}
 
 					newRoad.Lanes.Add(lane);
 				}
 			}
 
 			if (!(newRoad.Lanes.Count > 0 && newRoad.Lanes[0].Type == LaneType.Pedestrian))
+			{
 				newRoad.Lanes.Insert(0, new LaneInfo { Type = LaneType.Pedestrian, Direction = LaneDirection.Both });
+			}
 			else
+			{
 				newRoad.Lanes[0].Decorations = LaneDecoration.None;
+			}
 
 			newRoad.Lanes.Insert(1, new LaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Backwards });
 
 			if (!(newRoad.Lanes.Count > 2 && newRoad.Lanes[newRoad.Lanes.Count - 1].Type == LaneType.Pedestrian))
+			{
 				newRoad.Lanes.Add(new LaneInfo { Type = LaneType.Pedestrian, Direction = LaneDirection.Both });
+			}
 			else
+			{
 				newRoad.Lanes[newRoad.Lanes.Count - 1].Decorations = LaneDecoration.None;
+			}
 
 			newRoad.Lanes.Insert(newRoad.Lanes.Count - 1, new LaneInfo { Type = LaneType.Curb, Direction = LaneDirection.Forward });
 
@@ -140,10 +152,14 @@ namespace ThumbnailMaker.Legacy
 			lane.Type = newType;
 
 			if (l.AddStopToFiller)
+			{
 				lane.Decorations |= LaneDecoration.TransitStop;
+			}
 
 			if (lane.CustomWidth == null && lane.Type == LaneType.Filler && l.Lanes != 0)
+			{
 				lane.CustomWidth = (float)Math.Round(Math.Ceiling(0.04 * lane.LaneWidth * 10 * (10 - Math.Min(l.Lanes, 9))) / 4, 2);
+			}
 
 			return lane;
 		}
@@ -245,7 +261,9 @@ namespace ThumbnailMaker.Legacy
 		public static List<LaneType_V0> GetLaneTypes(LaneType_V0 laneType)
 		{
 			if (laneType == LaneType_V0.Empty)
+			{
 				return new List<LaneType_V0> { LaneType_V0.Empty };
+			}
 
 			return Enum
 				.GetValues(typeof(LaneType_V0))
