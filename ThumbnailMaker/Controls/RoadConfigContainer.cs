@@ -32,12 +32,11 @@ namespace ThumbnailMaker.Controls
 		{
 			InitializeComponent();
 
-			RoadTypeControl = new OptionSelectionControl<RoadTypeFilter>(GetRoadTypeIcon) { Width = (int)(145 * UI.UIScale) };
-			FLP_Tags.Controls.Add(RoadTypeControl);
+			RoadTypeControl = new OptionSelectionControl<RoadTypeFilter>(GetRoadTypeIcon) { Dock = DockStyle.Top };
+			TLP_Options.Controls.Add(RoadTypeControl, 0, 0);
 
-			RoadSizeControl = new OptionSelectionControl<RoadSize>(GetRoadSizeIcon) { Width = (int)(145 * UI.UIScale) };
-			FLP_Tags.Controls.Add(RoadSizeControl);
-			FLP_Tags.SetFlowBreak(RoadSizeControl, true);
+			RoadSizeControl = new OptionSelectionControl<RoadSize>(GetRoadSizeIcon) { Dock = DockStyle.Top };
+			TLP_Options.Controls.Add(RoadSizeControl, 1, 0);
 
 			RoadTypeControl.SelectedValueChanged += (s, e) => TB_Search_TextChanged(null, null);
 			RoadSizeControl.SelectedValueChanged += (s, e) => TB_Search_TextChanged(null, null);
@@ -97,6 +96,12 @@ namespace ThumbnailMaker.Controls
 					{ return LegacyUtil.LoadRoad(x); }
 					catch { return null; }
 				});
+
+				foreach (var item in contents.ToList())
+				{
+					if (item.Value == null)
+						contents.Remove(item.Key);
+				}
 
 				LoadedTags = contents.Values.SelectMany(x => x.Tags).Distinct((x, y) => x.Equals(y, StringComparison.CurrentCultureIgnoreCase)).ToList();
 				AutoTags = contents.Values.SelectMany(x => x.AutoTags).Distinct((x, y) => x.Equals(y, StringComparison.CurrentCultureIgnoreCase)).ToList();
@@ -159,7 +164,18 @@ namespace ThumbnailMaker.Controls
 							ctrl.BringToFront();
 						}
 
-						P_Configs.OrderByDescending(x => (x as RoadConfigControl).Road.DateCreated);
+						switch (Options.Current.RoadSortMode)
+						{
+							case RoadSortMode.DateCreated:
+								P_Configs.OrderByDescending(x => (x as RoadConfigControl).Road.DateCreated);
+								break;
+							case RoadSortMode.RoadName:
+								P_Configs.OrderBy(x => $"{(int)(x as RoadConfigControl).Road.RoadType}{(x as RoadConfigControl).Road.Name.RegexRemove("^RB[RHFP] ").RegexRemove(@"\d+([.,]\d+)?[um] ")}");
+								break;
+							case RoadSortMode.RoadTypeAndSize:
+								P_Configs.OrderBy(x => (x as RoadConfigControl).Road.TotalRoadWidth + 10000 * (int)(x as RoadConfigControl).Road.RoadType);
+								break;
+						}
 					}
 					finally
 					{
@@ -216,7 +232,7 @@ namespace ThumbnailMaker.Controls
 
 		private bool Match(RoadInfo road, RoadSize selectedValue)
 		{
-			var width = Math.Max(road.RoadWidth, Utilities.VanillaWidth(road.VanillaWidth, Utilities.CalculateRoadSize(road.Lanes, road.BufferWidth)));
+			var width = road.TotalRoadWidth;
 
 			switch (selectedValue)
 			{

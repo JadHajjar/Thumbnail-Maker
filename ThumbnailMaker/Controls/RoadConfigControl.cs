@@ -110,6 +110,7 @@ namespace ThumbnailMaker.Controls
 			{
 				SlickToolStrip.Show(FindForm() as SlickForm, PointToScreen(e.Location),
 					new SlickStripItem("Load configuration", () => LoadConfiguration?.Invoke(this, Road), Properties.Resources.I_Load),
+					new SlickStripItem("Copy thumbnail", CopyThumbnail, Properties.Resources.I_Copy),
 					new SlickStripItem("Copy file", CopyFile, Properties.Resources.I_Copy),
 					new SlickStripItem("Open file location", OpenFileLocation, Properties.Resources.I_Folder),
 					new SlickStripItem("Refresh thumbnail", RefreshThumbnail, Properties.Resources.I_Refresh),
@@ -118,6 +119,15 @@ namespace ThumbnailMaker.Controls
 			}
 
 			LoadConfiguration?.Invoke(this, Road);
+		}
+
+		private void CopyThumbnail()
+		{
+			using (var ms = new MemoryStream(Road.LargeThumbnail))
+			using (var img = new Bitmap(ms))
+			{
+				Clipboard.SetDataObject(new Bitmap(img, 256, 256));
+			}
 		}
 
 		private void DeleteConfiguration()

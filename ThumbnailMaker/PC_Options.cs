@@ -39,6 +39,9 @@ namespace ThumbnailMaker
 
 			DD_Font.FontDropdown = true;
 			DD_Font.SelectedItem = Options.Current.TextFont;
+			DD_RoadSortingMode.Items = typeof(RoadSortMode).GetEnumValues().Cast<object>().ToArray();
+			DD_RoadSortingMode.Conversion = (x) => x.ToString().FormatWords();
+			DD_RoadSortingMode.SelectedItem = Options.Current.RoadSortMode;
 			SS_Columns.Value = Options.Current.RoadConfigColumns;
 
 			TB_ExportFolder.Text = Options.Current.ExportFolder;
@@ -181,6 +184,15 @@ namespace ThumbnailMaker
 		{
 			SS_Columns.Value = Options.Current.RoadConfigColumns = (int)SS_Columns.Value;
 			Options.Save();
+		}
+
+		private void DD_RoadSortingMode_TextChanged(object sender, EventArgs e)
+		{
+			if (DD_RoadSortingMode.SelectedItem != null)
+			{
+				Options.Current.RoadSortMode = (RoadSortMode)DD_RoadSortingMode.SelectedItem;
+				Options.Save();
+			}
 		}
 	}
 }

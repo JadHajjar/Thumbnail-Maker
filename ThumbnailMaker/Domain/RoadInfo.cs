@@ -31,5 +31,7 @@ namespace ThumbnailMaker.Domain
 		public byte[] SmallThumbnail { get; set; }
 		public byte[] LargeThumbnail { get; set; }
 		public byte[] TooltipImage { get; set; }
+
+		[XmlIgnore] public float TotalRoadWidth => Math.Max(RoadWidth, Utilities.VanillaWidth(VanillaWidth, Utilities.CalculateRoadSize(Lanes, BufferWidth)));
 	}
 }

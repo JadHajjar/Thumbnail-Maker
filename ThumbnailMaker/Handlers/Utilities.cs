@@ -55,7 +55,7 @@ namespace ThumbnailMaker.Handlers
 				{
 					new ThumbnailHandler(g, small, toolTip)
 					{
-						RoadWidth = Math.Max(road.RoadWidth, VanillaWidth(road.VanillaWidth, CalculateRoadSize(road.Lanes, road.BufferWidth))),
+						RoadWidth = road.TotalRoadWidth,
 						CustomText = road.CustomText,
 						BufferSize = Math.Max(0, road.BufferWidth),
 						RegionType = road.RegionType,
@@ -158,7 +158,7 @@ namespace ThumbnailMaker.Handlers
 
 			if (Options.Current.AddRoadWidthToName)
 			{
-				var roadSize = Math.Max(road.RoadWidth, VanillaWidth(road.VanillaWidth, CalculateRoadSize(road.Lanes, road.BufferWidth)));
+				var roadSize = road.TotalRoadWidth;
 
 				name += road.VanillaWidth ? $" {roadSize / 8:0}u" : $" {roadSize:0.##}m";
 			}

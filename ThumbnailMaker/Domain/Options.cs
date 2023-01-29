@@ -23,6 +23,7 @@ namespace ThumbnailMaker
 		public bool AddRoadWidthToName { get; set; }
 		public int RoadConfigColumns { get; set; } = 3;
 		public bool DisplayLaneWidths { get; set; }
+		public RoadSortMode RoadSortMode { get; set; }
 
 		public static void Save()
 		{

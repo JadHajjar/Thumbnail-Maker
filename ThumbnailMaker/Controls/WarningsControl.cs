@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -73,7 +74,7 @@ namespace ThumbnailMaker.Controls
 				yield return new Warning(TraceLevel.Warning, "Road size is larger than your custom width", "The total size of the lanes is larger than the custom width you've used, the custom width will be ignored.");
 			}
 
-			if (Road.Lanes.Any(x => x.Decorations.HasFlag(LaneDecoration.TransitStop) && x.LaneWidth < 2))
+			if (Road.Lanes.Any(x => x.Decorations.HasFlag(LaneDecoration.TransitStop) && x.LaneWidth <= 1.5F))
 			{
 				yield return new Warning(TraceLevel.Warning, "Invalid transit stops detected", "Some filler lanes that you've added stops to are too small to work properly.");
 			}
@@ -93,10 +94,29 @@ namespace ThumbnailMaker.Controls
 				yield return new Warning(TraceLevel.Error, "Lane limit exceeded", "There are too many lanes in this road for it to work in-game.");
 			}
 
-			if (Math.Max(Road.RoadWidth, Utilities.VanillaWidth(Road.VanillaWidth, Utilities.CalculateRoadSize(Road.Lanes, Road.BufferWidth))) > 100)
+			if (Road.TotalRoadWidth > 100)
 			{
 				yield return new Warning(TraceLevel.Error, "Road width is too high", "This road is too large to work properly in-game in-game.");
 			}
+
+			if (IsCurbCentered())
+			{
+				yield return new Warning(TraceLevel.Error, "Curb is too close to the center", "Intersections won't work if the curb is too close to the middle of the whole road.");
+			}
+		}
+
+		private bool IsCurbCentered()
+		{
+			if (Road.Lanes.IndexOf(Road.Lanes.First(x => x.Type == LaneType.Curb)) + 1 == Road.Lanes.IndexOf(Road.Lanes.Last(x => x.Type == LaneType.Curb)))
+				return false;
+
+			var total = Road.Lanes.Sum(x => x.LaneWidth);
+			var ind = total / -2F;
+			var Lanes = Road.Lanes.ToDictionary(x => ind += x.LaneWidth);
+			var leftIndex = Lanes.First(x => x.Value.Type == LaneType.Curb).Key + Road.BufferWidth;
+			var rightIndex = Lanes.Last(x => x.Value.Type == LaneType.Curb).Key + 2 * Road.BufferWidth - Lanes.Last(x => x.Value.Type == LaneType.Curb).Value.LaneWidth;
+
+			return leftIndex.IsWithin(-1.5F, int.MaxValue) || rightIndex.IsWithin(int.MinValue, 1.5F);
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
