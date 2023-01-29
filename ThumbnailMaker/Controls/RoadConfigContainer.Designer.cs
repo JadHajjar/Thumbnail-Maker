@@ -31,8 +31,9 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RoadConfigContainer));
 			this.P_Container = new System.Windows.Forms.Panel();
 			this.slickScroll2 = new SlickControls.SlickScroll();
-			this.P_Configs = new System.Windows.Forms.Panel();
+			this.P_Configs = new System.Windows.Forms.FlowLayoutPanel();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			this.slickSpacer4 = new SlickControls.SlickSpacer();
 			this.TB_Search = new SlickControls.SlickTextBox();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.FLP_Tags = new System.Windows.Forms.FlowLayoutPanel();
@@ -49,10 +50,10 @@
 			this.P_Container.Controls.Add(this.slickScroll2);
 			this.P_Container.Controls.Add(this.P_Configs);
 			this.P_Container.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.P_Container.Location = new System.Drawing.Point(7, 54);
+			this.P_Container.Location = new System.Drawing.Point(7, 55);
 			this.P_Container.Margin = new System.Windows.Forms.Padding(0);
 			this.P_Container.Name = "P_Container";
-			this.P_Container.Size = new System.Drawing.Size(570, 442);
+			this.P_Container.Size = new System.Drawing.Size(570, 441);
 			this.P_Container.TabIndex = 6;
 			// 
 			// slickScroll2
@@ -61,7 +62,7 @@
 			this.slickScroll2.LinkedControl = this.P_Configs;
 			this.slickScroll2.Location = new System.Drawing.Point(564, 0);
 			this.slickScroll2.Name = "slickScroll2";
-			this.slickScroll2.Size = new System.Drawing.Size(6, 442);
+			this.slickScroll2.Size = new System.Drawing.Size(6, 441);
 			this.slickScroll2.SmallHandle = true;
 			this.slickScroll2.Style = SlickControls.StyleType.Vertical;
 			this.slickScroll2.TabIndex = 7;
@@ -83,23 +84,38 @@
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel1.Controls.Add(this.slickSpacer4, 1, 2);
 			this.tableLayoutPanel1.Controls.Add(this.TB_Search, 1, 0);
-			this.tableLayoutPanel1.Controls.Add(this.P_Container, 1, 2);
+			this.tableLayoutPanel1.Controls.Add(this.P_Container, 1, 3);
 			this.tableLayoutPanel1.Controls.Add(this.slickSpacer1, 0, 0);
 			this.tableLayoutPanel1.Controls.Add(this.FLP_Tags, 1, 1);
 			this.tableLayoutPanel1.Controls.Add(this.B_ClearCurrentlyEdited, 2, 0);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 3;
+			this.tableLayoutPanel1.RowCount = 4;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(577, 496);
 			this.tableLayoutPanel1.TabIndex = 9;
 			// 
+			// slickSpacer4
+			// 
+			this.tableLayoutPanel1.SetColumnSpan(this.slickSpacer4, 2);
+			this.slickSpacer4.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.slickSpacer4.Location = new System.Drawing.Point(14, 54);
+			this.slickSpacer4.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+			this.slickSpacer4.Name = "slickSpacer4";
+			this.slickSpacer4.Size = new System.Drawing.Size(556, 1);
+			this.slickSpacer4.TabIndex = 19;
+			this.slickSpacer4.TabStop = false;
+			this.slickSpacer4.Text = "slickSpacer4";
+			// 
 			// TB_Search
 			// 
+			this.TB_Search.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
 			this.TB_Search.Dock = System.Windows.Forms.DockStyle.Top;
 			this.TB_Search.EnterTriggersClick = false;
 			this.TB_Search.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -132,7 +148,7 @@
 			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Left;
 			this.slickSpacer1.Location = new System.Drawing.Point(3, 3);
 			this.slickSpacer1.Name = "slickSpacer1";
-			this.tableLayoutPanel1.SetRowSpan(this.slickSpacer1, 3);
+			this.tableLayoutPanel1.SetRowSpan(this.slickSpacer1, 4);
 			this.slickSpacer1.Size = new System.Drawing.Size(1, 490);
 			this.slickSpacer1.TabIndex = 7;
 			this.slickSpacer1.TabStop = false;
@@ -165,6 +181,7 @@
 			this.B_ClearCurrentlyEdited.Size = new System.Drawing.Size(30, 30);
 			this.B_ClearCurrentlyEdited.SpaceTriggersClick = true;
 			this.B_ClearCurrentlyEdited.TabIndex = 17;
+			this.B_ClearCurrentlyEdited.Click += new System.EventHandler(this.B_ClearCurrentlyEdited_Click);
 			// 
 			// Loader
 			// 
@@ -196,11 +213,12 @@
 		private SlickControls.SlickTextBox TB_Search;
 		private System.Windows.Forms.Panel P_Container;
 		private SlickControls.SlickScroll slickScroll2;
-		public System.Windows.Forms.Panel P_Configs;
+		public System.Windows.Forms.FlowLayoutPanel P_Configs;
 		private SlickControls.SlickPictureBox Loader;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private SlickControls.SlickSpacer slickSpacer1;
 		private System.Windows.Forms.FlowLayoutPanel FLP_Tags;
 		private SlickControls.SlickButton B_ClearCurrentlyEdited;
+		private SlickControls.SlickSpacer slickSpacer4;
 	}
 }

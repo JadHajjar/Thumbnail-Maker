@@ -128,6 +128,7 @@
     <Compile Include="Domain\LaneDecoration.cs" />
     <Compile Include="Domain\ParkingAngle.cs" />
     <Compile Include="Domain\PropAngle.cs" />
+    <Compile Include="Domain\RoadSize.cs" />
     <Compile Include="Domain\TextureType.cs" />
     <Compile Include="Handlers\LaneSizeOptions.cs" />
     <Compile Include="Domain\RoadType.cs" />
@@ -217,6 +218,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\I_RoadSize.png" />
+    <None Include="Resources\I_Refresh.png" />
     <None Include="Resources\I_Warning.png" />
     <None Include="Resources\I_Stop.png" />
     <None Include="Resources\I_Add.png" />

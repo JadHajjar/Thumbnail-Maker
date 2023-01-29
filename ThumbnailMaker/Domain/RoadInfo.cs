@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Serialization;
+
+using ThumbnailMaker.Handlers;
 
 namespace ThumbnailMaker.Domain
 {
@@ -23,6 +26,7 @@ namespace ThumbnailMaker.Domain
 		public bool LHT { get; set; }
 		public bool VanillaWidth { get; set; }
 		public List<string> Tags { get; set; }
+		public List<string> AutoTags { get => Utilities.GetAutoTags(this).ToList(); set { } }
 		public List<LaneInfo> Lanes { get; set; }
 		public byte[] SmallThumbnail { get; set; }
 		public byte[] LargeThumbnail { get; set; }

@@ -20,6 +20,9 @@ namespace ThumbnailMaker
 		public bool ShowLaneColorsOnThumbnail { get; set; }
 		public bool AdvancedElevation { get; set; }
 		public bool VanillaWidths { get; set; }
+		public bool AddRoadWidthToName { get; set; }
+		public int RoadConfigColumns { get; set; } = 3;
+		public bool DisplayLaneWidths { get; set; }
 
 		public static void Save()
 		{

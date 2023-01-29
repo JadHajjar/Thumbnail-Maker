@@ -1,8 +1,11 @@
 ﻿using Extensions;
 
+using SlickControls;
+
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -17,14 +20,27 @@ namespace ThumbnailMaker.Controls
 	public partial class RoadConfigContainer : UserControl
 	{
 		public static RoadConfigContainer _instance;
+		private readonly OptionSelectionControl<RoadTypeFilter> RoadTypeControl;
+		private readonly OptionSelectionControl<RoadSize> RoadSizeControl;
 
 		public List<string> LoadedTags { get; private set; }
+		public List<string> AutoTags { get; private set; }
 
 		public event System.EventHandler<RoadInfo> LoadConfiguration;
 
 		public RoadConfigContainer()
 		{
 			InitializeComponent();
+
+			RoadTypeControl = new OptionSelectionControl<RoadTypeFilter>(GetRoadTypeIcon) { Width = (int)(145 * UI.UIScale) };
+			FLP_Tags.Controls.Add(RoadTypeControl);
+
+			RoadSizeControl = new OptionSelectionControl<RoadSize>(GetRoadSizeIcon) { Width = (int)(145 * UI.UIScale) };
+			FLP_Tags.Controls.Add(RoadSizeControl);
+			FLP_Tags.SetFlowBreak(RoadSizeControl, true);
+
+			RoadTypeControl.SelectedValueChanged += (s, e) => TB_Search_TextChanged(null, null);
+			RoadSizeControl.SelectedValueChanged += (s, e) => TB_Search_TextChanged(null, null);
 
 			if (Options.Current == null)
 			{
@@ -39,6 +55,31 @@ namespace ThumbnailMaker.Controls
 			};
 			_systemWatcher.Elapsed += (s, e) => RefreshConfigs(s as Timer);
 			_systemWatcher.Start();
+		}
+
+		private Image GetRoadTypeIcon(RoadTypeFilter roadType)
+		{
+			if (roadType == RoadTypeFilter.AnyRoadType)
+				return Properties.Resources.L_D_0.Color(FormDesign.Design.IconColor);
+
+			return ResourceManager.GetRoadType((RoadType)((int)roadType - 1), false, false);
+		}
+
+		private Image GetRoadSizeIcon(RoadSize roadType)
+		{
+			Color color;
+
+			switch (roadType)
+			{
+				case RoadSize.Tiny: color = Color.FromArgb(82, 168, 164); break;
+				case RoadSize.Small: color = Color.FromArgb(66, 153, 104); break;
+				case RoadSize.Medium: color = Color.FromArgb(66, 98, 153); break;
+				case RoadSize.Large: color = Color.FromArgb(173, 155, 80); break;
+				case RoadSize.VeryLarge: color = Color.FromArgb(173, 94, 80); break;
+				default: return Properties.Resources.L_D_0.Color(FormDesign.Design.IconColor);
+			}
+
+			return Properties.Resources.I_RoadSize.Color(color);
 		}
 
 		public void RefreshConfigs(Timer timer = null)
@@ -58,6 +99,7 @@ namespace ThumbnailMaker.Controls
 				});
 
 				LoadedTags = contents.Values.SelectMany(x => x.Tags).Distinct((x, y) => x.Equals(y, StringComparison.CurrentCultureIgnoreCase)).ToList();
+				AutoTags = contents.Values.SelectMany(x => x.AutoTags).Distinct((x, y) => x.Equals(y, StringComparison.CurrentCultureIgnoreCase)).ToList();
 
 				this.TryInvoke(() =>
 				{
@@ -83,7 +125,7 @@ namespace ThumbnailMaker.Controls
 							}
 						}
 
-						foreach (var item in LoadedTags)
+						foreach (var item in AutoTags.Concat(LoadedTags))
 						{
 							if (!FLP_Tags.GetControls<TagControl>().Any(x => x.Text.Equals(item, StringComparison.CurrentCultureIgnoreCase)))
 							{
@@ -93,9 +135,9 @@ namespace ThumbnailMaker.Controls
 							}
 						}
 
-						foreach (TagControl item in FLP_Tags.Controls)
+						foreach (var item in FLP_Tags.Controls.OfType<TagControl>())
 						{
-							if (!LoadedTags.Contains(item.Text, StringComparer.CurrentCultureIgnoreCase))
+							if (!LoadedTags.Contains(item.Text, StringComparer.CurrentCultureIgnoreCase) && !AutoTags.Contains(item.Text, StringComparer.CurrentCultureIgnoreCase))
 							{
 								item.Dispose();
 							}
@@ -117,7 +159,7 @@ namespace ThumbnailMaker.Controls
 							ctrl.BringToFront();
 						}
 
-						P_Configs.OrderBy(x => (x as RoadConfigControl).Road.DateCreated);
+						P_Configs.OrderByDescending(x => (x as RoadConfigControl).Road.DateCreated);
 					}
 					finally
 					{
@@ -159,13 +201,51 @@ namespace ThumbnailMaker.Controls
 		{
 			var selectedTags = FLP_Tags.GetControls<TagControl>().Where(x => x.Selected).Select(x => x.Text).ToList();
 
+			P_Configs.SuspendDrawing();
 			foreach (var item in P_Configs.Controls.OfType<RoadConfigControl>().ToList())
 			{
-				item.Visible = !selectedTags.Any(x => !item.Road.Tags.Any(y => y.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
+				item.Visible = !selectedTags.Any(x => !item.Road.Tags.Concat(item.Road.AutoTags).Any(y => y.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
 					&& (string.IsNullOrWhiteSpace(TB_Search.Text)
 					|| item.Road.Name.SearchCheck(TB_Search.Text)
-					|| item.Road.Description.SearchCheck(TB_Search.Text));
+					|| item.Road.Description.SearchCheck(TB_Search.Text))
+					&& (RoadTypeControl.SelectedValue == RoadTypeFilter.AnyRoadType || item.Road.RoadType == (RoadType)((int)RoadTypeControl.SelectedValue - 1))
+					&& (RoadSizeControl.SelectedValue == RoadSize.AnyRoadSize || Match(item.Road, RoadSizeControl.SelectedValue));
 			}
+			P_Configs.ResumeDrawing();
+		}
+
+		private bool Match(RoadInfo road, RoadSize selectedValue)
+		{
+			var width = Math.Max(road.RoadWidth, Utilities.VanillaWidth(road.VanillaWidth, Utilities.CalculateRoadSize(road.Lanes, road.BufferWidth)));
+
+			switch (selectedValue)
+			{
+				case RoadSize.Tiny:
+					return width.IsWithin(0, 16.01F);
+				case RoadSize.Small:
+					return width.IsWithin(16.01F, 24.01F);
+				case RoadSize.Medium:
+					return width.IsWithin(24.01F, 32.01F);
+				case RoadSize.Large:
+					return width.IsWithin(32.01F, 48.01F);
+				case RoadSize.VeryLarge:
+					return width.IsWithin(48.01F, int.MaxValue);
+				default:
+					return true;
+			}
+		}
+
+		private void B_ClearCurrentlyEdited_Click(object sender, EventArgs e)
+		{
+			foreach (var item in FLP_Tags.Controls.OfType<TagControl>())
+			{
+				item.Release();
+			}
+
+			if (string.IsNullOrWhiteSpace(TB_Search.Text))
+				TB_Search_TextChanged(null, null);
+			else
+				TB_Search.Text = string.Empty;
 		}
 	}
 }

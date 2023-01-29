@@ -15,6 +15,7 @@ namespace ThumbnailMaker.Controls
 			Display = display;
 			Text = tag;
 			Cursor = Cursors.Hand;
+			Margin = new Padding(1);
 
 			SlickTip.SetTo(this, Display ? "Filer by this tag" : "Remove this tag");
 		}

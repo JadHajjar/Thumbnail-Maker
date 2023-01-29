@@ -253,9 +253,29 @@ namespace ThumbnailMaker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap I_Refresh {
+            get {
+                object obj = ResourceManager.GetObject("I_Refresh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap I_RemoveTag {
             get {
                 object obj = ResourceManager.GetObject("I_RemoveTag", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap I_RoadSize {
+            get {
+                object obj = ResourceManager.GetObject("I_RoadSize", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -3,8 +3,12 @@
 using SlickControls;
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
@@ -12,16 +16,13 @@ using ThumbnailMaker.Handlers;
 
 namespace ThumbnailMaker.Controls
 {
-	public class RoadConfigControl : SlickControl
+	public class RoadConfigControl : SlickControl, IAnimatable
 	{
-		private Rectangle deleteRect;
-		private Rectangle folderRect;
-
-		public Bitmap Image { get; }
-		public RoadInfo Road { get; }
+		public Bitmap Image { get; private set; }
+		public RoadInfo Road { get; private set; }
 		public string FileName { get; }
-		public string RoadSpeed { get; }
-		public string RoadSize { get; }
+		public int AnimatedValue { get; set; }
+		public int TargetAnimationValue { get; set; }
 
 		public event System.EventHandler<RoadInfo> LoadConfiguration;
 
@@ -31,17 +32,7 @@ namespace ThumbnailMaker.Controls
 			{
 				FileName = fileName;
 				Road = road;
-
-				using (var ms = new MemoryStream(Road.SmallThumbnail))
-				{
-					Image = new Bitmap(ms);
-				}
-
-				RoadSpeed = Road.SpeedLimit <= 0F ? Utilities.DefaultSpeedSign(Road.Lanes, Road.RoadType, Road.RegionType == RegionType.USA).If(x => x == 0, x => "", x => x.ToString()) : Road.SpeedLimit.ToString();
-				RoadSize = Math.Max(Road.RoadWidth, Utilities.VanillaWidth(Road.VanillaWidth, Utilities.CalculateRoadSize(Road.Lanes, Road.BufferWidth))).If(x => x == 0F, x => "", x => x.ToString("0.#"));
-
-				Height = 64;
-				Dock = DockStyle.Top;
+				Margin = new Padding(6);
 				Cursor = Cursors.Hand;
 
 				valid = true;
@@ -53,110 +44,115 @@ namespace ThumbnailMaker.Controls
 		{
 			base.UIChanged();
 
-			Height = (int)(64 * UI.UIScale);
+			Size = UI.UIScale == 1 ? new Size(100, 142) : UI.Scale(new Size(98, 138), UI.UIScale);
+
+			using (var ms = new MemoryStream(UI.UIScale > 1 ? Road.LargeThumbnail : Road.SmallThumbnail))
+			{
+				Image = new Bitmap(ms);
+			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			var deleteSize = UI.Scale(new Size(26, 26), UI.UIScale);
-
-			folderRect = new Rectangle(Width - deleteSize.Width - 6, (Height / 6) - (deleteSize.Height / 6) + 1, deleteSize.Width, deleteSize.Height);
-			deleteRect = new Rectangle(Width - deleteSize.Width - 6, (Height * 5 / 6) - (deleteSize.Height * 5 / 6) + 5, deleteSize.Width, deleteSize.Height);
-
-			var mouse = PointToClient(Cursor.Position);
-			var deleteHovered = deleteRect.Contains(mouse);
-			var folderHovered = folderRect.Contains(mouse);
-			var startX = (int)(55 * UI.UIScale) + 10;
-
-			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+			e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-			e.Graphics.FillRoundedRectangle(new SolidBrush(deleteHovered || folderHovered ? FormDesign.Design.AccentBackColor :
-				HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveColor :
-				HoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ActiveColor.MergeColor(FormDesign.Design.AccentBackColor, 35) : FormDesign.Design.AccentBackColor), ClientRectangle.Pad(3, 6, 3, 1), 4);
+			var foreColor = HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
 
-			SlickButton.DrawButton(e, deleteRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Delete, null, deleteHovered ? HoverState : HoverState.Normal, ColorStyle.Red);
-			SlickButton.DrawButton(e, folderRect, string.Empty, UI.Font(8.25F), Properties.Resources.I_Copy, null, folderHovered ? HoverState : HoverState.Normal, ColorStyle.Active);
+			if (HoverState.HasFlag(HoverState.Pressed))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), new Rectangle(Point.Empty, new Size(Width - 1, Height - 2)), 6);
+			}
 
-			var bottomY = Height - UI.Font(8.25F).Height - 6;
-			var foreColor = !deleteHovered && !folderHovered && HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
-
-			e.Graphics.DrawString(Road.Name.RegexRemove("^B?R[B4][RHFP]").Trim()
-				, UI.Font(9.75F, FontStyle.Bold)
+			e.Graphics.DrawString(Road.Name.Trim().Replace(" ", " ")
+				, UI.Font(7.5F, FontStyle.Bold)
 				, new SolidBrush(foreColor)
-				, ClientRectangle.Pad(startX, 10, Width - deleteRect.X - 2, UI.Font(8.25F).Height)
-				, new StringFormat { Trimming = StringTrimming.EllipsisCharacter });
+				, new Rectangle(3, Width + 2, Width - 6, UI.Font(7.5F, FontStyle.Bold).Height.ClosestMultipleTo(Height - Width + 3))
+				, new StringFormat { Alignment = StringAlignment.Center });
 
-			foreColor = foreColor.MergeColor(FormDesign.Design.AccentBackColor, 70);
+			Height = Width + 6 + (int)e.Graphics.MeasureString(Road.Name.Trim().Replace(" ", " ")
+				, UI.Font(7.5F, FontStyle.Bold)
+				, Width - 6).Height;
 
-			var portion = (Width - startX + Width - deleteRect.X - (24 * 6)) / 2;
-
-			if (!string.IsNullOrEmpty(RoadSize))
-			{
-				e.Graphics.DrawImage(Properties.Resources.I_Size.Color(foreColor), new Rectangle(startX + 10, bottomY + ((UI.Font(8.25F).Height - 14) / 2), 16, 16));
-
-				e.Graphics.DrawString(RoadSize + "m"
-					, UI.Font(8.25F)
-					, new SolidBrush(foreColor)
-					, ClientRectangle.Pad(startX + 29, bottomY, 36, 0));
-			}
-
-			if (!string.IsNullOrEmpty(RoadSpeed))
-			{
-				e.Graphics.DrawImage(Properties.Resources.I_SpeedLimit.Color(foreColor), new Rectangle(startX + 29 + portion, bottomY + ((UI.Font(8.25F).Height - 14) / 2), 16, 16));
-
-				e.Graphics.DrawString(RoadSpeed + (Road.RegionType == RegionType.USA ? "mph" : "km/h")
-					, UI.Font(8.25F)
-					, new SolidBrush(foreColor)
-					, ClientRectangle.Pad(startX + 29 + portion + 19, bottomY, 36, 0));
-			}
-
-			if (!deleteHovered && !folderHovered)
-			{
-				DrawFocus(e.Graphics, ClientRectangle.Pad(3, 6, 3, 1), 4);
-			}
-
-			e.Graphics.TranslateTransform(7, 3 + ((int)(Height - (50 * UI.UIScale)) / 2));
-
-			using (var image = new Bitmap(Image, UI.Scale(new Size(55, 50), UI.UIScale)))
+			using (var image = new Bitmap(Image, new Size(Width, Width)))
 			using (var texture = new TextureBrush(image))
 			{
-				e.Graphics.FillRoundedRectangle(texture, new Rectangle(Point.Empty, UI.Scale(new Size(55, 50), UI.UIScale)), 6);
+				e.Graphics.FillRoundedRectangle(texture, new Rectangle(Point.Empty, new Size(Width - 1, Width - 2)), 6);
+			}
+
+			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb((byte)(AnimatedValue * 1.75), BackColor)), ClientRectangle);
+
+			if (AnimatedValue > 0)
+			{
+				e.Graphics.DrawBannersOverImage(this, ClientRectangle.Pad(-3), Road.Tags.Concat(Road.AutoTags).Select(x => new Banner(x, BannerStyle.Text, Properties.Resources.I_Tag)).ToList(), 7f, AnimatedValue / 100.0);
+			}
+		}
+
+		protected override void OnHoverStateChanged()
+		{
+			base.OnHoverStateChanged();
+			TargetAnimationValue = HoverState.HasFlag(HoverState.Hovered) && !HoverState.HasFlag(HoverState.Pressed) ? 100 : 0;
+			if (TargetAnimationValue != AnimatedValue)
+			{
+				AnimationHandler.Animate(this, TargetAnimationValue.If(0, 0.7, 1.35));
 			}
 		}
 
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
-			if (e.Button != MouseButtons.Left && e.Button != MouseButtons.None)
+			if (e.Button == MouseButtons.Left)
 			{
+				LoadConfiguration?.Invoke(this, Road);
 				return;
 			}
 
-			if (deleteRect.Contains(e.Location))
+			if (e.Button == MouseButtons.Right)
 			{
-				if (MessagePrompt.Show("Are you sure you want to delete this road configuration?", PromptButtons.YesNo, PromptIcons.Question) == DialogResult.Yes)
-				{
-					File.Delete(FileName);
-
-					Dispose();
-				}
-
-				return;
-			}
-
-			if (folderRect.Contains(e.Location))
-			{
-				Clipboard.SetFileDropList(new System.Collections.Specialized.StringCollection() { FileName });
-				//Process.Start(new ProcessStartInfo
-				//{
-				//	FileName = "explorer",
-				//	Arguments = $"/e, /select, \"{FileName}\""
-				//});
-
+				SlickToolStrip.Show(FindForm() as SlickForm, PointToScreen(e.Location),
+					new SlickStripItem("Load configuration", () => LoadConfiguration?.Invoke(this, Road), Properties.Resources.I_Load),
+					new SlickStripItem("Copy file", CopyFile, Properties.Resources.I_Copy),
+					new SlickStripItem("Open file location", OpenFileLocation, Properties.Resources.I_Folder),
+					new SlickStripItem("Refresh thumbnail", RefreshThumbnail, Properties.Resources.I_Refresh),
+					new SlickStripItem("Delete configuration", DeleteConfiguration, Properties.Resources.I_Delete));
 				return;
 			}
 
 			LoadConfiguration?.Invoke(this, Road);
+		}
+
+		private void DeleteConfiguration()
+		{
+			if (MessagePrompt.Show("Are you sure you want to delete this road configuration?", PromptButtons.YesNo, PromptIcons.Question) == DialogResult.Yes)
+			{
+				File.Delete(FileName);
+
+				Dispose();
+			}
+		}
+
+		private void RefreshThumbnail()
+		{
+			Road = LegacyUtil.LoadRoad(FileName);
+
+			Utilities.ExportRoad(Road, Path.GetFileName(FileName));
+
+			UIChanged();
+
+			Invalidate();
+		}
+
+		private void OpenFileLocation()
+		{
+			Process.Start(new ProcessStartInfo
+			{
+				FileName = "explorer",
+				Arguments = $"/e, /select, \"{FileName}\""
+			});
+		}
+
+		private void CopyFile()
+		{
+			Clipboard.SetFileDropList(new System.Collections.Specialized.StringCollection() { FileName });
 		}
 	}
 }

@@ -210,11 +210,11 @@ namespace ThumbnailMaker
 					PB.SizeMode = small && !toolTip ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
 				}
 
-				roadInfo.Name = roadInfo.CustomName.IfEmpty(Utilities.GetRoadName(roadInfo.RoadType, roadInfo.Lanes));
+				roadInfo.Name = roadInfo.CustomName.IfEmpty(Utilities.GetRoadName(roadInfo));
 				roadInfo.Description = Utilities.GetRoadDescription(roadInfo, false);
 
-				L_RoadName.Text = roadInfo.Name.Replace("&", "&&");
-				L_RoadDesc.Text = roadInfo.Description.Replace("&", "&&");
+				L_RoadName.Text = roadInfo.Name.Substring(0, Math.Min(32, roadInfo.Name.Length)).Replace(" ", " ").Replace("&", "&&") + (roadInfo.Name.Length > 32 ? ".." : "");
+				L_RoadDesc.Text = roadInfo.Description.Substring(0, Math.Min(1024, roadInfo.Description.Length)).Replace("&", "&&") + (roadInfo.Description.Length > 1024 ? ".." : "");
 
 				C_Warnings.SetRoad(roadInfo);
 
@@ -741,8 +741,10 @@ namespace ThumbnailMaker
 		{
 			B_ViewSavedRoads.Text = RCC.Width.If(0, "Hide Roads", "Load Road");
 			B_ViewSavedRoads.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
-			RCC.Width = RCC.Width.If(0, (int)(320 * UI.UIScale), 0);
+			RCC.Width = RCC.Width.If(0, 15 + Options.Current.RoadConfigColumns * (12 + (int)(100 * UI.UIScale)), 0);
 			RCC.Visible = RCC.Width != 0;
+
+			Form.OnNextIdle(P_Lanes.PerformLayout);
 		}
 
 		private void B_AddTag_Click(object sender, EventArgs e)
@@ -768,6 +770,14 @@ namespace ThumbnailMaker
 		private void FLP_Tags_ControlAdded(object sender, ControlEventArgs e)
 		{
 			L_NoTags.Visible = FLP_Tags.Controls.Count == 1;
+		}
+
+		private void TLP_Buttons_Resize(object sender, EventArgs e)
+		{
+			foreach (var item in TLP_Buttons.Controls.OfType<SlickButton>())
+			{
+				item.Text = TLP_Buttons.Width < (650 * UI.FontScale) ? string.Empty : item.Tag.ToString();
+			}
 		}
 	}
 }

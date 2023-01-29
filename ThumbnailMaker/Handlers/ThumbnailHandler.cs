@@ -404,6 +404,11 @@ namespace ThumbnailMaker.Handlers
 
 				Graphics.DrawLine(new Pen(Color.FromArgb(60, 60, 60), Small ? 1.5F : 4) { DashPattern = new[] { 3F, 4F, 3F, 10F } }, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y + barrierRect.Height);
 			}
+
+			if (!Small && Options.Current.DisplayLaneWidths && lane.Type != LaneType.Curb)
+			{
+				Graphics.DrawString($"{lane.LaneWidth:0.##}m", new Font(FontFamily, 30F * Math.Min(1F, lane.LaneWidth / 3F) * IdealWidthModifier), new SolidBrush(lane.Sidewalk ? Color.FromArgb(50, 50, 50) : Color.FromArgb(230, 230, 230)), rect.Pad(-10, 365, -10, (ToolTip ? 36 : Small ? 30 : 120) - 20), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+			}
 		}
 
 		private void DrawLaneLines(ThumbnailLaneInfo lane, Rectangle rect, Rectangle availableSpace)
@@ -736,7 +741,7 @@ namespace ThumbnailMaker.Handlers
 
 		private void DrawRoadWidth(Rectangle containerRect)
 		{
-			var sizeSize = (int)Graphics.MeasureString($"{RoadWidth:0.#}m", new Font(FontFamily, ToolTip ? 14F : Small ? 11F : 40F, FontStyle.Bold)).Width;
+			var sizeSize = (int)Graphics.MeasureString($"{RoadWidth:0.##}m", new Font(FontFamily, ToolTip ? 14F : Small ? 11F : 40F, FontStyle.Bold)).Width;
 			var rect = containerRect.Pad(0, Small ? 4 : 14, 0, 0).CenterR(sizeSize + (Small ? 4 : 38), ToolTip ? 30 : Small ? 20 : 80);
 
 			Graphics.SmoothingMode = SmoothingMode.HighQuality;
@@ -751,8 +756,8 @@ namespace ThumbnailMaker.Handlers
 				}
 			}
 
-			Graphics.DrawString($"{RoadWidth:0.#}m", new Font(FontFamily, ToolTip ? 14F : Small ? 10.5F : 40F, FontStyle.Bold), Brushes.Black, rect.Pad(Small ? 2 : 4, Small ? 2 : 4, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
-			Graphics.DrawString($"{RoadWidth:0.#}m", new Font(FontFamily, ToolTip ? 14F : Small ? 10.5F : 40F, FontStyle.Bold), Brushes.White, rect.Pad(0, 0, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+			Graphics.DrawString($"{RoadWidth:0.##}m", new Font(FontFamily, ToolTip ? 14F : Small ? 10.5F : 40F, FontStyle.Bold), Brushes.Black, rect.Pad(Small ? 2 : 4, Small ? 2 : 4, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+			Graphics.DrawString($"{RoadWidth:0.##}m", new Font(FontFamily, ToolTip ? 14F : Small ? 10.5F : 40F, FontStyle.Bold), Brushes.White, rect.Pad(0, 0, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
 		}
 
 		public static void DrawSpeedSignLarge(Graphics Graphics, RegionType RegionType, int Speed, Rectangle containerRect)

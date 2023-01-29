@@ -51,7 +51,7 @@ namespace ThumbnailMaker.Controls
 		{
 			base.UIChanged();
 
-			Size = UI.Scale(new Size(170, 32), UI.FontScale);
+			Height = (int)(32 * UI.FontScale);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -114,8 +114,17 @@ namespace ThumbnailMaker.Controls
 			FormBorderStyle = FormBorderStyle.None;
 			StartPosition = FormStartPosition.Manual;
 			MinimumSize = Size.Empty;
-			Location = new Point(_control.Parent.PointToScreen(Point.Empty).X, _control.PointToScreen(Point.Empty).Y);
-			Size = new Size(_control.Parent.Width, GetValues().Count() * (_control.Height + 6));
+
+			if (_control.Parent is GroupBox)
+			{
+				Location = new Point(_control.Parent.PointToScreen(Point.Empty).X, _control.PointToScreen(Point.Empty).Y);
+				Size = new Size(_control.Parent.Width, GetValues().Count() * (_control.Height + 6));
+			}
+			else
+			{
+				Location = new Point(_control.PointToScreen(Point.Empty).X - _control.Margin.Left, _control.PointToScreen(Point.Empty).Y);
+				Size = new Size(_control.Width + _control.Margin.Horizontal, GetValues().Count() * (_control.Height + 6));
+			}
 
 			Show(_control.FindForm());
 		}

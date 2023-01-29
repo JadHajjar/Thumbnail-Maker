@@ -39,12 +39,15 @@ namespace ThumbnailMaker
 
 			DD_Font.FontDropdown = true;
 			DD_Font.SelectedItem = Options.Current.TextFont;
+			SS_Columns.Value = Options.Current.RoadConfigColumns;
 
 			TB_ExportFolder.Text = Options.Current.ExportFolder;
 			CB_LHT.Checked = Options.Current.LHT;
 			CB_ColoredLanes.Checked = Options.Current.ShowLaneColorsOnThumbnail;
 			CB_AdvancedElevartion.Checked = Options.Current.AdvancedElevation;
 			CB_VanillaWdiths.Checked = Options.Current.VanillaWidths;
+			CB_AddRoadWidthToName.Checked = Options.Current.AddRoadWidthToName;
+			CB_DisplayLaneWidths.Checked = Options.Current.DisplayLaneWidths;
 
 			SlickTip.SetTo(B_ReExport, "Re-generates all of your exported roads' thumbnails, useful in case you changed color or style options");
 			SlickTip.SetTo(B_Theme, "Change the theme colors and UI scaling of the App");
@@ -52,6 +55,7 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(CB_ColoredLanes, "Adds a colored background to the lanes on the thumbnail");
 			SlickTip.SetTo(CB_AdvancedElevartion, "Allows you to manually set the elevation value of a lane");
 			SlickTip.SetTo(CB_VanillaWdiths, "Automatically sets the road widths to a vanilla-compatible value");
+			SlickTip.SetTo(CB_AddRoadWidthToName, "Adds the road width to the auto-generated road name");
 		}
 
 		protected override void UIChanged()
@@ -87,6 +91,8 @@ namespace ThumbnailMaker
 				Options.Current.ShowLaneColorsOnThumbnail = CB_ColoredLanes.Checked;
 				Options.Current.AdvancedElevation = CB_AdvancedElevartion.Checked;
 				Options.Current.VanillaWidths = CB_VanillaWdiths.Checked;
+				Options.Current.AddRoadWidthToName = CB_AddRoadWidthToName.Checked;
+				Options.Current.DisplayLaneWidths = CB_DisplayLaneWidths.Checked;
 				Options.Save();
 			}
 		}
@@ -169,6 +175,12 @@ namespace ThumbnailMaker
 				}
 				catch { }
 			}).RunInBackground();
+		}
+
+		private void SS_Columns_ValuesChanged(object sender, EventArgs e)
+		{
+			SS_Columns.Value = Options.Current.RoadConfigColumns = (int)SS_Columns.Value;
+			Options.Save();
 		}
 	}
 }

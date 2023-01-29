@@ -55,6 +55,7 @@ namespace ThumbnailMaker.Controls
 			var cancelRect = new Rectangle(Width - 36, 0, 36, Height);
 
 			Cursor = cancelRect.Contains(e.Location) ? Cursors.Hand : Cursors.Default;
+			SlickTip.SetTo(this, cancelRect.Contains(e.Location) ? "Stop editing this road" : null);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -67,7 +68,7 @@ namespace ThumbnailMaker.Controls
 
 			var cancelRect = new Rectangle(Width - 36, 0, 36, Height);
 
-			var newHeight = 18 + (int)e.Graphics.MeasureString(Road.Name.RegexRemove("^(RB4)|(RB[RHFP])").Trim()
+			var newHeight = 18 + (int)e.Graphics.MeasureString(Road.Name.Trim().Replace(" ", " ")
 				, UI.Font(8.25F, FontStyle.Bold), ClientRectangle.Pad(cancelRect.Width, 16, cancelRect.Width, 0).Width).Height;
 
 			if (newHeight != Height)
@@ -88,7 +89,7 @@ namespace ThumbnailMaker.Controls
 
 			e.Graphics.DrawString("Currently Editing", UI.Font(6.75F), new SolidBrush(FormDesign.Design.InfoColor), ClientRectangle.Pad(1), new StringFormat { Alignment = StringAlignment.Center });
 
-			e.Graphics.DrawString(Road.Name.RegexRemove("^(RB4)|(RB[RHFP])").Trim()
+			e.Graphics.DrawString(Road.Name.Trim().Replace(" ", " ")
 				, UI.Font(8.25F, FontStyle.Bold)
 				, new SolidBrush(FormDesign.Design.ForeColor)
 				, ClientRectangle.Pad(cancelRect.Width, 16, cancelRect.Width, 0)

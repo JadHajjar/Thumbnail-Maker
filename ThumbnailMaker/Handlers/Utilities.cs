@@ -23,7 +23,7 @@ namespace ThumbnailMaker.Handlers
 			Directory.CreateDirectory(appdata);
 
 			road.Version = LegacyUtil.CURRENT_VERSION;
-			road.Name = road.CustomName.IfEmpty(GetRoadName(road.RoadType, road.Lanes));
+			road.Name = road.CustomName.IfEmpty(GetRoadName(road));
 			road.Description = GetRoadDescription(road);
 			road.SmallThumbnail = getImage(true, false);
 			road.LargeThumbnail = getImage(false, false);
@@ -72,6 +72,23 @@ namespace ThumbnailMaker.Handlers
 			}
 		}
 
+		public static IEnumerable<string> GetAutoTags(RoadInfo road)
+		{
+			if (road?.Lanes == null)
+				yield break;
+
+			if (road.Lanes.Any(x => x.Type.HasFlag(LaneType.Tram)))
+				yield return "Tram";
+			if (road.Lanes.Any(x => x.Type.HasFlag(LaneType.Trolley)))
+				yield return "Trolley";
+			if (road.Lanes.Any(x => x.Type.HasFlag(LaneType.Bike)))
+				yield return "Bike";
+			if (road.Lanes.Any(x => x.Type.HasFlag(LaneType.Bus)))
+				yield return "Bus";
+			if (IsOneWay(road.Lanes) == true)
+				yield return "One-Way";
+		}
+
 		public static float VanillaWidth(bool vanillaWidths, float value)
 		{
 			if (!vanillaWidths)
@@ -82,12 +99,12 @@ namespace ThumbnailMaker.Handlers
 			return (float)(16 * Math.Ceiling((value - 1F) / 16D));
 		}
 
-		public static string GetRoadName<T>(RoadType roadType, IEnumerable<T> lanes) where T : LaneInfo
+		public static string GetRoadName(RoadInfo road)
 		{
 			var sb = new List<string>();
 			var current = (LaneInfo)null;
 			var currentCount = 0;
-			var _lanes = new List<T>(lanes);
+			var _lanes = new List<LaneInfo>(road.Lanes);
 
 			if (_lanes.Count > 1 && _lanes[0].Type == LaneType.Pedestrian && _lanes[1].Type == LaneType.Curb)
 			{
@@ -137,7 +154,21 @@ namespace ThumbnailMaker.Handlers
 				}
 			}
 
-			return $"RB{roadType.ToString()[0]} {(IsOneWay(_lanes) == true ? "1W " : string.Empty)}{sb.ListStrings("+")}";
+			var name = $"RB{road.RoadType.ToString()[0]}";
+
+			if (Options.Current.AddRoadWidthToName)
+			{
+				var roadSize = Math.Max(road.RoadWidth, VanillaWidth(road.VanillaWidth, CalculateRoadSize(road.Lanes, road.BufferWidth)));
+
+				name += road.VanillaWidth ? $" {roadSize / 8:0}u" : $" {roadSize:0.##}m";
+			}
+
+			if (IsOneWay(_lanes) == true)
+			{
+				name += " 1W";
+			}
+
+			return $"{name} {sb.ListStrings("+")}";
 		}
 
 		public static string GetRoadDescription(RoadInfo road, bool signature = true)
@@ -247,19 +278,23 @@ namespace ThumbnailMaker.Handlers
 		}
 
 		public static float CalculateRoadSize<T>(List<T> sizeLanes, float bufferSize) where T : LaneInfo
+			=> CalculateRoadSize<T>(sizeLanes, bufferSize, out _, out _);
+
+		public static float CalculateRoadSize<T>(List<T> sizeLanes, float bufferSize, out float leftPavementWidth, out float rightPavementWidth) where T : LaneInfo
 		{
 			var leftCurb = sizeLanes.FirstOrDefault(x => x.Type == LaneType.Curb);
 			var rightCurb = sizeLanes.LastOrDefault(x => x.Type == LaneType.Curb);
 
 			if (leftCurb == null || rightCurb == null)
 			{
+				leftPavementWidth = rightPavementWidth = 0;
 				return 0;
 			}
 
-			var leftPavementWidth = Math.Max(1.5F, sizeLanes.Where(x => sizeLanes.IndexOf(x) <= sizeLanes.IndexOf(leftCurb)).Sum(x => x.LaneWidth));
-			var rightPavementWidth = Math.Max(1.5F, sizeLanes.Where(x => sizeLanes.IndexOf(x) >= sizeLanes.IndexOf(rightCurb)).Sum(x => x.LaneWidth));
+			leftPavementWidth = sizeLanes.Where(x => sizeLanes.IndexOf(x) <= sizeLanes.IndexOf(leftCurb)).Sum(x => x.LaneWidth);
+			rightPavementWidth = sizeLanes.Where(x => sizeLanes.IndexOf(x) >= sizeLanes.IndexOf(rightCurb)).Sum(x => x.LaneWidth);
 			var asphaltWidth = sizeLanes.Where(x => sizeLanes.IndexOf(x) > sizeLanes.IndexOf(leftCurb) && sizeLanes.IndexOf(x) < sizeLanes.IndexOf(rightCurb)).Sum(x => x.LaneWidth) + (2 * bufferSize);
-			var totalWidth = leftPavementWidth + rightPavementWidth + asphaltWidth;
+			var totalWidth = Math.Max(1.5F, leftPavementWidth) + Math.Max(1.5F, rightPavementWidth) + asphaltWidth;
 
 			return (float)Math.Round(totalWidth, 2);
 		}
