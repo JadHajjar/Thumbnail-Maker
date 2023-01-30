@@ -44,9 +44,10 @@ namespace ThumbnailMaker.Controls
 		{
 			base.UIChanged();
 
-			using (var g = CreateGraphics())
-				Width = 32 + (int)EnumType.GetEnumNames().Max(x => g.MeasureString(x.FormatWords(), Font).Width);
 			Height = (int)(24 * UI.FontScale);
+
+			using (var g = CreateGraphics())
+				Width = Height + 3 + (int)EnumType.GetEnumNames().Max(x => g.MeasureString(x.FormatWords(), UI.Font(8.25F, FontStyle.Bold)).Width);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -62,16 +63,16 @@ namespace ThumbnailMaker.Controls
 			var rect = ClientRectangle;
 			var hoverState = HoverState;
 
-			var back = hoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveColor : hoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.AccentBackColor : Color.Empty;
-			var fore = hoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
+			var back = hoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveColor : hoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ButtonColor : FormDesign.Design.AccentBackColor;
+			var fore = hoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : hoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ButtonForeColor : FormDesign.Design.ForeColor;
 
 			e.Graphics.FillRoundedRectangle(new SolidBrush(back), rect.Pad(1), 4);
 
-			var iconRect = new Rectangle(0, 0, rect.Height, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
+			var iconRect = new Rectangle(0, 0, rect.Height, rect.Height).CenterR(16, 16);
 
-			e.Graphics.DrawImage(Icon.Color(FormDesign.Design.IconColor), iconRect);
+			e.Graphics.DrawImage(Icon.Color(fore), iconRect);
 
-			e.Graphics.DrawString(_selectedValue.ToString().FormatWords(), UI.Font(9.75F, FontStyle.Bold), new SolidBrush(fore), rect.Pad(rect.Height, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center });
+			e.Graphics.DrawString(_selectedValue.ToString().FormatWords(), UI.Font(8.25F, FontStyle.Bold), new SolidBrush(fore), rect.Pad(rect.Height, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center });
 		}
 
 		protected override void OnMouseClick(MouseEventArgs e)
@@ -108,8 +109,13 @@ namespace ThumbnailMaker.Controls
 			}
 			else
 			{
-				Location = new Point(_control.PointToScreen(Point.Empty).X - _control.Margin.Left, _control.PointToScreen(Point.Empty).Y);
-				Size = new Size(_control.Width + _control.Margin.Horizontal, GetValues().Count() * (_control.Height + 6));
+				Location = new Point(_control.PointToScreen(Point.Empty).X - _control.Margin.Left, _control.PointToScreen(Point.Empty).Y - 3);
+				Size = new Size(_control.Width + _control.Margin.Horizontal, GetValues().Count() * (_control.Height + 6) + 3);
+			}
+
+			if (_control.FindForm() is SlickForm form) 
+			{
+				form.CurrentFormState = FormState.ForcedFocused;
 			}
 
 			Show(_control.FindForm());
@@ -134,12 +140,12 @@ namespace ThumbnailMaker.Controls
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			e.Graphics.Clear(_control.Parent.BackColor);
-			e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor), new Rectangle(0, -10, Width - 1, Height - 1 + 10), 4);
+			e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor), new Rectangle(0, 0, Width - 1, Height - 1), 4);
 			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
 			var cursor = PointToClient(Cursor.Position);
-			var y = 0;
+			var y = 3;
 
 			foreach (var item in GetValues())
 			{
@@ -150,9 +156,14 @@ namespace ThumbnailMaker.Controls
 
 				e.Graphics.FillRoundedRectangle(new SolidBrush(back), rect.Pad(1), 4);
 
-				var iconRect = new Rectangle(3, y, rect.Height, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
+				var iconRect = new Rectangle(3, y, rect.Height, rect.Height).CenterR(16, 16);
 
-				e.Graphics.DrawString(item.ToString().FormatWords(), UI.Font(9.75F, FontStyle.Bold), new SolidBrush(fore), rect.Pad(rect.Height, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center });
+				if (hoverState == HoverState.Pressed)
+					e.Graphics.DrawImage(Properties.Resources.I_Checked.Color(fore), iconRect);
+				else
+					e.Graphics.DrawEllipse(new Pen(fore, 1.5F), iconRect.Pad(2));
+
+				e.Graphics.DrawString(item.ToString().FormatWords(), UI.Font(8.25F, FontStyle.Bold), new SolidBrush(fore), rect.Pad(rect.Height, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center });
 
 				y += rect.Height + 6;
 			}
@@ -219,6 +230,16 @@ namespace ThumbnailMaker.Controls
 			base.OnDeactivate(e);
 
 			Close();
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+
+			if (_control.FindForm() is SlickForm form)
+			{
+				form.CurrentFormState = FormState.NormalFocused;
+			}
 		}
 	}
 }

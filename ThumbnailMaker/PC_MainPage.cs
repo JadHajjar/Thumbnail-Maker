@@ -211,7 +211,7 @@ namespace ThumbnailMaker
 				}
 
 				roadInfo.Name = roadInfo.CustomName.IfEmpty(Utilities.GetRoadName(roadInfo));
-				roadInfo.Description = Utilities.GetRoadDescription(roadInfo, false);
+				roadInfo.Description = roadInfo.CustomDescription.IfEmpty(Utilities.GetRoadDescription(roadInfo, false));
 
 				L_RoadName.Text = roadInfo.Name.Substring(0, Math.Min(32, roadInfo.Name.Length)).Replace(" ", " ").Replace("&", "&&") + (roadInfo.Name.Length > 32 ? ".." : "");
 				L_RoadDesc.Text = roadInfo.Description.Substring(0, Math.Min(1024, roadInfo.Description.Length)).Replace("&", "&&") + (roadInfo.Description.Length > 1024 ? ".." : "");
@@ -323,6 +323,7 @@ namespace ThumbnailMaker
 			C_CurrentlyEditing.Clear();
 			refreshPaused = true;
 			TB_RoadName.Text = string.Empty;
+			TB_RoadDesc.Text = string.Empty;
 			TB_Size.Text = string.Empty;
 			TB_SpeedLimit.Text = string.Empty;
 			P_Lanes.Controls.Clear(true);
@@ -504,6 +505,12 @@ namespace ThumbnailMaker
 
 		private void B_CopyDesc_Click(object sender, EventArgs e)
 		{
+			if (!string.IsNullOrWhiteSpace(TB_RoadDesc.Text))
+			{
+				Clipboard.SetText(TB_RoadDesc.Text);
+				return;
+			}
+
 			var roadInfo = new RoadInfo
 			{
 				CustomName = TB_RoadName.Text,
@@ -560,6 +567,7 @@ namespace ThumbnailMaker
 			return new RoadInfo
 			{
 				CustomName = TB_RoadName.Text,
+				CustomDescription = TB_RoadDesc.Text,
 				CustomText = TB_CustomText.Text,
 				BufferWidth = TB_BufferSize.Text.SmartParseF(),
 				RoadWidth = TB_Size.Text.SmartParseF(),
@@ -600,6 +608,7 @@ namespace ThumbnailMaker
 				TB_SpeedLimit.Text = r.SpeedLimit == 0 ? string.Empty : r.SpeedLimit.ToString();
 				TB_CustomText.Text = r.CustomText;
 				TB_RoadName.Text = r.CustomName;
+				TB_RoadDesc.Text = r.CustomDescription;
 
 				foreach (var lane in Options.Current.LHT ? (r.Lanes as IEnumerable<LaneInfo>).Reverse() : r.Lanes)
 				{
@@ -721,12 +730,6 @@ namespace ThumbnailMaker
 				e.SuppressKeyPress = true;
 				e.Handled = true;
 			}
-
-			if (TB_RoadName.Text.Length >= 32 && e.KeyData.IsDigitOrLetter())
-			{
-				e.SuppressKeyPress = true;
-				e.Handled = true;
-			}
 		}
 
 		private void P_Lanes_ControlAdded(object sender, ControlEventArgs e)
@@ -777,6 +780,45 @@ namespace ThumbnailMaker
 			foreach (var item in TLP_Buttons.Controls.OfType<SlickButton>())
 			{
 				item.Text = TLP_Buttons.Width < (650 * UI.FontScale) ? string.Empty : item.Tag.ToString();
+			}
+		}
+
+		private void B_EditDesc_Click(object sender, EventArgs e)
+		{
+			L_RoadDesc.Parent = null;
+			B_EditDesc.Parent = null;
+			TLP_Right.Controls.Add(TB_RoadDesc, 0, 2);
+			TLP_Right.SetColumnSpan(TB_RoadDesc, 2);
+			TB_RoadDesc.Focus();
+			TB_RoadDesc.MultiLine = true;
+			TB_RoadDesc.MaxLength = 1024;
+			TB_RoadDesc.Height = (int)(120 * UI.FontScale);
+		}
+
+		private void TB_RoadDesc_Leave(object sender, EventArgs e)
+		{
+			RefreshPreview();
+			TB_RoadDesc.Parent = null;
+			TLP_Right.Controls.Add(L_RoadDesc, 0, 2);
+			TLP_Right.Controls.Add(B_EditDesc, 1, 2);
+		}
+
+		private void TB_RoadDesc_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				e.SuppressKeyPress = true;
+				e.Handled = true;
+			}
+		}
+
+		private void TB_RoadDesc_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				e.IsInputKey = true;
+
+				TB_RoadDesc_Leave(sender, e);
 			}
 		}
 	}

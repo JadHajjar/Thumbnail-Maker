@@ -34,12 +34,12 @@
 			this.P_Configs = new System.Windows.Forms.FlowLayoutPanel();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickSpacer4 = new SlickControls.SlickSpacer();
+			this.TB_Search = new SlickControls.SlickTextBox();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.FLP_Tags = new System.Windows.Forms.FlowLayoutPanel();
-			this.TLP_Options = new System.Windows.Forms.TableLayoutPanel();
-			this.Loader = new SlickControls.SlickPictureBox();
-			this.TB_Search = new SlickControls.SlickTextBox();
 			this.B_ClearCurrentlyEdited = new SlickControls.SlickButton();
+			this.FLP_Options = new System.Windows.Forms.FlowLayoutPanel();
+			this.Loader = new SlickControls.SlickPictureBox();
 			this.P_Container.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Loader)).BeginInit();
@@ -61,9 +61,9 @@
 			// 
 			this.slickScroll2.Dock = System.Windows.Forms.DockStyle.Right;
 			this.slickScroll2.LinkedControl = this.P_Configs;
-			this.slickScroll2.Location = new System.Drawing.Point(561, 0);
+			this.slickScroll2.Location = new System.Drawing.Point(564, 0);
 			this.slickScroll2.Name = "slickScroll2";
-			this.slickScroll2.Size = new System.Drawing.Size(9, 382);
+			this.slickScroll2.Size = new System.Drawing.Size(6, 382);
 			this.slickScroll2.SmallHandle = true;
 			this.slickScroll2.Style = SlickControls.StyleType.Vertical;
 			this.slickScroll2.TabIndex = 7;
@@ -91,15 +91,15 @@
 			this.tableLayoutPanel1.Controls.Add(this.slickSpacer1, 0, 0);
 			this.tableLayoutPanel1.Controls.Add(this.FLP_Tags, 1, 2);
 			this.tableLayoutPanel1.Controls.Add(this.B_ClearCurrentlyEdited, 2, 0);
-			this.tableLayoutPanel1.Controls.Add(this.TLP_Options, 1, 1);
+			this.tableLayoutPanel1.Controls.Add(this.FLP_Options, 1, 1);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 5;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(577, 496);
 			this.tableLayoutPanel1.TabIndex = 9;
@@ -115,6 +115,36 @@
 			this.slickSpacer4.TabIndex = 19;
 			this.slickSpacer4.TabStop = false;
 			this.slickSpacer4.Text = "slickSpacer4";
+			// 
+			// TB_Search
+			// 
+			this.TB_Search.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
+			this.TB_Search.Dock = System.Windows.Forms.DockStyle.Top;
+			this.TB_Search.EnterTriggersClick = false;
+			this.TB_Search.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TB_Search.Image = ((System.Drawing.Image)(resources.GetObject("TB_Search.Image")));
+			this.TB_Search.LabelText = "Search Configurations";
+			this.TB_Search.Location = new System.Drawing.Point(10, 10);
+			this.TB_Search.Margin = new System.Windows.Forms.Padding(3, 10, 10, 5);
+			this.TB_Search.MaximumSize = new System.Drawing.Size(9999, 0);
+			this.TB_Search.MaxLength = 32767;
+			this.TB_Search.MinimumSize = new System.Drawing.Size(50, 0);
+			this.TB_Search.Name = "TB_Search";
+			this.TB_Search.Password = false;
+			this.TB_Search.Placeholder = "Type in to search your configurations";
+			this.TB_Search.ReadOnly = false;
+			this.TB_Search.Required = false;
+			this.TB_Search.SelectAllOnFocus = false;
+			this.TB_Search.SelectedText = "";
+			this.TB_Search.SelectionLength = 0;
+			this.TB_Search.SelectionStart = 0;
+			this.TB_Search.Size = new System.Drawing.Size(513, 39);
+			this.TB_Search.TabIndex = 3;
+			this.TB_Search.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+			this.TB_Search.Validation = SlickControls.ValidationType.Decimal;
+			this.TB_Search.ValidationCustom = null;
+			this.TB_Search.ValidationRegex = "";
+			this.TB_Search.TextChanged += new System.EventHandler(this.TB_Search_TextChanged);
 			// 
 			// slickSpacer1
 			// 
@@ -133,68 +163,11 @@
 			this.FLP_Tags.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.tableLayoutPanel1.SetColumnSpan(this.FLP_Tags, 2);
 			this.FLP_Tags.Dock = System.Windows.Forms.DockStyle.Top;
-			this.FLP_Tags.Location = new System.Drawing.Point(7, 74);
+			this.FLP_Tags.Location = new System.Drawing.Point(7, 83);
 			this.FLP_Tags.Margin = new System.Windows.Forms.Padding(0);
 			this.FLP_Tags.Name = "FLP_Tags";
 			this.FLP_Tags.Size = new System.Drawing.Size(570, 0);
 			this.FLP_Tags.TabIndex = 8;
-			// 
-			// TLP_Options
-			// 
-			this.TLP_Options.AutoSize = true;
-			this.TLP_Options.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.TLP_Options.ColumnCount = 2;
-			this.tableLayoutPanel1.SetColumnSpan(this.TLP_Options, 2);
-			this.TLP_Options.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.TLP_Options.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.TLP_Options.Dock = System.Windows.Forms.DockStyle.Top;
-			this.TLP_Options.Location = new System.Drawing.Point(7, 54);
-			this.TLP_Options.Margin = new System.Windows.Forms.Padding(0);
-			this.TLP_Options.Name = "TLP_Options";
-			this.TLP_Options.RowCount = 1;
-			this.TLP_Options.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.TLP_Options.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.TLP_Options.Size = new System.Drawing.Size(570, 0);
-			this.TLP_Options.TabIndex = 20;
-			// 
-			// Loader
-			// 
-			this.Loader.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.Loader.Location = new System.Drawing.Point(272, 232);
-			this.Loader.Name = "Loader";
-			this.Loader.Size = new System.Drawing.Size(32, 32);
-			this.Loader.TabIndex = 8;
-			this.Loader.TabStop = false;
-			// 
-			// TB_Search
-			// 
-			this.TB_Search.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
-			this.TB_Search.Dock = System.Windows.Forms.DockStyle.Top;
-			this.TB_Search.EnterTriggersClick = false;
-			this.TB_Search.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TB_Search.Image = ((System.Drawing.Image)(resources.GetObject("TB_Search.Image")));
-			this.TB_Search.LabelText = "Search Configurations";
-			this.TB_Search.Location = new System.Drawing.Point(17, 10);
-			this.TB_Search.Margin = new System.Windows.Forms.Padding(10, 10, 10, 5);
-			this.TB_Search.MaximumSize = new System.Drawing.Size(9999, 0);
-			this.TB_Search.MaxLength = 32767;
-			this.TB_Search.MinimumSize = new System.Drawing.Size(50, 0);
-			this.TB_Search.Name = "TB_Search";
-			this.TB_Search.Password = false;
-			this.TB_Search.Placeholder = "Type in to search your configurations";
-			this.TB_Search.ReadOnly = false;
-			this.TB_Search.Required = false;
-			this.TB_Search.SelectAllOnFocus = false;
-			this.TB_Search.SelectedText = "";
-			this.TB_Search.SelectionLength = 0;
-			this.TB_Search.SelectionStart = 0;
-			this.TB_Search.Size = new System.Drawing.Size(506, 39);
-			this.TB_Search.TabIndex = 3;
-			this.TB_Search.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.TB_Search.Validation = SlickControls.ValidationType.Decimal;
-			this.TB_Search.ValidationCustom = null;
-			this.TB_Search.ValidationRegex = "";
-			this.TB_Search.TextChanged += new System.EventHandler(this.TB_Search_TextChanged);
 			// 
 			// B_ClearCurrentlyEdited
 			// 
@@ -213,6 +186,27 @@
 			this.B_ClearCurrentlyEdited.TabIndex = 17;
 			this.B_ClearCurrentlyEdited.Click += new System.EventHandler(this.B_ClearCurrentlyEdited_Click);
 			// 
+			// FLP_Options
+			// 
+			this.FLP_Options.AutoSize = true;
+			this.FLP_Options.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tableLayoutPanel1.SetColumnSpan(this.FLP_Options, 2);
+			this.FLP_Options.Dock = System.Windows.Forms.DockStyle.Top;
+			this.FLP_Options.Location = new System.Drawing.Point(7, 54);
+			this.FLP_Options.Margin = new System.Windows.Forms.Padding(0);
+			this.FLP_Options.Name = "FLP_Options";
+			this.FLP_Options.Size = new System.Drawing.Size(570, 0);
+			this.FLP_Options.TabIndex = 20;
+			// 
+			// Loader
+			// 
+			this.Loader.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.Loader.Location = new System.Drawing.Point(272, 232);
+			this.Loader.Name = "Loader";
+			this.Loader.Size = new System.Drawing.Size(32, 32);
+			this.Loader.TabIndex = 8;
+			this.Loader.TabStop = false;
+			// 
 			// RoadConfigContainer
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -230,7 +224,6 @@
 		}
 
 		#endregion
-		private SlickControls.SlickTextBox TB_Search;
 		private System.Windows.Forms.Panel P_Container;
 		private SlickControls.SlickScroll slickScroll2;
 		public System.Windows.Forms.FlowLayoutPanel P_Configs;
@@ -240,6 +233,7 @@
 		private System.Windows.Forms.FlowLayoutPanel FLP_Tags;
 		private SlickControls.SlickButton B_ClearCurrentlyEdited;
 		private SlickControls.SlickSpacer slickSpacer4;
-		private System.Windows.Forms.TableLayoutPanel TLP_Options;
+		private System.Windows.Forms.FlowLayoutPanel FLP_Options;
+		private SlickControls.SlickTextBox TB_Search;
 	}
 }

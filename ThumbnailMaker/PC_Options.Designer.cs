@@ -32,6 +32,15 @@
 			this.TLP = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickSpacer2 = new SlickControls.SlickSpacer();
+			this.slickSpacer1 = new SlickControls.SlickSpacer();
+			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+			this.slickSpacer3 = new SlickControls.SlickSpacer();
+			this.label1 = new System.Windows.Forms.Label();
+			this.SS_Columns = new SlickControls.SlickSlider();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.slickScroll1 = new SlickControls.SlickScroll();
+			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.GB_RoadType = new SlickControls.SlickGroupBox();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickGroupBox2 = new SlickControls.SlickGroupBox();
@@ -41,33 +50,24 @@
 			this.TB_ExportFolder = new SlickControls.SlickPathTextBox();
 			this.DD_Font = new SlickControls.SlickDropdown();
 			this.DD_RoadSortingMode = new SlickControls.SlickDropdown();
-			this.slickSpacer1 = new SlickControls.SlickSpacer();
-			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_Theme = new SlickControls.SlickButton();
 			this.B_ReExport = new SlickControls.SlickButton();
-			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-			this.CB_AddRoadWidthToName = new SlickControls.SlickCheckbox();
-			this.CB_AdvancedElevartion = new SlickControls.SlickCheckbox();
 			this.CB_LHT = new SlickControls.SlickCheckbox();
-			this.SS_Columns = new SlickControls.SlickSlider();
-			this.slickSpacer3 = new SlickControls.SlickSpacer();
-			this.label1 = new System.Windows.Forms.Label();
 			this.CB_ColoredLanes = new SlickControls.SlickCheckbox();
+			this.CB_AdvancedElevartion = new SlickControls.SlickCheckbox();
 			this.CB_DisplayLaneWidths = new SlickControls.SlickCheckbox();
 			this.CB_VanillaWdiths = new SlickControls.SlickCheckbox();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.slickScroll1 = new SlickControls.SlickScroll();
-			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.CB_AddRoadWidthToName = new SlickControls.SlickCheckbox();
 			this.tableLayoutPanel2.SuspendLayout();
+			this.tableLayoutPanel3.SuspendLayout();
+			this.tableLayoutPanel4.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.GB_RoadType.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.slickGroupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PB_Large)).BeginInit();
 			this.slickGroupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PB_Small)).BeginInit();
-			this.tableLayoutPanel3.SuspendLayout();
-			this.tableLayoutPanel4.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// base_Text
@@ -141,6 +141,143 @@
 			this.slickSpacer2.TabIndex = 22;
 			this.slickSpacer2.TabStop = false;
 			this.slickSpacer2.Text = "slickSpacer2";
+			// 
+			// slickSpacer1
+			// 
+			this.tableLayoutPanel2.SetColumnSpan(this.slickSpacer1, 4);
+			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.slickSpacer1.Location = new System.Drawing.Point(3, 162);
+			this.slickSpacer1.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+			this.slickSpacer1.Name = "slickSpacer1";
+			this.slickSpacer1.Size = new System.Drawing.Size(902, 1);
+			this.slickSpacer1.TabIndex = 20;
+			this.slickSpacer1.TabStop = false;
+			this.slickSpacer1.Text = "slickSpacer1";
+			// 
+			// tableLayoutPanel3
+			// 
+			this.tableLayoutPanel3.AutoSize = true;
+			this.tableLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tableLayoutPanel3.ColumnCount = 3;
+			this.tableLayoutPanel2.SetColumnSpan(this.tableLayoutPanel3, 4);
+			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel3.Controls.Add(this.B_Theme, 2, 0);
+			this.tableLayoutPanel3.Controls.Add(this.B_ReExport, 0, 0);
+			this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
+			this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 169);
+			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+			this.tableLayoutPanel3.RowCount = 1;
+			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(902, 33);
+			this.tableLayoutPanel3.TabIndex = 21;
+			// 
+			// tableLayoutPanel4
+			// 
+			this.tableLayoutPanel4.AutoSize = true;
+			this.tableLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.tableLayoutPanel4.ColumnCount = 3;
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel4.Controls.Add(this.slickSpacer3, 0, 3);
+			this.tableLayoutPanel4.Controls.Add(this.label1, 0, 4);
+			this.tableLayoutPanel4.Controls.Add(this.SS_Columns, 1, 4);
+			this.tableLayoutPanel4.Controls.Add(this.CB_LHT, 0, 0);
+			this.tableLayoutPanel4.Controls.Add(this.CB_ColoredLanes, 2, 0);
+			this.tableLayoutPanel4.Controls.Add(this.CB_AdvancedElevartion, 0, 1);
+			this.tableLayoutPanel4.Controls.Add(this.CB_DisplayLaneWidths, 2, 2);
+			this.tableLayoutPanel4.Controls.Add(this.CB_VanillaWdiths, 2, 1);
+			this.tableLayoutPanel4.Controls.Add(this.CB_AddRoadWidthToName, 0, 2);
+			this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 3);
+			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+			this.tableLayoutPanel4.RowCount = 5;
+			this.tableLayoutPanel2.SetRowSpan(this.tableLayoutPanel4, 3);
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(432, 146);
+			this.tableLayoutPanel4.TabIndex = 23;
+			// 
+			// slickSpacer3
+			// 
+			this.tableLayoutPanel4.SetColumnSpan(this.slickSpacer3, 3);
+			this.slickSpacer3.Dock = System.Windows.Forms.DockStyle.Top;
+			this.slickSpacer3.Location = new System.Drawing.Point(3, 103);
+			this.slickSpacer3.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+			this.slickSpacer3.Name = "slickSpacer3";
+			this.slickSpacer3.Size = new System.Drawing.Size(426, 1);
+			this.slickSpacer3.TabIndex = 25;
+			this.slickSpacer3.TabStop = false;
+			this.slickSpacer3.Text = "slickSpacer3";
+			// 
+			// label1
+			// 
+			this.label1.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(15, 129);
+			this.label1.Margin = new System.Windows.Forms.Padding(15, 12, 0, 0);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(169, 13);
+			this.label1.TabIndex = 24;
+			this.label1.Text = "Displayed road config columns:";
+			// 
+			// SS_Columns
+			// 
+			this.SS_Columns.AnimatedValue = 0;
+			this.tableLayoutPanel4.SetColumnSpan(this.SS_Columns, 2);
+			this.SS_Columns.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.SS_Columns.FromValue = 2D;
+			this.SS_Columns.Location = new System.Drawing.Point(184, 113);
+			this.SS_Columns.Margin = new System.Windows.Forms.Padding(0);
+			this.SS_Columns.MaxValue = 6D;
+			this.SS_Columns.MinValue = 2D;
+			this.SS_Columns.Name = "SS_Columns";
+			this.SS_Columns.Padding = new System.Windows.Forms.Padding(14, 8, 14, 8);
+			this.SS_Columns.Percentage = 0D;
+			this.SS_Columns.PercFrom = 0D;
+			this.SS_Columns.PercTo = 0D;
+			this.SS_Columns.Size = new System.Drawing.Size(185, 33);
+			this.SS_Columns.SliderStyle = SlickControls.SliderStyle.SingleHorizontal;
+			this.SS_Columns.TabIndex = 18;
+			this.SS_Columns.TargetAnimationValue = 0;
+			this.SS_Columns.ToValue = 2D;
+			this.SS_Columns.Value = 2D;
+			this.SS_Columns.ValueOutput = null;
+			this.SS_Columns.ValuesChanged += new System.EventHandler(this.SS_Columns_ValuesChanged);
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.TLP);
+			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel1.Location = new System.Drawing.Point(5, 242);
+			this.panel1.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(908, 383);
+			this.panel1.TabIndex = 14;
+			// 
+			// slickScroll1
+			// 
+			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
+			this.slickScroll1.LinkedControl = this.TLP;
+			this.slickScroll1.Location = new System.Drawing.Point(898, 242);
+			this.slickScroll1.Name = "slickScroll1";
+			this.slickScroll1.Size = new System.Drawing.Size(15, 383);
+			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
+			this.slickScroll1.TabIndex = 15;
+			this.slickScroll1.TabStop = false;
+			this.slickScroll1.Text = "slickScroll1";
+			// 
+			// openFileDialog
+			// 
+			this.openFileDialog.DefaultExt = "png";
+			this.openFileDialog.Filter = "PNG File|*.png";
+			this.openFileDialog.Title = "Select Image";
 			// 
 			// GB_RoadType
 			// 
@@ -225,6 +362,7 @@
 			// 
 			this.TB_ExportFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.TB_ExportFolder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
 			this.TB_ExportFolder.EnterTriggersClick = false;
 			this.TB_ExportFolder.FileExtensions = new string[0];
 			this.TB_ExportFolder.Folder = true;
@@ -319,39 +457,6 @@
 			this.DD_RoadSortingMode.ValidationRegex = "";
 			this.DD_RoadSortingMode.TextChanged += new System.EventHandler(this.DD_RoadSortingMode_TextChanged);
 			// 
-			// slickSpacer1
-			// 
-			this.tableLayoutPanel2.SetColumnSpan(this.slickSpacer1, 4);
-			this.slickSpacer1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.slickSpacer1.Location = new System.Drawing.Point(3, 162);
-			this.slickSpacer1.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
-			this.slickSpacer1.Name = "slickSpacer1";
-			this.slickSpacer1.Size = new System.Drawing.Size(902, 1);
-			this.slickSpacer1.TabIndex = 20;
-			this.slickSpacer1.TabStop = false;
-			this.slickSpacer1.Text = "slickSpacer1";
-			// 
-			// tableLayoutPanel3
-			// 
-			this.tableLayoutPanel3.AutoSize = true;
-			this.tableLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanel3.ColumnCount = 3;
-			this.tableLayoutPanel2.SetColumnSpan(this.tableLayoutPanel3, 4);
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel3.Controls.Add(this.B_Theme, 2, 0);
-			this.tableLayoutPanel3.Controls.Add(this.B_ReExport, 0, 0);
-			this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
-			this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 169);
-			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-			this.tableLayoutPanel3.RowCount = 1;
-			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel3.Size = new System.Drawing.Size(902, 33);
-			this.tableLayoutPanel3.TabIndex = 21;
-			// 
 			// B_Theme
 			// 
 			this.B_Theme.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -386,83 +491,6 @@
 			this.B_ReExport.Text = "Re-Export Roads";
 			this.B_ReExport.Click += new System.EventHandler(this.B_ReExport_Click);
 			// 
-			// tableLayoutPanel4
-			// 
-			this.tableLayoutPanel4.AutoSize = true;
-			this.tableLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanel4.ColumnCount = 3;
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel4.Controls.Add(this.slickSpacer3, 0, 3);
-			this.tableLayoutPanel4.Controls.Add(this.label1, 0, 4);
-			this.tableLayoutPanel4.Controls.Add(this.SS_Columns, 1, 4);
-			this.tableLayoutPanel4.Controls.Add(this.CB_LHT, 0, 0);
-			this.tableLayoutPanel4.Controls.Add(this.CB_ColoredLanes, 2, 0);
-			this.tableLayoutPanel4.Controls.Add(this.CB_AdvancedElevartion, 0, 1);
-			this.tableLayoutPanel4.Controls.Add(this.CB_DisplayLaneWidths, 2, 2);
-			this.tableLayoutPanel4.Controls.Add(this.CB_VanillaWdiths, 2, 1);
-			this.tableLayoutPanel4.Controls.Add(this.CB_AddRoadWidthToName, 0, 2);
-			this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 3);
-			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-			this.tableLayoutPanel4.RowCount = 5;
-			this.tableLayoutPanel2.SetRowSpan(this.tableLayoutPanel4, 3);
-			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(432, 146);
-			this.tableLayoutPanel4.TabIndex = 23;
-			// 
-			// CB_AddRoadWidthToName
-			// 
-			this.CB_AddRoadWidthToName.ActiveColor = null;
-			this.CB_AddRoadWidthToName.AutoSize = true;
-			this.CB_AddRoadWidthToName.Center = false;
-			this.CB_AddRoadWidthToName.Checked = false;
-			this.CB_AddRoadWidthToName.CheckedText = null;
-			this.tableLayoutPanel4.SetColumnSpan(this.CB_AddRoadWidthToName, 2);
-			this.CB_AddRoadWidthToName.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.CB_AddRoadWidthToName.DefaultValue = false;
-			this.CB_AddRoadWidthToName.HideText = false;
-			this.CB_AddRoadWidthToName.IconSize = 16;
-			this.CB_AddRoadWidthToName.Image = ((System.Drawing.Image)(resources.GetObject("CB_AddRoadWidthToName.Image")));
-			this.CB_AddRoadWidthToName.Location = new System.Drawing.Point(15, 67);
-			this.CB_AddRoadWidthToName.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
-			this.CB_AddRoadWidthToName.Name = "CB_AddRoadWidthToName";
-			this.CB_AddRoadWidthToName.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
-			this.CB_AddRoadWidthToName.Selected = false;
-			this.CB_AddRoadWidthToName.Size = new System.Drawing.Size(180, 26);
-			this.CB_AddRoadWidthToName.TabIndex = 16;
-			this.CB_AddRoadWidthToName.Text = "Add road width to its name";
-			this.CB_AddRoadWidthToName.UncheckedText = null;
-			this.CB_AddRoadWidthToName.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
-			// 
-			// CB_AdvancedElevartion
-			// 
-			this.CB_AdvancedElevartion.ActiveColor = null;
-			this.CB_AdvancedElevartion.AutoSize = true;
-			this.CB_AdvancedElevartion.Center = false;
-			this.CB_AdvancedElevartion.Checked = false;
-			this.CB_AdvancedElevartion.CheckedText = null;
-			this.tableLayoutPanel4.SetColumnSpan(this.CB_AdvancedElevartion, 2);
-			this.CB_AdvancedElevartion.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.CB_AdvancedElevartion.DefaultValue = false;
-			this.CB_AdvancedElevartion.HideText = false;
-			this.CB_AdvancedElevartion.IconSize = 16;
-			this.CB_AdvancedElevartion.Image = ((System.Drawing.Image)(resources.GetObject("CB_AdvancedElevartion.Image")));
-			this.CB_AdvancedElevartion.Location = new System.Drawing.Point(15, 36);
-			this.CB_AdvancedElevartion.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
-			this.CB_AdvancedElevartion.Name = "CB_AdvancedElevartion";
-			this.CB_AdvancedElevartion.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
-			this.CB_AdvancedElevartion.Selected = false;
-			this.CB_AdvancedElevartion.Size = new System.Drawing.Size(167, 26);
-			this.CB_AdvancedElevartion.TabIndex = 15;
-			this.CB_AdvancedElevartion.Text = "Advanced Lane Elevation";
-			this.CB_AdvancedElevartion.UncheckedText = null;
-			this.CB_AdvancedElevartion.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
-			// 
 			// CB_LHT
 			// 
 			this.CB_LHT.ActiveColor = null;
@@ -487,53 +515,6 @@
 			this.CB_LHT.UncheckedText = null;
 			this.CB_LHT.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
 			// 
-			// SS_Columns
-			// 
-			this.SS_Columns.AnimatedValue = 0;
-			this.tableLayoutPanel4.SetColumnSpan(this.SS_Columns, 2);
-			this.SS_Columns.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.SS_Columns.FromValue = 2D;
-			this.SS_Columns.Location = new System.Drawing.Point(184, 113);
-			this.SS_Columns.Margin = new System.Windows.Forms.Padding(0);
-			this.SS_Columns.MaxValue = 6D;
-			this.SS_Columns.MinValue = 2D;
-			this.SS_Columns.Name = "SS_Columns";
-			this.SS_Columns.Padding = new System.Windows.Forms.Padding(14, 8, 14, 8);
-			this.SS_Columns.Percentage = 0D;
-			this.SS_Columns.PercFrom = 0D;
-			this.SS_Columns.PercTo = 0D;
-			this.SS_Columns.Size = new System.Drawing.Size(185, 33);
-			this.SS_Columns.SliderStyle = SlickControls.SliderStyle.SingleHorizontal;
-			this.SS_Columns.TabIndex = 18;
-			this.SS_Columns.TargetAnimationValue = 0;
-			this.SS_Columns.ToValue = 2D;
-			this.SS_Columns.Value = 2D;
-			this.SS_Columns.ValueOutput = null;
-			this.SS_Columns.ValuesChanged += new System.EventHandler(this.SS_Columns_ValuesChanged);
-			// 
-			// slickSpacer3
-			// 
-			this.tableLayoutPanel4.SetColumnSpan(this.slickSpacer3, 3);
-			this.slickSpacer3.Dock = System.Windows.Forms.DockStyle.Top;
-			this.slickSpacer3.Location = new System.Drawing.Point(3, 103);
-			this.slickSpacer3.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
-			this.slickSpacer3.Name = "slickSpacer3";
-			this.slickSpacer3.Size = new System.Drawing.Size(426, 1);
-			this.slickSpacer3.TabIndex = 25;
-			this.slickSpacer3.TabStop = false;
-			this.slickSpacer3.Text = "slickSpacer3";
-			// 
-			// label1
-			// 
-			this.label1.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(15, 129);
-			this.label1.Margin = new System.Windows.Forms.Padding(15, 12, 0, 0);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(169, 13);
-			this.label1.TabIndex = 24;
-			this.label1.Text = "Displayed road config columns:";
-			// 
 			// CB_ColoredLanes
 			// 
 			this.CB_ColoredLanes.ActiveColor = null;
@@ -556,6 +537,30 @@
 			this.CB_ColoredLanes.Text = "Colored Lanes";
 			this.CB_ColoredLanes.UncheckedText = null;
 			this.CB_ColoredLanes.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
+			// 
+			// CB_AdvancedElevartion
+			// 
+			this.CB_AdvancedElevartion.ActiveColor = null;
+			this.CB_AdvancedElevartion.AutoSize = true;
+			this.CB_AdvancedElevartion.Center = false;
+			this.CB_AdvancedElevartion.Checked = false;
+			this.CB_AdvancedElevartion.CheckedText = null;
+			this.tableLayoutPanel4.SetColumnSpan(this.CB_AdvancedElevartion, 2);
+			this.CB_AdvancedElevartion.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.CB_AdvancedElevartion.DefaultValue = false;
+			this.CB_AdvancedElevartion.HideText = false;
+			this.CB_AdvancedElevartion.IconSize = 16;
+			this.CB_AdvancedElevartion.Image = ((System.Drawing.Image)(resources.GetObject("CB_AdvancedElevartion.Image")));
+			this.CB_AdvancedElevartion.Location = new System.Drawing.Point(15, 36);
+			this.CB_AdvancedElevartion.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
+			this.CB_AdvancedElevartion.Name = "CB_AdvancedElevartion";
+			this.CB_AdvancedElevartion.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
+			this.CB_AdvancedElevartion.Selected = false;
+			this.CB_AdvancedElevartion.Size = new System.Drawing.Size(167, 26);
+			this.CB_AdvancedElevartion.TabIndex = 15;
+			this.CB_AdvancedElevartion.Text = "Advanced Lane Elevation";
+			this.CB_AdvancedElevartion.UncheckedText = null;
+			this.CB_AdvancedElevartion.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
 			// 
 			// CB_DisplayLaneWidths
 			// 
@@ -603,33 +608,29 @@
 			this.CB_VanillaWdiths.UncheckedText = null;
 			this.CB_VanillaWdiths.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
 			// 
-			// panel1
+			// CB_AddRoadWidthToName
 			// 
-			this.panel1.Controls.Add(this.TLP);
-			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(5, 242);
-			this.panel1.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(908, 383);
-			this.panel1.TabIndex = 14;
-			// 
-			// slickScroll1
-			// 
-			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
-			this.slickScroll1.LinkedControl = this.TLP;
-			this.slickScroll1.Location = new System.Drawing.Point(907, 242);
-			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(6, 383);
-			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
-			this.slickScroll1.TabIndex = 15;
-			this.slickScroll1.TabStop = false;
-			this.slickScroll1.Text = "slickScroll1";
-			// 
-			// openFileDialog
-			// 
-			this.openFileDialog.DefaultExt = "png";
-			this.openFileDialog.Filter = "PNG File|*.png";
-			this.openFileDialog.Title = "Select Image";
+			this.CB_AddRoadWidthToName.ActiveColor = null;
+			this.CB_AddRoadWidthToName.AutoSize = true;
+			this.CB_AddRoadWidthToName.Center = false;
+			this.CB_AddRoadWidthToName.Checked = false;
+			this.CB_AddRoadWidthToName.CheckedText = null;
+			this.tableLayoutPanel4.SetColumnSpan(this.CB_AddRoadWidthToName, 2);
+			this.CB_AddRoadWidthToName.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.CB_AddRoadWidthToName.DefaultValue = false;
+			this.CB_AddRoadWidthToName.HideText = false;
+			this.CB_AddRoadWidthToName.IconSize = 16;
+			this.CB_AddRoadWidthToName.Image = ((System.Drawing.Image)(resources.GetObject("CB_AddRoadWidthToName.Image")));
+			this.CB_AddRoadWidthToName.Location = new System.Drawing.Point(15, 67);
+			this.CB_AddRoadWidthToName.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
+			this.CB_AddRoadWidthToName.Name = "CB_AddRoadWidthToName";
+			this.CB_AddRoadWidthToName.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
+			this.CB_AddRoadWidthToName.Selected = false;
+			this.CB_AddRoadWidthToName.Size = new System.Drawing.Size(180, 26);
+			this.CB_AddRoadWidthToName.TabIndex = 16;
+			this.CB_AddRoadWidthToName.Text = "Add road width to its name";
+			this.CB_AddRoadWidthToName.UncheckedText = null;
+			this.CB_AddRoadWidthToName.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
 			// 
 			// PC_Options
 			// 
@@ -647,17 +648,17 @@
 			this.Controls.SetChildIndex(this.slickScroll1, 0);
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.tableLayoutPanel2.PerformLayout();
+			this.tableLayoutPanel3.ResumeLayout(false);
+			this.tableLayoutPanel4.ResumeLayout(false);
+			this.tableLayoutPanel4.PerformLayout();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.GB_RoadType.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.slickGroupBox2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PB_Large)).EndInit();
 			this.slickGroupBox1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PB_Small)).EndInit();
-			this.tableLayoutPanel3.ResumeLayout(false);
-			this.tableLayoutPanel4.ResumeLayout(false);
-			this.tableLayoutPanel4.PerformLayout();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

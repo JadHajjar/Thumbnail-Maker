@@ -31,6 +31,7 @@ namespace ThumbnailMaker.Controls
 			Road = Control.Road;
 			Visible = true;
 			Invalidate();
+			SlickTip.SetTo(this, "The road you're currently editing.\r\nExporting will update this road instead of creating a new one");
 		}
 
 		internal void Clear()
@@ -62,7 +63,8 @@ namespace ThumbnailMaker.Controls
 			var undoRect = new Rectangle(0, 0, 36, Height);
 
 			Cursor = cancelRect.Contains(e.Location) || undoRect.Contains(e.Location) ? Cursors.Hand : Cursors.Default;
-			SlickTip.SetTo(this, cancelRect.Contains(e.Location) ? "Stop editing this road" : undoRect.Contains(e.Location) ? "Reset the changes you've made to this road" : null);
+
+			SlickTip.SetTo(this, cancelRect.Contains(e.Location) ? "Stop editing this road" : undoRect.Contains(e.Location) ? "Reset the changes you've made to this road" : "The road you're currently editing.\r\nExporting will update this road instead of creating a new one");
 		}
 
 		protected override void OnPaint(PaintEventArgs e)

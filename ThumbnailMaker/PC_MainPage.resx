@@ -280,4 +280,24 @@
         ixeL7oHmMxTeA92wMfpI3UTl+pKDNzEv/Be8YSnJ8C+SYXnNyh7l7ztzd0lUHAAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="TB_RoadName.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAD/SURBVDhPxdPPSkJBFMfxWZgtoqythg/hUrTQfJZ0GdSLRCDmXkTqCaJexIWaSH+wWtcm/P7O
+        ePHqHcVN9IMPcw5yuXNnju4vcop7TPE1X+9wgo1J4RZ9nCOHo/laxxhN7CCYNh6wZ10yh3iCXpKItj3A
+        vnXrc4ARytbF0oO2vS564NKXroGuLxd5xbEvE6lhgoJ1zuWhfik/SPvSXaHkS3vzG/SJUXbx7ctFXqDT
+        VnRdeugC76ggnuAOVs+gig+cWbec4Bloy7oFnXKU0I3o9yGK1q3kBo/IWJdMNAfX1gWiCWvhGZq8LBSt
+        8UnUxG6MTrwDDcwvPrHVf+E/4twMq0Yt+KtmVlEAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="TB_RoadDesc.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAD/SURBVDhPxdPPSkJBFMfxWZgtoqythg/hUrTQfJZ0GdSLRCDmXkTqCaJexIWaSH+wWtcm/P7O
+        ePHqHcVN9IMPcw5yuXNnju4vcop7TPE1X+9wgo1J4RZ9nCOHo/laxxhN7CCYNh6wZ10yh3iCXpKItj3A
+        vnXrc4ARytbF0oO2vS564NKXroGuLxd5xbEvE6lhgoJ1zuWhfik/SPvSXaHkS3vzG/SJUXbx7ctFXqDT
+        VnRdeugC76ggnuAOVs+gig+cWbec4Bloy7oFnXKU0I3o9yGK1q3kBo/IWJdMNAfX1gWiCWvhGZq8LBSt
+        8UnUxG6MTrwDDcwvPrHVf+E/4twMq0Yt+KtmVlEAAAAASUVORK5CYII=
+</value>
+  </data>
 </root>

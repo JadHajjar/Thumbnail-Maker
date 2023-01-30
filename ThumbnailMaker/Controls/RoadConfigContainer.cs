@@ -32,14 +32,14 @@ namespace ThumbnailMaker.Controls
 		{
 			InitializeComponent();
 
-			RoadTypeControl = new FilterSelectionControl<RoadTypeFilter>(GetRoadTypeIcon) { Dock = DockStyle.Top };
-			TLP_Options.Controls.Add(RoadTypeControl, 0, 0);
-
-			RoadSizeControl = new FilterSelectionControl<RoadSize>(GetRoadSizeIcon) { Dock = DockStyle.Top };
-			TLP_Options.Controls.Add(RoadSizeControl, 1, 0);
+			RoadTypeControl = new FilterSelectionControl<RoadTypeFilter>() { Icon = Properties.Resources.I_RoadType };
+			RoadSizeControl = new FilterSelectionControl<RoadSize>() { Icon = Properties.Resources.I_Size };
 
 			RoadTypeControl.SelectedValueChanged += (s, e) => TB_Search_TextChanged(null, null);
 			RoadSizeControl.SelectedValueChanged += (s, e) => TB_Search_TextChanged(null, null);
+
+			FLP_Options.Controls.Add(RoadTypeControl);
+			FLP_Options.Controls.Add(RoadSizeControl);
 
 			if (Options.Current == null)
 			{
@@ -56,31 +56,6 @@ namespace ThumbnailMaker.Controls
 			};
 			_systemWatcher.Elapsed += (s, e) => RefreshConfigs(s as Timer);
 			_systemWatcher.Start();
-		}
-
-		private Image GetRoadTypeIcon(RoadTypeFilter roadType)
-		{
-			if (roadType == RoadTypeFilter.AnyRoadType)
-				return Properties.Resources.L_D_0.Color(FormDesign.Design.IconColor);
-
-			return ResourceManager.GetRoadType((RoadType)((int)roadType - 1), false, false);
-		}
-
-		private Image GetRoadSizeIcon(RoadSize roadType)
-		{
-			Color color;
-
-			switch (roadType)
-			{
-				case RoadSize.Tiny: color = Color.FromArgb(82, 168, 164); break;
-				case RoadSize.Small: color = Color.FromArgb(66, 153, 104); break;
-				case RoadSize.Medium: color = Color.FromArgb(66, 98, 153); break;
-				case RoadSize.Large: color = Color.FromArgb(173, 155, 80); break;
-				case RoadSize.VeryLarge: color = Color.FromArgb(173, 94, 80); break;
-				default: return Properties.Resources.L_D_0.Color(FormDesign.Design.IconColor);
-			}
-
-			return Properties.Resources.I_RoadSize.Color(color);
 		}
 
 		public void RefreshConfigs(Timer timer = null)

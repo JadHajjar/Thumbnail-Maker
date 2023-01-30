@@ -126,6 +126,11 @@ namespace ThumbnailMaker.Controls
 				Size = new Size(_control.Width + _control.Margin.Horizontal, GetValues().Count() * (_control.Height + 6));
 			}
 
+			if (_control.FindForm() is SlickForm form)
+			{
+				form.CurrentFormState = FormState.ForcedFocused;
+			}
+
 			Show(_control.FindForm());
 		}
 
@@ -244,6 +249,16 @@ namespace ThumbnailMaker.Controls
 			base.OnDeactivate(e);
 
 			Close();
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+
+			if (_control.FindForm() is SlickForm form)
+			{
+				form.CurrentFormState = FormState.NormalFocused;
+			}
 		}
 	}
 }

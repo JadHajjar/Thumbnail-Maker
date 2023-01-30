@@ -24,7 +24,7 @@ namespace ThumbnailMaker.Handlers
 
 			road.Version = LegacyUtil.CURRENT_VERSION;
 			road.Name = road.CustomName.IfEmpty(GetRoadName(road));
-			road.Description = GetRoadDescription(road);
+			road.Description = road.CustomDescription.IfEmpty(GetRoadDescription(road));
 			road.SmallThumbnail = getImage(true, false);
 			road.LargeThumbnail = getImage(false, false);
 			road.TooltipImage = getImage(true, true);
