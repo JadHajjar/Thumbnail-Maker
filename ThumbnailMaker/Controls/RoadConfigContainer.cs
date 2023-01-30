@@ -20,8 +20,8 @@ namespace ThumbnailMaker.Controls
 	public partial class RoadConfigContainer : UserControl
 	{
 		public static RoadConfigContainer _instance;
-		private readonly OptionSelectionControl<RoadTypeFilter> RoadTypeControl;
-		private readonly OptionSelectionControl<RoadSize> RoadSizeControl;
+		private readonly FilterSelectionControl<RoadTypeFilter> RoadTypeControl;
+		private readonly FilterSelectionControl<RoadSize> RoadSizeControl;
 
 		public List<string> LoadedTags { get; private set; }
 		public List<string> AutoTags { get; private set; }
@@ -32,10 +32,10 @@ namespace ThumbnailMaker.Controls
 		{
 			InitializeComponent();
 
-			RoadTypeControl = new OptionSelectionControl<RoadTypeFilter>(GetRoadTypeIcon) { Dock = DockStyle.Top };
+			RoadTypeControl = new FilterSelectionControl<RoadTypeFilter>(GetRoadTypeIcon) { Dock = DockStyle.Top };
 			TLP_Options.Controls.Add(RoadTypeControl, 0, 0);
 
-			RoadSizeControl = new OptionSelectionControl<RoadSize>(GetRoadSizeIcon) { Dock = DockStyle.Top };
+			RoadSizeControl = new FilterSelectionControl<RoadSize>(GetRoadSizeIcon) { Dock = DockStyle.Top };
 			TLP_Options.Controls.Add(RoadSizeControl, 1, 0);
 
 			RoadTypeControl.SelectedValueChanged += (s, e) => TB_Search_TextChanged(null, null);
@@ -47,6 +47,8 @@ namespace ThumbnailMaker.Controls
 			}
 
 			_instance = this;
+
+			Loader.Loading = true;
 
 			var _systemWatcher = new Timer(1000)
 			{

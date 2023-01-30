@@ -81,6 +81,9 @@
     <Compile Include="Controls\AddTagForm.Designer.cs">
       <DependentUpon>AddTagForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FilterSelectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\WarningsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -219,6 +222,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\I_Reset.png" />
     <None Include="Resources\I_RoadSize.png" />
     <None Include="Resources\I_Refresh.png" />
     <None Include="Resources\I_Warning.png" />

@@ -26,12 +26,12 @@ namespace ThumbnailMaker.Domain
 		public bool LHT { get; set; }
 		public bool VanillaWidth { get; set; }
 		public List<string> Tags { get; set; }
-		public List<string> AutoTags { get => Utilities.GetAutoTags(this).ToList(); set { } }
 		public List<LaneInfo> Lanes { get; set; }
 		public byte[] SmallThumbnail { get; set; }
 		public byte[] LargeThumbnail { get; set; }
 		public byte[] TooltipImage { get; set; }
 
 		[XmlIgnore] public float TotalRoadWidth => Math.Max(RoadWidth, Utilities.VanillaWidth(VanillaWidth, Utilities.CalculateRoadSize(Lanes, BufferWidth)));
+		[XmlIgnore] public List<string> AutoTags => Utilities.GetAutoTags(this).ToList();
 	}
 }

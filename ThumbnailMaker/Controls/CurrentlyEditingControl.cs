@@ -20,6 +20,8 @@ namespace ThumbnailMaker.Controls
 {
 	internal class CurrentlyEditingControl : SlickControl
 	{
+		public event System.EventHandler<RoadInfo> LoadConfiguration;
+
 		public RoadConfigControl Control { get; private set; }
 		public RoadInfo Road { get; private set; }
 
@@ -43,9 +45,13 @@ namespace ThumbnailMaker.Controls
 			base.OnMouseClick(e);
 
 			var cancelRect = new Rectangle(Width - 36, 0, 36, Height);
+			var undoRect = new Rectangle(0, 0, 36, Height);
 
 			if (cancelRect.Contains(e.Location) && e.Button == MouseButtons.Left)
 				Clear();
+
+			if (undoRect.Contains(e.Location) && e.Button == MouseButtons.Left)
+				LoadConfiguration?.Invoke(Control, Road);
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
@@ -53,9 +59,10 @@ namespace ThumbnailMaker.Controls
 			base.OnMouseMove(e);
 
 			var cancelRect = new Rectangle(Width - 36, 0, 36, Height);
+			var undoRect = new Rectangle(0, 0, 36, Height);
 
-			Cursor = cancelRect.Contains(e.Location) ? Cursors.Hand : Cursors.Default;
-			SlickTip.SetTo(this, cancelRect.Contains(e.Location) ? "Stop editing this road" : null);
+			Cursor = cancelRect.Contains(e.Location) || undoRect.Contains(e.Location) ? Cursors.Hand : Cursors.Default;
+			SlickTip.SetTo(this, cancelRect.Contains(e.Location) ? "Stop editing this road" : undoRect.Contains(e.Location) ? "Reset the changes you've made to this road" : null);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -67,8 +74,9 @@ namespace ThumbnailMaker.Controls
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
 			var cancelRect = new Rectangle(Width - 36, 0, 36, Height);
+			var undoRect = new Rectangle(0, 0, 36, Height);
 
-			var newHeight = 18 + (int)e.Graphics.MeasureString(Road.Name.Trim().Replace(" ", " ")
+			var newHeight = 18 + (int)e.Graphics.MeasureString(Road.Name.Trim().Replace(" ", " ")
 				, UI.Font(8.25F, FontStyle.Bold), ClientRectangle.Pad(cancelRect.Width, 16, cancelRect.Width, 0).Width).Height;
 
 			if (newHeight != Height)
@@ -79,17 +87,26 @@ namespace ThumbnailMaker.Controls
 				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(75, FormDesign.Design.RedColor)), ClientRectangle.Pad(1), 4);
 				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.RedColor), cancelRect.Pad(1), 4);
 				e.Graphics.DrawImage(Properties.Resources.I_Cancel.Color(FormDesign.Design.ActiveForeColor), cancelRect.CenterR(16, 16));
+				e.Graphics.DrawImage(Properties.Resources.I_Reset.Color(FormDesign.Design.IconColor), undoRect.CenterR(16, 16));
+			}
+			else if (HoverState.HasFlag(HoverState.Hovered) && undoRect.Contains(PointToClient(Cursor.Position)))
+			{
+				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(75, FormDesign.Design.GreenColor)), ClientRectangle.Pad(1), 4);
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.GreenColor), undoRect.Pad(1), 4);
+				e.Graphics.DrawImage(Properties.Resources.I_Reset.Color(FormDesign.Design.ActiveForeColor), undoRect.CenterR(16, 16));
+				e.Graphics.DrawImage(Properties.Resources.I_Cancel.Color(FormDesign.Design.IconColor), cancelRect.CenterR(16, 16));
 			}
 			else
 			{
 				e.Graphics.FillRoundedRectangle(new SolidBrush(Color.FromArgb(75, FormDesign.Design.ActiveColor)), ClientRectangle.Pad(1), 4);
 
+				e.Graphics.DrawImage(Properties.Resources.I_Reset.Color(FormDesign.Design.IconColor), undoRect.CenterR(16, 16));
 				e.Graphics.DrawImage(Properties.Resources.I_Cancel.Color(FormDesign.Design.IconColor), cancelRect.CenterR(16, 16));
 			}
 
 			e.Graphics.DrawString("Currently Editing", UI.Font(6.75F), new SolidBrush(FormDesign.Design.InfoColor), ClientRectangle.Pad(1), new StringFormat { Alignment = StringAlignment.Center });
 
-			e.Graphics.DrawString(Road.Name.Trim().Replace(" ", " ")
+			e.Graphics.DrawString(Road.Name.Trim().Replace(" ", " ")
 				, UI.Font(8.25F, FontStyle.Bold)
 				, new SolidBrush(FormDesign.Design.ForeColor)
 				, ClientRectangle.Pad(cancelRect.Width, 16, cancelRect.Width, 0)
