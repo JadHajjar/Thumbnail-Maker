@@ -222,6 +222,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\S_D_20.png" />
+    <None Include="Resources\L_D_20.png" />
     <None Include="Resources\I_Checked.png" />
     <None Include="Resources\I_Size.png" />
     <None Include="Resources\I_RoadType.png" />

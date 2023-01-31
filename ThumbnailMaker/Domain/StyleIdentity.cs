@@ -18,5 +18,6 @@ namespace ThumbnailMaker.Domain
 		public int Id { get; }
 		public string Name { get; }
 		public Color DefaultColor { get; }
+		public int Order { get; set; }
 	}
 }

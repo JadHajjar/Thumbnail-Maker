@@ -3,7 +3,9 @@
 using SlickControls;
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
@@ -14,6 +16,7 @@ namespace ThumbnailMaker.Controls
 	public class DecoTypeSelector : Form
 	{
 		private readonly RoadLane _roadLane;
+		private List<LaneDecoration> values;
 
 		public DecoTypeSelector(RoadLane roadLane)
 		{
@@ -21,14 +24,18 @@ namespace ThumbnailMaker.Controls
 
 			var point = new Point(12, 12);
 
-			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
+			values = Enum.GetValues(typeof(LaneDecoration)).Cast<LaneDecoration>().OrderBy(GetOrder).ToList();
+
+			Width = (7 * 108) + 12;
+
+			foreach (var laneType in values)
 			{
 				if (!Utilities.IsCompatible(laneType, roadLane.Lane.Type))
 				{
 					continue;
 				}
 
-				if (point.X + 96 > (6 * 108) + 12)
+				if (point.X + 96 > Width)
 				{
 					point = new Point(12, point.Y + 108);
 				}
@@ -36,7 +43,7 @@ namespace ThumbnailMaker.Controls
 				point.X += 108;
 			}
 
-			Size = new Size((6 * 108) + 12, point.Y + 108);
+			Height = point.Y + 108;
 			ShowIcon = false;
 			ShowInTaskbar = false;
 			DoubleBuffered = true;
@@ -45,6 +52,25 @@ namespace ThumbnailMaker.Controls
 			StartPosition = FormStartPosition.Manual;
 
 			Show(roadLane.FindForm());
+		}
+
+		public static int GetOrder(LaneDecoration decorations)
+		{
+			var name = Enum.GetName(typeof(LaneDecoration), decorations);
+
+			if (name == null)
+			{
+				return int.MaxValue;
+			}
+
+			var field = decorations.GetType().GetField(name);
+
+			if (!(Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) is StyleIdentityAttribute attribute))
+			{
+				return int.MaxValue;
+			}
+
+			return attribute.Order;
 		}
 
 		protected override void OnCreateControl()
@@ -80,7 +106,7 @@ namespace ThumbnailMaker.Controls
 			var cursor = PointToClient(Cursor.Position);
 			var point = new Point(12, 12);
 
-			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
+			foreach (LaneDecoration laneType in values)
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
 				{
@@ -146,7 +172,7 @@ namespace ThumbnailMaker.Controls
 
 			var point = new Point(8, 8);
 
-			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
+			foreach (LaneDecoration laneType in values)
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
 				{
@@ -190,7 +216,7 @@ namespace ThumbnailMaker.Controls
 
 			var point = new Point(8, 8);
 
-			foreach (LaneDecoration laneType in Enum.GetValues(typeof(LaneDecoration)))
+			foreach (LaneDecoration laneType in values)
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
 				{

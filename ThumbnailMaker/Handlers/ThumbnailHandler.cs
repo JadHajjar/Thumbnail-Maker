@@ -131,7 +131,7 @@ namespace ThumbnailMaker.Handlers
 			{
 				if (logo != null)
 				{
-					Graphics.DrawImage(logo, new Rectangle(new Point((Width - logo.Width) / 2, 0), logo.Size));
+					Graphics.DrawImage(logo, new Rectangle(new Point((Width - logo.Width) / 2, Small ? 3 : 10), logo.Size));
 				}
 
 				DrawCustomText(new Rectangle(0, 0, Width, Height).Pad(0, logo?.Height ?? 0, 0, 0));
@@ -405,7 +405,7 @@ namespace ThumbnailMaker.Handlers
 				Graphics.DrawLine(new Pen(Color.FromArgb(60, 60, 60), Small ? 1.5F : 4) { DashPattern = new[] { 3F, 4F, 3F, 10F } }, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y + barrierRect.Height);
 			}
 
-			if (!Small && Options.Current.DisplayLaneWidths && lane.Type != LaneType.Curb)
+			if (!Small && Options.Current.DisplayLaneWidths)
 			{
 				Graphics.DrawString($"{lane.LaneWidth:0.##}m", new Font(FontFamily, 30F * Math.Min(1F, lane.LaneWidth / 3F) * IdealWidthModifier), new SolidBrush(lane.Sidewalk ? Color.FromArgb(50, 50, 50) : Color.FromArgb(230, 230, 230)), rect.Pad(-10, 365, -10, (ToolTip ? 36 : Small ? 30 : 120) - 20), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 			}
@@ -718,14 +718,23 @@ namespace ThumbnailMaker.Handlers
 
 		private void DrawCustomText(Rectangle containerRect)
 		{
+			containerRect = containerRect.Pad(0, Small ? 3 : 10, 0, containerRect.Height * 2 / 3 + containerRect.Y);
 			var font = string.IsNullOrWhiteSpace(Options.Current.TextFont) ? new Font(FontFamily, ToolTip ? 12.75F : Small ? 9F : 38F, FontStyle.Bold) : new Font(Options.Current.TextFont, Small ? 9F : 38F, FontStyle.Bold);
+
+			while (font.Size > 0.75F)
+			{
+				if (Graphics.MeasureString(CustomText, font, containerRect.Width).Height <= containerRect.Height)
+					break;
+
+				font = new Font(font.FontFamily, font.Size - 0.75F, font.Style);
+			}
 
 			if (!Small)
 			{
-				Graphics.DrawString(CustomText, font, Brushes.White, containerRect.Pad(0, Small ? 3 : 10, Small ? -1 : -3, Small ? -1 : -3), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near });
+				Graphics.DrawString(CustomText, font, Brushes.White, new Rectangle(containerRect.X + 2, containerRect.Y + 2, containerRect.Width, containerRect.Height), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near });
 			}
 
-			Graphics.DrawString(CustomText, font, new SolidBrush(Color.FromArgb(40, 40, 40)), containerRect.Pad(0, Small ? 3 : 10, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near });
+			Graphics.DrawString(CustomText, font, new SolidBrush(Color.FromArgb(40, 40, 40)), containerRect, new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near });
 		}
 
 		private void DrawRoadIcon(Rectangle containerRect)

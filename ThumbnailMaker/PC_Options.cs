@@ -64,6 +64,9 @@ namespace ThumbnailMaker
 		protected override void UIChanged()
 		{
 			base.UIChanged();
+
+			GB_RoadType.Size = UI.Scale(new Size(240, 140), UI.FontScale);
+			GB_RoadType.Font = UI.Font(7.25F);
 		}
 
 		private void DD_Font_TextChanged(object sender, EventArgs e)

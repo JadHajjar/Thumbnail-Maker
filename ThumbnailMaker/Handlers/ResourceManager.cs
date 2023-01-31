@@ -50,7 +50,6 @@ namespace ThumbnailMaker
 
 			var field = decorations.GetType().GetField(name);
 
-
 			if (!(Attribute.GetCustomAttribute(field, typeof(StyleIdentityAttribute)) is StyleIdentityAttribute attribute))
 			{
 				return null;

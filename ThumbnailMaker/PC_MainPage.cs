@@ -697,10 +697,9 @@ namespace ThumbnailMaker
 
 		private void L_RoadName_Click(object sender, EventArgs e)
 		{
-			L_RoadName.Parent = null;
-			B_EditName.Parent = null;
-			TLP_Right.Controls.Add(TB_RoadName, 0, 1);
-			TLP_Right.SetColumnSpan(TB_RoadName, 2);
+			TB_RoadName.Show();
+			L_RoadName.Hide();
+			B_EditName.Hide();
 			TB_RoadName.Focus();
 			TB_RoadName.MaxLength = 32;
 		}
@@ -708,14 +707,14 @@ namespace ThumbnailMaker
 		private void TB_RoadName_Leave(object sender, EventArgs e)
 		{
 			RefreshPreview();
-			TB_RoadName.Parent = null;
-			TLP_Right.Controls.Add(L_RoadName, 0, 1);
-			TLP_Right.Controls.Add(B_EditName, 1, 1);
+			TB_RoadName.Hide();
+			L_RoadName.Show();
+			B_EditName.Show();
 		}
 
 		private void TB_RoadName_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
-			if (e.KeyCode == Keys.Enter)
+			if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
 			{
 				e.IsInputKey = true;
 
@@ -725,7 +724,7 @@ namespace ThumbnailMaker
 
 		private void TB_RoadName_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Enter)
+			if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
 			{
 				e.SuppressKeyPress = true;
 				e.Handled = true;
@@ -785,27 +784,26 @@ namespace ThumbnailMaker
 
 		private void B_EditDesc_Click(object sender, EventArgs e)
 		{
-			L_RoadDesc.Parent = null;
-			B_EditDesc.Parent = null;
-			TLP_Right.Controls.Add(TB_RoadDesc, 0, 2);
-			TLP_Right.SetColumnSpan(TB_RoadDesc, 2);
-			TB_RoadDesc.Focus();
 			TB_RoadDesc.MultiLine = true;
 			TB_RoadDesc.MaxLength = 1024;
 			TB_RoadDesc.Height = (int)(120 * UI.FontScale);
+			TB_RoadDesc.Show();
+			L_RoadDesc.Hide();
+			B_EditDesc.Hide();
+			TB_RoadDesc.Focus();
 		}
 
 		private void TB_RoadDesc_Leave(object sender, EventArgs e)
 		{
 			RefreshPreview();
-			TB_RoadDesc.Parent = null;
-			TLP_Right.Controls.Add(L_RoadDesc, 0, 2);
-			TLP_Right.Controls.Add(B_EditDesc, 1, 2);
+			TB_RoadDesc.Hide();
+			L_RoadDesc.Show();
+			B_EditDesc.Show();
 		}
 
 		private void TB_RoadDesc_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Enter)
+			if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
 			{
 				e.SuppressKeyPress = true;
 				e.Handled = true;
@@ -814,7 +812,7 @@ namespace ThumbnailMaker
 
 		private void TB_RoadDesc_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
-			if (e.KeyCode == Keys.Enter)
+			if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
 			{
 				e.IsInputKey = true;
 

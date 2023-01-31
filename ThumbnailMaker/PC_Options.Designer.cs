@@ -32,15 +32,6 @@
 			this.TLP = new System.Windows.Forms.TableLayoutPanel();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickSpacer2 = new SlickControls.SlickSpacer();
-			this.slickSpacer1 = new SlickControls.SlickSpacer();
-			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-			this.slickSpacer3 = new SlickControls.SlickSpacer();
-			this.label1 = new System.Windows.Forms.Label();
-			this.SS_Columns = new SlickControls.SlickSlider();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.slickScroll1 = new SlickControls.SlickScroll();
-			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.GB_RoadType = new SlickControls.SlickGroupBox();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.slickGroupBox2 = new SlickControls.SlickGroupBox();
@@ -50,24 +41,33 @@
 			this.TB_ExportFolder = new SlickControls.SlickPathTextBox();
 			this.DD_Font = new SlickControls.SlickDropdown();
 			this.DD_RoadSortingMode = new SlickControls.SlickDropdown();
+			this.slickSpacer1 = new SlickControls.SlickSpacer();
+			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
 			this.B_Theme = new SlickControls.SlickButton();
 			this.B_ReExport = new SlickControls.SlickButton();
+			this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+			this.slickSpacer3 = new SlickControls.SlickSpacer();
+			this.label1 = new System.Windows.Forms.Label();
+			this.SS_Columns = new SlickControls.SlickSlider();
 			this.CB_LHT = new SlickControls.SlickCheckbox();
 			this.CB_ColoredLanes = new SlickControls.SlickCheckbox();
 			this.CB_AdvancedElevartion = new SlickControls.SlickCheckbox();
 			this.CB_DisplayLaneWidths = new SlickControls.SlickCheckbox();
 			this.CB_VanillaWdiths = new SlickControls.SlickCheckbox();
 			this.CB_AddRoadWidthToName = new SlickControls.SlickCheckbox();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.slickScroll1 = new SlickControls.SlickScroll();
+			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.tableLayoutPanel2.SuspendLayout();
-			this.tableLayoutPanel3.SuspendLayout();
-			this.tableLayoutPanel4.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.GB_RoadType.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.slickGroupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PB_Large)).BeginInit();
 			this.slickGroupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PB_Small)).BeginInit();
+			this.tableLayoutPanel3.SuspendLayout();
+			this.tableLayoutPanel4.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// base_Text
@@ -142,6 +142,159 @@
 			this.slickSpacer2.TabStop = false;
 			this.slickSpacer2.Text = "slickSpacer2";
 			// 
+			// GB_RoadType
+			// 
+			this.GB_RoadType.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.tableLayoutPanel2.SetColumnSpan(this.GB_RoadType, 2);
+			this.GB_RoadType.Controls.Add(this.tableLayoutPanel1);
+			this.GB_RoadType.Icon = ((System.Drawing.Image)(resources.GetObject("GB_RoadType.Icon")));
+			this.GB_RoadType.Location = new System.Drawing.Point(656, 6);
+			this.GB_RoadType.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
+			this.GB_RoadType.MinimumSize = new System.Drawing.Size(60, 20);
+			this.GB_RoadType.Name = "GB_RoadType";
+			this.tableLayoutPanel2.SetRowSpan(this.GB_RoadType, 3);
+			this.GB_RoadType.Size = new System.Drawing.Size(242, 140);
+			this.GB_RoadType.TabIndex = 17;
+			this.GB_RoadType.TabStop = false;
+			this.GB_RoadType.Text = "Custom Logo,   right-click to clear the logo";
+			// 
+			// tableLayoutPanel1
+			// 
+			this.tableLayoutPanel1.ColumnCount = 2;
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel1.Controls.Add(this.slickGroupBox2, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.slickGroupBox1, 0, 0);
+			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 18);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 1;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(236, 119);
+			this.tableLayoutPanel1.TabIndex = 0;
+			// 
+			// slickGroupBox2
+			// 
+			this.slickGroupBox2.Controls.Add(this.PB_Large);
+			this.slickGroupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.slickGroupBox2.Location = new System.Drawing.Point(121, 3);
+			this.slickGroupBox2.Name = "slickGroupBox2";
+			this.slickGroupBox2.Size = new System.Drawing.Size(112, 113);
+			this.slickGroupBox2.TabIndex = 1;
+			this.slickGroupBox2.TabStop = false;
+			this.slickGroupBox2.Text = "Large (max 500px)";
+			// 
+			// PB_Large
+			// 
+			this.PB_Large.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.PB_Large.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.PB_Large.Location = new System.Drawing.Point(3, 18);
+			this.PB_Large.Name = "PB_Large";
+			this.PB_Large.Size = new System.Drawing.Size(106, 92);
+			this.PB_Large.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.PB_Large.TabIndex = 0;
+			this.PB_Large.TabStop = false;
+			this.PB_Large.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_Small_Paint);
+			this.PB_Large.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PB_Logo_MouseClick);
+			// 
+			// slickGroupBox1
+			// 
+			this.slickGroupBox1.Controls.Add(this.PB_Small);
+			this.slickGroupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.slickGroupBox1.Location = new System.Drawing.Point(3, 3);
+			this.slickGroupBox1.Name = "slickGroupBox1";
+			this.slickGroupBox1.Size = new System.Drawing.Size(112, 113);
+			this.slickGroupBox1.TabIndex = 0;
+			this.slickGroupBox1.TabStop = false;
+			this.slickGroupBox1.Text = "Small (max 100px)";
+			// 
+			// PB_Small
+			// 
+			this.PB_Small.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.PB_Small.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.PB_Small.Location = new System.Drawing.Point(3, 18);
+			this.PB_Small.Name = "PB_Small";
+			this.PB_Small.Size = new System.Drawing.Size(106, 92);
+			this.PB_Small.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+			this.PB_Small.TabIndex = 0;
+			this.PB_Small.TabStop = false;
+			this.PB_Small.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_Small_Paint);
+			this.PB_Small.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PB_Logo_MouseClick);
+			// 
+			// TB_ExportFolder
+			// 
+			this.TB_ExportFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TB_ExportFolder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
+			this.TB_ExportFolder.EnterTriggersClick = false;
+			this.TB_ExportFolder.FileExtensions = new string[0];
+			this.TB_ExportFolder.Folder = true;
+			this.TB_ExportFolder.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TB_ExportFolder.Image = ((System.Drawing.Image)(resources.GetObject("TB_ExportFolder.Image")));
+			this.TB_ExportFolder.LabelText = "Custom Export Folder";
+			this.TB_ExportFolder.Location = new System.Drawing.Point(458, 94);
+			this.TB_ExportFolder.Margin = new System.Windows.Forms.Padding(20, 10, 20, 0);
+			this.TB_ExportFolder.Name = "TB_ExportFolder";
+			this.TB_ExportFolder.Padding = new System.Windows.Forms.Padding(4, 20, 24, 4);
+			this.TB_ExportFolder.Placeholder = "Default is the Road Generator\'s app data folder";
+			this.TB_ExportFolder.SelectedText = "";
+			this.TB_ExportFolder.SelectionLength = 0;
+			this.TB_ExportFolder.SelectionStart = 0;
+			this.TB_ExportFolder.Size = new System.Drawing.Size(175, 43);
+			this.TB_ExportFolder.TabIndex = 3;
+			this.TB_ExportFolder.Validation = SlickControls.ValidationType.Number;
+			this.TB_ExportFolder.TextChanged += new System.EventHandler(this.TB_ExportFolder_TextChanged);
+			// 
+			// DD_Font
+			// 
+			this.DD_Font.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.DD_Font.Conversion = null;
+			this.DD_Font.EnterTriggersClick = false;
+			this.DD_Font.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.DD_Font.Image = ((System.Drawing.Image)(resources.GetObject("DD_Font.Image")));
+			this.DD_Font.Items = null;
+			this.DD_Font.LabelText = "Custom Thumbnail Font";
+			this.DD_Font.Location = new System.Drawing.Point(458, 52);
+			this.DD_Font.Margin = new System.Windows.Forms.Padding(20, 10, 20, 0);
+			this.DD_Font.MaximumSize = new System.Drawing.Size(9999, 0);
+			this.DD_Font.MinimumSize = new System.Drawing.Size(50, 0);
+			this.DD_Font.Name = "DD_Font";
+			this.DD_Font.Padding = new System.Windows.Forms.Padding(4, 20, 24, 4);
+			this.DD_Font.Placeholder = "Font used for the road\'s size, speed sign & custom text";
+			this.DD_Font.SelectedItem = null;
+			this.DD_Font.SelectedText = "";
+			this.DD_Font.SelectionLength = 0;
+			this.DD_Font.SelectionStart = 0;
+			this.DD_Font.Size = new System.Drawing.Size(175, 32);
+			this.DD_Font.TabIndex = 1;
+			this.DD_Font.TextChanged += new System.EventHandler(this.DD_Font_TextChanged);
+			// 
+			// DD_RoadSortingMode
+			// 
+			this.DD_RoadSortingMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.DD_RoadSortingMode.Conversion = null;
+			this.DD_RoadSortingMode.EnterTriggersClick = false;
+			this.DD_RoadSortingMode.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.DD_RoadSortingMode.Image = ((System.Drawing.Image)(resources.GetObject("DD_RoadSortingMode.Image")));
+			this.DD_RoadSortingMode.Items = null;
+			this.DD_RoadSortingMode.LabelText = "Road Sorting Mode";
+			this.DD_RoadSortingMode.Location = new System.Drawing.Point(458, 10);
+			this.DD_RoadSortingMode.Margin = new System.Windows.Forms.Padding(20, 10, 20, 0);
+			this.DD_RoadSortingMode.MaximumSize = new System.Drawing.Size(9999, 0);
+			this.DD_RoadSortingMode.MinimumSize = new System.Drawing.Size(50, 0);
+			this.DD_RoadSortingMode.Name = "DD_RoadSortingMode";
+			this.DD_RoadSortingMode.Padding = new System.Windows.Forms.Padding(4, 20, 24, 4);
+			this.DD_RoadSortingMode.Placeholder = "Change the order that roads are displayed in";
+			this.DD_RoadSortingMode.SelectedItem = null;
+			this.DD_RoadSortingMode.SelectedText = "";
+			this.DD_RoadSortingMode.SelectionLength = 0;
+			this.DD_RoadSortingMode.SelectionStart = 0;
+			this.DD_RoadSortingMode.Size = new System.Drawing.Size(175, 32);
+			this.DD_RoadSortingMode.TabIndex = 1;
+			this.DD_RoadSortingMode.TextChanged += new System.EventHandler(this.DD_RoadSortingMode_TextChanged);
+			// 
 			// slickSpacer1
 			// 
 			this.tableLayoutPanel2.SetColumnSpan(this.slickSpacer1, 4);
@@ -174,6 +327,40 @@
 			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel3.Size = new System.Drawing.Size(902, 33);
 			this.tableLayoutPanel3.TabIndex = 21;
+			// 
+			// B_Theme
+			// 
+			this.B_Theme.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.B_Theme.ColorShade = null;
+			this.B_Theme.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_Theme.IconSize = 16;
+			this.B_Theme.Image = ((System.Drawing.Image)(resources.GetObject("B_Theme.Image")));
+			this.B_Theme.Location = new System.Drawing.Point(802, 3);
+			this.B_Theme.Margin = new System.Windows.Forms.Padding(3, 3, 15, 3);
+			this.B_Theme.Name = "B_Theme";
+			this.B_Theme.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_Theme.Size = new System.Drawing.Size(85, 27);
+			this.B_Theme.SpaceTriggersClick = true;
+			this.B_Theme.TabIndex = 14;
+			this.B_Theme.Text = "Theme & UI Scaling";
+			this.B_Theme.Click += new System.EventHandler(this.B_Theme_Click);
+			// 
+			// B_ReExport
+			// 
+			this.B_ReExport.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.B_ReExport.ColorShade = null;
+			this.B_ReExport.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_ReExport.IconSize = 16;
+			this.B_ReExport.Image = ((System.Drawing.Image)(resources.GetObject("B_ReExport.Image")));
+			this.B_ReExport.Location = new System.Drawing.Point(15, 3);
+			this.B_ReExport.Margin = new System.Windows.Forms.Padding(15, 3, 5, 3);
+			this.B_ReExport.Name = "B_ReExport";
+			this.B_ReExport.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_ReExport.Size = new System.Drawing.Size(85, 27);
+			this.B_ReExport.SpaceTriggersClick = true;
+			this.B_ReExport.TabIndex = 14;
+			this.B_ReExport.Text = "Re-Export Roads";
+			this.B_ReExport.Click += new System.EventHandler(this.B_ReExport_Click);
 			// 
 			// tableLayoutPanel4
 			// 
@@ -250,246 +437,6 @@
 			this.SS_Columns.Value = 2D;
 			this.SS_Columns.ValueOutput = null;
 			this.SS_Columns.ValuesChanged += new System.EventHandler(this.SS_Columns_ValuesChanged);
-			// 
-			// panel1
-			// 
-			this.panel1.Controls.Add(this.TLP);
-			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(5, 242);
-			this.panel1.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(908, 383);
-			this.panel1.TabIndex = 14;
-			// 
-			// slickScroll1
-			// 
-			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
-			this.slickScroll1.LinkedControl = this.TLP;
-			this.slickScroll1.Location = new System.Drawing.Point(898, 242);
-			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(15, 383);
-			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
-			this.slickScroll1.TabIndex = 15;
-			this.slickScroll1.TabStop = false;
-			this.slickScroll1.Text = "slickScroll1";
-			// 
-			// openFileDialog
-			// 
-			this.openFileDialog.DefaultExt = "png";
-			this.openFileDialog.Filter = "PNG File|*.png";
-			this.openFileDialog.Title = "Select Image";
-			// 
-			// GB_RoadType
-			// 
-			this.GB_RoadType.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.tableLayoutPanel2.SetColumnSpan(this.GB_RoadType, 2);
-			this.GB_RoadType.Controls.Add(this.tableLayoutPanel1);
-			this.GB_RoadType.Icon = ((System.Drawing.Image)(resources.GetObject("GB_RoadType.Icon")));
-			this.GB_RoadType.Location = new System.Drawing.Point(656, 6);
-			this.GB_RoadType.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
-			this.GB_RoadType.MinimumSize = new System.Drawing.Size(60, 20);
-			this.GB_RoadType.Name = "GB_RoadType";
-			this.tableLayoutPanel2.SetRowSpan(this.GB_RoadType, 3);
-			this.GB_RoadType.Size = new System.Drawing.Size(242, 140);
-			this.GB_RoadType.TabIndex = 17;
-			this.GB_RoadType.TabStop = false;
-			this.GB_RoadType.Text = "Custom Logo,   right-click to clear the logo";
-			// 
-			// tableLayoutPanel1
-			// 
-			this.tableLayoutPanel1.ColumnCount = 2;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.Controls.Add(this.slickGroupBox2, 1, 0);
-			this.tableLayoutPanel1.Controls.Add(this.slickGroupBox1, 0, 0);
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 18);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 1;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(236, 119);
-			this.tableLayoutPanel1.TabIndex = 0;
-			// 
-			// slickGroupBox2
-			// 
-			this.slickGroupBox2.Controls.Add(this.PB_Large);
-			this.slickGroupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.slickGroupBox2.Location = new System.Drawing.Point(121, 3);
-			this.slickGroupBox2.Name = "slickGroupBox2";
-			this.slickGroupBox2.Size = new System.Drawing.Size(112, 113);
-			this.slickGroupBox2.TabIndex = 1;
-			this.slickGroupBox2.TabStop = false;
-			this.slickGroupBox2.Text = "Large Logo (max width: 500px)";
-			// 
-			// PB_Large
-			// 
-			this.PB_Large.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.PB_Large.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.PB_Large.Location = new System.Drawing.Point(3, 18);
-			this.PB_Large.Name = "PB_Large";
-			this.PB_Large.Size = new System.Drawing.Size(106, 92);
-			this.PB_Large.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.PB_Large.TabIndex = 0;
-			this.PB_Large.TabStop = false;
-			this.PB_Large.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_Small_Paint);
-			this.PB_Large.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PB_Logo_MouseClick);
-			// 
-			// slickGroupBox1
-			// 
-			this.slickGroupBox1.Controls.Add(this.PB_Small);
-			this.slickGroupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.slickGroupBox1.Location = new System.Drawing.Point(3, 3);
-			this.slickGroupBox1.Name = "slickGroupBox1";
-			this.slickGroupBox1.Size = new System.Drawing.Size(112, 113);
-			this.slickGroupBox1.TabIndex = 0;
-			this.slickGroupBox1.TabStop = false;
-			this.slickGroupBox1.Text = "Small Logo (max width: 100px)";
-			// 
-			// PB_Small
-			// 
-			this.PB_Small.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.PB_Small.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.PB_Small.Location = new System.Drawing.Point(3, 18);
-			this.PB_Small.Name = "PB_Small";
-			this.PB_Small.Size = new System.Drawing.Size(106, 92);
-			this.PB_Small.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-			this.PB_Small.TabIndex = 0;
-			this.PB_Small.TabStop = false;
-			this.PB_Small.Paint += new System.Windows.Forms.PaintEventHandler(this.PB_Small_Paint);
-			this.PB_Small.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PB_Logo_MouseClick);
-			// 
-			// TB_ExportFolder
-			// 
-			this.TB_ExportFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TB_ExportFolder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
-			this.TB_ExportFolder.EnterTriggersClick = false;
-			this.TB_ExportFolder.FileExtensions = new string[0];
-			this.TB_ExportFolder.Folder = true;
-			this.TB_ExportFolder.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TB_ExportFolder.Image = ((System.Drawing.Image)(resources.GetObject("TB_ExportFolder.Image")));
-			this.TB_ExportFolder.LabelText = "Custom Export Folder";
-			this.TB_ExportFolder.Location = new System.Drawing.Point(458, 94);
-			this.TB_ExportFolder.Margin = new System.Windows.Forms.Padding(20, 10, 20, 0);
-			this.TB_ExportFolder.MaximumSize = new System.Drawing.Size(9999, 0);
-			this.TB_ExportFolder.MaxLength = 32767;
-			this.TB_ExportFolder.MinimumSize = new System.Drawing.Size(50, 0);
-			this.TB_ExportFolder.Name = "TB_ExportFolder";
-			this.TB_ExportFolder.Password = false;
-			this.TB_ExportFolder.Placeholder = "Default is the Road Generator\'s app data folder";
-			this.TB_ExportFolder.ReadOnly = false;
-			this.TB_ExportFolder.Required = false;
-			this.TB_ExportFolder.SelectAllOnFocus = false;
-			this.TB_ExportFolder.SelectedText = "";
-			this.TB_ExportFolder.SelectionLength = 0;
-			this.TB_ExportFolder.SelectionStart = 0;
-			this.TB_ExportFolder.Size = new System.Drawing.Size(175, 32);
-			this.TB_ExportFolder.TabIndex = 3;
-			this.TB_ExportFolder.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.TB_ExportFolder.Validation = SlickControls.ValidationType.Number;
-			this.TB_ExportFolder.ValidationCustom = null;
-			this.TB_ExportFolder.ValidationRegex = "";
-			this.TB_ExportFolder.TextChanged += new System.EventHandler(this.TB_ExportFolder_TextChanged);
-			// 
-			// DD_Font
-			// 
-			this.DD_Font.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.DD_Font.Conversion = null;
-			this.DD_Font.EnterTriggersClick = false;
-			this.DD_Font.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.DD_Font.Image = ((System.Drawing.Image)(resources.GetObject("DD_Font.Image")));
-			this.DD_Font.Items = null;
-			this.DD_Font.LabelText = "Custom Thumbnail Font";
-			this.DD_Font.Location = new System.Drawing.Point(458, 52);
-			this.DD_Font.Margin = new System.Windows.Forms.Padding(20, 10, 20, 0);
-			this.DD_Font.MaximumSize = new System.Drawing.Size(9999, 0);
-			this.DD_Font.MaxLength = 32767;
-			this.DD_Font.MinimumSize = new System.Drawing.Size(50, 0);
-			this.DD_Font.Name = "DD_Font";
-			this.DD_Font.Password = false;
-			this.DD_Font.Placeholder = "Font used for the road\'s size, speed sign & custom text";
-			this.DD_Font.ReadOnly = false;
-			this.DD_Font.Required = false;
-			this.DD_Font.SelectAllOnFocus = false;
-			this.DD_Font.SelectedItem = null;
-			this.DD_Font.SelectedText = "";
-			this.DD_Font.SelectionLength = 0;
-			this.DD_Font.SelectionStart = 0;
-			this.DD_Font.Size = new System.Drawing.Size(175, 32);
-			this.DD_Font.TabIndex = 1;
-			this.DD_Font.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.DD_Font.Validation = SlickControls.ValidationType.None;
-			this.DD_Font.ValidationCustom = null;
-			this.DD_Font.ValidationRegex = "";
-			this.DD_Font.TextChanged += new System.EventHandler(this.DD_Font_TextChanged);
-			// 
-			// DD_RoadSortingMode
-			// 
-			this.DD_RoadSortingMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.DD_RoadSortingMode.Conversion = null;
-			this.DD_RoadSortingMode.EnterTriggersClick = false;
-			this.DD_RoadSortingMode.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.DD_RoadSortingMode.Image = ((System.Drawing.Image)(resources.GetObject("DD_RoadSortingMode.Image")));
-			this.DD_RoadSortingMode.Items = null;
-			this.DD_RoadSortingMode.LabelText = "Road Sorting Mode";
-			this.DD_RoadSortingMode.Location = new System.Drawing.Point(458, 10);
-			this.DD_RoadSortingMode.Margin = new System.Windows.Forms.Padding(20, 10, 20, 0);
-			this.DD_RoadSortingMode.MaximumSize = new System.Drawing.Size(9999, 0);
-			this.DD_RoadSortingMode.MaxLength = 32767;
-			this.DD_RoadSortingMode.MinimumSize = new System.Drawing.Size(50, 0);
-			this.DD_RoadSortingMode.Name = "DD_RoadSortingMode";
-			this.DD_RoadSortingMode.Password = false;
-			this.DD_RoadSortingMode.Placeholder = "Change the order that roads are displayed in";
-			this.DD_RoadSortingMode.ReadOnly = false;
-			this.DD_RoadSortingMode.Required = false;
-			this.DD_RoadSortingMode.SelectAllOnFocus = false;
-			this.DD_RoadSortingMode.SelectedItem = null;
-			this.DD_RoadSortingMode.SelectedText = "";
-			this.DD_RoadSortingMode.SelectionLength = 0;
-			this.DD_RoadSortingMode.SelectionStart = 0;
-			this.DD_RoadSortingMode.Size = new System.Drawing.Size(175, 32);
-			this.DD_RoadSortingMode.TabIndex = 1;
-			this.DD_RoadSortingMode.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.DD_RoadSortingMode.Validation = SlickControls.ValidationType.None;
-			this.DD_RoadSortingMode.ValidationCustom = null;
-			this.DD_RoadSortingMode.ValidationRegex = "";
-			this.DD_RoadSortingMode.TextChanged += new System.EventHandler(this.DD_RoadSortingMode_TextChanged);
-			// 
-			// B_Theme
-			// 
-			this.B_Theme.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.B_Theme.ColorShade = null;
-			this.B_Theme.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_Theme.IconSize = 16;
-			this.B_Theme.Image = ((System.Drawing.Image)(resources.GetObject("B_Theme.Image")));
-			this.B_Theme.Location = new System.Drawing.Point(802, 3);
-			this.B_Theme.Margin = new System.Windows.Forms.Padding(3, 3, 15, 3);
-			this.B_Theme.Name = "B_Theme";
-			this.B_Theme.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.B_Theme.Size = new System.Drawing.Size(85, 27);
-			this.B_Theme.SpaceTriggersClick = true;
-			this.B_Theme.TabIndex = 14;
-			this.B_Theme.Text = "Theme & UI Scaling";
-			this.B_Theme.Click += new System.EventHandler(this.B_Theme_Click);
-			// 
-			// B_ReExport
-			// 
-			this.B_ReExport.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.B_ReExport.ColorShade = null;
-			this.B_ReExport.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_ReExport.IconSize = 16;
-			this.B_ReExport.Image = ((System.Drawing.Image)(resources.GetObject("B_ReExport.Image")));
-			this.B_ReExport.Location = new System.Drawing.Point(15, 3);
-			this.B_ReExport.Margin = new System.Windows.Forms.Padding(15, 3, 5, 3);
-			this.B_ReExport.Name = "B_ReExport";
-			this.B_ReExport.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.B_ReExport.Size = new System.Drawing.Size(85, 27);
-			this.B_ReExport.SpaceTriggersClick = true;
-			this.B_ReExport.TabIndex = 14;
-			this.B_ReExport.Text = "Re-Export Roads";
-			this.B_ReExport.Click += new System.EventHandler(this.B_ReExport_Click);
 			// 
 			// CB_LHT
 			// 
@@ -632,6 +579,34 @@
 			this.CB_AddRoadWidthToName.UncheckedText = null;
 			this.CB_AddRoadWidthToName.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
 			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.TLP);
+			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel1.Location = new System.Drawing.Point(5, 242);
+			this.panel1.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(908, 383);
+			this.panel1.TabIndex = 14;
+			// 
+			// slickScroll1
+			// 
+			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
+			this.slickScroll1.LinkedControl = this.TLP;
+			this.slickScroll1.Location = new System.Drawing.Point(907, 242);
+			this.slickScroll1.Name = "slickScroll1";
+			this.slickScroll1.Size = new System.Drawing.Size(6, 383);
+			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
+			this.slickScroll1.TabIndex = 15;
+			this.slickScroll1.TabStop = false;
+			this.slickScroll1.Text = "slickScroll1";
+			// 
+			// openFileDialog
+			// 
+			this.openFileDialog.DefaultExt = "png";
+			this.openFileDialog.Filter = "PNG File|*.png";
+			this.openFileDialog.Title = "Select Image";
+			// 
 			// PC_Options
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -648,17 +623,17 @@
 			this.Controls.SetChildIndex(this.slickScroll1, 0);
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.tableLayoutPanel2.PerformLayout();
-			this.tableLayoutPanel3.ResumeLayout(false);
-			this.tableLayoutPanel4.ResumeLayout(false);
-			this.tableLayoutPanel4.PerformLayout();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.GB_RoadType.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.slickGroupBox2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PB_Large)).EndInit();
 			this.slickGroupBox1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.PB_Small)).EndInit();
+			this.tableLayoutPanel3.ResumeLayout(false);
+			this.tableLayoutPanel4.ResumeLayout(false);
+			this.tableLayoutPanel4.PerformLayout();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
