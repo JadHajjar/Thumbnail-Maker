@@ -58,10 +58,6 @@
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SlickControls, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SlickControls.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -228,7 +224,6 @@
     <None Include="Resources\I_Size.png" />
     <None Include="Resources\I_RoadType.png" />
     <None Include="Resources\I_Reset.png" />
-    <None Include="Resources\I_RoadSize.png" />
     <None Include="Resources\I_Refresh.png" />
     <None Include="Resources\I_Warning.png" />
     <None Include="Resources\I_Stop.png" />
@@ -344,6 +339,12 @@
     <None Include="Resources\I_Unavailable.png" />
     <None Include="Resources\I_2W.png" />
     <None Include="Resources\I_1WB.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SlickControls\SlickControls.csproj">
+      <Project>{2c0e1d8a-6619-4116-98ee-3f9e6c937537}</Project>
+      <Name>SlickControls</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

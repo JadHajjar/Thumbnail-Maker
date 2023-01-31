@@ -35,6 +35,8 @@ namespace ThumbnailMaker.Controls
 				Margin = new Padding(6);
 				Cursor = Cursors.Hand;
 
+				SlickTip.SetTo(this, road.Description);
+
 				valid = true;
 			}
 			catch { valid = false; }
@@ -127,12 +129,15 @@ namespace ThumbnailMaker.Controls
 			using (var img = new Bitmap(ms))
 			{
 				Clipboard.SetDataObject(new Bitmap(img, 256, 256));
+
+				Notification.Create("Thumbnail copied to clipboard", "", PromptIcons.None, () => { }, NotificationSound.None, new Size(240, 32))
+					.Show(FindForm(), 5);
 			}
 		}
 
 		private void DeleteConfiguration()
 		{
-			if (MessagePrompt.Show("Are you sure you want to delete this road configuration?", PromptButtons.YesNo, PromptIcons.Question) == DialogResult.Yes)
+			if (MessagePrompt.Show("Are you sure you want to delete this road configuration?\r\nYou won't be able to recover it afterwards.", PromptButtons.YesNo, PromptIcons.Question) == DialogResult.Yes)
 			{
 				File.Delete(FileName);
 
@@ -149,6 +154,9 @@ namespace ThumbnailMaker.Controls
 			UIChanged();
 
 			Invalidate();
+
+			Notification.Create("Regenerated this road's thumbnail", "", PromptIcons.None, () => { }, NotificationSound.None, new Size(260, 32))
+				.Show(FindForm(), 5);
 		}
 
 		private void OpenFileLocation()

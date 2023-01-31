@@ -163,7 +163,7 @@ namespace ThumbnailMaker
 		{
 			base.OnCreateControl();
 
-			TB_BufferSize.Text = 0.25F.ToString();
+			TB_BufferSize.Text = Options.Current.BufferSize;
 			refreshPaused = false;
 			SetupType(GetRoadType());
 		}
@@ -315,6 +315,9 @@ namespace ThumbnailMaker
 
 		private void TB_Name_TextChanged(object sender, EventArgs e)
 		{
+			if (sender == TB_BufferSize)
+			{ Options.Current.BufferSize = TB_BufferSize.Text; Options.Save(); }
+
 			RefreshPreview();
 		}
 
@@ -470,7 +473,7 @@ namespace ThumbnailMaker
 
 				if (!matched)
 				{
-					save(GetLanes().ListStrings(" + ") + ".png", frm.CB_Small.Checked, frm.CB_Tooltip.Checked);
+					save(L_RoadName.Text + ".png", frm.CB_Small.Checked, frm.CB_Tooltip.Checked);
 				}
 
 				void save(string filename, bool small, bool toolTip)
@@ -751,7 +754,7 @@ namespace ThumbnailMaker
 
 		private void B_AddTag_Click(object sender, EventArgs e)
 		{
-			var frm = new AddTagForm(RCC.LoadedTags, FLP_Tags.GetControls<TagControl>().Select(x => x.Text)) { Location = FLP_Tags.PointToScreen(Point.Empty), MinimumSize = new Size(TLP_Right.Width - 5, 0) };
+			var frm = new AddTagForm(RCC.LoadedTags, FLP_Tags.GetControls<TagControl>().Select(x => x.Text)) { Location = FLP_Tags.PointToScreen(new Point(3, 4)), MinimumSize = new Size(TLP_Right.Width - 5, 0), MaximumSize = new Size(TLP_Right.Width - 5, 999) };
 
 			frm.TagAdded += Frm_TagAdded;
 			frm.TagRemoved += Frm_TagRemoved;
@@ -762,16 +765,25 @@ namespace ThumbnailMaker
 		private void Frm_TagRemoved(object sender, string e)
 		{
 			FLP_Tags.Controls.Clear(true, x => x is TagControl tc && tc.Text.Equals(e, StringComparison.CurrentCultureIgnoreCase));
+
+			RefreshPreview();
 		}
 
 		private void Frm_TagAdded(object sender, string e)
 		{
-			FLP_Tags.Controls.Add(new TagControl(e, false));
+			if (string.IsNullOrWhiteSpace(e))
+				return;
+
+			FLP_Tags.Controls.Add(new TagControl(e.Trim(), false));
+
+			RefreshPreview();
 		}
 
 		private void FLP_Tags_ControlAdded(object sender, ControlEventArgs e)
 		{
 			L_NoTags.Visible = FLP_Tags.Controls.Count == 1;
+
+			RefreshPreview();
 		}
 
 		private void TLP_Buttons_Resize(object sender, EventArgs e)
@@ -818,6 +830,26 @@ namespace ThumbnailMaker
 
 				TB_RoadDesc_Leave(sender, e);
 			}
+		}
+
+		private void TB_SpeedLimit_IconClicked(object sender, EventArgs e)
+		{
+			var rl = new RoadLane
+			{
+				Visible = false,
+				Parent = this
+			};
+
+			new LaneSpeedSelector(rl) 
+			{
+				Location = TB_SpeedLimit.PointToScreen(new Point(0, TB_SpeedLimit.Height + 2))
+			}			
+			.FormClosed += (s, _) =>
+			{
+				if (rl.Lane.SpeedLimit != null)
+					TB_SpeedLimit.Text = rl.Lane.SpeedLimit?.ToString();
+				rl.Dispose();
+			};
 		}
 	}
 }

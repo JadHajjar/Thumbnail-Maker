@@ -60,7 +60,7 @@ namespace ThumbnailMaker.Handlers
 						BufferSize = Math.Max(0, road.BufferWidth),
 						RegionType = road.RegionType,
 						RoadType = road.RoadType,
-						Speed = road.SpeedLimit.If(0, DefaultSpeedSign(road.RoadType, road.RegionType == RegionType.USA)),
+						Speed = road.SpeedLimit.If(0, DefaultSpeedSign(road.Lanes, road.RoadType, road.RegionType == RegionType.USA)),
 						SideTexture = road.SideTexture,
 						AsphaltStyle = road.AsphaltStyle,
 						LHT = road.LHT,
@@ -244,6 +244,16 @@ namespace ThumbnailMaker.Handlers
 				info += $" - {road.SpeedLimit}{(road.RegionType == RegionType.USA ? "mph" : "km/h")}";
 			}
 
+			foreach (var tag in road.Tags)
+			{
+				info += $" - {tag}";
+			}
+
+			if (!string.IsNullOrWhiteSpace(road.CustomText))
+			{
+				info += $" - {road.CustomText}";
+			}
+
 			sb.Add($"({info})");
 
 			if (signature)
@@ -359,7 +369,7 @@ namespace ThumbnailMaker.Handlers
 				switch (item)
 				{
 					case LaneType.Pedestrian:
-						if (!deco.AnyOf(LaneDecoration.TrashBin, LaneDecoration.StreetAds, LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight, LaneDecoration.TransitStop, LaneDecoration.None, LaneDecoration.Filler, LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
+						if (!deco.AnyOf(LaneDecoration.TrashBin, LaneDecoration.StreetAds, LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight, LaneDecoration.LampPost, LaneDecoration.Benches, LaneDecoration.FlowerPots, LaneDecoration.TransitStop, LaneDecoration.None, LaneDecoration.Filler, LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
 						{
 							return false;
 						}

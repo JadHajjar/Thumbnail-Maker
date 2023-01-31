@@ -37,9 +37,10 @@
 			this.TB_Search = new SlickControls.SlickTextBox();
 			this.slickSpacer1 = new SlickControls.SlickSpacer();
 			this.FLP_Tags = new System.Windows.Forms.FlowLayoutPanel();
-			this.B_ClearCurrentlyEdited = new SlickControls.SlickButton();
+			this.B_ClearFilters = new SlickControls.SlickButton();
 			this.FLP_Options = new System.Windows.Forms.FlowLayoutPanel();
 			this.Loader = new SlickControls.SlickPictureBox();
+			this.B_Folder = new SlickControls.SlickButton();
 			this.P_Container.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Loader)).BeginInit();
@@ -47,7 +48,7 @@
 			// 
 			// P_Container
 			// 
-			this.tableLayoutPanel1.SetColumnSpan(this.P_Container, 2);
+			this.tableLayoutPanel1.SetColumnSpan(this.P_Container, 3);
 			this.P_Container.Controls.Add(this.slickScroll2);
 			this.P_Container.Controls.Add(this.P_Configs);
 			this.P_Container.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -81,17 +82,19 @@
 			// 
 			// tableLayoutPanel1
 			// 
-			this.tableLayoutPanel1.ColumnCount = 3;
+			this.tableLayoutPanel1.ColumnCount = 4;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel1.Controls.Add(this.slickSpacer4, 1, 3);
 			this.tableLayoutPanel1.Controls.Add(this.TB_Search, 1, 0);
 			this.tableLayoutPanel1.Controls.Add(this.P_Container, 1, 4);
 			this.tableLayoutPanel1.Controls.Add(this.slickSpacer1, 0, 0);
 			this.tableLayoutPanel1.Controls.Add(this.FLP_Tags, 1, 2);
-			this.tableLayoutPanel1.Controls.Add(this.B_ClearCurrentlyEdited, 2, 0);
+			this.tableLayoutPanel1.Controls.Add(this.B_ClearFilters, 3, 0);
 			this.tableLayoutPanel1.Controls.Add(this.FLP_Options, 1, 1);
+			this.tableLayoutPanel1.Controls.Add(this.B_Folder, 2, 0);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -106,7 +109,7 @@
 			// 
 			// slickSpacer4
 			// 
-			this.tableLayoutPanel1.SetColumnSpan(this.slickSpacer4, 2);
+			this.tableLayoutPanel1.SetColumnSpan(this.slickSpacer4, 3);
 			this.slickSpacer4.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.slickSpacer4.Location = new System.Drawing.Point(14, 113);
 			this.slickSpacer4.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
@@ -125,25 +128,18 @@
 			this.TB_Search.Image = ((System.Drawing.Image)(resources.GetObject("TB_Search.Image")));
 			this.TB_Search.LabelText = "Search Configurations";
 			this.TB_Search.Location = new System.Drawing.Point(10, 10);
-			this.TB_Search.Margin = new System.Windows.Forms.Padding(3, 10, 10, 5);
+			this.TB_Search.Margin = new System.Windows.Forms.Padding(3, 10, 5, 5);
 			this.TB_Search.MaximumSize = new System.Drawing.Size(9999, 0);
-			this.TB_Search.MaxLength = 32767;
 			this.TB_Search.MinimumSize = new System.Drawing.Size(50, 0);
 			this.TB_Search.Name = "TB_Search";
-			this.TB_Search.Password = false;
+			this.TB_Search.Padding = new System.Windows.Forms.Padding(4, 20, 24, 4);
 			this.TB_Search.Placeholder = "Type in to search your configurations";
-			this.TB_Search.ReadOnly = false;
-			this.TB_Search.Required = false;
-			this.TB_Search.SelectAllOnFocus = false;
 			this.TB_Search.SelectedText = "";
 			this.TB_Search.SelectionLength = 0;
 			this.TB_Search.SelectionStart = 0;
-			this.TB_Search.Size = new System.Drawing.Size(513, 39);
+			this.TB_Search.Size = new System.Drawing.Size(490, 39);
 			this.TB_Search.TabIndex = 3;
-			this.TB_Search.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
 			this.TB_Search.Validation = SlickControls.ValidationType.Decimal;
-			this.TB_Search.ValidationCustom = null;
-			this.TB_Search.ValidationRegex = "";
 			this.TB_Search.TextChanged += new System.EventHandler(this.TB_Search_TextChanged);
 			// 
 			// slickSpacer1
@@ -161,7 +157,7 @@
 			// 
 			this.FLP_Tags.AutoSize = true;
 			this.FLP_Tags.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanel1.SetColumnSpan(this.FLP_Tags, 2);
+			this.tableLayoutPanel1.SetColumnSpan(this.FLP_Tags, 3);
 			this.FLP_Tags.Dock = System.Windows.Forms.DockStyle.Top;
 			this.FLP_Tags.Location = new System.Drawing.Point(7, 83);
 			this.FLP_Tags.Margin = new System.Windows.Forms.Padding(0);
@@ -169,28 +165,27 @@
 			this.FLP_Tags.Size = new System.Drawing.Size(570, 0);
 			this.FLP_Tags.TabIndex = 8;
 			// 
-			// B_ClearCurrentlyEdited
+			// B_ClearFilters
 			// 
-			this.B_ClearCurrentlyEdited.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.B_ClearCurrentlyEdited.ColorShade = null;
-			this.B_ClearCurrentlyEdited.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_ClearCurrentlyEdited.HandleUiScale = false;
-			this.B_ClearCurrentlyEdited.IconSize = 16;
-			this.B_ClearCurrentlyEdited.Image = ((System.Drawing.Image)(resources.GetObject("B_ClearCurrentlyEdited.Image")));
-			this.B_ClearCurrentlyEdited.Location = new System.Drawing.Point(540, 12);
-			this.B_ClearCurrentlyEdited.Margin = new System.Windows.Forms.Padding(7);
-			this.B_ClearCurrentlyEdited.Name = "B_ClearCurrentlyEdited";
-			this.B_ClearCurrentlyEdited.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.B_ClearCurrentlyEdited.Size = new System.Drawing.Size(30, 30);
-			this.B_ClearCurrentlyEdited.SpaceTriggersClick = true;
-			this.B_ClearCurrentlyEdited.TabIndex = 17;
-			this.B_ClearCurrentlyEdited.Click += new System.EventHandler(this.B_ClearCurrentlyEdited_Click);
+			this.B_ClearFilters.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.B_ClearFilters.ColorShade = null;
+			this.B_ClearFilters.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_ClearFilters.HandleUiScale = false;
+			this.B_ClearFilters.IconSize = 16;
+			this.B_ClearFilters.Image = ((System.Drawing.Image)(resources.GetObject("B_ClearFilters.Image")));
+			this.B_ClearFilters.Location = new System.Drawing.Point(544, 12);
+			this.B_ClearFilters.Name = "B_ClearFilters";
+			this.B_ClearFilters.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_ClearFilters.Size = new System.Drawing.Size(30, 30);
+			this.B_ClearFilters.SpaceTriggersClick = true;
+			this.B_ClearFilters.TabIndex = 17;
+			this.B_ClearFilters.Click += new System.EventHandler(this.B_ClearCurrentlyEdited_Click);
 			// 
 			// FLP_Options
 			// 
 			this.FLP_Options.AutoSize = true;
 			this.FLP_Options.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanel1.SetColumnSpan(this.FLP_Options, 2);
+			this.tableLayoutPanel1.SetColumnSpan(this.FLP_Options, 3);
 			this.FLP_Options.Dock = System.Windows.Forms.DockStyle.Top;
 			this.FLP_Options.Location = new System.Drawing.Point(7, 54);
 			this.FLP_Options.Margin = new System.Windows.Forms.Padding(0);
@@ -206,6 +201,22 @@
 			this.Loader.Size = new System.Drawing.Size(32, 32);
 			this.Loader.TabIndex = 8;
 			this.Loader.TabStop = false;
+			// 
+			// B_Folder
+			// 
+			this.B_Folder.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.B_Folder.ColorShade = null;
+			this.B_Folder.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_Folder.HandleUiScale = false;
+			this.B_Folder.IconSize = 16;
+			this.B_Folder.Image = global::ThumbnailMaker.Properties.Resources.I_Folder;
+			this.B_Folder.Location = new System.Drawing.Point(508, 12);
+			this.B_Folder.Name = "B_Folder";
+			this.B_Folder.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_Folder.Size = new System.Drawing.Size(30, 30);
+			this.B_Folder.SpaceTriggersClick = true;
+			this.B_Folder.TabIndex = 17;
+			this.B_Folder.Click += new System.EventHandler(this.B_Folder_Click);
 			// 
 			// RoadConfigContainer
 			// 
@@ -231,9 +242,10 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private SlickControls.SlickSpacer slickSpacer1;
 		private System.Windows.Forms.FlowLayoutPanel FLP_Tags;
-		private SlickControls.SlickButton B_ClearCurrentlyEdited;
+		private SlickControls.SlickButton B_ClearFilters;
 		private SlickControls.SlickSpacer slickSpacer4;
 		private System.Windows.Forms.FlowLayoutPanel FLP_Options;
 		private SlickControls.SlickTextBox TB_Search;
+		private SlickControls.SlickButton B_Folder;
 	}
 }

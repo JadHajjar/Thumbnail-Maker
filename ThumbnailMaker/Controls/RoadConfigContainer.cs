@@ -5,6 +5,7 @@ using SlickControls;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -40,6 +41,11 @@ namespace ThumbnailMaker.Controls
 
 			FLP_Options.Controls.Add(RoadTypeControl);
 			FLP_Options.Controls.Add(RoadSizeControl);
+
+			SlickTip.SetTo(RoadTypeControl, "Filter roads by their type");
+			SlickTip.SetTo(RoadSizeControl, "Filter roads by their width");
+			SlickTip.SetTo(B_Folder, "Open the folder containing all the road configurations");
+			SlickTip.SetTo(B_ClearFilters, "Clear all filters");
 
 			if (Options.Current == null)
 			{
@@ -157,7 +163,7 @@ namespace ThumbnailMaker.Controls
 					finally
 					{
 						P_Configs.ResumeDrawing();
-						P_Configs.Parent.PerformLayout();
+						P_Configs.Parent?.PerformLayout();
 					}
 				});
 			}
@@ -235,10 +241,19 @@ namespace ThumbnailMaker.Controls
 				item.Release();
 			}
 
-			if (string.IsNullOrWhiteSpace(TB_Search.Text))
-				TB_Search_TextChanged(null, null);
-			else
+			if (!string.IsNullOrWhiteSpace(TB_Search.Text))
 				TB_Search.Text = string.Empty;
+
+			RoadSizeControl.SelectedValue = RoadSize.AnyRoadSize;
+			RoadTypeControl.SelectedValue = RoadTypeFilter.AnyRoadType;
+		}
+
+		private void B_Folder_Click(object sender, EventArgs e)
+		{
+			var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+			, "Colossal Order", "Cities_Skylines", "RoadBuilder", "Roads"));
+
+			Process.Start(appdata);
 		}
 	}
 }

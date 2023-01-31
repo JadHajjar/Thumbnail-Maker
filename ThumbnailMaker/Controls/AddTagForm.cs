@@ -116,5 +116,10 @@ namespace ThumbnailMaker.Controls
 				}
 			}
 		}
+
+		private void FLP_Tags_Resize(object sender, EventArgs e)
+		{
+			Height = FLP_Tags.Height + FLP_Tags.Top;
+		}
 	}
 }

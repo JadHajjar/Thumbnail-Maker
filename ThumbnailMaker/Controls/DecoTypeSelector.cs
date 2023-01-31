@@ -26,7 +26,7 @@ namespace ThumbnailMaker.Controls
 
 			values = Enum.GetValues(typeof(LaneDecoration)).Cast<LaneDecoration>().OrderBy(GetOrder).ToList();
 
-			Width = (7 * 108) + 12;
+			Width = ((roadLane.Lane.Type == LaneType.Pedestrian ? 5 : 7) * 108) + 12;
 
 			foreach (var laneType in values)
 			{
@@ -35,13 +35,15 @@ namespace ThumbnailMaker.Controls
 					continue;
 				}
 
-				if (point.X + 96 > Width)
+				if (point.X + 108 > Width)
 				{
 					point = new Point(12, point.Y + 108);
 				}
 
 				point.X += 108;
 			}
+			if (point.Y == 12)
+				Width = point.X;
 
 			Height = point.Y + 108;
 			ShowIcon = false;

@@ -39,6 +39,7 @@ namespace ThumbnailMaker.Controls
 			Cursor = Cursors.Hand;
 			DrawAction = customDraw;
 			EnumType = typeof(T);
+			TabStop = false;
 		}
 
 		public OptionSelectionControl(Func<T, Image> image) : this((g, r, t) =>

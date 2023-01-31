@@ -70,11 +70,14 @@ namespace ThumbnailMaker.Controls
 		{
 			base.OnCreateControl();
 
-			Location = new Point(_roadLane.PointToScreen(Point.Empty).X + _roadLane.Width - Width, _roadLane.PointToScreen(Point.Empty).Y + _roadLane.Height);
-
-			if (Location.Y + Height > Screen.FromControl(this).WorkingArea.Height)
+			if (Location == Point.Empty)
 			{
-				Top = Math.Max(0, Top - (_roadLane.Height + Height));
+				Location = new Point(_roadLane.PointToScreen(Point.Empty).X + _roadLane.Width - Width, _roadLane.PointToScreen(Point.Empty).Y + _roadLane.Height);
+
+				if (Location.Y + Height > Screen.FromControl(this).WorkingArea.Height)
+				{
+					Top = Math.Max(0, Top - (_roadLane.Height + Height));
+				}
 			}
 		}
 

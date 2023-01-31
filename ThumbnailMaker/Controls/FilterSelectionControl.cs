@@ -38,6 +38,7 @@ namespace ThumbnailMaker.Controls
 		{
 			Cursor = Cursors.Hand;
 			EnumType = typeof(T);
+			TabStop = false;
 		}
 
 		protected override void UIChanged()

@@ -63,8 +63,8 @@ namespace ThumbnailMaker.Controls
 			this.TB_Name.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_Name.Image = global::ThumbnailMaker.Properties.Resources.I_Add;
 			this.TB_Name.LabelText = "Custom Tag";
-			this.TB_Name.Location = new System.Drawing.Point(10, 0);
-			this.TB_Name.Margin = new System.Windows.Forms.Padding(10, 0, 5, 5);
+			this.TB_Name.Location = new System.Drawing.Point(7, 0);
+			this.TB_Name.Margin = new System.Windows.Forms.Padding(7, 0, 5, 5);
 			this.TB_Name.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.TB_Name.MinimumSize = new System.Drawing.Size(50, 0);
 			this.TB_Name.Name = "TB_Name";
@@ -73,7 +73,7 @@ namespace ThumbnailMaker.Controls
 			this.TB_Name.SelectedText = "";
 			this.TB_Name.SelectionLength = 0;
 			this.TB_Name.SelectionStart = 0;
-			this.TB_Name.Size = new System.Drawing.Size(185, 45);
+			this.TB_Name.Size = new System.Drawing.Size(188, 45);
 			this.TB_Name.TabIndex = 1;
 			this.TB_Name.IconClicked += new System.EventHandler(this.B_AddTag_Click);
 			// 
@@ -87,12 +87,11 @@ namespace ThumbnailMaker.Controls
 			this.FLP_Tags.Name = "FLP_Tags";
 			this.FLP_Tags.Size = new System.Drawing.Size(194, 0);
 			this.FLP_Tags.TabIndex = 4;
+			this.FLP_Tags.Resize += new System.EventHandler(this.FLP_Tags_Resize);
 			// 
 			// AddTagForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.AutoSize = true;
-			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.ClientSize = new System.Drawing.Size(200, 180);
 			this.Controls.Add(this.TLP);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
