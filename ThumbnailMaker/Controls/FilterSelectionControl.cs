@@ -9,8 +9,6 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
-using ThumbnailMaker.Handlers;
-
 namespace ThumbnailMaker.Controls
 {
 	public class FilterSelectionControl<T> : SlickControl where T : Enum
@@ -48,7 +46,9 @@ namespace ThumbnailMaker.Controls
 			Height = (int)(24 * UI.FontScale);
 
 			using (var g = CreateGraphics())
+			{
 				Width = Height + 3 + (int)EnumType.GetEnumNames().Max(x => g.MeasureString(x.FormatWords(), UI.Font(8.25F, FontStyle.Bold)).Width);
+			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -114,7 +114,7 @@ namespace ThumbnailMaker.Controls
 				Size = new Size(_control.Width + _control.Margin.Horizontal, GetValues().Count() * (_control.Height + 6) + 3);
 			}
 
-			if (_control.FindForm() is SlickForm form) 
+			if (_control.FindForm() is SlickForm form)
 			{
 				form.CurrentFormState = FormState.ForcedFocused;
 			}
@@ -160,9 +160,13 @@ namespace ThumbnailMaker.Controls
 				var iconRect = new Rectangle(3, y, rect.Height, rect.Height).CenterR(16, 16);
 
 				if (hoverState == HoverState.Pressed)
+				{
 					e.Graphics.DrawImage(Properties.Resources.I_Checked.Color(fore), iconRect);
+				}
 				else
+				{
 					e.Graphics.DrawEllipse(new Pen(fore, 1.5F), iconRect.Pad(2));
+				}
 
 				e.Graphics.DrawString(item.ToString().FormatWords(), UI.Font(8.25F, FontStyle.Bold), new SolidBrush(fore), rect.Pad(rect.Height, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center });
 

@@ -84,7 +84,10 @@ namespace ThumbnailMaker.Handlers
 			}
 		}
 
-		private static Font GetFont(float size, FontStyle fontStyle = FontStyle.Regular) => new Font(FontFamily, size * 4 / 3, fontStyle, GraphicsUnit.Pixel);
+		private static Font GetFont(float size, FontStyle fontStyle = FontStyle.Regular)
+		{
+			return new Font(FontFamily, size * 4 / 3, fontStyle, GraphicsUnit.Pixel);
+		}
 
 		public void Draw()
 		{
@@ -726,7 +729,9 @@ namespace ThumbnailMaker.Handlers
 			while (font.Size > 0.75F)
 			{
 				if (Graphics.MeasureString(CustomText, font, containerRect.Width).Height <= containerRect.Height)
+				{
 					break;
+				}
 
 				font = new Font(font.FontFamily, font.Size - 0.75F, font.Style);
 			}

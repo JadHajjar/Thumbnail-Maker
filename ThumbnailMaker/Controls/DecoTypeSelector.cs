@@ -16,7 +16,7 @@ namespace ThumbnailMaker.Controls
 	public class DecoTypeSelector : Form
 	{
 		private readonly RoadLane _roadLane;
-		private List<LaneDecoration> values;
+		private readonly List<LaneDecoration> values;
 
 		public DecoTypeSelector(RoadLane roadLane)
 		{
@@ -43,7 +43,9 @@ namespace ThumbnailMaker.Controls
 				point.X += 108;
 			}
 			if (point.Y == 12)
+			{
 				Width = point.X;
+			}
 
 			Height = point.Y + 108;
 			ShowIcon = false;
@@ -108,7 +110,7 @@ namespace ThumbnailMaker.Controls
 			var cursor = PointToClient(Cursor.Position);
 			var point = new Point(12, 12);
 
-			foreach (LaneDecoration laneType in values)
+			foreach (var laneType in values)
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
 				{
@@ -174,7 +176,7 @@ namespace ThumbnailMaker.Controls
 
 			var point = new Point(8, 8);
 
-			foreach (LaneDecoration laneType in values)
+			foreach (var laneType in values)
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
 				{
@@ -218,7 +220,7 @@ namespace ThumbnailMaker.Controls
 
 			var point = new Point(8, 8);
 
-			foreach (LaneDecoration laneType in values)
+			foreach (var laneType in values)
 			{
 				if (!Utilities.IsCompatible(laneType, _roadLane.Lane.Type))
 				{

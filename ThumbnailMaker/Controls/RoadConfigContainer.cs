@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -83,7 +82,9 @@ namespace ThumbnailMaker.Controls
 				foreach (var item in contents.ToList())
 				{
 					if (item.Value == null)
+					{
 						contents.Remove(item.Key);
+					}
 				}
 
 				LoadedTags = contents.Values.SelectMany(x => x.Tags).Distinct((x, y) => x.Equals(y, StringComparison.CurrentCultureIgnoreCase)).ToList();
@@ -242,7 +243,9 @@ namespace ThumbnailMaker.Controls
 			}
 
 			if (!string.IsNullOrWhiteSpace(TB_Search.Text))
+			{
 				TB_Search.Text = string.Empty;
+			}
 
 			RoadSizeControl.SelectedValue = RoadSize.AnyRoadSize;
 			RoadTypeControl.SelectedValue = RoadTypeFilter.AnyRoadType;

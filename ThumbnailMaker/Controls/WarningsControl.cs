@@ -1,29 +1,21 @@
 ﻿using Extensions;
 
-using Newtonsoft.Json.Serialization;
-
 using SlickControls;
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
 using ThumbnailMaker.Handlers;
 
-using static System.Windows.Forms.AxHost;
-
 namespace ThumbnailMaker.Controls
 {
 	internal class WarningsControl : SlickControl
 	{
-		struct Warning
+		private struct Warning
 		{
 			public string Title;
 			public string Message;
@@ -108,7 +100,9 @@ namespace ThumbnailMaker.Controls
 		private bool IsCurbCentered()
 		{
 			if (Road.Lanes.IndexOf(Road.Lanes.First(x => x.Type == LaneType.Curb)) + 1 == Road.Lanes.IndexOf(Road.Lanes.Last(x => x.Type == LaneType.Curb)))
+			{
 				return false;
+			}
 
 			var total = Road.Lanes.Sum(x => x.LaneWidth);
 			var ind = total / -2F;
@@ -135,7 +129,9 @@ namespace ThumbnailMaker.Controls
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			if (Road == null)
+			{
 				return;
+			}
 
 			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
@@ -151,7 +147,7 @@ namespace ThumbnailMaker.Controls
 				switch (w.Level)
 				{
 					case TraceLevel.Error:
-						e.Graphics.DrawImage(Properties.Resources.I_Stop.Color(fore=FormDesign.Design.RedColor), new Rectangle(0, y, 36, h).CenterR(16, 16));
+						e.Graphics.DrawImage(Properties.Resources.I_Stop.Color(fore = FormDesign.Design.RedColor), new Rectangle(0, y, 36, h).CenterR(16, 16));
 						break;
 					case TraceLevel.Warning:
 						e.Graphics.DrawImage(Properties.Resources.I_Warning.Color(fore = FormDesign.Design.YellowColor), new Rectangle(0, y, 36, h).CenterR(16, 16));

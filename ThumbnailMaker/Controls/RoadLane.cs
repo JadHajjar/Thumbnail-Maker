@@ -187,7 +187,7 @@ namespace ThumbnailMaker.Controls
 		protected override void OnSizeChanged(EventArgs e)
 		{
 			Height = (int)((doubleRows ? 70 : 35) * UI.UIScale) + 7;
-		
+
 			base.OnSizeChanged(e);
 		}
 
@@ -260,7 +260,7 @@ namespace ThumbnailMaker.Controls
 				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.AccentBackColor), ClientRectangle.Pad(5, 0, 1, 7), 6);
 			}
 
-			e.Graphics.DrawLine(new Pen(IsSidewalk() ? Color.FromArgb(180, 180, 180) : Color.FromArgb(50, 50, 50), 2.5F), 0, -1, 0, Height+1);
+			e.Graphics.DrawLine(new Pen(IsSidewalk() ? Color.FromArgb(180, 180, 180) : Color.FromArgb(50, 50, 50), 2.5F), 0, -1, 0, Height + 1);
 
 			var iconX = DrawIcon(e, cursor);
 
@@ -270,7 +270,9 @@ namespace ThumbnailMaker.Controls
 			}
 
 			if (doubleRows)
+			{
 				yIndex += (int)(35 * UI.UIScale);
+			}
 
 			var leftX = DrawDeleteOrInfoIcon(e, cursor);
 
@@ -298,9 +300,13 @@ namespace ThumbnailMaker.Controls
 			DrawFillerPadding(e, cursor, ref leftX);
 
 			if (doubleRows)
+			{
 				grabberRectangle = new Rectangle(iconX + 8, 0, Width - iconX - 16, (int)(35 * UI.UIScale));
+			}
 			else
+			{
 				grabberRectangle = new Rectangle(iconX + 8, 0, leftX - iconX, Height - 4);
+			}
 
 			var drawGrabberRect = doubleRows
 				? new Rectangle(scale * 6, 0, Width - (scale * 6) - 18, (int)(35 * UI.UIScale))

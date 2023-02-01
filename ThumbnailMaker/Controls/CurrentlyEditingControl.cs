@@ -1,20 +1,11 @@
 ﻿using Extensions;
 
-using Newtonsoft.Json.Serialization;
-
 using SlickControls;
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
-
-using static System.Windows.Forms.AxHost;
 
 namespace ThumbnailMaker.Controls
 {
@@ -49,10 +40,14 @@ namespace ThumbnailMaker.Controls
 			var undoRect = new Rectangle(0, 0, 36, Height);
 
 			if (cancelRect.Contains(e.Location) && e.Button == MouseButtons.Left)
+			{
 				Clear();
+			}
 
 			if (undoRect.Contains(e.Location) && e.Button == MouseButtons.Left)
+			{
 				LoadConfiguration?.Invoke(Control, Road);
+			}
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
@@ -70,7 +65,9 @@ namespace ThumbnailMaker.Controls
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			if (Road == null)
+			{
 				return;
+			}
 
 			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
@@ -82,7 +79,9 @@ namespace ThumbnailMaker.Controls
 				, UI.Font(8.25F, FontStyle.Bold), ClientRectangle.Pad(cancelRect.Width, 16, cancelRect.Width, 0).Width).Height;
 
 			if (newHeight != Height)
+			{
 				Height = newHeight;
+			}
 
 			if (HoverState.HasFlag(HoverState.Hovered) && cancelRect.Contains(PointToClient(Cursor.Position)))
 			{

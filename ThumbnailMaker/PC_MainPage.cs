@@ -37,6 +37,8 @@ namespace ThumbnailMaker
 			AsphaltTextureControl = new OptionSelectionControl<AsphaltStyle>(GetTextureIcon) { Dock = DockStyle.Top };
 			GB_AsphaltTexture.Controls.Add(AsphaltTextureControl);
 
+			RegionTypeControl.SelectedValue = Options.Current.Region;
+
 			RoadTypeControl.SelectedValueChanged += (s, e) => SetupType(RoadTypeControl.SelectedValue);
 			SideTextureControl.SelectedValueChanged += (s, e) => RefreshPreview();
 			AsphaltTextureControl.SelectedValueChanged += (s, e) => RefreshPreview();
@@ -94,6 +96,383 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(B_AddLane, "Add a new empty lane");
 		}
 
+		private RoadLane AddLaneControl(ThumbnailLaneInfo item)
+		{
+			var ctrl = new RoadLane(item);
+
+			P_Lanes.Controls.Add(ctrl);
+
+			ctrl.BringToFront();
+
+			return ctrl;
+		}
+
+		private void B_Add_Click(object sender, EventArgs e)
+		{
+			var ctrl = new RoadLane();
+
+			P_Lanes.Controls.Add(ctrl);
+
+			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
+
+			if (rightSidewalk != null)
+			{
+				P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.GetChildIndex(rightSidewalk) + 1);
+			}
+			else
+			{
+				ctrl.BringToFront();
+			}
+
+			var frm = new RoadTypeSelector(ctrl, B_AddLane);
+
+			frm.FormClosed += (s, _) => RefreshPreview();
+		}
+
+		private void B_AddTag_Click(object sender, EventArgs e)
+		{
+			var frm = new AddTagForm(RCC.LoadedTags, FLP_Tags.GetControls<TagControl>().Select(x => x.Text)) { Location = FLP_Tags.PointToScreen(new Point(3, 4)), MinimumSize = new Size(TLP_Right.Width - 5, 0), MaximumSize = new Size(TLP_Right.Width - 5, 999) };
+
+			frm.TagAdded += Frm_TagAdded;
+			frm.TagRemoved += Frm_TagRemoved;
+
+			frm.Show();
+		}
+
+		private void B_Clear_Click(object sender, EventArgs e)
+		{
+			C_CurrentlyEditing.Clear();
+			refreshPaused = true;
+			TB_RoadName.Text = string.Empty;
+			TB_RoadDesc.Text = string.Empty;
+			TB_Size.Text = string.Empty;
+			TB_SpeedLimit.Text = string.Empty;
+			P_Lanes.Controls.Clear(true);
+
+			AsphaltTextureControl.SelectedValue = AsphaltStyle.Asphalt;
+			refreshPaused = false;
+			SetupType(RoadTypeControl.SelectedValue);
+		}
+
+		private void B_CopyDesc_Click(object sender, EventArgs e)
+		{
+			if (!string.IsNullOrWhiteSpace(TB_RoadDesc.Text))
+			{
+				Clipboard.SetText(TB_RoadDesc.Text);
+				return;
+			}
+
+			var roadInfo = new RoadInfo
+			{
+				CustomName = TB_RoadName.Text,
+				CustomText = TB_CustomText.Text,
+				BufferWidth = TB_BufferSize.Text.SmartParseF(),
+				RoadWidth = TB_Size.Text.SmartParseF(),
+				RegionType = GetRegion(),
+				RoadType = GetRoadType(),
+				SideTexture = SideTextureControl.SelectedValue,
+				BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
+				AsphaltStyle = AsphaltTextureControl.SelectedValue,
+				SpeedLimit = (int)(TB_SpeedLimit.Text.SmartParse() * (RegionTypeControl.SelectedValue == RegionType.USA ? 1.609F : 1F)),
+				Lanes = GetLanes().Select(x => x.AsLaneInfo()).ToList(),
+				LHT = Options.Current.LHT,
+				VanillaWidth = Options.Current.VanillaWidths,
+			};
+
+			var desc = Utilities.GetRoadDescription(roadInfo);
+
+			Clipboard.SetText(desc);
+		}
+
+		private void B_CopyRoadName_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetText(L_RoadName.Text);
+		}
+
+		private void B_DuplicateFlip_Click(object sender, EventArgs e)
+		{
+			refreshPaused = true;
+			var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
+			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
+			var lanes = P_Lanes.Controls.OfType<RoadLane>().Where(x =>
+			{
+				if (leftSidewalk != null && P_Lanes.Controls.IndexOf(x) >= P_Lanes.Controls.IndexOf(leftSidewalk))
+				{
+					return false;
+				}
+
+				if (rightSidewalk != null && P_Lanes.Controls.IndexOf(x) <= P_Lanes.Controls.IndexOf(rightSidewalk))
+				{
+					return false;
+				}
+
+				return true;
+			}).ToList();
+
+			if (lanes.FirstOrDefault()?.Lane.Type == LaneType.Filler)
+			{
+				lanes.RemoveAt(0);
+			}
+
+			foreach (var item in lanes)
+			{
+				var ctrl = item.Duplicate();
+
+				if (ctrl.Lane.Direction == LaneDirection.Forward)
+				{
+					ctrl.Lane.Direction = LaneDirection.Backwards;
+				}
+				else if (ctrl.Lane.Direction == LaneDirection.Backwards)
+				{
+					ctrl.Lane.Direction = LaneDirection.Forward;
+				}
+
+				ctrl.Dock = DockStyle.Top;
+
+				P_Lanes.Controls.Add(ctrl);
+
+				if (rightSidewalk != null)
+				{
+					P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.IndexOf(rightSidewalk) + 1);
+				}
+				else
+				{
+					ctrl.BringToFront();
+				}
+			}
+
+			refreshPaused = false;
+			RefreshPreview();
+		}
+
+		private void B_EditDesc_Click(object sender, EventArgs e)
+		{
+			TB_RoadDesc.MultiLine = true;
+			TB_RoadDesc.MaxLength = 1024;
+			TB_RoadDesc.Height = (int)(120 * UI.FontScale);
+			TB_RoadDesc.Show();
+			L_RoadDesc.Hide();
+			B_EditDesc.Hide();
+			TB_RoadDesc.Focus();
+		}
+
+		private void B_Export_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				var lanes = GetLanes();
+
+				if (lanes.Count == 0)
+				{
+					return;
+				}
+
+				var roadInfo = GetRoadInfo(lanes);
+
+				if (roadInfo.Lanes.FindIndex(x => x.Type == LaneType.Curb) + 1 == roadInfo.Lanes.FindLastIndex(x => x.Type == LaneType.Curb))
+				{
+					return;
+				}
+
+				var file = Utilities.ExportRoad(roadInfo, C_CurrentlyEditing.Road == null ? null : Path.GetFileName(C_CurrentlyEditing.Control.FileName));
+
+				C_CurrentlyEditing.Control?.Dispose();
+
+				RCC.RefreshConfigs();
+
+				C_CurrentlyEditing.SetRoad(RCC.P_Configs.Controls.OfType<RoadConfigControl>().FirstOrDefault(x => x.FileName.Equals(file, StringComparison.InvariantCultureIgnoreCase)));
+			}
+			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
+		}
+
+		private void B_FlipLanes_Click(object sender, EventArgs e)
+		{
+			refreshPaused = true;
+			foreach (var item in P_Lanes.Controls.OfType<RoadLane>().ToList())
+			{
+				item.BringToFront();
+
+				if (item.Lane.Type == LaneType.Curb)
+				{
+					item.Lane.Direction = item.Lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward;
+				}
+
+				item.Invalidate();
+			}
+
+			refreshPaused = false;
+			RefreshPreview();
+		}
+
+		private void B_Options_Click(object sender, EventArgs e)
+		{
+			Form.PushPanel<PC_Options>(null);
+		}
+
+		private void B_Save_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				var frm = new SaveThumbDialog(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+
+				if (frm.ShowDialog() != DialogResult.OK)
+				{
+					return;
+				}
+
+				var folder = frm.SelectedPath;
+				var matched = false;
+				var files = new List<(string, bool, bool)>
+				{
+					("asset_thumb.png", true, false),
+					("PreviewImage.png", false, false),
+					("snapshot.png", false, false),
+					("thumbnail.png", false, false),
+					("tooltip.png", true, true),
+					("asset_tooltip.png", true, true),
+				};
+
+				foreach (var item in files)
+				{
+					if (File.Exists(Path.Combine(folder, item.Item1)))
+					{
+						save(item.Item1, item.Item2, item.Item3);
+
+						matched = true;
+					}
+				}
+
+				if (!matched)
+				{
+					save(L_RoadName.Text + ".png", frm.CB_Small.Checked, frm.CB_Tooltip.Checked);
+				}
+
+				void save(string filename, bool small, bool toolTip)
+				{
+					var width = toolTip ? 492 : small ? 109 : 512;
+					var height = toolTip ? 147 : small ? 100 : 512;
+
+					var lanes = GetLanes();
+
+					using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+					using (var g = Graphics.FromImage(img))
+					{
+						DrawThumbnail(g, lanes, small, toolTip);
+
+						var FileName = Path.Combine(folder, filename);
+
+						img.Save(FileName, System.Drawing.Imaging.ImageFormat.Png);
+
+						Notification.Create("Thumbnail Saved", "Your thumbnail was saved at:\n" + FileName, PromptIcons.Info, () =>
+						{
+							Process.Start(new ProcessStartInfo
+							{
+								FileName = "explorer",
+								Arguments = $"/e, /select, \"{FileName}\""
+							});
+						}).Show(Form, 15);
+					}
+				}
+			}
+			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
+		}
+
+		private void B_ViewSavedRoads_Click(object sender, EventArgs e)
+		{
+			B_ViewSavedRoads.Text = RCC.Width.If(0, "Hide Roads", "Load Road");
+			B_ViewSavedRoads.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+			RCC.Width = RCC.Width.If(0, 15 + Options.Current.RoadConfigColumns * (12 + (int)(100 * UI.UIScale)), 0);
+			RCC.Visible = RCC.Width != 0;
+
+			Form.OnNextIdle(P_Lanes.PerformLayout);
+		}
+
+		private void C_CurrentlyEditing_VisibleChanged(object sender, EventArgs e)
+		{
+			B_Export.Text = C_CurrentlyEditing.Visible ? "Update the current configuration" : "Export configuration to Road Builder";
+		}
+
+		private void DrawThumbnail(Graphics graphics, List<ThumbnailLaneInfo> lanes, bool small, bool tooltip)
+		{
+			new ThumbnailHandler(graphics, small, tooltip)
+			{
+				RoadWidth = Utilities.VanillaWidth(Options.Current.VanillaWidths, Math.Max(TB_Size.Text.SmartParseF(), Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text.SmartParseF()))),
+				CustomText = TB_CustomText.Text,
+				BufferSize = Math.Max(0, TB_BufferSize.Text.SmartParseF()),
+				RegionType = GetRegion(),
+				RoadType = GetRoadType(),
+				LHT = Options.Current.LHT,
+				SideTexture = SideTextureControl.SelectedValue,
+				AsphaltStyle = AsphaltTextureControl.SelectedValue,
+				Speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse(),
+				Lanes = new List<ThumbnailLaneInfo>(lanes)
+			}.Draw();
+		}
+
+		private void FLP_Tags_ControlAdded(object sender, ControlEventArgs e)
+		{
+			L_NoTags.Visible = FLP_Tags.Controls.Count == 1;
+
+			RefreshPreview();
+		}
+
+		private void Frm_TagAdded(object sender, string e)
+		{
+			if (string.IsNullOrWhiteSpace(e))
+			{
+				return;
+			}
+
+			FLP_Tags.Controls.Add(new TagControl(e.Trim(), false));
+
+			RefreshPreview();
+		}
+
+		private void Frm_TagRemoved(object sender, string e)
+		{
+			FLP_Tags.Controls.Clear(true, x => x is TagControl tc && tc.Text.Equals(e, StringComparison.CurrentCultureIgnoreCase));
+
+			RefreshPreview();
+		}
+
+		private List<ThumbnailLaneInfo> GetLanes()
+		{
+			return P_Lanes.Controls.OfType<RoadLane>().Reverse().Select(x => x.Lane).ToList();
+		}
+
+		private RegionType GetRegion()
+		{
+			return RegionTypeControl.SelectedValue;
+		}
+
+		private RoadInfo GetRoadInfo(List<ThumbnailLaneInfo> lanes = null)
+		{
+			return new RoadInfo
+			{
+				CustomName = TB_RoadName.Text,
+				CustomDescription = TB_RoadDesc.Text,
+				CustomText = TB_CustomText.Text,
+				BufferWidth = TB_BufferSize.Text.SmartParseF(),
+				RoadWidth = TB_Size.Text.SmartParseF(),
+				RegionType = GetRegion(),
+				RoadType = GetRoadType(),
+				SideTexture = SideTextureControl.SelectedValue,
+				BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
+				AsphaltStyle = AsphaltTextureControl.SelectedValue,
+				SpeedLimit = TB_SpeedLimit.Text.SmartParse(),
+				Lanes = (lanes ?? GetLanes()).Select(x => x.AsLaneInfo()).ToList(),
+				LHT = Options.Current.LHT,
+				VanillaWidth = Options.Current.VanillaWidths,
+				Tags = FLP_Tags.Controls.OfType<TagControl>().Select(x => x.Text).ToList(),
+				DateCreated = C_CurrentlyEditing.Road?.DateCreated ?? DateTime.Now,
+			};
+		}
+
+		private RoadType GetRoadType()
+		{
+			return RoadTypeControl.SelectedValue;
+		}
+
 		private Image GetTextureIcon(TextureType texture)
 		{
 			switch (texture)
@@ -137,50 +516,110 @@ namespace ThumbnailMaker
 			return null;
 		}
 
-		protected override void DesignChanged(FormDesign design)
+		private void L_RoadName_Click(object sender, EventArgs e)
 		{
-			base.DesignChanged(design);
-
-			C_CurrentlyEditing.ForeColor = design.ActiveColor;
-			L_RoadDesc.ForeColor = design.InfoColor;
-			L_NoTags.ForeColor = design.LabelColor;
-
-			RefreshPreview();
+			TB_RoadName.Show();
+			L_RoadName.Hide();
+			B_EditName.Hide();
+			TB_RoadName.Focus();
+			TB_RoadName.MaxLength = 32;
 		}
 
-		protected override void UIChanged()
+		private void L_RoadName_MouseEnter(object sender, EventArgs e)
 		{
-			base.UIChanged();
-
-			L_RoadName.Font = UI.Font(9.75F, FontStyle.Bold);
-			L_RoadDesc.Font = L_NoTags.Font = UI.Font(7.5F);
-
-			TLP_Main.ColumnStyles[TLP_Main.ColumnStyles.Count - 2].Width = (float)(276 * UI.UIScale);
-			PB.Size = UI.Scale(new Size(256, 256), UI.UIScale);
+			(sender as Label).ForeColor = FormDesign.Design.ActiveColor;
 		}
 
-		protected override void OnCreateControl()
+		private void L_RoadName_MouseLeave(object sender, EventArgs e)
 		{
-			base.OnCreateControl();
-
-			TB_BufferSize.Text = Options.Current.BufferSize;
-			refreshPaused = false;
-			SetupType(GetRoadType());
+			L_RoadName.ForeColor = FormDesign.Design.ForeColor;
+			L_RoadDesc.ForeColor = FormDesign.Design.InfoColor;
 		}
 
-		protected override void OnVisibleChanged(EventArgs e)
+		private void P_Lanes_ControlAdded(object sender, ControlEventArgs e)
 		{
-			base.OnVisibleChanged(e);
-
-			if (Visible)
+			if (e.Control is RoadLane roadLane)
 			{
-				RefreshPreview();
+				roadLane.RoadLaneChanged += TB_Name_TextChanged;
 			}
 		}
 
-		private List<ThumbnailLaneInfo> GetLanes()
+		private void PB_Click(object sender, EventArgs e)
 		{
-			return P_Lanes.Controls.OfType<RoadLane>().Reverse().Select(x => x.Lane).ToList();
+			try
+			{
+				var lanes = GetLanes();
+
+				var toolTip = false;
+				var small = false;
+				var width = toolTip ? 492 : small ? 109 : 512;
+				var height = toolTip ? 147 : small ? 100 : 512;
+
+				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+				using (var g = Graphics.FromImage(img))
+				{
+					DrawThumbnail(g, lanes, small, toolTip);
+
+					Clipboard.SetDataObject(small || toolTip ? new Bitmap(img) : new Bitmap(img, 256, 256));
+				}
+
+				Notification.Create("Thumbnail copied to clipboard", "", PromptIcons.None, () => { }, NotificationSound.None, new Size(240, 32))
+					.Show(Form, 5);
+			}
+			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
+		}
+
+		private void RCC_LoadConfiguration(object sender, RoadInfo r)
+		{
+			try
+			{
+				refreshPaused = true;
+				P_Lanes.SuspendDrawing();
+				P_Lanes.Controls.Clear(true);
+
+				TB_Size.Text = r.RoadWidth == 0 ? string.Empty : r.RoadWidth.ToString();
+				TB_BufferSize.Text = r.BufferWidth.ToString();
+				TB_SpeedLimit.Text = r.SpeedLimit == 0 ? string.Empty : r.SpeedLimit.ToString();
+				TB_CustomText.Text = r.CustomText;
+				TB_RoadName.Text = r.CustomName;
+				TB_RoadDesc.Text = r.CustomDescription;
+
+				foreach (var lane in Options.Current.LHT ? (r.Lanes as IEnumerable<LaneInfo>).Reverse() : r.Lanes)
+				{
+					AddLaneControl(new ThumbnailLaneInfo(lane)
+					{
+						Direction = (Options.Current.LHT && lane.Type == LaneType.Curb) ? lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward
+							: lane.Direction
+					});
+				}
+
+				RoadTypeControl.SelectedValue = r.RoadType;
+				RegionTypeControl.SelectedValue = r.RegionType;
+				SideTextureControl.SelectedValue = r.SideTexture;
+				BridgeSideTextureControl.SelectedValue = r.BridgeSideTexture;
+				AsphaltTextureControl.SelectedValue = r.AsphaltStyle;
+
+				FLP_Tags.Controls.Clear(true, x => x is TagControl);
+
+				if (r.Tags?.Any() ?? false)
+				{
+					FLP_Tags.Controls.AddRange(r.Tags.Select(x => new TagControl(x, false)).ToArray());
+				}
+
+				P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb)?.FixCurbOrientation();
+
+				C_CurrentlyEditing.SetRoad(sender as RoadConfigControl);
+			}
+			catch (Exception ex)
+			{
+				ShowPrompt(ex.Message, "Failed to load this configuration", PromptButtons.OK, PromptIcons.Error);
+			}
+			finally
+			{
+				P_Lanes.ResumeDrawing();
+				refreshPaused = false;
+				RefreshPreview();
+			}
 		}
 
 		private void RefreshPreview()
@@ -232,23 +671,6 @@ namespace ThumbnailMaker
 				}
 			}
 			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
-		}
-
-		private void DrawThumbnail(Graphics graphics, List<ThumbnailLaneInfo> lanes, bool small, bool tooltip)
-		{
-			new ThumbnailHandler(graphics, small, tooltip)
-			{
-				RoadWidth = Utilities.VanillaWidth(Options.Current.VanillaWidths, Math.Max(TB_Size.Text.SmartParseF(), Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text.SmartParseF()))),
-				CustomText = TB_CustomText.Text,
-				BufferSize = Math.Max(0, TB_BufferSize.Text.SmartParseF()),
-				RegionType = GetRegion(),
-				RoadType = GetRoadType(),
-				LHT = Options.Current.LHT,
-				SideTexture = SideTextureControl.SelectedValue,
-				AsphaltStyle = AsphaltTextureControl.SelectedValue,
-				Speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse(),
-				Lanes = new List<ThumbnailLaneInfo>(lanes)
-			}.Draw();
 		}
 
 		private void SetupType(RoadType road)
@@ -321,390 +743,40 @@ namespace ThumbnailMaker
 			RefreshPreview();
 		}
 
-		private void B_Clear_Click(object sender, EventArgs e)
+		private void TB_RoadDesc_KeyDown(object sender, KeyEventArgs e)
 		{
-			C_CurrentlyEditing.Clear();
-			refreshPaused = true;
-			TB_RoadName.Text = string.Empty;
-			TB_RoadDesc.Text = string.Empty;
-			TB_Size.Text = string.Empty;
-			TB_SpeedLimit.Text = string.Empty;
-			P_Lanes.Controls.Clear(true);
-
-			AsphaltTextureControl.SelectedValue = AsphaltStyle.Asphalt;
-			refreshPaused = false;
-			SetupType(RoadTypeControl.SelectedValue);
+			if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
+			{
+				e.SuppressKeyPress = true;
+				e.Handled = true;
+			}
 		}
 
-		private void B_Options_Click(object sender, EventArgs e)
+		private void TB_RoadDesc_Leave(object sender, EventArgs e)
 		{
-			Form.PushPanel<PC_Options>(null);
-		}
-
-		private void B_Add_Click(object sender, EventArgs e)
-		{
-			var ctrl = new RoadLane();
-
-			P_Lanes.Controls.Add(ctrl);
-
-			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
-
-			if (rightSidewalk != null)
-			{
-				P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.GetChildIndex(rightSidewalk) + 1);
-			}
-			else
-			{
-				ctrl.BringToFront();
-			}
-
-			var frm = new RoadTypeSelector(ctrl, B_AddLane);
-
-			frm.FormClosed += (s, _) => RefreshPreview();
-		}
-
-		private void B_FlipLanes_Click(object sender, EventArgs e)
-		{
-			refreshPaused = true;
-			foreach (var item in P_Lanes.Controls.OfType<RoadLane>().ToList())
-			{
-				item.BringToFront();
-
-				if (item.Lane.Type == LaneType.Curb)
-				{
-					item.Lane.Direction = item.Lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward;
-				}
-
-				item.Invalidate();
-			}
-
-			refreshPaused = false;
 			RefreshPreview();
+			TB_RoadDesc.Hide();
+			L_RoadDesc.Show();
+			B_EditDesc.Show();
 		}
 
-		private void B_DuplicateFlip_Click(object sender, EventArgs e)
+		private void TB_RoadDesc_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
-			refreshPaused = true;
-			var leftSidewalk = P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Backwards);
-			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
-			var lanes = P_Lanes.Controls.OfType<RoadLane>().Where(x =>
+			if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
 			{
-				if (leftSidewalk != null && P_Lanes.Controls.IndexOf(x) >= P_Lanes.Controls.IndexOf(leftSidewalk))
-				{
-					return false;
-				}
+				e.IsInputKey = true;
 
-				if (rightSidewalk != null && P_Lanes.Controls.IndexOf(x) <= P_Lanes.Controls.IndexOf(rightSidewalk))
-				{
-					return false;
-				}
-
-				return true;
-			}).ToList();
-
-			if (lanes.FirstOrDefault()?.Lane.Type == LaneType.Filler)
-			{
-				lanes.RemoveAt(0);
-			}
-
-			foreach (var item in lanes)
-			{
-				var ctrl = item.Duplicate();
-
-				if (ctrl.Lane.Direction == LaneDirection.Forward)
-				{
-					ctrl.Lane.Direction = LaneDirection.Backwards;
-				}
-				else if (ctrl.Lane.Direction == LaneDirection.Backwards)
-				{
-					ctrl.Lane.Direction = LaneDirection.Forward;
-				}
-
-				ctrl.Dock = DockStyle.Top;
-
-				P_Lanes.Controls.Add(ctrl);
-
-				if (rightSidewalk != null)
-				{
-					P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.IndexOf(rightSidewalk) + 1);
-				}
-				else
-				{
-					ctrl.BringToFront();
-				}
-			}
-
-			refreshPaused = false;
-			RefreshPreview();
-		}
-
-		private void B_Save_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				var frm = new SaveThumbDialog(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-
-				if (frm.ShowDialog() != DialogResult.OK)
-				{
-					return;
-				}
-
-				var folder = frm.SelectedPath;
-				var matched = false;
-				var files = new List<(string, bool, bool)>
-				{
-					("asset_thumb.png", true, false),
-					("PreviewImage.png", false, false),
-					("snapshot.png", false, false),
-					("thumbnail.png", false, false),
-					("tooltip.png", true, true),
-					("asset_tooltip.png", true, true),
-				};
-
-				foreach (var item in files)
-				{
-					if (File.Exists(Path.Combine(folder, item.Item1)))
-					{
-						save(item.Item1, item.Item2, item.Item3);
-
-						matched = true;
-					}
-				}
-
-				if (!matched)
-				{
-					save(L_RoadName.Text + ".png", frm.CB_Small.Checked, frm.CB_Tooltip.Checked);
-				}
-
-				void save(string filename, bool small, bool toolTip)
-				{
-					var width = toolTip ? 492 : small ? 109 : 512;
-					var height = toolTip ? 147 : small ? 100 : 512;
-
-					var lanes = GetLanes();
-
-					using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
-					using (var g = Graphics.FromImage(img))
-					{
-						DrawThumbnail(g, lanes, small, toolTip);
-
-						var FileName = Path.Combine(folder, filename);
-
-						img.Save(FileName, System.Drawing.Imaging.ImageFormat.Png);
-
-						Notification.Create("Thumbnail Saved", "Your thumbnail was saved at:\n" + FileName, PromptIcons.Info, () =>
-						{
-							Process.Start(new ProcessStartInfo
-							{
-								FileName = "explorer",
-								Arguments = $"/e, /select, \"{FileName}\""
-							});
-						}).Show(Form, 15);
-					}
-				}
-			}
-			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
-		}
-
-		private void B_CopyDesc_Click(object sender, EventArgs e)
-		{
-			if (!string.IsNullOrWhiteSpace(TB_RoadDesc.Text))
-			{
-				Clipboard.SetText(TB_RoadDesc.Text);
-				return;
-			}
-
-			var roadInfo = new RoadInfo
-			{
-				CustomName = TB_RoadName.Text,
-				CustomText = TB_CustomText.Text,
-				BufferWidth = TB_BufferSize.Text.SmartParseF(),
-				RoadWidth = TB_Size.Text.SmartParseF(),
-				RegionType = GetRegion(),
-				RoadType = GetRoadType(),
-				SideTexture = SideTextureControl.SelectedValue,
-				BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
-				AsphaltStyle = AsphaltTextureControl.SelectedValue,
-				SpeedLimit = (int)(TB_SpeedLimit.Text.SmartParse() * (RegionTypeControl.SelectedValue == RegionType.USA ? 1.609F : 1F)),
-				Lanes = GetLanes().Select(x => x.AsLaneInfo()).ToList(),
-				LHT = Options.Current.LHT,
-				VanillaWidth = Options.Current.VanillaWidths,
-			};
-
-			var desc = Utilities.GetRoadDescription(roadInfo);
-
-			Clipboard.SetText(desc);
-		}
-
-		private void B_CopyRoadName_Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText(L_RoadName.Text);
-		}
-
-		private void B_Export_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				var lanes = GetLanes();
-
-				if (lanes.Count == 0)
-				{
-					return;
-				}
-
-				var roadInfo = GetRoadInfo(lanes);
-
-				var file = Utilities.ExportRoad(roadInfo, C_CurrentlyEditing.Road == null ? null : Path.GetFileName(C_CurrentlyEditing.Control.FileName));
-
-				C_CurrentlyEditing.Control?.Dispose();
-
-				RCC.RefreshConfigs();
-
-				C_CurrentlyEditing.SetRoad(RCC.P_Configs.Controls.OfType<RoadConfigControl>().FirstOrDefault(x => x.FileName.Equals(file, StringComparison.InvariantCultureIgnoreCase)));
-			}
-			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
-		}
-
-		private RoadInfo GetRoadInfo(List<ThumbnailLaneInfo> lanes = null)
-		{
-			return new RoadInfo
-			{
-				CustomName = TB_RoadName.Text,
-				CustomDescription = TB_RoadDesc.Text,
-				CustomText = TB_CustomText.Text,
-				BufferWidth = TB_BufferSize.Text.SmartParseF(),
-				RoadWidth = TB_Size.Text.SmartParseF(),
-				RegionType = GetRegion(),
-				RoadType = GetRoadType(),
-				SideTexture = SideTextureControl.SelectedValue,
-				BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
-				AsphaltStyle = AsphaltTextureControl.SelectedValue,
-				SpeedLimit = TB_SpeedLimit.Text.SmartParse(),
-				Lanes = (lanes ?? GetLanes()).Select(x => x.AsLaneInfo()).ToList(),
-				LHT = Options.Current.LHT,
-				VanillaWidth = Options.Current.VanillaWidths,
-				Tags = FLP_Tags.Controls.OfType<TagControl>().Select(x => x.Text).ToList(),
-				DateCreated = C_CurrentlyEditing.Road?.DateCreated ?? DateTime.Now,
-			};
-		}
-
-		private RoadType GetRoadType()
-		{
-			return RoadTypeControl.SelectedValue;
-		}
-
-		private RegionType GetRegion()
-		{
-			return RegionTypeControl.SelectedValue;
-		}
-
-		private void RCC_LoadConfiguration(object sender, RoadInfo r)
-		{
-			try
-			{
-				refreshPaused = true;
-				P_Lanes.SuspendDrawing();
-				P_Lanes.Controls.Clear(true);
-
-				TB_Size.Text = r.RoadWidth == 0 ? string.Empty : r.RoadWidth.ToString();
-				TB_BufferSize.Text = r.BufferWidth.ToString();
-				TB_SpeedLimit.Text = r.SpeedLimit == 0 ? string.Empty : r.SpeedLimit.ToString();
-				TB_CustomText.Text = r.CustomText;
-				TB_RoadName.Text = r.CustomName;
-				TB_RoadDesc.Text = r.CustomDescription;
-
-				foreach (var lane in Options.Current.LHT ? (r.Lanes as IEnumerable<LaneInfo>).Reverse() : r.Lanes)
-				{
-					AddLaneControl(new ThumbnailLaneInfo(lane)
-					{
-						Direction = (Options.Current.LHT && lane.Type == LaneType.Curb) ? lane.Direction == LaneDirection.Forward ? LaneDirection.Backwards : LaneDirection.Forward
-							: lane.Direction
-					});
-				}
-
-				RoadTypeControl.SelectedValue = r.RoadType;
-				RegionTypeControl.SelectedValue = r.RegionType;
-				SideTextureControl.SelectedValue = r.SideTexture;
-				BridgeSideTextureControl.SelectedValue = r.BridgeSideTexture;
-				AsphaltTextureControl.SelectedValue = r.AsphaltStyle;
-
-				FLP_Tags.Controls.Clear(true, x => x is TagControl);
-
-				if (r.Tags?.Any() ?? false)
-				{
-					FLP_Tags.Controls.AddRange(r.Tags.Select(x => new TagControl(x, false)).ToArray());
-				}
-
-				P_Lanes.Controls.OfType<RoadLane>().FirstOrDefault(x => x.Lane.Type == LaneType.Curb)?.FixCurbOrientation();
-
-				C_CurrentlyEditing.SetRoad(sender as RoadConfigControl);
-			}
-			catch (Exception ex)
-			{
-				ShowPrompt(ex.Message, "Failed to load this configuration", PromptButtons.OK, PromptIcons.Error);
-			}
-			finally
-			{
-				P_Lanes.ResumeDrawing();
-				refreshPaused = false;
-				RefreshPreview();
+				TB_RoadDesc_Leave(sender, e);
 			}
 		}
 
-		private RoadLane AddLaneControl(ThumbnailLaneInfo item)
+		private void TB_RoadName_KeyDown(object sender, KeyEventArgs e)
 		{
-			var ctrl = new RoadLane(item);
-
-			P_Lanes.Controls.Add(ctrl);
-
-			ctrl.BringToFront();
-
-			return ctrl;
-		}
-
-		private void PB_Click(object sender, EventArgs e)
-		{
-			try
+			if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
 			{
-				var lanes = GetLanes();
-
-				var toolTip = false;
-				var small = false;
-				var width = toolTip ? 492 : small ? 109 : 512;
-				var height = toolTip ? 147 : small ? 100 : 512;
-
-				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
-				using (var g = Graphics.FromImage(img))
-				{
-					DrawThumbnail(g, lanes, small, toolTip);
-
-					Clipboard.SetDataObject(small || toolTip ? new Bitmap(img) : new Bitmap(img, 256, 256));
-				}
-
-				Notification.Create("Thumbnail copied to clipboard", "", PromptIcons.None, () => { }, NotificationSound.None, new Size(240, 32))
-					.Show(Form, 5);
+				e.SuppressKeyPress = true;
+				e.Handled = true;
 			}
-			catch (Exception ex) { ShowPrompt(ex.Message, "Error", PromptButtons.OK, PromptIcons.Error); }
-		}
-
-		private void L_RoadName_MouseEnter(object sender, EventArgs e)
-		{
-			(sender as Label).ForeColor = FormDesign.Design.ActiveColor;
-		}
-
-		private void L_RoadName_MouseLeave(object sender, EventArgs e)
-		{
-			L_RoadName.ForeColor = FormDesign.Design.ForeColor;
-			L_RoadDesc.ForeColor = FormDesign.Design.InfoColor;
-		}
-
-		private void L_RoadName_Click(object sender, EventArgs e)
-		{
-			TB_RoadName.Show();
-			L_RoadName.Hide();
-			B_EditName.Hide();
-			TB_RoadName.Focus();
-			TB_RoadName.MaxLength = 32;
 		}
 
 		private void TB_RoadName_Leave(object sender, EventArgs e)
@@ -725,65 +797,27 @@ namespace ThumbnailMaker
 			}
 		}
 
-		private void TB_RoadName_KeyDown(object sender, KeyEventArgs e)
+		private void TB_SpeedLimit_IconClicked(object sender, EventArgs e)
 		{
-			if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
+			var rl = new RoadLane
 			{
-				e.SuppressKeyPress = true;
-				e.Handled = true;
-			}
-		}
+				Visible = false,
+				Parent = this
+			};
 
-		private void P_Lanes_ControlAdded(object sender, ControlEventArgs e)
-		{
-			if (e.Control is RoadLane roadLane)
+			new LaneSpeedSelector(rl)
 			{
-				roadLane.RoadLaneChanged += TB_Name_TextChanged;
+				Location = TB_SpeedLimit.PointToScreen(new Point(0, TB_SpeedLimit.Height + 2))
 			}
-		}
+			.FormClosed += (s, _) =>
+			{
+				if (rl.Lane.SpeedLimit != null)
+				{
+					TB_SpeedLimit.Text = rl.Lane.SpeedLimit?.ToString();
+				}
 
-		private void B_ViewSavedRoads_Click(object sender, EventArgs e)
-		{
-			B_ViewSavedRoads.Text = RCC.Width.If(0, "Hide Roads", "Load Road");
-			B_ViewSavedRoads.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
-			RCC.Width = RCC.Width.If(0, 15 + Options.Current.RoadConfigColumns * (12 + (int)(100 * UI.UIScale)), 0);
-			RCC.Visible = RCC.Width != 0;
-
-			Form.OnNextIdle(P_Lanes.PerformLayout);
-		}
-
-		private void B_AddTag_Click(object sender, EventArgs e)
-		{
-			var frm = new AddTagForm(RCC.LoadedTags, FLP_Tags.GetControls<TagControl>().Select(x => x.Text)) { Location = FLP_Tags.PointToScreen(new Point(3, 4)), MinimumSize = new Size(TLP_Right.Width - 5, 0), MaximumSize = new Size(TLP_Right.Width - 5, 999) };
-
-			frm.TagAdded += Frm_TagAdded;
-			frm.TagRemoved += Frm_TagRemoved;
-
-			frm.Show();
-		}
-
-		private void Frm_TagRemoved(object sender, string e)
-		{
-			FLP_Tags.Controls.Clear(true, x => x is TagControl tc && tc.Text.Equals(e, StringComparison.CurrentCultureIgnoreCase));
-
-			RefreshPreview();
-		}
-
-		private void Frm_TagAdded(object sender, string e)
-		{
-			if (string.IsNullOrWhiteSpace(e))
-				return;
-
-			FLP_Tags.Controls.Add(new TagControl(e.Trim(), false));
-
-			RefreshPreview();
-		}
-
-		private void FLP_Tags_ControlAdded(object sender, ControlEventArgs e)
-		{
-			L_NoTags.Visible = FLP_Tags.Controls.Count == 1;
-
-			RefreshPreview();
+				rl.Dispose();
+			};
 		}
 
 		private void TLP_Buttons_Resize(object sender, EventArgs e)
@@ -794,62 +828,45 @@ namespace ThumbnailMaker
 			}
 		}
 
-		private void B_EditDesc_Click(object sender, EventArgs e)
+		protected override void DesignChanged(FormDesign design)
 		{
-			TB_RoadDesc.MultiLine = true;
-			TB_RoadDesc.MaxLength = 1024;
-			TB_RoadDesc.Height = (int)(120 * UI.FontScale);
-			TB_RoadDesc.Show();
-			L_RoadDesc.Hide();
-			B_EditDesc.Hide();
-			TB_RoadDesc.Focus();
-		}
+			base.DesignChanged(design);
 
-		private void TB_RoadDesc_Leave(object sender, EventArgs e)
-		{
+			C_CurrentlyEditing.ForeColor = design.ActiveColor;
+			L_RoadDesc.ForeColor = design.InfoColor;
+			L_NoTags.ForeColor = design.LabelColor;
+
 			RefreshPreview();
-			TB_RoadDesc.Hide();
-			L_RoadDesc.Show();
-			B_EditDesc.Show();
 		}
 
-		private void TB_RoadDesc_KeyDown(object sender, KeyEventArgs e)
+		protected override void OnCreateControl()
 		{
-			if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
+			base.OnCreateControl();
+
+			TB_BufferSize.Text = Options.Current.BufferSize;
+			refreshPaused = false;
+			SetupType(GetRoadType());
+		}
+
+		protected override void OnVisibleChanged(EventArgs e)
+		{
+			base.OnVisibleChanged(e);
+
+			if (Visible)
 			{
-				e.SuppressKeyPress = true;
-				e.Handled = true;
+				RefreshPreview();
 			}
 		}
 
-		private void TB_RoadDesc_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		protected override void UIChanged()
 		{
-			if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Escape)
-			{
-				e.IsInputKey = true;
+			base.UIChanged();
 
-				TB_RoadDesc_Leave(sender, e);
-			}
-		}
+			L_RoadName.Font = UI.Font(9.75F, FontStyle.Bold);
+			L_RoadDesc.Font = L_NoTags.Font = UI.Font(7.5F);
 
-		private void TB_SpeedLimit_IconClicked(object sender, EventArgs e)
-		{
-			var rl = new RoadLane
-			{
-				Visible = false,
-				Parent = this
-			};
-
-			new LaneSpeedSelector(rl) 
-			{
-				Location = TB_SpeedLimit.PointToScreen(new Point(0, TB_SpeedLimit.Height + 2))
-			}			
-			.FormClosed += (s, _) =>
-			{
-				if (rl.Lane.SpeedLimit != null)
-					TB_SpeedLimit.Text = rl.Lane.SpeedLimit?.ToString();
-				rl.Dispose();
-			};
+			TLP_Main.ColumnStyles[TLP_Main.ColumnStyles.Count - 2].Width = (float)(276 * UI.UIScale);
+			PB.Size = UI.Scale(new Size(256, 256), UI.UIScale);
 		}
 	}
 }

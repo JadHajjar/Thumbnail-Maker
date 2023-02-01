@@ -335,6 +335,7 @@ namespace ThumbnailMaker
 			this.C_CurrentlyEditing.TabIndex = 7;
 			this.C_CurrentlyEditing.Visible = false;
 			this.C_CurrentlyEditing.LoadConfiguration += new System.EventHandler<ThumbnailMaker.Domain.RoadInfo>(this.RCC_LoadConfiguration);
+			this.C_CurrentlyEditing.VisibleChanged += new System.EventHandler(this.C_CurrentlyEditing_VisibleChanged);
 			// 
 			// L_RoadName
 			// 

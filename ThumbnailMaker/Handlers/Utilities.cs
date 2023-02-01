@@ -75,18 +75,34 @@ namespace ThumbnailMaker.Handlers
 		public static IEnumerable<string> GetAutoTags(RoadInfo road)
 		{
 			if (road?.Lanes == null)
+			{
 				yield break;
+			}
 
 			if (road.Lanes.Any(x => x.Type.HasFlag(LaneType.Tram)))
+			{
 				yield return "Tram";
+			}
+
 			if (road.Lanes.Any(x => x.Type.HasFlag(LaneType.Trolley)))
+			{
 				yield return "Trolley";
+			}
+
 			if (road.Lanes.Any(x => x.Type.HasFlag(LaneType.Bike)))
+			{
 				yield return "Bike";
+			}
+
 			if (road.Lanes.Any(x => x.Type.HasFlag(LaneType.Bus)))
+			{
 				yield return "Bus";
+			}
+
 			if (IsOneWay(road.Lanes) == true)
+			{
 				yield return "One-Way";
+			}
 		}
 
 		public static float VanillaWidth(bool vanillaWidths, float value)
@@ -288,7 +304,9 @@ namespace ThumbnailMaker.Handlers
 		}
 
 		public static float CalculateRoadSize<T>(List<T> sizeLanes, float bufferSize) where T : LaneInfo
-			=> CalculateRoadSize<T>(sizeLanes, bufferSize, out _, out _);
+		{
+			return CalculateRoadSize<T>(sizeLanes, bufferSize, out _, out _);
+		}
 
 		public static float CalculateRoadSize<T>(List<T> sizeLanes, float bufferSize, out float leftPavementWidth, out float rightPavementWidth) where T : LaneInfo
 		{
