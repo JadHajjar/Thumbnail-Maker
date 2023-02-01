@@ -642,7 +642,7 @@ namespace ThumbnailMaker.Handlers
 
 		private LaneDecoration GetLightType(ThumbnailLaneInfo lane)
 		{
-			if (Lanes.Any(x => x.Decorations.HasAnyFlag(LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight)))
+			if (Lanes.Any(x => x.Decorations.HasAnyFlag(LaneDecoration.LampPost, LaneDecoration.StreetLight, LaneDecoration.DoubleStreetLight)))
 			{
 				return LaneDecoration.None;
 			}
