@@ -107,7 +107,7 @@ namespace ThumbnailMaker
 			return ctrl;
 		}
 
-		private void B_Add_Click(object sender, EventArgs e)
+		private void B_Add_MouseClick(object sender, MouseEventArgs e)
 		{
 			var ctrl = new RoadLane();
 
@@ -115,13 +115,17 @@ namespace ThumbnailMaker
 
 			var rightSidewalk = P_Lanes.Controls.OfType<RoadLane>().LastOrDefault(x => x.Lane.Type == LaneType.Curb && x.Lane.Direction == LaneDirection.Forward);
 
-			if (rightSidewalk != null)
+			if (rightSidewalk != null && e.Button != MouseButtons.Right && e.Button != MouseButtons.Middle)
 			{
 				P_Lanes.Controls.SetChildIndex(ctrl, P_Lanes.Controls.GetChildIndex(rightSidewalk) + 1);
 			}
-			else
+			else if (e.Button == MouseButtons.Middle)
 			{
 				ctrl.BringToFront();
+			}
+			else
+			{
+				ctrl.SendToBack();
 			}
 
 			var frm = new RoadTypeSelector(ctrl, B_AddLane);
@@ -208,6 +212,15 @@ namespace ThumbnailMaker
 
 				return true;
 			}).ToList();
+			var leftlanes = P_Lanes.Controls.OfType<RoadLane>().Where(x =>
+			{
+				if (leftSidewalk != null && P_Lanes.Controls.IndexOf(x) >= P_Lanes.Controls.IndexOf(leftSidewalk))
+				{
+					return true;
+				}
+
+				return false;
+			}).ToList();
 
 			if (lanes.FirstOrDefault()?.Lane.Type == LaneType.Filler)
 			{
@@ -241,6 +254,34 @@ namespace ThumbnailMaker
 				}
 			}
 
+			if (rightSidewalk != null && P_Lanes.Controls.IndexOf(rightSidewalk) <= 1)
+			{
+				while (P_Lanes.Controls.IndexOf(rightSidewalk) >= 0)
+				{
+					P_Lanes.Controls.RemoveAt(0);
+				}
+
+				foreach (var item in leftlanes)
+				{
+					var ctrl = item.Duplicate();
+
+					if (ctrl.Lane.Direction == LaneDirection.Forward)
+					{
+						ctrl.Lane.Direction = LaneDirection.Backwards;
+					}
+					else if (ctrl.Lane.Direction == LaneDirection.Backwards)
+					{
+						ctrl.Lane.Direction = LaneDirection.Forward;
+					}
+
+					ctrl.Dock = DockStyle.Top;
+
+					P_Lanes.Controls.Add(ctrl);
+
+					P_Lanes.Controls.SetChildIndex(ctrl, 0);
+				}
+			}
+	
 			refreshPaused = false;
 			RefreshPreview();
 		}

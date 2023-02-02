@@ -794,7 +794,7 @@ namespace ThumbnailMaker
 			this.B_AddLane.TabIndex = 0;
 			this.B_AddLane.Tag = "Add Lane";
 			this.B_AddLane.Text = "Add Lane";
-			this.B_AddLane.Click += new System.EventHandler(this.B_Add_Click);
+			this.B_AddLane.MouseClick += new System.Windows.Forms.MouseEventHandler(this.B_Add_MouseClick);
 			// 
 			// B_ClearLines
 			// 
