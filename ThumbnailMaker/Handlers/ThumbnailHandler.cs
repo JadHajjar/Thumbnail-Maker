@@ -812,6 +812,17 @@ namespace ThumbnailMaker.Handlers
 					Graphics.DrawString(Speed.ToString(), GetFont(Speed > 99 ? 20F : 25F, FontStyle.Bold), Brushes.Black, Speed > 99 ? rect.Pad(0, 7, -3, -1) : rect.Pad(4, 8, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 				}
 			}
+			else if (RegionType == RegionType.Australia)
+			{
+				var rect = containerRect.CenterR(60, 80);
+
+				Graphics.FillRoundedRectangle(Brushes.White, rect, 7);
+				Graphics.DrawEllipse(new Pen(Color.FromArgb(207, 30, 22), 6F), containerRect.CenterR(55, 55));
+				if (Speed > 0)
+				{
+					Graphics.DrawString(Speed.ToString(), GetFont(Speed > 99 ? 18F : 23F, FontStyle.Bold), Brushes.Black, rect.Pad(0,0,0, Speed > 99 ? -4 : -6), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+				}
+			}
 			else if (RegionType == RegionType.USA)
 			{
 				var rect = containerRect.CenterR(56, 80);
@@ -863,6 +874,17 @@ namespace ThumbnailMaker.Handlers
 				if (Speed > 0)
 				{
 					Graphics.DrawString(Speed.ToString(), GetFont(Speed > 99 ? 6F : 7.75F), Brushes.Black, rect.Pad(-1, Speed > 99 ? 2 : 0, -3, -1), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+				}
+			}
+			else if (RegionType == RegionType.Australia)
+			{
+				var rect = containerRect.CenterR(20, 24);
+
+				Graphics.FillRoundedRectangle(Brushes.White, rect, 2);
+				Graphics.DrawEllipse(new Pen(Color.FromArgb(207, 30, 22), 2.5F), containerRect.CenterR(19, 19));
+				if (Speed > 0)
+				{
+					Graphics.DrawString(Speed.ToString(), GetFont(Speed > 99 ? 6F : 7.75F), Brushes.Black, rect.Pad(Speed > 99 ? 0 :2,0,0, Speed > 99 ? -2 : -1), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 				}
 			}
 			else if (RegionType == RegionType.USA)
