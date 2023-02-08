@@ -1,12 +1,17 @@
-﻿using SlickControls;
+﻿using Extensions;
+
+using SlickControls;
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace ThumbnailMaker.Controls
 {
 	internal class TagControl : SlickLabel
 	{
+		public bool InvertSelected { get; private set; }
+
 		public event EventHandler SelectionChanged;
 
 		public TagControl(string tag, bool display)
@@ -30,12 +35,25 @@ namespace ThumbnailMaker.Controls
 				if (Display)
 				{
 					Selected = !Selected;
+					InvertSelected = false;
 					SelectionChanged?.Invoke(this, EventArgs.Empty);
 				}
 				else
 				{
 					Dispose();
 				}
+			}
+			else if (Display && e.Button == MouseButtons.Right)
+			{
+				InvertSelected = !InvertSelected;
+				Selected = false;
+				SelectionChanged?.Invoke(this, EventArgs.Empty);
+			}
+			else if (Display && e.Button == MouseButtons.Middle)
+			{
+				InvertSelected = false;
+				Selected = false;
+				SelectionChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -67,6 +85,19 @@ namespace ThumbnailMaker.Controls
 			}
 
 			base.OnMouseLeave(e);
+		}
+
+		protected override void GetColors(out Color fore, out Color back)
+		{
+			if (InvertSelected)
+			{
+				fore = ActiveColor == null ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ActiveForeColor.Tint(ActiveColor());
+				back = ActiveColor == null ? FormDesign.Design.RedColor : ActiveColor();
+			}
+			else
+			{
+				base.GetColors(out fore, out back);
+			}
 		}
 	}
 }

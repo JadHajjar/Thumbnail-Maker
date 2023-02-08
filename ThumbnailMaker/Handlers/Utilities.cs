@@ -53,19 +53,7 @@ namespace ThumbnailMaker.Handlers
 				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 				using (var g = Graphics.FromImage(img))
 				{
-					new ThumbnailHandler(g, small, toolTip)
-					{
-						RoadWidth = road.TotalRoadWidth,
-						CustomText = road.CustomText,
-						BufferSize = Math.Max(0, road.BufferWidth),
-						RegionType = road.RegionType,
-						RoadType = road.RoadType,
-						Speed = road.SpeedLimit.If(0, DefaultSpeedSign(road.Lanes, road.RoadType, road.RegionType == RegionType.USA)),
-						SideTexture = road.SideTexture,
-						AsphaltStyle = road.AsphaltStyle,
-						LHT = road.LHT,
-						Lanes = road.Lanes.Select(x => new ThumbnailLaneInfo(x)).ToList()
-					}.Draw();
+					new ThumbnailHandler(g, road, small, toolTip).Draw();
 
 					return (byte[])new ImageConverter().ConvertTo(img, typeof(byte[]));
 				}
@@ -256,7 +244,7 @@ namespace ThumbnailMaker.Handlers
 			sb.Add(lanes.ListStrings(", "));
 
 			var size = Math.Max(road.RoadWidth, CalculateRoadSize(road.Lanes, road.BufferWidth));
-			var info = $"{size}m";
+			var info = Options.Current.UseGameUnitsForWidth && size % 8 == 0 ? $"{size / 8:0}U" : $"{size}m";
 
 			if (road.SpeedLimit != 0)
 			{

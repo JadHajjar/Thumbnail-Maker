@@ -51,6 +51,8 @@ namespace ThumbnailMaker
 			CB_VanillaWdiths.Checked = Options.Current.VanillaWidths;
 			CB_AddRoadWidthToName.Checked = Options.Current.AddRoadWidthToName;
 			CB_DisplayLaneWidths.Checked = Options.Current.DisplayLaneWidths;
+			CB_UseGameUnitsForWidth.Checked = Options.Current.UseGameUnitsForWidth;
+			CB_DisplayCustomLaneSpeedsOnThumbnail.Checked = Options.Current.DisplayCustomLaneSpeedsOnThumbnail;
 
 			SlickTip.SetTo(B_ReExport, "Re-generates all of your exported roads' thumbnails, useful in case you changed color or style options");
 			SlickTip.SetTo(B_Theme, "Change the theme colors and UI scaling of the App");
@@ -59,6 +61,9 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(CB_AdvancedElevartion, "Allows you to manually set the elevation value of a lane");
 			SlickTip.SetTo(CB_VanillaWdiths, "Automatically sets the road widths to a vanilla-compatible value");
 			SlickTip.SetTo(CB_AddRoadWidthToName, "Adds the road width to the auto-generated road name");
+			SlickTip.SetTo(CB_DisplayLaneWidths, "Adds each lane's width in the large thumbnail");
+			SlickTip.SetTo(CB_UseGameUnitsForWidth, "Displays the total road width in in-game units (8m/unit)");
+			SlickTip.SetTo(CB_DisplayCustomLaneSpeedsOnThumbnail, "Adds each lane's custom speed limit in the large thumbnail");
 		}
 
 		protected override void UIChanged()
@@ -99,6 +104,8 @@ namespace ThumbnailMaker
 				Options.Current.VanillaWidths = CB_VanillaWdiths.Checked;
 				Options.Current.AddRoadWidthToName = CB_AddRoadWidthToName.Checked;
 				Options.Current.DisplayLaneWidths = CB_DisplayLaneWidths.Checked;
+				Options.Current.UseGameUnitsForWidth = CB_UseGameUnitsForWidth.Checked;
+				Options.Current.DisplayCustomLaneSpeedsOnThumbnail = CB_DisplayCustomLaneSpeedsOnThumbnail.Checked;
 				Options.Save();
 			}
 		}

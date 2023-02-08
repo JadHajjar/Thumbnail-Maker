@@ -16,14 +16,17 @@ namespace ThumbnailMaker.Handlers
 {
 	public class ThumbnailHandler
 	{
-		public ThumbnailHandler(Graphics graphics, bool small, bool toolTip)
+		public ThumbnailHandler(Graphics graphics, RoadInfo road, bool small, bool toolTip)
 		{
 			Graphics = graphics;
+			Road = road;
 			ToolTip = toolTip;
 			Small = small || toolTip;
 			Width = toolTip ? 492 : Small ? 109 : 512;
 			Height = toolTip ? 147 : Small ? 100 : 512;
 			PixelFactor = Small ? 8 : 30;
+
+			Lanes = road.Lanes.Select(x => new ThumbnailLaneInfo(x)).ToList();
 
 			LaneSizeOptions.Refresh();
 		}
@@ -45,33 +48,26 @@ namespace ThumbnailMaker.Handlers
 			_font = pfc.Families[0];
 		}
 
-		public float RoadWidth { get; set; }
-		public float AsphaltWidth { get; set; }
-		public float BufferSize { get; set; }
-		public int Speed { get; set; }
-		public string CustomText { get; set; }
-		public List<ThumbnailLaneInfo> Lanes { get; set; }
-		public RegionType RegionType { get; set; }
-		public RoadType RoadType { get; set; }
-		public TextureType SideTexture { get; set; }
-		public AsphaltStyle AsphaltStyle { get; set; }
-		public bool LHT { get; set; }
 
 		public Graphics Graphics { get; }
+		public RoadInfo Road { get; }
+
 		public bool ToolTip { get; }
 		public int Height { get; }
 		public int Width { get; }
 		public bool Small { get; }
-		private int PixelFactor { get; }
 
+		private readonly int PixelFactor;
+		private readonly List<ThumbnailLaneInfo> Lanes;
 		private float IdealWidthModifier;
+		private float AsphaltWidth;
 		private static readonly FontFamily _font;
 		private static FontFamily FontFamily => string.IsNullOrWhiteSpace(Options.Current.TextFont) ? _font : new FontFamily(Options.Current.TextFont);
 		private Color PavementColor
 		{
 			get
 			{
-				switch (SideTexture)
+				switch (Road.SideTexture)
 				{
 					case TextureType.Pavement:
 						return Color.FromArgb(180, 180, 180);
@@ -157,7 +153,7 @@ namespace ThumbnailMaker.Handlers
 			var rightSidewalk = Lanes.LastOrDefault(x => x.Type == LaneType.Curb && x.Direction == LaneDirection.Forward);
 			var bottomArea = new Rectangle(availableSpace.X, availableSpace.Y + availableSpace.Height, availableSpace.Width, Height - (availableSpace.Y + availableSpace.Height)).Pad(0, 0, 0, 0);
 
-			Graphics.Clear(AsphaltStyle == AsphaltStyle.None ? PavementColor : Color.FromArgb(50, 50, 50));
+			Graphics.Clear(Road.AsphaltStyle == AsphaltStyle.None ? PavementColor : Color.FromArgb(50, 50, 50));
 
 			Graphics.FillRectangle(new SolidBrush(Color.FromArgb(174, 215, 242)), new Rectangle(0, 0, bottomArea.Width, bottomArea.Y - LaneHeight(new ThumbnailLaneInfo())));
 
@@ -178,12 +174,12 @@ namespace ThumbnailMaker.Handlers
 
 			if (leftSidewalk != null)
 			{
-				Graphics.FillRectangle(new SolidBrush(PavementColor), new Rectangle(0, bottomArea.Y, laneRects[leftSidewalk].X + laneRects[leftSidewalk].Width - (int)(PixelFactor * BufferSize), bottomArea.Height));
+				Graphics.FillRectangle(new SolidBrush(PavementColor), new Rectangle(0, bottomArea.Y, laneRects[leftSidewalk].X + laneRects[leftSidewalk].Width - (int)(PixelFactor * Road.BufferWidth), bottomArea.Height));
 			}
 
 			if (rightSidewalk != null)
 			{
-				Graphics.FillRectangle(new SolidBrush(PavementColor), new Rectangle(laneRects[rightSidewalk].X + (int)(PixelFactor * BufferSize), bottomArea.Y, Width - laneRects[rightSidewalk].X - (int)(PixelFactor * BufferSize), bottomArea.Height));
+				Graphics.FillRectangle(new SolidBrush(PavementColor), new Rectangle(laneRects[rightSidewalk].X + (int)(PixelFactor * Road.BufferWidth), bottomArea.Y, Width - laneRects[rightSidewalk].X - (int)(PixelFactor * Road.BufferWidth), bottomArea.Height));
 			}
 		}
 
@@ -351,14 +347,14 @@ namespace ThumbnailMaker.Handlers
 
 			if (lane.Type == LaneType.Curb)
 			{
-				bottomArea = bottomArea.Pad(lane.Direction == LaneDirection.Forward ? (int)(PixelFactor * BufferSize) : 0, 0, lane.Direction == LaneDirection.Backwards ? (int)(PixelFactor * BufferSize) : 0, 0);
+				bottomArea = bottomArea.Pad(lane.Direction == LaneDirection.Forward ? (int)(PixelFactor * Road.BufferWidth) : 0, 0, lane.Direction == LaneDirection.Backwards ? (int)(PixelFactor * Road.BufferWidth) : 0, 0);
 			}
 
 			if (!lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
 			{
-				Graphics.FillRectangle(new SolidBrush(lane.Sidewalk || AsphaltStyle == AsphaltStyle.None ? PavementColor : Color.FromArgb(50, 50, 50)), bottomArea);
+				Graphics.FillRectangle(new SolidBrush(lane.Sidewalk || Road.AsphaltStyle == AsphaltStyle.None ? PavementColor : Color.FromArgb(50, 50, 50)), bottomArea);
 
-				if (lane.Type == LaneType.Curb && RoadType != RoadType.Highway)
+				if (lane.Type == LaneType.Curb && Road.RoadType != RoadType.Highway)
 				{
 					Graphics.FillRectangle(new SolidBrush(Color.FromArgb(130, 130, 130)), lane.Direction == LaneDirection.Backwards ? new Rectangle(bottomArea.X + bottomArea.Width - (Small ? 2 : 7), bottomArea.Y, Small ? 2 : 7, bottomArea.Height) : new Rectangle(bottomArea.X, bottomArea.Y, Small ? 2 : 7, bottomArea.Height));
 				}
@@ -411,22 +407,25 @@ namespace ThumbnailMaker.Handlers
 				Graphics.DrawLine(new Pen(Color.FromArgb(60, 60, 60), Small ? 1.5F : 4) { DashPattern = new[] { 4F*IdealWidthModifier, 5F * IdealWidthModifier, 4F * IdealWidthModifier, 10F * IdealWidthModifier } }, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y + barrierRect.Height);
 			}
 
-			if (!Small && Options.Current.DisplayLaneWidths)
+			if (!Small)
 			{
 				var sizeRect = rect.Pad(-10, 365, -10, (ToolTip ? 36 : Small ? 30 : 120) - 20);
-
-				if (lane.SpeedLimit != null)
+				
+				if (Options.Current.DisplayCustomLaneSpeedsOnThumbnail && lane.SpeedLimit != null)
 				{
 					using (var img = new Bitmap(80, 80, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 					using (var g = Graphics.FromImage(img))
 					{
-						DrawSpeedSignLarge(g, RegionType, (int)lane.SpeedLimit, new Rectangle(0, 0, 80, 80));
+						DrawSpeedSignLarge(g, Road.RegionType, (int)lane.SpeedLimit, new Rectangle(0, 0, 80, 80));
 
 						Graphics.DrawImage(img, sizeRect.Pad(0, -rect.Width - (int)(35F * Math.Min(1F, lane.LaneWidth / 3F) * IdealWidthModifier), 0, 0).CenterR(rect.Width * 75 / 100, rect.Width * 75 / 100));
 					}
 				}
 
-				Graphics.DrawString($"{lane.LaneWidth:0.##}m", GetFont(30F * Math.Min(0.9F, lane.LaneWidth / 3F) * IdealWidthModifier), new SolidBrush(lane.Sidewalk ? Color.FromArgb(50, 50, 50) : Color.FromArgb(230, 230, 230)), sizeRect, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+				if (Options.Current.DisplayLaneWidths)
+				{
+					Graphics.DrawString($"{lane.LaneWidth:0.##}m", GetFont(30F * Math.Min(0.9F, lane.LaneWidth / 3F) * IdealWidthModifier), new SolidBrush(lane.Sidewalk ? Color.FromArgb(50, 50, 50) : Color.FromArgb(230, 230, 230)), sizeRect, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+				}
 			}
 		}
 
@@ -623,7 +622,7 @@ namespace ThumbnailMaker.Handlers
 					Lanes[i].Sidewalk = true;
 				}
 
-				leftSidewalk.Width += (int)(PixelFactor * BufferSize);
+				leftSidewalk.Width += (int)(PixelFactor * Road.BufferWidth);
 			}
 
 			if (rightSidewalk != null)
@@ -633,10 +632,10 @@ namespace ThumbnailMaker.Handlers
 					Lanes[i].Sidewalk = true;
 				}
 
-				rightSidewalk.Width += (int)(PixelFactor * BufferSize);
+				rightSidewalk.Width += (int)(PixelFactor * Road.BufferWidth);
 			}
 
-			AsphaltWidth = (BufferSize * 2) + Lanes.Where(x => !x.Sidewalk).Sum(lane => lane.LaneWidth);
+			AsphaltWidth = (Road.BufferWidth * 2) + Lanes.Where(x => !x.Sidewalk).Sum(lane => lane.LaneWidth);
 
 			var ind = AsphaltWidth / -2;
 
@@ -699,7 +698,7 @@ namespace ThumbnailMaker.Handlers
 
 		private int LaneHeight(ThumbnailLaneInfo lane)
 		{
-			var @base = lane.Elevation ?? (lane.Sidewalk || RoadType != RoadType.Road ? 0F : -0.3F);
+			var @base = lane.Elevation ?? (lane.Sidewalk || Road.RoadType != RoadType.Road ? 0F : -0.3F);
 
 			if (lane.Elevation == null && lane.Decorations.HasAnyFlag(LaneDecoration.Grass, LaneDecoration.Gravel, LaneDecoration.Pavement))
 			{
@@ -715,20 +714,22 @@ namespace ThumbnailMaker.Handlers
 			var width = ToolTip ? 150 : Small ? 109 : 512;
 			var height = ToolTip ? 36 : Small ? 30 : 120;
 
-			if (RoadWidth > 0)
+			if (Road.TotalRoadWidth > 0)
 			{
 				DrawRoadWidth(new Rectangle(0, Height - height, Width, height));
 			}
 
-			if (Speed > 0)
+			var speedLimit = Road.SpeedLimit.If(0, Utilities.DefaultSpeedSign(Road.Lanes, Road.RoadType, Road.RegionType == RegionType.USA));
+			
+			if (speedLimit > 0)
 			{
 				if (Small)
 				{
-					DrawSpeedSignSmall(Graphics, RegionType, Speed, new Rectangle(((Width + width) / 2) - height, Height - height, height, height));
+					DrawSpeedSignSmall(Graphics, Road.RegionType, speedLimit, new Rectangle(((Width + width) / 2) - height, Height - height, height, height));
 				}
 				else
 				{
-					DrawSpeedSignLarge(Graphics, RegionType, Speed, new Rectangle(((Width + width) / 2) - height, Height - height, height, height));
+					DrawSpeedSignLarge(Graphics, Road.RegionType, speedLimit, new Rectangle(((Width + width) / 2) - height, Height - height, height, height));
 				}
 			}
 
@@ -742,7 +743,7 @@ namespace ThumbnailMaker.Handlers
 
 			while (font.Size > 0.75F)
 			{
-				if (Graphics.MeasureString(CustomText, font, containerRect.Width).Height <= containerRect.Height)
+				if (Graphics.MeasureString(Road.CustomText, font, containerRect.Width).Height <= containerRect.Height)
 				{
 					break;
 				}
@@ -752,15 +753,15 @@ namespace ThumbnailMaker.Handlers
 
 			if (!Small)
 			{
-				Graphics.DrawString(CustomText, font, Brushes.White, new Rectangle(containerRect.X + 2, containerRect.Y + 2, containerRect.Width, containerRect.Height), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near });
+				Graphics.DrawString(Road.CustomText, font, Brushes.White, new Rectangle(containerRect.X + 2, containerRect.Y + 2, containerRect.Width, containerRect.Height), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near });
 			}
 
-			Graphics.DrawString(CustomText, font, new SolidBrush(Color.FromArgb(40, 40, 40)), containerRect, new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near });
+			Graphics.DrawString(Road.CustomText, font, new SolidBrush(Color.FromArgb(40, 40, 40)), containerRect, new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Near });
 		}
 
 		private void DrawRoadIcon(Rectangle containerRect)
 		{
-			using (var icon = ResourceManager.GetRoadType(RoadType, LHT, Small))
+			using (var icon = ResourceManager.GetRoadType(Road.RoadType, Road.LHT, Small))
 			{
 				if (icon != null)
 				{
@@ -771,7 +772,8 @@ namespace ThumbnailMaker.Handlers
 
 		private void DrawRoadWidth(Rectangle containerRect)
 		{
-			var sizeSize = (int)Graphics.MeasureString($"{RoadWidth:0.##}m", GetFont(ToolTip ? 14F : Small ? 11F : 40F, FontStyle.Bold)).Width;
+			var text = Options.Current.UseGameUnitsForWidth && Road.TotalRoadWidth % 8 == 0 ? $"{Road.TotalRoadWidth / 8:0}U" : $"{Road.TotalRoadWidth:0.##}m";
+			var sizeSize = (int)Graphics.MeasureString(text, GetFont(ToolTip ? 14F : Small ? 11F : 40F, FontStyle.Bold)).Width;
 			var rect = containerRect.Pad(0, Small ? 4 : 14, 0, 0).CenterR(sizeSize + (Small ? 4 : 38), ToolTip ? 30 : Small ? 20 : 80);
 
 			Graphics.SmoothingMode = SmoothingMode.HighQuality;
@@ -786,8 +788,8 @@ namespace ThumbnailMaker.Handlers
 				}
 			}
 
-			Graphics.DrawString($"{RoadWidth:0.##}m", GetFont(ToolTip ? 14F : Small ? 10.5F : 40F, FontStyle.Bold), Brushes.Black, rect.Pad(Small ? 2 : 4, Small ? 2 : 4, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
-			Graphics.DrawString($"{RoadWidth:0.##}m", GetFont(ToolTip ? 14F : Small ? 10.5F : 40F, FontStyle.Bold), Brushes.White, rect.Pad(0, 0, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+			Graphics.DrawString(text, GetFont(ToolTip ? 14F : Small ? 10.5F : 40F, FontStyle.Bold), Brushes.Black, rect.Pad(Small ? 2 : 4, Small ? 2 : 4, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+			Graphics.DrawString(text, GetFont(ToolTip ? 14F : Small ? 10.5F : 40F, FontStyle.Bold), Brushes.White, rect.Pad(0, 0, 0, 0), new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
 		}
 
 		public static void DrawSpeedSignLarge(Graphics Graphics, RegionType RegionType, int Speed, Rectangle containerRect)

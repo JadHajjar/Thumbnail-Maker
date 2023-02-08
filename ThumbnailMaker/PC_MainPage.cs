@@ -46,6 +46,7 @@ namespace ThumbnailMaker
 			{
 				TB_SpeedLimit.LabelText = $"Speed Limit ({(RegionTypeControl.SelectedValue == RegionType.USA ? "mph" : "km/h")})";
 
+				RoadLane.GlobalSpeed = int.MinValue;
 				Options.Current.Region = GetRegion();
 				Options.Save();
 
@@ -410,19 +411,7 @@ namespace ThumbnailMaker
 
 		private void DrawThumbnail(Graphics graphics, List<ThumbnailLaneInfo> lanes, bool small, bool tooltip)
 		{
-			new ThumbnailHandler(graphics, small, tooltip)
-			{
-				RoadWidth = Utilities.VanillaWidth(Options.Current.VanillaWidths, Math.Max(TB_Size.Text.SmartParseF(), Utilities.CalculateRoadSize(lanes, TB_BufferSize.Text.SmartParseF()))),
-				CustomText = TB_CustomText.Text,
-				BufferSize = Math.Max(0, TB_BufferSize.Text.SmartParseF()),
-				RegionType = GetRegion(),
-				RoadType = GetRoadType(),
-				LHT = Options.Current.LHT,
-				SideTexture = SideTextureControl.SelectedValue,
-				AsphaltStyle = AsphaltTextureControl.SelectedValue,
-				Speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse(),
-				Lanes = new List<ThumbnailLaneInfo>(lanes)
-			}.Draw();
+			new ThumbnailHandler(graphics, GetRoadInfo(), small, tooltip).Draw();
 		}
 
 		private void FLP_Tags_ControlAdded(object sender, ControlEventArgs e)
