@@ -189,6 +189,9 @@ namespace ThumbnailMaker.Handlers
 
 		public static string GetRoadDescription(RoadInfo road, bool signature = true)
 		{
+			if (road == null)
+				return string.Empty;
+
 			var oneWay = IsOneWay(road.Lanes);
 			var asymetrical = road.Lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards).Count() != road.Lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Forward).Count() && road.Lanes.Any(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards);
 			var sb = new List<string>();

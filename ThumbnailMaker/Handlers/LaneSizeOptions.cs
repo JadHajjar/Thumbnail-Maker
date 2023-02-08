@@ -13,6 +13,18 @@ namespace ThumbnailMaker.Domain
 		private readonly Dictionary<LaneType, float> _sizes;
 		private float _diagonalParkingSize;
 		private float _horizontalParkingSize;
+		private RoadSortMode _sortMode;
+
+		public RoadSortMode SortMode
+		{
+			get => _sortMode;
+			set
+			{
+				_sortMode = value;
+
+				Save();
+			}
+		}
 
 		public float DiagonalParkingSize
 		{
@@ -63,6 +75,7 @@ namespace ThumbnailMaker.Domain
 						Version = 1,
 						DiagonalParkingSize = _diagonalParkingSize,
 						HorizontalParkingSize = _horizontalParkingSize,
+						SortMode = _sortMode,
 						LaneTypes = _sizes.Keys.Cast<int>().ToList(),
 						LaneSizes = _sizes.Values.ToList(),
 					});
@@ -95,6 +108,7 @@ namespace ThumbnailMaker.Domain
 
 						_diagonalParkingSize = savedSettings.DiagonalParkingSize;
 						_horizontalParkingSize = savedSettings.HorizontalParkingSize;
+						_sortMode = savedSettings.SortMode;
 						_sizes = new Dictionary<LaneType, float>();
 
 						for (var i = 0; i < savedSettings.LaneTypes.Count; i++)
@@ -166,6 +180,7 @@ namespace ThumbnailMaker.Domain
 			public int Version { get; set; }
 			public float DiagonalParkingSize { get; set; }
 			public float HorizontalParkingSize { get; set; }
+			public RoadSortMode SortMode { get; set; }
 			public List<int> LaneTypes { get; set; }
 			public List<float> LaneSizes { get; set; }
 		}

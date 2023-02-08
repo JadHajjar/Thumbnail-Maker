@@ -232,7 +232,7 @@
 			this.TB_ExportFolder.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_ExportFolder.Image = ((System.Drawing.Image)(resources.GetObject("TB_ExportFolder.Image")));
 			this.TB_ExportFolder.LabelText = "Custom Export Folder";
-			this.TB_ExportFolder.Location = new System.Drawing.Point(458, 94);
+			this.TB_ExportFolder.Location = new System.Drawing.Point(482, 94);
 			this.TB_ExportFolder.Margin = new System.Windows.Forms.Padding(20, 10, 20, 0);
 			this.TB_ExportFolder.Name = "TB_ExportFolder";
 			this.TB_ExportFolder.Padding = new System.Windows.Forms.Padding(4, 20, 24, 4);
@@ -240,7 +240,7 @@
 			this.TB_ExportFolder.SelectedText = "";
 			this.TB_ExportFolder.SelectionLength = 0;
 			this.TB_ExportFolder.SelectionStart = 0;
-			this.TB_ExportFolder.Size = new System.Drawing.Size(175, 43);
+			this.TB_ExportFolder.Size = new System.Drawing.Size(151, 43);
 			this.TB_ExportFolder.TabIndex = 3;
 			this.TB_ExportFolder.Validation = SlickControls.ValidationType.Number;
 			this.TB_ExportFolder.TextChanged += new System.EventHandler(this.TB_ExportFolder_TextChanged);
@@ -255,7 +255,7 @@
 			this.DD_Font.Image = ((System.Drawing.Image)(resources.GetObject("DD_Font.Image")));
 			this.DD_Font.Items = null;
 			this.DD_Font.LabelText = "Custom Thumbnail Font";
-			this.DD_Font.Location = new System.Drawing.Point(458, 52);
+			this.DD_Font.Location = new System.Drawing.Point(482, 52);
 			this.DD_Font.Margin = new System.Windows.Forms.Padding(20, 10, 20, 0);
 			this.DD_Font.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.DD_Font.MinimumSize = new System.Drawing.Size(50, 0);
@@ -266,7 +266,7 @@
 			this.DD_Font.SelectedText = "";
 			this.DD_Font.SelectionLength = 0;
 			this.DD_Font.SelectionStart = 0;
-			this.DD_Font.Size = new System.Drawing.Size(175, 32);
+			this.DD_Font.Size = new System.Drawing.Size(151, 32);
 			this.DD_Font.TabIndex = 1;
 			this.DD_Font.TextChanged += new System.EventHandler(this.DD_Font_TextChanged);
 			// 
@@ -280,7 +280,7 @@
 			this.DD_RoadSortingMode.Image = ((System.Drawing.Image)(resources.GetObject("DD_RoadSortingMode.Image")));
 			this.DD_RoadSortingMode.Items = null;
 			this.DD_RoadSortingMode.LabelText = "Road Sorting Mode";
-			this.DD_RoadSortingMode.Location = new System.Drawing.Point(458, 10);
+			this.DD_RoadSortingMode.Location = new System.Drawing.Point(482, 10);
 			this.DD_RoadSortingMode.Margin = new System.Windows.Forms.Padding(20, 10, 20, 0);
 			this.DD_RoadSortingMode.MaximumSize = new System.Drawing.Size(9999, 0);
 			this.DD_RoadSortingMode.MinimumSize = new System.Drawing.Size(50, 0);
@@ -291,7 +291,7 @@
 			this.DD_RoadSortingMode.SelectedText = "";
 			this.DD_RoadSortingMode.SelectionLength = 0;
 			this.DD_RoadSortingMode.SelectionStart = 0;
-			this.DD_RoadSortingMode.Size = new System.Drawing.Size(175, 32);
+			this.DD_RoadSortingMode.Size = new System.Drawing.Size(151, 32);
 			this.DD_RoadSortingMode.TabIndex = 1;
 			this.DD_RoadSortingMode.TextChanged += new System.EventHandler(this.DD_RoadSortingMode_TextChanged);
 			// 
@@ -388,7 +388,7 @@
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(432, 146);
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(456, 146);
 			this.tableLayoutPanel4.TabIndex = 23;
 			// 
 			// slickSpacer3
@@ -398,7 +398,7 @@
 			this.slickSpacer3.Location = new System.Drawing.Point(3, 103);
 			this.slickSpacer3.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
 			this.slickSpacer3.Name = "slickSpacer3";
-			this.slickSpacer3.Size = new System.Drawing.Size(426, 1);
+			this.slickSpacer3.Size = new System.Drawing.Size(450, 1);
 			this.slickSpacer3.TabIndex = 25;
 			this.slickSpacer3.TabStop = false;
 			this.slickSpacer3.Text = "slickSpacer3";
@@ -526,9 +526,9 @@
 			this.CB_DisplayLaneWidths.Name = "CB_DisplayLaneWidths";
 			this.CB_DisplayLaneWidths.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
 			this.CB_DisplayLaneWidths.Selected = false;
-			this.CB_DisplayLaneWidths.Size = new System.Drawing.Size(190, 26);
+			this.CB_DisplayLaneWidths.Size = new System.Drawing.Size(240, 26);
 			this.CB_DisplayLaneWidths.TabIndex = 17;
-			this.CB_DisplayLaneWidths.Text = "Add lane widths in thumbnail";
+			this.CB_DisplayLaneWidths.Text = "Add lane widths & speeds in thumbnail";
 			this.CB_DisplayLaneWidths.UncheckedText = null;
 			this.CB_DisplayLaneWidths.CheckChanged += new System.EventHandler(this.CB_LHT_CheckChanged);
 			// 

@@ -160,32 +160,7 @@ namespace ThumbnailMaker
 
 		private void B_CopyDesc_Click(object sender, EventArgs e)
 		{
-			if (!string.IsNullOrWhiteSpace(TB_RoadDesc.Text))
-			{
-				Clipboard.SetText(TB_RoadDesc.Text);
-				return;
-			}
-
-			var roadInfo = new RoadInfo
-			{
-				CustomName = TB_RoadName.Text,
-				CustomText = TB_CustomText.Text,
-				BufferWidth = TB_BufferSize.Text.SmartParseF(),
-				RoadWidth = TB_Size.Text.SmartParseF(),
-				RegionType = GetRegion(),
-				RoadType = GetRoadType(),
-				SideTexture = SideTextureControl.SelectedValue,
-				BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
-				AsphaltStyle = AsphaltTextureControl.SelectedValue,
-				SpeedLimit = (int)(TB_SpeedLimit.Text.SmartParse() * (RegionTypeControl.SelectedValue == RegionType.USA ? 1.609F : 1F)),
-				Lanes = GetLanes().Select(x => x.AsLaneInfo()).ToList(),
-				LHT = Options.Current.LHT,
-				VanillaWidth = Options.Current.VanillaWidths,
-			};
-
-			var desc = Utilities.GetRoadDescription(roadInfo);
-
-			Clipboard.SetText(desc);
+			Clipboard.SetText(L_RoadDesc.Text);
 		}
 
 		private void B_CopyRoadName_Click(object sender, EventArgs e)
@@ -874,8 +849,9 @@ namespace ThumbnailMaker
 			base.DesignChanged(design);
 
 			C_CurrentlyEditing.ForeColor = design.ActiveColor;
-			L_RoadDesc.ForeColor = design.InfoColor;
 			L_NoTags.ForeColor = design.LabelColor;
+			L_RoadName.ForeColor = design.ForeColor;
+			L_RoadDesc.ForeColor = design.InfoColor;
 
 			RefreshPreview();
 		}

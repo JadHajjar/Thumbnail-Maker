@@ -23,7 +23,6 @@ namespace ThumbnailMaker
 		public bool AddRoadWidthToName { get; set; }
 		public int RoadConfigColumns { get; set; } = 3;
 		public bool DisplayLaneWidths { get; set; }
-		public RoadSortMode RoadSortMode { get; set; }
 		public string BufferSize { get; set; } = 0.25.ToString();
 
 		public static void Save()

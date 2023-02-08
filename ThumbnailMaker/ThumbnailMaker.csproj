@@ -55,6 +55,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="SlickControls, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SlickControls.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -127,7 +131,7 @@
     <Compile Include="Domain\LaneDecoration.cs" />
     <Compile Include="Domain\ParkingAngle.cs" />
     <Compile Include="Domain\PropAngle.cs" />
-    <Compile Include="Domain\RoadSize.cs" />
+    <Compile Include="Domain\RoadSizeFilter.cs" />
     <Compile Include="Domain\TextureType.cs" />
     <Compile Include="Handlers\LaneSizeOptions.cs" />
     <Compile Include="Domain\RoadType.cs" />
@@ -339,12 +343,6 @@
     <None Include="Resources\I_Unavailable.png" />
     <None Include="Resources\I_2W.png" />
     <None Include="Resources\I_1WB.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\SlickControls\SlickControls.csproj">
-      <Project>{2c0e1d8a-6619-4116-98ee-3f9e6c937537}</Project>
-      <Name>SlickControls</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

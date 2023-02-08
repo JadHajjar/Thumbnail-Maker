@@ -62,7 +62,7 @@ namespace ThumbnailMaker.Controls
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
 			var rect = ClientRectangle;
-			var hoverState = HoverState;
+			var hoverState = (int)Convert.ChangeType(SelectedValue, typeof(int)) != 0 ? HoverState.Pressed : HoverState;
 
 			var back = hoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveColor : hoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ButtonColor : FormDesign.Design.AccentBackColor;
 			var fore = hoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : hoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.ButtonForeColor : FormDesign.Design.ForeColor;

@@ -163,6 +163,9 @@ namespace ThumbnailMaker.Controls
 						_roadLane.Lane.Type = _roadLane.Lane.Type.HasFlag(laneType) ? _roadLane.Lane.Type & ~laneType : _roadLane.Lane.Type | laneType;
 					}
 
+					if (!_roadLane.Lane.Type.HasAnyFlag(LaneType.Bike, LaneType.Car, LaneType.Bus, LaneType.Tram, LaneType.Trolley, LaneType.Emergency))
+						_roadLane.Lane.SpeedLimit = null;
+
 					Invalidate();
 					_roadLane.RefreshRoad();
 					return;

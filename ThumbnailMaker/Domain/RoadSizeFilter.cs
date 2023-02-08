@@ -1,6 +1,6 @@
 ﻿namespace ThumbnailMaker.Domain
 {
-	internal enum RoadSize
+	internal enum RoadSizeFilter
 	{
 		AnyRoadSize,
 		Tiny,

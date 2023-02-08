@@ -8,6 +8,7 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 using ThumbnailMaker.Domain;
 
@@ -407,12 +408,25 @@ namespace ThumbnailMaker.Handlers
 
 				Graphics.ResetClip();
 
-				Graphics.DrawLine(new Pen(Color.FromArgb(60, 60, 60), Small ? 1.5F : 4) { DashPattern = new[] { 3F, 4F, 3F, 10F } }, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y + barrierRect.Height);
+				Graphics.DrawLine(new Pen(Color.FromArgb(60, 60, 60), Small ? 1.5F : 4) { DashPattern = new[] { 4F*IdealWidthModifier, 5F * IdealWidthModifier, 4F * IdealWidthModifier, 10F * IdealWidthModifier } }, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y, barrierRect.X + (barrierRect.Width / 2), barrierRect.Y + barrierRect.Height);
 			}
 
 			if (!Small && Options.Current.DisplayLaneWidths)
 			{
-				Graphics.DrawString($"{lane.LaneWidth:0.##}m", GetFont(30F * Math.Min(1F, lane.LaneWidth / 3F) * IdealWidthModifier), new SolidBrush(lane.Sidewalk ? Color.FromArgb(50, 50, 50) : Color.FromArgb(230, 230, 230)), rect.Pad(-10, 365, -10, (ToolTip ? 36 : Small ? 30 : 120) - 20), new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
+				var sizeRect = rect.Pad(-10, 365, -10, (ToolTip ? 36 : Small ? 30 : 120) - 20);
+
+				if (lane.SpeedLimit != null)
+				{
+					using (var img = new Bitmap(80, 80, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+					using (var g = Graphics.FromImage(img))
+					{
+						DrawSpeedSignLarge(g, RegionType, (int)lane.SpeedLimit, new Rectangle(0, 0, 80, 80));
+
+						Graphics.DrawImage(img, sizeRect.Pad(0, -rect.Width - (int)(35F * Math.Min(1F, lane.LaneWidth / 3F) * IdealWidthModifier), 0, 0).CenterR(rect.Width * 75 / 100, rect.Width * 75 / 100));
+					}
+				}
+
+				Graphics.DrawString($"{lane.LaneWidth:0.##}m", GetFont(30F * Math.Min(0.9F, lane.LaneWidth / 3F) * IdealWidthModifier), new SolidBrush(lane.Sidewalk ? Color.FromArgb(50, 50, 50) : Color.FromArgb(230, 230, 230)), sizeRect, new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center });
 			}
 		}
 
@@ -448,7 +462,7 @@ namespace ThumbnailMaker.Handlers
 
 				if (lane.Type == LaneType.Car && leftLane.Type == LaneType.Car && leftLane.Direction == lane.Direction)
 				{
-					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 200, 200, 200), Small ? 1F : 2F) { DashPattern = Small ? new[] { 5F, 4F } : new[] { 15F, 6F } }, rect.X, bottomArea.Y, rect.X, bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 200, 200, 200), (Small ? 1F : 2F)) { DashPattern = Small ? new[] { 11F * IdealWidthModifier, 7F * IdealWidthModifier } : new[] { 15F * IdealWidthModifier, 8F * IdealWidthModifier } }, rect.X, bottomArea.Y, rect.X, bottomArea.Y + bottomArea.Height);
 				}
 			}
 
@@ -466,7 +480,7 @@ namespace ThumbnailMaker.Handlers
 
 				if (lane.Type == LaneType.Car && rightLane.Type == LaneType.Car && rightLane.Direction == lane.Direction)
 				{
-					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 200, 200, 200), Small ? 1F : 2F) { DashPattern = Small ? new[] { 5F, 4F } : new[] { 15F, 6F } }, rect.X + rect.Width, bottomArea.Y, rect.X + rect.Width, bottomArea.Y + bottomArea.Height);
+					Graphics.DrawLine(new Pen(Color.FromArgb(Small ? 175 : 255, 200, 200, 200), Small ? 1F : 2F) { DashPattern = Small ? new[] { 11F * IdealWidthModifier, 7F * IdealWidthModifier } : new[] { 15F * IdealWidthModifier, 8F * IdealWidthModifier } }, rect.X + rect.Width, bottomArea.Y, rect.X + rect.Width, bottomArea.Y + bottomArea.Height);
 				}
 			}
 		}

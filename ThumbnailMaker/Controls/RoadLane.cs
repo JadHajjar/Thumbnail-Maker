@@ -26,6 +26,7 @@ namespace ThumbnailMaker.Controls
 
 		public RoadLane(ThumbnailLaneInfo lane = null)
 		{
+			TabStop = false;
 			AllowDrop = true;
 			Dock = DockStyle.Top;
 			Lane = lane ?? new ThumbnailLaneInfo();

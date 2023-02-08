@@ -117,7 +117,7 @@ namespace ThumbnailMaker
 			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.TLP_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.TLP_Main.Size = new System.Drawing.Size(1181, 574);
-			this.TLP_Main.TabIndex = 8;
+			this.TLP_Main.TabIndex = 0;
 			// 
 			// RCC
 			// 
@@ -659,7 +659,7 @@ namespace ThumbnailMaker
 			this.panel1.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(890, 440);
-			this.panel1.TabIndex = 0;
+			this.panel1.TabIndex = 1;
 			// 
 			// slickScroll1
 			// 
@@ -728,7 +728,7 @@ namespace ThumbnailMaker
 			this.TLP_Buttons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.TLP_Buttons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.TLP_Buttons.Size = new System.Drawing.Size(890, 33);
-			this.TLP_Buttons.TabIndex = 2;
+			this.TLP_Buttons.TabIndex = 0;
 			this.TLP_Buttons.Resize += new System.EventHandler(this.TLP_Buttons_Resize);
 			// 
 			// slickSpacer3

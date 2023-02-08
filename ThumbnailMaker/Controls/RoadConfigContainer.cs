@@ -21,7 +21,7 @@ namespace ThumbnailMaker.Controls
 	{
 		public static RoadConfigContainer _instance;
 		private readonly FilterSelectionControl<RoadTypeFilter> RoadTypeControl;
-		private readonly FilterSelectionControl<RoadSize> RoadSizeControl;
+		private readonly FilterSelectionControl<RoadSizeFilter> RoadSizeControl;
 
 		public List<string> LoadedTags { get; private set; }
 		public List<string> AutoTags { get; private set; }
@@ -33,7 +33,7 @@ namespace ThumbnailMaker.Controls
 			InitializeComponent();
 
 			RoadTypeControl = new FilterSelectionControl<RoadTypeFilter>() { Icon = Properties.Resources.I_RoadType };
-			RoadSizeControl = new FilterSelectionControl<RoadSize>() { Icon = Properties.Resources.I_Size };
+			RoadSizeControl = new FilterSelectionControl<RoadSizeFilter>() { Icon = Properties.Resources.I_Size };
 
 			RoadTypeControl.SelectedValueChanged += (s, e) => TB_Search_TextChanged(null, null);
 			RoadSizeControl.SelectedValueChanged += (s, e) => TB_Search_TextChanged(null, null);
@@ -148,7 +148,7 @@ namespace ThumbnailMaker.Controls
 							ctrl.BringToFront();
 						}
 
-						switch (Options.Current.RoadSortMode)
+						switch (LaneSizeOptions.LaneSizes.SortMode)
 						{
 							case RoadSortMode.DateCreated:
 								P_Configs.OrderByDescending(x => (x as RoadConfigControl).Road.DateCreated);
@@ -209,27 +209,27 @@ namespace ThumbnailMaker.Controls
 					|| item.Road.Name.SearchCheck(TB_Search.Text)
 					|| item.Road.Description.SearchCheck(TB_Search.Text))
 					&& (RoadTypeControl.SelectedValue == RoadTypeFilter.AnyRoadType || item.Road.RoadType == (RoadType)((int)RoadTypeControl.SelectedValue - 1))
-					&& (RoadSizeControl.SelectedValue == RoadSize.AnyRoadSize || Match(item.Road, RoadSizeControl.SelectedValue));
+					&& (RoadSizeControl.SelectedValue == RoadSizeFilter.AnyRoadSize || Match(item.Road, RoadSizeControl.SelectedValue));
 			}
 			P_Configs.ResumeDrawing();
 		}
 
-		private bool Match(RoadInfo road, RoadSize selectedValue)
+		private bool Match(RoadInfo road, RoadSizeFilter selectedValue)
 		{
 			var width = road.TotalRoadWidth;
 
 			switch (selectedValue)
 			{
-				case RoadSize.Tiny:
-					return width.IsWithin(0, 16.01F);
-				case RoadSize.Small:
-					return width.IsWithin(16.01F, 24.01F);
-				case RoadSize.Medium:
-					return width.IsWithin(24.01F, 32.01F);
-				case RoadSize.Large:
-					return width.IsWithin(32.01F, 48.01F);
-				case RoadSize.VeryLarge:
-					return width.IsWithin(48.01F, int.MaxValue);
+				case RoadSizeFilter.Tiny:
+					return width <= 16F;
+				case RoadSizeFilter.Small:
+					return width > 16F && width <= 24F;
+				case RoadSizeFilter.Medium:
+					return width > 24F && width <= 32F;
+				case RoadSizeFilter.Large:
+					return width > 32F && width <= 48F;
+				case RoadSizeFilter.VeryLarge:
+					return width > 48F;
 				default:
 					return true;
 			}
@@ -247,7 +247,7 @@ namespace ThumbnailMaker.Controls
 				TB_Search.Text = string.Empty;
 			}
 
-			RoadSizeControl.SelectedValue = RoadSize.AnyRoadSize;
+			RoadSizeControl.SelectedValue = RoadSizeFilter.AnyRoadSize;
 			RoadTypeControl.SelectedValue = RoadTypeFilter.AnyRoadType;
 		}
 
