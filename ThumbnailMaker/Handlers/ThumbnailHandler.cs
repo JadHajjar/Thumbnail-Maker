@@ -129,6 +129,11 @@ namespace ThumbnailMaker.Handlers
 				DrawLaneLines(lane, laneRects[lane], availableSpace.Pad(0, 0, 0, LaneHeight(lane)));
 			}
 
+			foreach (var lane in Lanes.Where(x => (int)x.Type > 0))
+			{
+				DrawLane(lane, laneRects[lane], availableSpace.Pad(0, 0, 0, LaneHeight(lane)), IdealWidthModifier);
+			}
+
 			using (var logo = ResourceManager.Logo(Small))
 			{
 				if (logo != null)
@@ -137,11 +142,6 @@ namespace ThumbnailMaker.Handlers
 				}
 
 				DrawCustomText(new Rectangle(0, 0, Width, Height).Pad(0, logo?.Height ?? 0, 0, 0));
-			}
-
-			foreach (var lane in Lanes.Where(x => (int)x.Type > 0))
-			{
-				DrawLane(lane, laneRects[lane], availableSpace.Pad(0, 0, 0, LaneHeight(lane)), IdealWidthModifier);
 			}
 
 			DrawBottomContent();

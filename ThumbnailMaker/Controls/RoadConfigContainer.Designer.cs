@@ -245,7 +245,7 @@
 		private SlickControls.SlickButton B_ClearFilters;
 		private SlickControls.SlickSpacer slickSpacer4;
 		private System.Windows.Forms.FlowLayoutPanel FLP_Options;
-		private SlickControls.SlickTextBox TB_Search;
+		internal SlickControls.SlickTextBox TB_Search;
 		private SlickControls.SlickButton B_Folder;
 	}
 }

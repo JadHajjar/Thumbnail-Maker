@@ -97,6 +97,19 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(B_AddLane, "Add a new empty lane");
 		}
 
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			if (keyData == (Keys.Control | Keys.F))
+			{
+				if (RCC.Width == 0)
+					B_ViewSavedRoads_Click(null, null);
+				else
+					RCC.TB_Search.Focus();
+			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
 		private RoadLane AddLaneControl(ThumbnailLaneInfo item)
 		{
 			var ctrl = new RoadLane(item);
@@ -257,7 +270,7 @@ namespace ThumbnailMaker
 					P_Lanes.Controls.SetChildIndex(ctrl, 0);
 				}
 			}
-	
+
 			refreshPaused = false;
 			RefreshPreview();
 		}
@@ -398,10 +411,11 @@ namespace ThumbnailMaker
 		{
 			B_ViewSavedRoads.Text = RCC.Width.If(0, "Hide Roads", "Load Road");
 			B_ViewSavedRoads.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
-			RCC.Width = RCC.Width.If(0, 15 + Options.Current.RoadConfigColumns * (12 + (int)(100 * UI.UIScale)), 0);
+			RCC.Width = RCC.Width.If(0, 15 + (Options.Current.RoadConfigColumns * (12 + (int)(100 * UI.UIScale))), 0);
 			RCC.Visible = RCC.Width != 0;
 
 			Form.OnNextIdle(P_Lanes.PerformLayout);
+			RCC.TB_Search.Focus();
 		}
 
 		private void C_CurrentlyEditing_VisibleChanged(object sender, EventArgs e)

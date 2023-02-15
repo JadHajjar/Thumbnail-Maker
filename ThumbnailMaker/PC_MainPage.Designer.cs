@@ -289,7 +289,7 @@ namespace ThumbnailMaker
 			this.B_ViewSavedRoads.Size = new System.Drawing.Size(100, 27);
 			this.B_ViewSavedRoads.SpaceTriggersClick = true;
 			this.B_ViewSavedRoads.TabIndex = 2;
-			this.B_ViewSavedRoads.Text = "Load Road";
+			this.B_ViewSavedRoads.Text = "Show Roads";
 			this.B_ViewSavedRoads.Click += new System.EventHandler(this.B_ViewSavedRoads_Click);
 			// 
 			// B_Export
