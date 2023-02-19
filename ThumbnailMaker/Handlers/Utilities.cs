@@ -67,6 +67,11 @@ namespace ThumbnailMaker.Handlers
 				yield break;
 			}
 
+			if (road.Lanes.Any(x => x.Type.HasFlag(LaneType.Parking)))
+			{
+				yield return "Parking";
+			}
+
 			if (road.Lanes.Any(x => x.Type.HasFlag(LaneType.Tram)))
 			{
 				yield return "Tram";
