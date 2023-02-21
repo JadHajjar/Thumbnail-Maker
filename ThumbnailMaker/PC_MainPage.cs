@@ -301,6 +301,7 @@ namespace ThumbnailMaker
 
 				if (roadInfo.Lanes.FindIndex(x => x.Type == LaneType.Curb) + 1 == roadInfo.Lanes.FindLastIndex(x => x.Type == LaneType.Curb))
 				{
+					ShowPrompt("Road must have at least one lane on the asphalt to be exported", "Can't export road", PromptButtons.OK, PromptIcons.Info);
 					return;
 				}
 
