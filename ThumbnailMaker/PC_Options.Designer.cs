@@ -335,7 +335,6 @@
 			this.B_Theme.Anchor = System.Windows.Forms.AnchorStyles.Right;
 			this.B_Theme.ColorShade = null;
 			this.B_Theme.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_Theme.IconSize = 16;
 			this.B_Theme.Image = ((System.Drawing.Image)(resources.GetObject("B_Theme.Image")));
 			this.B_Theme.Location = new System.Drawing.Point(802, 3);
 			this.B_Theme.Margin = new System.Windows.Forms.Padding(3, 3, 15, 3);
@@ -352,7 +351,6 @@
 			this.B_ReExport.Anchor = System.Windows.Forms.AnchorStyles.Right;
 			this.B_ReExport.ColorShade = null;
 			this.B_ReExport.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_ReExport.IconSize = 16;
 			this.B_ReExport.Image = ((System.Drawing.Image)(resources.GetObject("B_ReExport.Image")));
 			this.B_ReExport.Location = new System.Drawing.Point(15, 3);
 			this.B_ReExport.Margin = new System.Windows.Forms.Padding(15, 3, 5, 3);
@@ -455,7 +453,6 @@
 			this.CB_LHT.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.CB_LHT.DefaultValue = false;
 			this.CB_LHT.HideText = false;
-			this.CB_LHT.IconSize = 16;
 			this.CB_LHT.Image = ((System.Drawing.Image)(resources.GetObject("CB_LHT.Image")));
 			this.CB_LHT.Location = new System.Drawing.Point(15, 5);
 			this.CB_LHT.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
@@ -478,7 +475,6 @@
 			this.CB_ColoredLanes.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.CB_ColoredLanes.DefaultValue = false;
 			this.CB_ColoredLanes.HideText = false;
-			this.CB_ColoredLanes.IconSize = 16;
 			this.CB_ColoredLanes.Image = ((System.Drawing.Image)(resources.GetObject("CB_ColoredLanes.Image")));
 			this.CB_ColoredLanes.Location = new System.Drawing.Point(223, 5);
 			this.CB_ColoredLanes.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
@@ -502,7 +498,6 @@
 			this.CB_AdvancedElevartion.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.CB_AdvancedElevartion.DefaultValue = false;
 			this.CB_AdvancedElevartion.HideText = false;
-			this.CB_AdvancedElevartion.IconSize = 16;
 			this.CB_AdvancedElevartion.Image = ((System.Drawing.Image)(resources.GetObject("CB_AdvancedElevartion.Image")));
 			this.CB_AdvancedElevartion.Location = new System.Drawing.Point(15, 36);
 			this.CB_AdvancedElevartion.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
@@ -526,7 +521,6 @@
 			this.CB_DisplayLaneWidths.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.CB_DisplayLaneWidths.DefaultValue = false;
 			this.CB_DisplayLaneWidths.HideText = false;
-			this.CB_DisplayLaneWidths.IconSize = 16;
 			this.CB_DisplayLaneWidths.Image = ((System.Drawing.Image)(resources.GetObject("CB_DisplayLaneWidths.Image")));
 			this.CB_DisplayLaneWidths.Location = new System.Drawing.Point(15, 98);
 			this.CB_DisplayLaneWidths.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
@@ -549,7 +543,6 @@
 			this.CB_VanillaWdiths.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.CB_VanillaWdiths.DefaultValue = false;
 			this.CB_VanillaWdiths.HideText = false;
-			this.CB_VanillaWdiths.IconSize = 16;
 			this.CB_VanillaWdiths.Image = ((System.Drawing.Image)(resources.GetObject("CB_VanillaWdiths.Image")));
 			this.CB_VanillaWdiths.Location = new System.Drawing.Point(223, 36);
 			this.CB_VanillaWdiths.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
@@ -573,7 +566,6 @@
 			this.CB_AddRoadWidthToName.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.CB_AddRoadWidthToName.DefaultValue = false;
 			this.CB_AddRoadWidthToName.HideText = false;
-			this.CB_AddRoadWidthToName.IconSize = 16;
 			this.CB_AddRoadWidthToName.Image = ((System.Drawing.Image)(resources.GetObject("CB_AddRoadWidthToName.Image")));
 			this.CB_AddRoadWidthToName.Location = new System.Drawing.Point(15, 67);
 			this.CB_AddRoadWidthToName.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
@@ -624,7 +616,6 @@
 			this.CB_UseGameUnitsForWidth.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.CB_UseGameUnitsForWidth.DefaultValue = false;
 			this.CB_UseGameUnitsForWidth.HideText = false;
-			this.CB_UseGameUnitsForWidth.IconSize = 16;
 			this.CB_UseGameUnitsForWidth.Image = ((System.Drawing.Image)(resources.GetObject("CB_UseGameUnitsForWidth.Image")));
 			this.CB_UseGameUnitsForWidth.Location = new System.Drawing.Point(223, 67);
 			this.CB_UseGameUnitsForWidth.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);
@@ -647,7 +638,6 @@
 			this.CB_DisplayCustomLaneSpeedsOnThumbnail.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.CB_DisplayCustomLaneSpeedsOnThumbnail.DefaultValue = false;
 			this.CB_DisplayCustomLaneSpeedsOnThumbnail.HideText = false;
-			this.CB_DisplayCustomLaneSpeedsOnThumbnail.IconSize = 16;
 			this.CB_DisplayCustomLaneSpeedsOnThumbnail.Image = ((System.Drawing.Image)(resources.GetObject("CB_DisplayCustomLaneSpeedsOnThumbnail.Image")));
 			this.CB_DisplayCustomLaneSpeedsOnThumbnail.Location = new System.Drawing.Point(223, 98);
 			this.CB_DisplayCustomLaneSpeedsOnThumbnail.Margin = new System.Windows.Forms.Padding(15, 5, 3, 0);

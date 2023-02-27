@@ -22,6 +22,9 @@ namespace ThumbnailMaker
 			{ Options.Current = ISave.Load<Options>("LaneOptions.tf"); }
 			catch { Options.Current = new Options(); }
 
+			if (Environment.OSVersion.Version.Major == 6)
+				SetProcessDPIAware();
+
 			try
 			{
 				Application.EnableVisualStyles();
@@ -31,5 +34,8 @@ namespace ThumbnailMaker
 			catch (Exception ex)
 			{ MessageBox.Show(ex.ToString(), "App failed to start"); }
 		}
+
+		[System.Runtime.InteropServices.DllImport("user32.dll")]
+		private static extern bool SetProcessDPIAware();
 	}
 }

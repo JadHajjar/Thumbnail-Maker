@@ -94,7 +94,7 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(B_Options, "Change the colors & icons of lane types as well as other options");
 			SlickTip.SetTo(B_DuplicateFlip, "Duplicates the current lanes to the right and flips their direction");
 			SlickTip.SetTo(B_FlipLanes, "Flips the whole road to create its opposite variation");
-			SlickTip.SetTo(B_AddLane, "Add a new empty lane");
+			SlickTip.SetTo(B_AddLane, "Add a new empty lane\r\nRight click: positions at the start\r\nMiddle click: positions it at the end\r\nLeft click: positions it at right side of the asphalt");
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -121,7 +121,7 @@ namespace ThumbnailMaker
 			return ctrl;
 		}
 
-		private void B_Add_MouseClick(object sender, MouseEventArgs e)
+		private void B_AddLane_MouseClick(object sender, MouseEventArgs e)
 		{
 			var ctrl = new RoadLane();
 
@@ -886,8 +886,8 @@ namespace ThumbnailMaker
 			L_RoadName.Font = UI.Font(9.75F, FontStyle.Bold);
 			L_RoadDesc.Font = L_NoTags.Font = UI.Font(7.5F);
 
-			TLP_Main.ColumnStyles[TLP_Main.ColumnStyles.Count - 2].Width = (float)(276 * UI.UIScale);
-			PB.Size = UI.Scale(new Size(256, 256), UI.UIScale);
+			TLP_Main.ColumnStyles[TLP_Main.ColumnStyles.Count - 2].Width = (float)(276 * UI.FontScale);
+			PB.Size = UI.Scale(new Size(256, 256), UI.FontScale);
 		}
 	}
 }

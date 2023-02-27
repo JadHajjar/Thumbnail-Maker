@@ -70,7 +70,7 @@ namespace ThumbnailMaker.Controls
 				, new Rectangle(3, Width + 2, Width - 6, UI.Font(7.5F, FontStyle.Bold).Height.ClosestMultipleTo(Height - Width + 3))
 				, new StringFormat { Alignment = StringAlignment.Center });
 
-			Height = Width + 6 + (int)e.Graphics.MeasureString(Road.Name.Trim().Replace(" ", " ")
+			Height = Width + 6 + (int)e.Graphics.Measure(Road.Name.Trim().Replace(" ", " ")
 				, UI.Font(7.5F, FontStyle.Bold)
 				, Width - 6).Height;
 

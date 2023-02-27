@@ -71,6 +71,11 @@ namespace ThumbnailMaker.Controls
 				yield return new Warning(TraceLevel.Warning, "Invalid transit stops detected", "Some filler lanes that you've added stops to are too small to work properly.");
 			}
 
+			if (Road.Lanes.Any(x => x.Decorations.HasFlag(LaneDecoration.TransitStop) && x.Type == LaneType.Pedestrian && Road.Lanes.IndexOf(x).IsWithin(Road.Lanes.IndexOf(Road.Lanes.First(y => y.Type == LaneType.Curb)), Road.Lanes.IndexOf(Road.Lanes.Last(y => y.Type == LaneType.Curb)))))
+			{
+				yield return new Warning(TraceLevel.Info, "Use fillers for transit stops", "Fillers with transit stops usually give you a more accurate result for your stops compared to pedestrian lanes with transit stops.");
+			}
+
 			if (Road.Description.Length > 1024)
 			{
 				yield return new Warning(TraceLevel.Warning, "Road description is too long", "The maximum length for a road description is 500 characters, your road description currently exceeds that.");
@@ -141,7 +146,7 @@ namespace ThumbnailMaker.Controls
 			var y = 3;
 			foreach (var w in Warnings.OrderByDescending(x => x.Level))
 			{
-				var h = (int)e.Graphics.MeasureString(w.Title, UI.Font(8.25F), Width - 36).Height;
+				var h = (int)e.Graphics.Measure(w.Title, UI.Font(8.25F), Width - 36).Height;
 				var fore = FormDesign.Design.ForeColor;
 
 				switch (w.Level)

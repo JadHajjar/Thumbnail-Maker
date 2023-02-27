@@ -75,7 +75,7 @@ namespace ThumbnailMaker.Controls
 			var cancelRect = new Rectangle(Width - 36, 0, 36, Height);
 			var undoRect = new Rectangle(0, 0, 36, Height);
 
-			var newHeight = 18 + (int)e.Graphics.MeasureString(Road.Name.Trim().Replace(" ", " ")
+			var newHeight = 18 + (int)e.Graphics.Measure(Road.Name.Trim().Replace(" ", " ")
 				, UI.Font(8.25F, FontStyle.Bold), ClientRectangle.Pad(cancelRect.Width, 16, cancelRect.Width, 0).Width).Height;
 
 			if (newHeight != Height)

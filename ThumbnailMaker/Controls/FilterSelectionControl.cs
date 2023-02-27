@@ -47,7 +47,7 @@ namespace ThumbnailMaker.Controls
 
 			using (var g = CreateGraphics())
 			{
-				Width = Height + 3 + (int)EnumType.GetEnumNames().Max(x => g.MeasureString(x.FormatWords(), UI.Font(8.25F, FontStyle.Bold)).Width);
+				Width = Height + 3 + (int)EnumType.GetEnumNames().Max(x => g.Measure(x.FormatWords(), UI.Font(8.25F, FontStyle.Bold)).Width);
 			}
 		}
 

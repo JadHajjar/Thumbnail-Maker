@@ -39,8 +39,8 @@
 			this.FLP_Tags = new System.Windows.Forms.FlowLayoutPanel();
 			this.B_ClearFilters = new SlickControls.SlickButton();
 			this.FLP_Options = new System.Windows.Forms.FlowLayoutPanel();
-			this.Loader = new SlickControls.SlickPictureBox();
 			this.B_Folder = new SlickControls.SlickButton();
+			this.Loader = new SlickControls.SlickPictureBox();
 			this.P_Container.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Loader)).BeginInit();
@@ -62,9 +62,9 @@
 			// 
 			this.slickScroll2.Dock = System.Windows.Forms.DockStyle.Right;
 			this.slickScroll2.LinkedControl = this.P_Configs;
-			this.slickScroll2.Location = new System.Drawing.Point(564, 0);
+			this.slickScroll2.Location = new System.Drawing.Point(565, 0);
 			this.slickScroll2.Name = "slickScroll2";
-			this.slickScroll2.Size = new System.Drawing.Size(6, 382);
+			this.slickScroll2.Size = new System.Drawing.Size(5, 382);
 			this.slickScroll2.SmallHandle = true;
 			this.slickScroll2.Style = SlickControls.StyleType.Vertical;
 			this.slickScroll2.TabIndex = 7;
@@ -124,7 +124,6 @@
 			this.TB_Search.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
 			this.TB_Search.Dock = System.Windows.Forms.DockStyle.Top;
 			this.TB_Search.EnterTriggersClick = false;
-			this.TB_Search.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TB_Search.Image = ((System.Drawing.Image)(resources.GetObject("TB_Search.Image")));
 			this.TB_Search.LabelText = "Search Configurations";
 			this.TB_Search.Location = new System.Drawing.Point(10, 10);
@@ -137,7 +136,7 @@
 			this.TB_Search.SelectedText = "";
 			this.TB_Search.SelectionLength = 0;
 			this.TB_Search.SelectionStart = 0;
-			this.TB_Search.Size = new System.Drawing.Size(490, 39);
+			this.TB_Search.Size = new System.Drawing.Size(490, 44);
 			this.TB_Search.TabIndex = 3;
 			this.TB_Search.Validation = SlickControls.ValidationType.Decimal;
 			this.TB_Search.TextChanged += new System.EventHandler(this.TB_Search_TextChanged);
@@ -159,7 +158,7 @@
 			this.FLP_Tags.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.tableLayoutPanel1.SetColumnSpan(this.FLP_Tags, 3);
 			this.FLP_Tags.Dock = System.Windows.Forms.DockStyle.Top;
-			this.FLP_Tags.Location = new System.Drawing.Point(7, 83);
+			this.FLP_Tags.Location = new System.Drawing.Point(7, 86);
 			this.FLP_Tags.Margin = new System.Windows.Forms.Padding(0);
 			this.FLP_Tags.Name = "FLP_Tags";
 			this.FLP_Tags.Size = new System.Drawing.Size(570, 0);
@@ -171,9 +170,8 @@
 			this.B_ClearFilters.ColorShade = null;
 			this.B_ClearFilters.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.B_ClearFilters.HandleUiScale = false;
-			this.B_ClearFilters.IconSize = 16;
 			this.B_ClearFilters.Image = ((System.Drawing.Image)(resources.GetObject("B_ClearFilters.Image")));
-			this.B_ClearFilters.Location = new System.Drawing.Point(544, 12);
+			this.B_ClearFilters.Location = new System.Drawing.Point(544, 14);
 			this.B_ClearFilters.Name = "B_ClearFilters";
 			this.B_ClearFilters.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
 			this.B_ClearFilters.Size = new System.Drawing.Size(30, 30);
@@ -187,11 +185,26 @@
 			this.FLP_Options.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.tableLayoutPanel1.SetColumnSpan(this.FLP_Options, 3);
 			this.FLP_Options.Dock = System.Windows.Forms.DockStyle.Top;
-			this.FLP_Options.Location = new System.Drawing.Point(7, 54);
+			this.FLP_Options.Location = new System.Drawing.Point(7, 59);
 			this.FLP_Options.Margin = new System.Windows.Forms.Padding(0);
 			this.FLP_Options.Name = "FLP_Options";
 			this.FLP_Options.Size = new System.Drawing.Size(570, 0);
 			this.FLP_Options.TabIndex = 20;
+			// 
+			// B_Folder
+			// 
+			this.B_Folder.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.B_Folder.ColorShade = null;
+			this.B_Folder.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.B_Folder.HandleUiScale = false;
+			this.B_Folder.Image = global::ThumbnailMaker.Properties.Resources.I_Folder;
+			this.B_Folder.Location = new System.Drawing.Point(508, 14);
+			this.B_Folder.Name = "B_Folder";
+			this.B_Folder.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
+			this.B_Folder.Size = new System.Drawing.Size(30, 30);
+			this.B_Folder.SpaceTriggersClick = true;
+			this.B_Folder.TabIndex = 17;
+			this.B_Folder.Click += new System.EventHandler(this.B_Folder_Click);
 			// 
 			// Loader
 			// 
@@ -201,22 +214,6 @@
 			this.Loader.Size = new System.Drawing.Size(32, 32);
 			this.Loader.TabIndex = 8;
 			this.Loader.TabStop = false;
-			// 
-			// B_Folder
-			// 
-			this.B_Folder.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.B_Folder.ColorShade = null;
-			this.B_Folder.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_Folder.HandleUiScale = false;
-			this.B_Folder.IconSize = 16;
-			this.B_Folder.Image = global::ThumbnailMaker.Properties.Resources.I_Folder;
-			this.B_Folder.Location = new System.Drawing.Point(508, 12);
-			this.B_Folder.Name = "B_Folder";
-			this.B_Folder.Padding = new System.Windows.Forms.Padding(10, 5, 10, 5);
-			this.B_Folder.Size = new System.Drawing.Size(30, 30);
-			this.B_Folder.SpaceTriggersClick = true;
-			this.B_Folder.TabIndex = 17;
-			this.B_Folder.Click += new System.EventHandler(this.B_Folder_Click);
 			// 
 			// RoadConfigContainer
 			// 

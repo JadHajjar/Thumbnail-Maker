@@ -1,5 +1,7 @@
 ﻿using Extensions;
 
+using SlickControls;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -739,16 +741,16 @@ namespace ThumbnailMaker.Handlers
 		private void DrawCustomText(Rectangle containerRect)
 		{
 			containerRect = containerRect.Pad(0, Small ? 3 : 10, 0, containerRect.Height * 2 / 3 + containerRect.Y);
-			var font = string.IsNullOrWhiteSpace(Options.Current.TextFont) ? GetFont(ToolTip ? 12.75F : Small ? 9F : 38F, FontStyle.Bold) : new Font(Options.Current.TextFont, Small ? 9F : 38F, FontStyle.Bold);
+			var font = GetFont(ToolTip ? 12.75F : Small ? 9F : 38F, FontStyle.Bold);
 
 			while (font.Size > 0.75F)
 			{
-				if (Graphics.MeasureString(Road.CustomText, font, containerRect.Width).Height <= containerRect.Height)
+				if (Graphics.Measure(Road.CustomText, font, containerRect.Width).Height <= containerRect.Height)
 				{
 					break;
 				}
 
-				font = new Font(font.FontFamily, font.Size - 0.75F, font.Style);
+				font = new Font(font.FontFamily, font.Size - 1, font.Style, GraphicsUnit.Pixel);
 			}
 
 			if (!Small)
@@ -773,7 +775,7 @@ namespace ThumbnailMaker.Handlers
 		private void DrawRoadWidth(Rectangle containerRect)
 		{
 			var text = Options.Current.UseGameUnitsForWidth && Road.TotalRoadWidth % 8 == 0 ? $"{Road.TotalRoadWidth / 8:0}U" : $"{Road.TotalRoadWidth:0.##}m";
-			var sizeSize = (int)Graphics.MeasureString(text, GetFont(ToolTip ? 14F : Small ? 11F : 40F, FontStyle.Bold)).Width;
+			var sizeSize = (int)Graphics.Measure(text, GetFont(ToolTip ? 14F : Small ? 11F : 40F, FontStyle.Bold)).Width;
 			var rect = containerRect.Pad(0, Small ? 4 : 14, 0, 0).CenterR(sizeSize + (Small ? 4 : 38), ToolTip ? 30 : Small ? 20 : 80);
 
 			Graphics.SmoothingMode = SmoothingMode.HighQuality;

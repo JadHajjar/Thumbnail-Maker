@@ -281,7 +281,6 @@ namespace ThumbnailMaker
 			this.B_ViewSavedRoads.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.B_ViewSavedRoads.ColorShade = null;
 			this.B_ViewSavedRoads.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_ViewSavedRoads.IconSize = 16;
 			this.B_ViewSavedRoads.Image = ((System.Drawing.Image)(resources.GetObject("B_ViewSavedRoads.Image")));
 			this.B_ViewSavedRoads.Location = new System.Drawing.Point(168, 82);
 			this.B_ViewSavedRoads.Name = "B_ViewSavedRoads";
@@ -299,7 +298,6 @@ namespace ThumbnailMaker
 			this.B_Export.ColorShade = null;
 			this.tableLayoutPanel2.SetColumnSpan(this.B_Export, 2);
 			this.B_Export.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_Export.IconSize = 16;
 			this.B_Export.Image = ((System.Drawing.Image)(resources.GetObject("B_Export.Image")));
 			this.B_Export.Location = new System.Drawing.Point(3, 49);
 			this.B_Export.Name = "B_Export";
@@ -314,7 +312,6 @@ namespace ThumbnailMaker
 			// 
 			this.B_SaveThumb.ColorShade = null;
 			this.B_SaveThumb.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_SaveThumb.IconSize = 16;
 			this.B_SaveThumb.Image = ((System.Drawing.Image)(resources.GetObject("B_SaveThumb.Image")));
 			this.B_SaveThumb.Location = new System.Drawing.Point(3, 82);
 			this.B_SaveThumb.Name = "B_SaveThumb";
@@ -373,7 +370,6 @@ namespace ThumbnailMaker
 			this.B_EditDesc.ColorShade = null;
 			this.B_EditDesc.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.B_EditDesc.HandleUiScale = false;
-			this.B_EditDesc.IconSize = 16;
 			this.B_EditDesc.Image = ((System.Drawing.Image)(resources.GetObject("B_EditDesc.Image")));
 			this.B_EditDesc.Location = new System.Drawing.Point(238, 391);
 			this.B_EditDesc.Name = "B_EditDesc";
@@ -389,7 +385,6 @@ namespace ThumbnailMaker
 			this.B_EditName.ColorShade = null;
 			this.B_EditName.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.B_EditName.HandleUiScale = false;
-			this.B_EditName.IconSize = 16;
 			this.B_EditName.Image = ((System.Drawing.Image)(resources.GetObject("B_EditName.Image")));
 			this.B_EditName.Location = new System.Drawing.Point(238, 312);
 			this.B_EditName.Name = "B_EditName";
@@ -447,7 +442,6 @@ namespace ThumbnailMaker
 			this.B_AddTag.ColorShade = null;
 			this.B_AddTag.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.B_AddTag.HandleUiScale = false;
-			this.B_AddTag.IconSize = 16;
 			this.B_AddTag.Image = global::ThumbnailMaker.Properties.Resources.I_AddTag;
 			this.B_AddTag.Location = new System.Drawing.Point(238, 427);
 			this.B_AddTag.Name = "B_AddTag";
@@ -665,9 +659,9 @@ namespace ThumbnailMaker
 			// 
 			this.slickScroll1.Dock = System.Windows.Forms.DockStyle.Right;
 			this.slickScroll1.LinkedControl = this.P_Lanes;
-			this.slickScroll1.Location = new System.Drawing.Point(884, 0);
+			this.slickScroll1.Location = new System.Drawing.Point(885, 0);
 			this.slickScroll1.Name = "slickScroll1";
-			this.slickScroll1.Size = new System.Drawing.Size(6, 440);
+			this.slickScroll1.Size = new System.Drawing.Size(5, 440);
 			this.slickScroll1.SmallHandle = true;
 			this.slickScroll1.Style = SlickControls.StyleType.Vertical;
 			this.slickScroll1.TabIndex = 1;
@@ -746,7 +740,6 @@ namespace ThumbnailMaker
 			this.B_FlipLanes.Anchor = System.Windows.Forms.AnchorStyles.Right;
 			this.B_FlipLanes.ColorShade = null;
 			this.B_FlipLanes.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_FlipLanes.IconSize = 16;
 			this.B_FlipLanes.Image = global::ThumbnailMaker.Properties.Resources.I_2W;
 			this.B_FlipLanes.Location = new System.Drawing.Point(705, 3);
 			this.B_FlipLanes.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
@@ -764,7 +757,6 @@ namespace ThumbnailMaker
 			this.B_DuplicateFlip.Anchor = System.Windows.Forms.AnchorStyles.Right;
 			this.B_DuplicateFlip.ColorShade = null;
 			this.B_DuplicateFlip.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_DuplicateFlip.IconSize = 16;
 			this.B_DuplicateFlip.Image = ((System.Drawing.Image)(resources.GetObject("B_DuplicateFlip.Image")));
 			this.B_DuplicateFlip.Location = new System.Drawing.Point(611, 3);
 			this.B_DuplicateFlip.Margin = new System.Windows.Forms.Padding(5, 3, 10, 3);
@@ -783,7 +775,6 @@ namespace ThumbnailMaker
 			this.B_AddLane.ColorShade = null;
 			this.B_AddLane.ColorStyle = Extensions.ColorStyle.Green;
 			this.B_AddLane.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_AddLane.IconSize = 16;
 			this.B_AddLane.Image = ((System.Drawing.Image)(resources.GetObject("B_AddLane.Image")));
 			this.B_AddLane.Location = new System.Drawing.Point(799, 3);
 			this.B_AddLane.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
@@ -794,7 +785,7 @@ namespace ThumbnailMaker
 			this.B_AddLane.TabIndex = 0;
 			this.B_AddLane.Tag = "Add Lane";
 			this.B_AddLane.Text = "Add Lane";
-			this.B_AddLane.MouseClick += new System.Windows.Forms.MouseEventHandler(this.B_Add_MouseClick);
+			this.B_AddLane.MouseClick += new System.Windows.Forms.MouseEventHandler(this.B_AddLane_MouseClick);
 			// 
 			// B_ClearLines
 			// 
@@ -802,7 +793,6 @@ namespace ThumbnailMaker
 			this.B_ClearLines.ColorShade = null;
 			this.B_ClearLines.ColorStyle = Extensions.ColorStyle.Red;
 			this.B_ClearLines.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_ClearLines.IconSize = 16;
 			this.B_ClearLines.Image = ((System.Drawing.Image)(resources.GetObject("B_ClearLines.Image")));
 			this.B_ClearLines.Location = new System.Drawing.Point(510, 3);
 			this.B_ClearLines.Margin = new System.Windows.Forms.Padding(3, 3, 5, 3);
@@ -820,7 +810,6 @@ namespace ThumbnailMaker
 			this.B_Options.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.B_Options.ColorShade = null;
 			this.B_Options.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.B_Options.IconSize = 16;
 			this.B_Options.Image = ((System.Drawing.Image)(resources.GetObject("B_Options.Image")));
 			this.B_Options.Location = new System.Drawing.Point(3, 3);
 			this.B_Options.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
