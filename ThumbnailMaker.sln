@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{CEE3BA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlickControls", "..\SlickControls\SlickControls.csproj", "{2C0E1D8A-6619-4116-98EE-3F9E6C937537}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions", "..\Extensions\Extensions.csproj", "{50EA98FD-47B0-40BC-A51E-3DEFB2525F2C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions", "..\Extensions\Extensions\Extensions.csproj", "{50EA98FD-47B0-40BC-A51E-3DEFB2525F2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

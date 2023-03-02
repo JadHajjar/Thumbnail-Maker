@@ -72,7 +72,9 @@ namespace ThumbnailMaker
 
 		public static void SetLogo(bool small, string fileName)
 		{
-			var path = $"{Utilities.Folder}\\Resources\\{(small ? "S" : "L")}_Logo.png";
+			var path = Path.Combine(Utilities.Folder, "Resources", $"{(small ? "S" : "L")}_Logo.png");
+
+			Directory.CreateDirectory(Path.Combine(Utilities.Folder, "Resources"));
 
 			if (string.IsNullOrWhiteSpace(fileName) || !File.Exists(fileName))
 			{

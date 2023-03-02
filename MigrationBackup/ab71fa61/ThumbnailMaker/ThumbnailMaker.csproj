@@ -51,6 +51,9 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -190,6 +193,7 @@
     <EmbeddedResource Include="SaveThumbDialog.resx">
       <DependentUpon>SaveThumbDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -333,7 +337,7 @@
     <None Include="Resources\I_1WB.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Extensions\Extensions\Extensions.csproj">
+    <ProjectReference Include="..\..\Extensions\Extensions.csproj">
       <Project>{50ea98fd-47b0-40bc-a51e-3defb2525f2c}</Project>
       <Name>Extensions</Name>
     </ProjectReference>
@@ -341,11 +345,6 @@
       <Project>{2c0e1d8a-6619-4116-98ee-3f9e6c937537}</Project>
       <Name>SlickControls</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>9.0.1</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

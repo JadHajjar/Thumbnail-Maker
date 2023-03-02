@@ -143,7 +143,7 @@ namespace ThumbnailMaker.Handlers
 					Graphics.DrawImage(logo, new Rectangle(new Point((Width - logo.Width) / 2, Small ? 3 : 10), logo.Size));
 				}
 
-				DrawCustomText(new Rectangle(0, 0, Width, Height).Pad(0, logo?.Height ?? 0, 0, 0));
+				DrawCustomText(new Rectangle(0, 0, Width, Height).Pad(0, (logo?.Height ?? 0).If(x => x > Height / 2, 0), 0, 0));
 			}
 
 			DrawBottomContent();
@@ -743,7 +743,7 @@ namespace ThumbnailMaker.Handlers
 			containerRect = containerRect.Pad(0, Small ? 3 : 10, 0, containerRect.Height * 2 / 3 + containerRect.Y);
 			var font = GetFont(ToolTip ? 12.75F : Small ? 9F : 38F, FontStyle.Bold);
 
-			while (font.Size > 0.75F)
+			while (font.Size > 1F)
 			{
 				if (Graphics.Measure(Road.CustomText, font, containerRect.Width).Height <= containerRect.Height)
 				{
