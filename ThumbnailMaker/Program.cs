@@ -3,8 +3,6 @@
 using System;
 using System.Windows.Forms;
 
-using ThumbnailMaker.Handlers;
-
 namespace ThumbnailMaker
 {
 
@@ -16,17 +14,19 @@ namespace ThumbnailMaker
 		[STAThread]
 		private static void Main(string[] args)
 		{
-			SlickControls.SlickCursors.Initialize();
-
-			try
-			{ Options.Current = ISave.Load<Options>("LaneOptions.tf"); }
-			catch { Options.Current = new Options(); }
-
-			if (Environment.OSVersion.Version.Major == 6)
-				SetProcessDPIAware();
-
 			try
 			{
+				SlickControls.SlickCursors.Initialize();
+
+				try
+				{ Options.Current = ISave.Load<Options>("LaneOptions.tf"); }
+				catch { Options.Current = new Options(); }
+
+				if (Environment.OSVersion.Version.Major == 6)
+				{
+					SetProcessDPIAware();
+				}
+
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault(false);
 				Application.Run(new MainForm());

@@ -73,6 +73,9 @@
     <Compile Include="Controls\FilterSelectionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\OptionMultiSelectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\WarningsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -116,6 +119,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Domain\AsphaltStyle.cs" />
+    <Compile Include="Domain\RoadElevation.cs" />
     <Compile Include="Domain\FillerPadding.cs" />
     <Compile Include="Domain\LaneDecoration.cs" />
     <Compile Include="Domain\ParkingAngle.cs" />
@@ -210,6 +214,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\I_Noo.png" />
+    <None Include="Resources\L_D_21.png" />
+    <None Include="Resources\S_D_21.png" />
     <None Include="Resources\S_D_20.png" />
     <None Include="Resources\L_D_20.png" />
     <None Include="Resources\I_Checked.png" />

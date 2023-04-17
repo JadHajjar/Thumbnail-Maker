@@ -39,15 +39,11 @@
 			// 
 			// CB_Small
 			// 
-			this.CB_Small.ActiveColor = null;
 			this.CB_Small.AutoSize = true;
-			this.CB_Small.Center = false;
 			this.CB_Small.Checked = false;
 			this.CB_Small.CheckedText = null;
 			this.CB_Small.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.CB_Small.DefaultValue = false;
-			this.CB_Small.HideText = false;
-			this.CB_Small.Image = ((System.Drawing.Image)(resources.GetObject("CB_Small.Image")));
 			this.CB_Small.Location = new System.Drawing.Point(341, 212);
 			this.CB_Small.Name = "CB_Small";
 			this.CB_Small.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
@@ -58,15 +54,11 @@
 			// 
 			// CB_Tooltip
 			// 
-			this.CB_Tooltip.ActiveColor = null;
 			this.CB_Tooltip.AutoSize = true;
-			this.CB_Tooltip.Center = false;
 			this.CB_Tooltip.Checked = false;
 			this.CB_Tooltip.CheckedText = null;
 			this.CB_Tooltip.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.CB_Tooltip.DefaultValue = false;
-			this.CB_Tooltip.HideText = false;
-			this.CB_Tooltip.Image = ((System.Drawing.Image)(resources.GetObject("CB_Tooltip.Image")));
 			this.CB_Tooltip.Location = new System.Drawing.Point(337, 212);
 			this.CB_Tooltip.Name = "CB_Tooltip";
 			this.CB_Tooltip.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);

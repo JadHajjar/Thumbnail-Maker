@@ -45,9 +45,6 @@
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PB_512)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.slickIcon1)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.slickIcon2)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.slickIcon3)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -172,10 +169,8 @@
 			this.slickIcon1.Image = global::ThumbnailMaker.Properties.Resources.I_Size;
 			this.slickIcon1.Location = new System.Drawing.Point(18, 82);
 			this.slickIcon1.Margin = new System.Windows.Forms.Padding(10);
-			this.slickIcon1.MinimumIconSize = 18;
 			this.slickIcon1.Name = "slickIcon1";
 			this.slickIcon1.Size = new System.Drawing.Size(16, 16);
-			this.slickIcon1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.slickIcon1.TabIndex = 7;
 			this.slickIcon1.TabStop = false;
 			this.slickIcon1.Click += new System.EventHandler(this.slickIcon1_Click);
@@ -188,10 +183,8 @@
 			this.slickIcon2.Image = global::ThumbnailMaker.Properties.Resources.I_Size;
 			this.slickIcon2.Location = new System.Drawing.Point(18, 121);
 			this.slickIcon2.Margin = new System.Windows.Forms.Padding(10);
-			this.slickIcon2.MinimumIconSize = 18;
 			this.slickIcon2.Name = "slickIcon2";
 			this.slickIcon2.Size = new System.Drawing.Size(16, 16);
-			this.slickIcon2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.slickIcon2.TabIndex = 7;
 			this.slickIcon2.TabStop = false;
 			this.slickIcon2.Visible = false;
@@ -205,10 +198,8 @@
 			this.slickIcon3.Image = global::ThumbnailMaker.Properties.Resources.I_Size;
 			this.slickIcon3.Location = new System.Drawing.Point(18, 160);
 			this.slickIcon3.Margin = new System.Windows.Forms.Padding(10);
-			this.slickIcon3.MinimumIconSize = 18;
 			this.slickIcon3.Name = "slickIcon3";
 			this.slickIcon3.Size = new System.Drawing.Size(16, 16);
-			this.slickIcon3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.slickIcon3.TabIndex = 7;
 			this.slickIcon3.TabStop = false;
 			this.slickIcon3.Visible = false;
@@ -301,9 +292,6 @@
 			this.tableLayoutPanel1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PB_512)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.slickIcon1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.slickIcon2)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.slickIcon3)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

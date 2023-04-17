@@ -26,6 +26,7 @@ namespace ThumbnailMaker
 		public string BufferSize { get; set; } = 0.25.ToString();
 		public bool UseGameUnitsForWidth { get; set; }
 		public bool DisplayCustomLaneSpeedsOnThumbnail { get; set; }
+		public bool HideSkyInThumb { get; set; }
 
 		public static void Save()
 		{

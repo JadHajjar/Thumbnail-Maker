@@ -20,8 +20,8 @@ namespace ThumbnailMaker.Controls
 	public partial class RoadConfigContainer : UserControl
 	{
 		public static RoadConfigContainer _instance;
-		private readonly FilterSelectionControl<RoadTypeFilter> RoadTypeControl;
-		private readonly FilterSelectionControl<RoadSizeFilter> RoadSizeControl;
+		private readonly OptionSelectionControl<RoadTypeFilter> RoadTypeControl;
+		private readonly OptionSelectionControl<RoadSizeFilter> RoadSizeControl;
 
 		public List<string> LoadedTags { get; private set; }
 		public List<string> AutoTags { get; private set; }
@@ -32,11 +32,11 @@ namespace ThumbnailMaker.Controls
 		{
 			InitializeComponent();
 
-			RoadTypeControl = new FilterSelectionControl<RoadTypeFilter>() { Icon = Properties.Resources.I_RoadType };
-			RoadSizeControl = new FilterSelectionControl<RoadSizeFilter>() { Icon = Properties.Resources.I_Size };
+			RoadTypeControl = new OptionSelectionControl<RoadTypeFilter>((_) => Properties.Resources.I_RoadType.Color(FormDesign.Design.ForeColor)) { Small = true };
+			RoadSizeControl = new OptionSelectionControl<RoadSizeFilter>((_) => Properties.Resources.I_Size.Color(FormDesign.Design.ForeColor)) { Small = true };
 
-			RoadTypeControl.SelectedValueChanged += (s, e) => TB_Search_TextChanged(null, null);
-			RoadSizeControl.SelectedValueChanged += (s, e) => TB_Search_TextChanged(null, null);
+			RoadTypeControl.SelectedItemChanged += (s, e) => TB_Search_TextChanged(null, null);
+			RoadSizeControl.SelectedItemChanged += (s, e) => TB_Search_TextChanged(null, null);
 
 			FLP_Options.Controls.Add(RoadTypeControl);
 			FLP_Options.Controls.Add(RoadSizeControl);
@@ -211,8 +211,8 @@ namespace ThumbnailMaker.Controls
 					&& (string.IsNullOrWhiteSpace(TB_Search.Text)
 					|| item.Road.Name.SearchCheck(TB_Search.Text)
 					|| item.Road.Description.SearchCheck(TB_Search.Text))
-					&& (RoadTypeControl.SelectedValue == RoadTypeFilter.AnyRoadType || item.Road.RoadType == (RoadType)((int)RoadTypeControl.SelectedValue - 1))
-					&& (RoadSizeControl.SelectedValue == RoadSizeFilter.AnyRoadSize || Match(item.Road, RoadSizeControl.SelectedValue));
+					&& (RoadTypeControl.SelectedItem == RoadTypeFilter.AnyRoadType || item.Road.RoadType == (RoadType)((int)RoadTypeControl.SelectedItem - 1))
+					&& (RoadSizeControl.SelectedItem == RoadSizeFilter.AnyRoadSize || Match(item.Road, RoadSizeControl.SelectedItem));
 			}
 			P_Configs.ResumeDrawing();
 		}
@@ -250,8 +250,8 @@ namespace ThumbnailMaker.Controls
 				TB_Search.Text = string.Empty;
 			}
 
-			RoadSizeControl.SelectedValue = RoadSizeFilter.AnyRoadSize;
-			RoadTypeControl.SelectedValue = RoadTypeFilter.AnyRoadType;
+			RoadSizeControl.SelectedItem = RoadSizeFilter.AnyRoadSize;
+			RoadTypeControl.SelectedItem = RoadTypeFilter.AnyRoadType;
 		}
 
 		private void B_Folder_Click(object sender, EventArgs e)

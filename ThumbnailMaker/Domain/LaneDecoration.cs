@@ -61,5 +61,8 @@ namespace ThumbnailMaker.Domain
 
 		[StyleIdentity(20, 107, 64, 52, Order = 9)]
 		LampPost = 1 << 18,
+
+		[StyleIdentity(21, 128, 49, 37, Order = 19)]
+		BusBay = 1 << 19,
 	}
 }

@@ -10,7 +10,7 @@ namespace ThumbnailMaker.Handlers
 {
 	internal class LegacyUtil
 	{
-		public const int CURRENT_VERSION = 1;
+		public const int CURRENT_VERSION = 2;
 
 		public static int ExtractVersion(string xmlData)
 		{
@@ -41,6 +41,18 @@ namespace ThumbnailMaker.Handlers
 					using (var stream = File.OpenRead(fileName))
 					{
 						return (RoadInfo)xml.Deserialize(stream);
+					}
+
+				case 1:
+					xml = new XmlSerializer(typeof(RoadInfo));
+
+					using (var stream = File.OpenRead(fileName))
+					{
+						var road = (RoadInfo)xml.Deserialize(stream);
+
+						road.HighwayRules = road.RoadType == RoadType.Highway;
+
+						return road;
 					}
 
 				case 0:

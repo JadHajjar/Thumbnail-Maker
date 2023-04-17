@@ -26,25 +26,27 @@ namespace ThumbnailMaker
 		{
 			InitializeComponent();
 
-			RoadTypeControl = new OptionSelectionControl<RoadType>(t => ResourceManager.GetRoadType(t, false, false)) { Dock = DockStyle.Top };
-			GB_RoadType.Controls.Add(RoadTypeControl);
-			RegionTypeControl = new OptionSelectionControl<RegionType>((g, r, t) => ThumbnailHandler.DrawSpeedSignSmall(g, t, 20, r)) { Dock = DockStyle.Top };
-			GB_Region.Controls.Add(RegionTypeControl);
-			SideTextureControl = new OptionSelectionControl<TextureType>(GetTextureIcon) { Dock = DockStyle.Top };
-			GB_SideTexture.Controls.Add(SideTextureControl);
-			BridgeSideTextureControl = new OptionSelectionControl<BridgeTextureType>(GetTextureIcon) { Dock = DockStyle.Top };
-			GB_BridgeSideTexture.Controls.Add(BridgeSideTextureControl);
-			AsphaltTextureControl = new OptionSelectionControl<AsphaltStyle>(GetTextureIcon) { Dock = DockStyle.Top };
-			GB_AsphaltTexture.Controls.Add(AsphaltTextureControl);
+			RoadTypeControl = new OptionSelectionControl<RoadType>(t => ResourceManager.GetRoadType(t, false, false)) { Dock = DockStyle.Top, Text = "Road Type" };
+			TLP_TopControls.Controls.Add(RoadTypeControl, 0, 0);
+			RegionTypeControl = new OptionSelectionControl<RegionType>((g, r, t) => ThumbnailHandler.DrawSpeedSignSmall(g, t, 20, r)) { Dock = DockStyle.Top, Text = "Speed Sign Region" };
+			TLP_TopControls.Controls.Add(RegionTypeControl, 1, 0);
+			SideTextureControl = new OptionSelectionControl<TextureType>(GetTextureIcon) { Dock = DockStyle.Top, Text = "Ground Side-Texture" };
+			TLP_TopControls.Controls.Add(SideTextureControl, 2, 0);
+			BridgeSideTextureControl = new OptionSelectionControl<BridgeTextureType>(GetTextureIcon) { Dock = DockStyle.Top, Text = "Bridge Side-Texture" };
+			TLP_TopControls.Controls.Add(BridgeSideTextureControl, 3, 0);
+			AsphaltTextureControl = new OptionSelectionControl<AsphaltStyle>(GetTextureIcon) { Dock = DockStyle.Top, Text = "Asphalt Style" };
+			TLP_TopControls.Controls.Add(AsphaltTextureControl, 4, 0);
+			ElevationTypeControl = new OptionMultiSelectionControl<RoadElevation>() { Dock = DockStyle.Top, Text = "Elevations" };
+			TLP_TopControls.Controls.Add(ElevationTypeControl, 5, 0);
 
-			RegionTypeControl.SelectedValue = Options.Current.Region;
+			RegionTypeControl.SelectedItem = Options.Current.Region;
 
-			RoadTypeControl.SelectedValueChanged += (s, e) => SetupType(RoadTypeControl.SelectedValue);
-			SideTextureControl.SelectedValueChanged += (s, e) => RefreshPreview();
-			AsphaltTextureControl.SelectedValueChanged += (s, e) => RefreshPreview();
-			RegionTypeControl.SelectedValueChanged += (s, e) =>
+			RoadTypeControl.SelectedItemChanged += (s, e) => SetupType(RoadTypeControl.SelectedItem);
+			SideTextureControl.SelectedItemChanged += (s, e) => RefreshPreview();
+			AsphaltTextureControl.SelectedItemChanged += (s, e) => RefreshPreview();
+			RegionTypeControl.SelectedItemChanged += (s, e) =>
 			{
-				TB_SpeedLimit.LabelText = $"Speed Limit ({(RegionTypeControl.SelectedValue == RegionType.USA ? "mph" : "km/h")})";
+				TB_SpeedLimit.LabelText = $"Speed Limit ({(RegionTypeControl.SelectedItem == RegionType.USA ? "mph" : "km/h")})";
 
 				RoadLane.GlobalSpeed = int.MinValue;
 				Options.Current.Region = GetRegion();
@@ -53,7 +55,7 @@ namespace ThumbnailMaker
 				RefreshPreview();
 			};
 
-			SetupType(RoadTypeControl.SelectedValue);
+			SetupType(RoadTypeControl.SelectedItem);
 
 			using (var img = new Bitmap(65 * 2, 24 * 2))
 			using (var g = Graphics.FromImage(img))
@@ -101,10 +103,15 @@ namespace ThumbnailMaker
 		{
 			if (keyData == (Keys.Control | Keys.F))
 			{
-				if (RCC.Width == 0)
+				if (RCC.Parent.Width == 0)
 					B_ViewSavedRoads_Click(null, null);
 				else
 					RCC.TB_Search.Focus();
+			}
+
+			if (keyData == (Keys.Control | Keys.Tab))
+			{
+				B_ViewSavedRoads_Click(null, null);
 			}
 
 			return base.ProcessCmdKey(ref msg, keyData);
@@ -167,19 +174,24 @@ namespace ThumbnailMaker
 			TB_SpeedLimit.Text = string.Empty;
 			P_Lanes.Controls.Clear(true);
 
-			AsphaltTextureControl.SelectedValue = AsphaltStyle.Asphalt;
+			ElevationTypeControl.ResetValue();
+			AsphaltTextureControl.SelectedItem = AsphaltStyle.Asphalt;
 			refreshPaused = false;
-			SetupType(RoadTypeControl.SelectedValue);
+			SetupType(RoadTypeControl.SelectedItem);
 		}
 
 		private void B_CopyDesc_Click(object sender, EventArgs e)
 		{
-			Clipboard.SetText(L_RoadDesc.Text);
+			var roadInfo = GetRoadInfo();
+
+			Clipboard.SetText(roadInfo.Description.Substring(0, Math.Min(1024, roadInfo.Description.Length)));
 		}
 
 		private void B_CopyRoadName_Click(object sender, EventArgs e)
 		{
-			Clipboard.SetText(L_RoadName.Text);
+			var roadInfo = GetRoadInfo();
+
+			Clipboard.SetText(roadInfo.Name.Substring(0, Math.Min(32, roadInfo.Name.Length)));
 		}
 
 		private void B_DuplicateFlip_Click(object sender, EventArgs e)
@@ -410,10 +422,10 @@ namespace ThumbnailMaker
 
 		private void B_ViewSavedRoads_Click(object sender, EventArgs e)
 		{
-			B_ViewSavedRoads.Text = RCC.Width.If(0, "Hide Roads", "Load Road");
+			B_ViewSavedRoads.Text = RCC.Parent.Width.If(0, "Hide Roads", "Load Road");
 			B_ViewSavedRoads.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
-			RCC.Width = RCC.Width.If(0, 15 + (Options.Current.RoadConfigColumns * (12 + (int)(100 * UI.UIScale))), 0);
-			RCC.Visible = RCC.Width != 0;
+			RCC.Parent.Width = RCC.Parent.Width.If(0, 15 + RCC.Parent.Padding.Horizontal + (Options.Current.RoadConfigColumns * (12 + (int)(100 * UI.UIScale))), 0);
+			RCC.Parent.Visible = RCC.Parent.Width != 0;
 
 			Form.OnNextIdle(P_Lanes.PerformLayout);
 			RCC.TB_Search.Focus();
@@ -462,7 +474,7 @@ namespace ThumbnailMaker
 
 		private RegionType GetRegion()
 		{
-			return RegionTypeControl.SelectedValue;
+			return RegionTypeControl.SelectedItem;
 		}
 
 		private RoadInfo GetRoadInfo(List<ThumbnailLaneInfo> lanes = null)
@@ -476,21 +488,22 @@ namespace ThumbnailMaker
 				RoadWidth = TB_Size.Text.SmartParseF(),
 				RegionType = GetRegion(),
 				RoadType = GetRoadType(),
-				SideTexture = SideTextureControl.SelectedValue,
-				BridgeSideTexture = BridgeSideTextureControl.SelectedValue,
-				AsphaltStyle = AsphaltTextureControl.SelectedValue,
+				SideTexture = SideTextureControl.SelectedItem,
+				BridgeSideTexture = BridgeSideTextureControl.SelectedItem,
+				AsphaltStyle = AsphaltTextureControl.SelectedItem,
 				SpeedLimit = TB_SpeedLimit.Text.SmartParse(),
 				Lanes = (lanes ?? GetLanes()).Select(x => x.AsLaneInfo()).ToList(),
 				LHT = Options.Current.LHT,
 				VanillaWidth = Options.Current.VanillaWidths,
 				Tags = FLP_Tags.Controls.OfType<TagControl>().Select(x => x.Text).ToList(),
 				DateCreated = C_CurrentlyEditing.Road?.DateCreated ?? DateTime.Now,
+				DisabledElevations = ElevationTypeControl.SelectedItems.ToArray(),
 			};
 		}
 
 		private RoadType GetRoadType()
 		{
-			return RoadTypeControl.SelectedValue;
+			return RoadTypeControl.SelectedItem;
 		}
 
 		private Image GetTextureIcon(TextureType texture)
@@ -613,11 +626,20 @@ namespace ThumbnailMaker
 					});
 				}
 
-				RoadTypeControl.SelectedValue = r.RoadType;
-				RegionTypeControl.SelectedValue = r.RegionType;
-				SideTextureControl.SelectedValue = r.SideTexture;
-				BridgeSideTextureControl.SelectedValue = r.BridgeSideTexture;
-				AsphaltTextureControl.SelectedValue = r.AsphaltStyle;
+				RoadTypeControl.SelectedItem = r.RoadType;
+				RegionTypeControl.SelectedItem = r.RegionType;
+				SideTextureControl.SelectedItem = r.SideTexture;
+				BridgeSideTextureControl.SelectedItem = r.BridgeSideTexture;
+				AsphaltTextureControl.SelectedItem = r.AsphaltStyle;
+
+				ElevationTypeControl.ResetValue();
+				foreach (var item in r.DisabledElevations??new RoadElevation[0])
+				{
+					ElevationTypeControl.Select(item);
+				}
+
+				CB_CanCrossLanes.Checked = r.CanCrossLanes;
+				CB_HighwayRules.Checked = r.HighwayRules;
 
 				FLP_Tags.Controls.Clear(true, x => x is TagControl);
 
@@ -659,14 +681,21 @@ namespace ThumbnailMaker
 				var height = toolTip ? 147 : small ? 100 : 512;
 
 				var roadInfo = GetRoadInfo(lanes);
-				var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
+				using (var img = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 				using (var g = Graphics.FromImage(img))
 				{
 					DrawThumbnail(g, lanes, small || toolTip, toolTip);
 
-					PB.Image = img;
-					PB.SizeMode = small && !toolTip ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Zoom;
+					var actualImg = new Bitmap(PB.Width, PB.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+					using (var g2 = Graphics.FromImage(actualImg))
+					{
+						g2.SmoothingMode = SmoothingMode.HighQuality;
+						g2.DrawRoundedImage(img, new Rectangle(1, 1, PB.Width - 2, PB.Height - 2), TLP_Right.Padding.Left+1);
+						g2.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentBackColor, 1.5F), new Rectangle(1, 1, PB.Width - 2, PB.Height - 2), TLP_Right.Padding.Left);
+					}
+
+					PB.Image = actualImg;
+					PB.SizeMode = small && !toolTip ? PictureBoxSizeMode.Normal : PictureBoxSizeMode.Normal;
 				}
 
 				roadInfo.Name = roadInfo.CustomName.IfEmpty(Utilities.GetRoadName(roadInfo));
@@ -677,7 +706,7 @@ namespace ThumbnailMaker
 
 				C_Warnings.SetRoad(roadInfo);
 
-				var speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedValue == RegionType.USA) : TB_SpeedLimit.Text.SmartParse();
+				var speed = string.IsNullOrWhiteSpace(TB_SpeedLimit.Text) ? Utilities.DefaultSpeedSign(lanes, GetRoadType(), RegionTypeControl.SelectedItem == RegionType.USA) : TB_SpeedLimit.Text.SmartParse();
 
 				if (speed != RoadLane.GlobalSpeed || RoadLane.RoadType != GetRoadType())
 				{
@@ -743,13 +772,15 @@ namespace ThumbnailMaker
 
 			if (road == RoadType.Highway)
 			{
-				SideTextureControl.SelectedValue = TextureType.Gravel;
-				BridgeSideTextureControl.SelectedValue = BridgeTextureType.Asphalt;
+				SideTextureControl.SelectedItem = TextureType.Gravel;
+				BridgeSideTextureControl.SelectedItem = BridgeTextureType.Asphalt;
+				CB_HighwayRules.Checked = true;
 			}
 			else
 			{
-				SideTextureControl.SelectedValue = TextureType.Pavement;
-				BridgeSideTextureControl.SelectedValue = BridgeTextureType.Pavement;
+				SideTextureControl.SelectedItem = TextureType.Pavement;
+				BridgeSideTextureControl.SelectedItem = BridgeTextureType.Pavement;
+				CB_HighwayRules.Checked = false;
 			}
 
 			RefreshPreview();
@@ -886,8 +917,15 @@ namespace ThumbnailMaker
 			L_RoadName.Font = UI.Font(9.75F, FontStyle.Bold);
 			L_RoadDesc.Font = L_NoTags.Font = UI.Font(7.5F);
 
-			TLP_Main.ColumnStyles[TLP_Main.ColumnStyles.Count - 2].Width = (float)(276 * UI.FontScale);
-			PB.Size = UI.Scale(new Size(256, 256), UI.FontScale);
+			TLP_TopControls.Padding= TLP_TopControls.Margin=
+			TLP_Right.Padding = RCC.Parent.Padding = TLP_Right.Margin = RCC.Parent.Margin = UI.Scale(new Padding(5), UI.FontScale);
+
+			TLP_Right.Width = (int)(250 * UI.FontScale);
+		}
+
+		private void PB_SizeChanged(object sender, EventArgs e)
+		{
+			PB.Height = PB.Width;
 		}
 	}
 }

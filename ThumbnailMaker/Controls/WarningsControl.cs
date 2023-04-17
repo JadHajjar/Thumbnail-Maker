@@ -71,6 +71,16 @@ namespace ThumbnailMaker.Controls
 				yield return new Warning(TraceLevel.Warning, "Invalid transit stops detected", "Some filler lanes that you've added stops to are too small to work properly.");
 			}
 
+			if (Road.Lanes.Any(x => x.Decorations.HasFlag(LaneDecoration.TransitStop | LaneDecoration.BusBay)))
+			{
+				yield return new Warning(TraceLevel.Error, "Transit stops do not work with Bus Bays", "Place the transit stop on the lane next to the bus bay.");
+			}
+
+			if (Road.Lanes.Any(x => x.Decorations.HasFlag(LaneDecoration.BusBay) && x.LaneWidth < 2F))
+			{
+				yield return new Warning(TraceLevel.Warning, "Invalid bus bays detected", "It is better to have Bus Bays with a width of 2m or higher to give enough space for the bus to not stop traffic.");
+			}
+
 			if (Road.Lanes.Any(x => x.Decorations.HasFlag(LaneDecoration.TransitStop) && x.Type == LaneType.Pedestrian && Road.Lanes.IndexOf(x).IsWithin(Road.Lanes.IndexOf(Road.Lanes.First(y => y.Type == LaneType.Curb)), Road.Lanes.IndexOf(Road.Lanes.Last(y => y.Type == LaneType.Curb)))))
 			{
 				yield return new Warning(TraceLevel.Info, "Use fillers for transit stops", "Fillers with transit stops usually give you a more accurate result for your stops compared to pedestrian lanes with transit stops.");

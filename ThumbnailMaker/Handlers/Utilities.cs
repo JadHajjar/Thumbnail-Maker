@@ -378,6 +378,9 @@ namespace ThumbnailMaker.Handlers
 
 		public static bool IsCompatible(this LaneDecoration deco, LaneType laneClass)
 		{
+			if (laneClass != LaneType.Curb && deco == LaneDecoration.BusBay)
+				return false;
+
 			foreach (var item in laneClass.GetValues())
 			{
 				switch (item)

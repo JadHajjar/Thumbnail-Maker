@@ -54,8 +54,7 @@ namespace ThumbnailMaker.Controls
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+			e.Graphics.SetUp(BackColor);
 
 			var foreColor = HoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
 
@@ -74,11 +73,7 @@ namespace ThumbnailMaker.Controls
 				, UI.Font(7.5F, FontStyle.Bold)
 				, Width - 6).Height;
 
-			using (var image = new Bitmap(Image, new Size(Width, Width)))
-			using (var texture = new TextureBrush(image))
-			{
-				e.Graphics.FillRoundedRectangle(texture, new Rectangle(Point.Empty, new Size(Width - 1, Width - 2)), 6);
-			}
+			e.Graphics.DrawRoundedImage(Image, new Rectangle(Point.Empty, new Size(Width - 1, Width - 2)), 6);
 
 			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb((byte)(AnimatedValue * 1.75), BackColor)), ClientRectangle);
 
@@ -110,10 +105,13 @@ namespace ThumbnailMaker.Controls
 			{
 				SlickToolStrip.Show(FindForm() as SlickForm, PointToScreen(e.Location),
 					new SlickStripItem("Load configuration", () => LoadConfiguration?.Invoke(this, Road), Properties.Resources.I_Load),
+					new SlickStripItem(""),
 					new SlickStripItem("Copy thumbnail", CopyThumbnail, Properties.Resources.I_Copy),
 					new SlickStripItem("Copy file", CopyFile, Properties.Resources.I_Copy),
 					new SlickStripItem("Open file location", OpenFileLocation, Properties.Resources.I_Folder),
+					new SlickStripItem(""),
 					new SlickStripItem("Refresh thumbnail", RefreshThumbnail, Properties.Resources.I_Refresh),
+					new SlickStripItem(""),
 					new SlickStripItem("Delete configuration", DeleteConfiguration, Properties.Resources.I_Delete));
 				return;
 			}

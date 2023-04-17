@@ -249,6 +249,7 @@ namespace ThumbnailMaker.Controls
 
 			e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+			e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
 			yIndex = ((int)(35 * UI.UIScale) - scale) / 2;
 
@@ -1084,7 +1085,7 @@ namespace ThumbnailMaker.Controls
 
 			var change = GetModifierValue();
 
-			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round((Lane.LaneWidth - change) / change) * change);
+			SetCustomWidth((float)Math.Max(0.1, Math.Round((Lane.LaneWidth - change) / change) * change));
 
 			RefreshRoad();
 		}
@@ -1098,7 +1099,7 @@ namespace ThumbnailMaker.Controls
 
 			var change = GetModifierValue();
 
-			Lane.CustomWidth = (float)Math.Max(0.1, Math.Round((Lane.LaneWidth + change) / change) * change);
+			SetCustomWidth((float)Math.Max(0.1, Math.Round((Lane.LaneWidth + change) / change) * change));
 
 			RefreshRoad();
 		}
@@ -1110,9 +1111,25 @@ namespace ThumbnailMaker.Controls
 				return;
 			}
 
-			Lane.CustomWidth = null;
+			SetCustomWidth(null);
 
 			RefreshRoad();
+		}
+
+		private void SetCustomWidth(float? value)
+		{
+			Lane.CustomWidth = value;
+
+			if (Lane.Decorations.HasFlag(LaneDecoration.BusBay))
+			{
+				var otherLane = Parent.Controls.OfType<RoadLane>().FirstOrDefault(x => x != this && x.Lane.Decorations.HasFlag(LaneDecoration.BusBay));
+
+				if (otherLane != null)
+				{
+					otherLane.Lane.CustomWidth = value;
+					otherLane.Invalidate();
+				}
+			}
 		}
 	}
 }

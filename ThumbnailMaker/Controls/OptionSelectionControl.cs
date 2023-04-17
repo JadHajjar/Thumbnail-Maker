@@ -13,33 +13,15 @@ using ThumbnailMaker.Handlers;
 
 namespace ThumbnailMaker.Controls
 {
-	public class OptionSelectionControl<T> : SlickControl where T : Enum
+	public class OptionSelectionControl<T> : SlickSelectionDropDown<T> where T : Enum
 	{
-		private T _selectedValue;
+		private readonly Action<Graphics, Rectangle, T> _customDraw;
+        public bool Small { get; set; }
 
-		public Action<Graphics, Rectangle, T> DrawAction { get; private set; }
-		public Type EnumType { get; private set; }
-		public T SelectedValue
+        public OptionSelectionControl(Action<Graphics, Rectangle, T> customDraw)
 		{
-			get => _selectedValue;
-			set
-			{
-				_selectedValue = value;
-
-				Invalidate();
-
-				SelectedValueChanged?.Invoke(this, value);
-			}
-		}
-
-		public event System.EventHandler<T> SelectedValueChanged;
-
-		public OptionSelectionControl(Action<Graphics, Rectangle, T> customDraw)
-		{
-			Cursor = Cursors.Hand;
-			DrawAction = customDraw;
-			EnumType = typeof(T);
-			TabStop = false;
+			_customDraw = customDraw;
+			Items = typeof(T).GetEnumValues().Cast<T>().ToArray();
 		}
 
 		public OptionSelectionControl(Func<T, Image> image) : this((g, r, t) =>
@@ -50,215 +32,39 @@ namespace ThumbnailMaker.Controls
 
 		protected override void UIChanged()
 		{
-			base.UIChanged();
-
-			Height = (int)(32 * UI.FontScale);
-		}
-
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			if (EnumType == null || DrawAction == null)
+			if (Small)
 			{
+				Font = UI.Font(8.25F, FontStyle.Bold);
+				Margin = new Padding(3);
+				Padding = UI.Scale(new Padding(3), UI.FontScale);
+				Size = UI.Scale(new Size(140, 30), UI.UIScale);
 				return;
 			}
 
-			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+			Font = UI.Font(8.25F, FontStyle.Bold);
+			Margin = new Padding(3, 5, 5, 3);
+			Padding = UI.Scale(new Padding(3), UI.FontScale);
+			Size = UI.Scale(new Size(150, 37), UI.UIScale);
+		}
 
-			var rect = ClientRectangle;
-			var hoverState = HoverState;
+		protected override void PaintItem(PaintEventArgs e, Rectangle rectangle, Color foreColor, HoverState hoverState, T item)
+		{
+			var iconSize = UI.Scale(new Size(18, 18), UI.UIScale);
 
-			var back = hoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveColor : hoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.AccentBackColor : Color.Empty;
-			var fore = hoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
-
-			e.Graphics.FillRoundedRectangle(new SolidBrush(back), rect.Pad(1), 4);
-
-			if (rect.Width > 33 * UI.FontScale * 3)
+			if (rectangle.Width > 33 * UI.FontScale * 3)
 			{
-				var iconRect = new Rectangle(0, 0, rect.Height, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
+				_customDraw(e.Graphics, rectangle.Pad(Padding).Align(iconSize, ContentAlignment.MiddleLeft), item);
 
-				DrawAction(e.Graphics, iconRect, _selectedValue);
+				var textRect = new Rectangle(rectangle.X + iconSize.Width + Padding.Horizontal, rectangle.Y + (rectangle.Height - Font.Height) / 2, 0, Font.Height);
 
-				e.Graphics.DrawString(_selectedValue.ToString().FormatWords(), UI.Font(9.75F, FontStyle.Bold), new SolidBrush(fore), rect.Pad(rect.Height, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center });
+				textRect.Width = rectangle.Width - textRect.X;
+
+				var text = item.ToString().FormatWords();
+				e.Graphics.DrawString(text, Font, new SolidBrush(foreColor), textRect, new StringFormat { LineAlignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter });
 			}
 			else
 			{
-				var iconRect = new Rectangle(0, 0, rect.Width, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
-
-				DrawAction(e.Graphics, iconRect, _selectedValue);
-			}
-		}
-
-		protected override void OnMouseClick(MouseEventArgs e)
-		{
-			base.OnMouseClick(e);
-
-			if (e.Button == MouseButtons.Left)
-			{
-				new OptionSelectionForm<T>(this);
-			}
-		}
-	}
-
-	public class OptionSelectionForm<T> : Form where T : Enum
-	{
-		private readonly OptionSelectionControl<T> _control;
-
-		public OptionSelectionForm(OptionSelectionControl<T> control)
-		{
-			_control = control;
-
-			ShowIcon = false;
-			ShowInTaskbar = false;
-			DoubleBuffered = true;
-			ResizeRedraw = true;
-			FormBorderStyle = FormBorderStyle.None;
-			StartPosition = FormStartPosition.Manual;
-			MinimumSize = Size.Empty;
-
-			if (_control.Parent is GroupBox)
-			{
-				Location = new Point(_control.Parent.PointToScreen(Point.Empty).X, _control.PointToScreen(Point.Empty).Y);
-				Size = new Size(_control.Parent.Width, GetValues().Count() * (_control.Height + 6));
-			}
-			else
-			{
-				Location = new Point(_control.PointToScreen(Point.Empty).X - _control.Margin.Left, _control.PointToScreen(Point.Empty).Y);
-				Size = new Size(_control.Width + _control.Margin.Horizontal, GetValues().Count() * (_control.Height + 6));
-			}
-
-			if (_control.FindForm() is SlickForm form)
-			{
-				form.CurrentFormState = FormState.ForcedFocused;
-			}
-
-			Show(_control.FindForm());
-		}
-
-		private IEnumerable<T> GetValues()
-		{
-			return typeof(T).GetEnumValues().Cast<T>();
-		}
-
-		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-		{
-			if (keyData == Keys.Escape || keyData == Keys.Enter)
-			{
-				Close();
-				return true;
-			}
-
-			return base.ProcessCmdKey(ref msg, keyData);
-		}
-
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			e.Graphics.Clear(_control.Parent.BackColor);
-			e.Graphics.DrawRoundedRectangle(new Pen(FormDesign.Design.AccentColor), new Rectangle(0, -10, Width - 1, Height - 1 + 10), 4);
-			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-			e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-			var cursor = PointToClient(Cursor.Position);
-			var y = 0;
-
-			foreach (var item in GetValues())
-			{
-				var rect = new Rectangle(3, y, _control.Width, _control.Height);
-				var hoverState = _control.SelectedValue.Equals(item) ? HoverState.Pressed : rect.Contains(cursor) ? HoverState.Hovered : HoverState.Normal;
-				var back = hoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveColor : hoverState.HasFlag(HoverState.Hovered) ? FormDesign.Design.AccentBackColor : Color.Empty;
-				var fore = hoverState.HasFlag(HoverState.Pressed) ? FormDesign.Design.ActiveForeColor : FormDesign.Design.ForeColor;
-
-				e.Graphics.FillRoundedRectangle(new SolidBrush(back), rect.Pad(1), 4);
-
-				if (rect.Width > 33 * UI.FontScale * 3)
-				{
-					var iconRect = new Rectangle(3, y, rect.Height, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
-
-					_control.DrawAction(e.Graphics, iconRect, item);
-
-					e.Graphics.DrawString(item.ToString().FormatWords(), UI.Font(9.75F, FontStyle.Bold), new SolidBrush(fore), rect.Pad(rect.Height, 0, 0, 0), new StringFormat { LineAlignment = StringAlignment.Center });
-				}
-				else
-				{
-					var iconRect = new Rectangle(0, y, rect.Width, rect.Height).CenterR(UI.Scale(new Size(24, 24), UI.UIScale));
-
-					_control.DrawAction(e.Graphics, iconRect, item);
-				}
-
-				y += rect.Height + 6;
-			}
-		}
-
-		protected override void OnMouseClick(MouseEventArgs e)
-		{
-			base.OnMouseClick(e);
-
-			if (e.Button == MouseButtons.Right)
-			{
-				Close();
-			}
-
-			if (e.Button != MouseButtons.Left)
-			{
-				return;
-			}
-
-			var y = 0;
-
-			foreach (var item in GetValues())
-			{
-				var rect = new Rectangle(3, y, _control.Width, _control.Height);
-
-				if (rect.Contains(e.Location))
-				{
-					_control.SelectedValue = item;
-
-					Close();
-					return;
-				}
-
-				y += rect.Height + 6;
-			}
-		}
-
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			base.OnMouseMove(e);
-
-			Invalidate();
-
-			var y = 0;
-
-			foreach (var item in GetValues())
-			{
-				var rect = new Rectangle(3, y, _control.Width, _control.Height);
-
-				if (rect.Contains(e.Location))
-				{
-					Cursor = Cursors.Hand;
-					return;
-				}
-
-				y += rect.Height + 6;
-			}
-
-			Cursor = Cursors.Default;
-		}
-
-		protected override void OnDeactivate(EventArgs e)
-		{
-			base.OnDeactivate(e);
-
-			Close();
-		}
-
-		protected override void OnClosed(EventArgs e)
-		{
-			base.OnClosed(e);
-
-			if (_control.FindForm() is SlickForm form)
-			{
-				form.CurrentFormState = FormState.NormalFocused;
+				_customDraw(e.Graphics, rectangle.CenterR(iconSize), item);
 			}
 		}
 	}

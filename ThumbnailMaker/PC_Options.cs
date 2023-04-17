@@ -53,6 +53,7 @@ namespace ThumbnailMaker
 			CB_DisplayLaneWidths.Checked = Options.Current.DisplayLaneWidths;
 			CB_UseGameUnitsForWidth.Checked = Options.Current.UseGameUnitsForWidth;
 			CB_DisplayCustomLaneSpeedsOnThumbnail.Checked = Options.Current.DisplayCustomLaneSpeedsOnThumbnail;
+			CB_HideSky.Checked = Options.Current.HideSkyInThumb;
 
 			SlickTip.SetTo(B_ReExport, "Re-generates all of your exported roads' thumbnails, useful in case you changed color or style options");
 			SlickTip.SetTo(B_Theme, "Change the theme colors and UI scaling of the App");
@@ -64,6 +65,7 @@ namespace ThumbnailMaker
 			SlickTip.SetTo(CB_DisplayLaneWidths, "Adds each lane's width in the large thumbnail");
 			SlickTip.SetTo(CB_UseGameUnitsForWidth, "Displays the total road width in in-game units (8m/unit)");
 			SlickTip.SetTo(CB_DisplayCustomLaneSpeedsOnThumbnail, "Adds each lane's custom speed limit in the large thumbnail");
+			SlickTip.SetTo(CB_HideSky, "Hides the sun and clouds from the thumbnail");
 		}
 
 		protected override void UIChanged()
@@ -106,6 +108,7 @@ namespace ThumbnailMaker
 				Options.Current.DisplayLaneWidths = CB_DisplayLaneWidths.Checked;
 				Options.Current.UseGameUnitsForWidth = CB_UseGameUnitsForWidth.Checked;
 				Options.Current.DisplayCustomLaneSpeedsOnThumbnail = CB_DisplayCustomLaneSpeedsOnThumbnail.Checked;
+				Options.Current.HideSkyInThumb = CB_HideSky.Checked;
 				Options.Save();
 			}
 		}
@@ -158,7 +161,7 @@ namespace ThumbnailMaker
 
 			B_ReExport.Loading = true;
 
-			new Action(() =>
+			new BackgroundAction(() =>
 			{
 				try
 				{
@@ -187,7 +190,7 @@ namespace ThumbnailMaker
 					});
 				}
 				catch { }
-			}).RunInBackground();
+			}).Run();
 		}
 
 		private void SS_Columns_ValuesChanged(object sender, EventArgs e)

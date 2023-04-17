@@ -159,17 +159,20 @@ namespace ThumbnailMaker.Handlers
 
 			Graphics.FillRectangle(new SolidBrush(Color.FromArgb(174, 215, 242)), new Rectangle(0, 0, bottomArea.Width, bottomArea.Y - LaneHeight(new ThumbnailLaneInfo())));
 
-			if (Small)
+			if (!Options.Current.HideSkyInThumb)
 			{
-				Graphics.DrawImage(Properties.Resources.L_Clouds_1, new Rectangle((Width / 2) - 50, 0, 16, 16));
-				Graphics.DrawImage(Properties.Resources.L_Clouds_2, new Rectangle((Width / 2) + 25, 7, 16, 16));
-				Graphics.DrawImage(Properties.Resources.L_Clouds_3, new Rectangle((Width / 2) - 30, 5, 16, 16));
-			}
-			else
-			{
-				Graphics.DrawImage(Properties.Resources.L_Clouds_1, new Rectangle(25, 15, 64, 64));
-				Graphics.DrawImage(Properties.Resources.L_Clouds_2, new Rectangle(410, 35, 64, 64));
-				Graphics.DrawImage(Properties.Resources.L_Clouds_3, new Rectangle(90, 25, 64, 64));
+				if (Small)
+				{
+					Graphics.DrawImage(Properties.Resources.L_Clouds_1, new Rectangle((Width / 2) - 50, 0, 16, 16));
+					Graphics.DrawImage(Properties.Resources.L_Clouds_2, new Rectangle((Width / 2) + 25, 7, 16, 16));
+					Graphics.DrawImage(Properties.Resources.L_Clouds_3, new Rectangle((Width / 2) - 30, 5, 16, 16));
+				}
+				else
+				{
+					Graphics.DrawImage(Properties.Resources.L_Clouds_1, new Rectangle(25, 15, 64, 64));
+					Graphics.DrawImage(Properties.Resources.L_Clouds_2, new Rectangle(410, 35, 64, 64));
+					Graphics.DrawImage(Properties.Resources.L_Clouds_3, new Rectangle(90, 25, 64, 64));
+				}
 			}
 
 			Graphics.FillRectangle(new SolidBrush(Color.FromArgb(50, 174, 215, 242)), new Rectangle(0, 0, bottomArea.Width, bottomArea.Y - LaneHeight(new ThumbnailLaneInfo())));
@@ -488,7 +491,7 @@ namespace ThumbnailMaker.Handlers
 
 		private Image GetDecorationIcon(ThumbnailLaneInfo lane, LaneDecoration style, Rectangle rect, float scale)
 		{
-			if (style == LaneDecoration.Barrier || style == LaneDecoration.Grass || style == LaneDecoration.Gravel || style == LaneDecoration.Pavement || style == LaneDecoration.Filler || style == LaneDecoration.None)
+			if (style == LaneDecoration.Barrier || style == LaneDecoration.BusBay || style == LaneDecoration.Grass || style == LaneDecoration.Gravel || style == LaneDecoration.Pavement || style == LaneDecoration.Filler || style == LaneDecoration.None)
 			{
 				return null;
 			}
