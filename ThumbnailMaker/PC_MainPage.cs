@@ -498,6 +498,8 @@ namespace ThumbnailMaker
 				Tags = FLP_Tags.Controls.OfType<TagControl>().Select(x => x.Text).ToList(),
 				DateCreated = C_CurrentlyEditing.Road?.DateCreated ?? DateTime.Now,
 				DisabledElevations = ElevationTypeControl.SelectedItems.ToArray(),
+				CanCrossLanes = CB_CanCrossLanes.Checked,
+				HighwayRules = CB_HighwayRules.Checked,
 			};
 		}
 
