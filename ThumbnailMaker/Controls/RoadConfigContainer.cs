@@ -199,8 +199,8 @@ namespace ThumbnailMaker.Controls
 
 		private void TB_Search_TextChanged(object sender, EventArgs e)
 		{
-			var selectedTags = FLP_Tags.GetControls<TagControl>().Where(x => x.Selected).Select(x => x.Text).ToList();
-			var invertedTags = FLP_Tags.GetControls<TagControl>().Where(x => x.InvertSelected).Select(x => x.Text).ToList();
+			var selectedTags = FLP_Tags.GetControls<TagControl>().Where(x => x.Selected && !x.InvertSelected).Select(x => x.Text).ToList();
+			var invertedTags = FLP_Tags.GetControls<TagControl>().Where(x => x.Selected && x.InvertSelected).Select(x => x.Text).ToList();
 
 			P_Configs.SuspendDrawing();
 			foreach (var item in P_Configs.Controls.OfType<RoadConfigControl>().ToList())
@@ -242,7 +242,7 @@ namespace ThumbnailMaker.Controls
 		{
 			foreach (var item in FLP_Tags.Controls.OfType<TagControl>())
 			{
-				item.Release();
+				item.Selected = false;
 			}
 
 			if (!string.IsNullOrWhiteSpace(TB_Search.Text))

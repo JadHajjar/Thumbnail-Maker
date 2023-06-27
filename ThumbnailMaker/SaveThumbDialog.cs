@@ -1,19 +1,25 @@
 ﻿using SlickControls;
 
+using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace ThumbnailMaker
 {
-	public partial class SaveThumbDialog : IOSelectionForm
+	public partial class SaveThumbDialog : IoForm
 	{
-		public SaveThumbDialog(string startingFolder = null) : base(true, new string[0], startingFolder)
+		public SaveThumbDialog(string startingFolder = null) : base(true, new IOSelectionDialog() { StartingFolder = startingFolder })
 		{
 			InitializeComponent();
 
-			CB_Small.Location = new Point(10, (P_CustomPanel.Height - CB_Small.Height) / 2);
-			CB_Tooltip.Location = new Point(10 + CB_Small.Width, (P_CustomPanel.Height - CB_Tooltip.Height) / 2);
+			OnNextIdle(SetUpCheckboxes);
+		}
 
-			P_CustomPanel.Visible = true;
+		private void SetUpCheckboxes()
+		{
+			CB_Small.Location = new Point(10, (P_CustomPanel.Height - CB_Small.Height) / 2 - (int)(3*UI.FontScale));
+			CB_Tooltip.Location = new Point(10 + CB_Small.Width, CB_Small.Top);
+
 			P_CustomPanel.Controls.Add(CB_Small);
 			P_CustomPanel.Controls.Add(CB_Tooltip);
 		}

@@ -64,5 +64,8 @@ namespace ThumbnailMaker.Domain
 
 		[StyleIdentity(21, 128, 49, 37, Order = 19)]
 		BusBay = 1 << 19,
+
+		[StyleIdentity(22, 60, 199, 157, Order = 20)]
+		StoppingLane = 1 << 20,
 	}
 }

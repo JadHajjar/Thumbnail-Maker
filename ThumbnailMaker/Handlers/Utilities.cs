@@ -17,7 +17,7 @@ namespace ThumbnailMaker.Handlers
 
 		public static string ExportRoad(RoadInfo road, string fileName = null)
 		{
-			var appdata = Options.Current.ExportFolder.IfEmpty(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+			var appdata = Options.Current.ExportFolder.IfEmpty(CrossIO.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
 				, "Colossal Order", "Cities_Skylines", "RoadBuilder", "Roads"));
 
 			Directory.CreateDirectory(appdata);
@@ -38,12 +38,12 @@ namespace ThumbnailMaker.Handlers
 			var guid = Guid.NewGuid().ToString();
 			var xML = new System.Xml.Serialization.XmlSerializer(typeof(RoadInfo));
 
-			using (var stream = File.Create(Path.Combine(appdata, fileName ?? $"{guid}.xml")))
+			using (var stream = File.Create(CrossIO.Combine(appdata, fileName ?? $"{guid}.xml")))
 			{
 				xML.Serialize(stream, road);
 			}
 
-			return Path.Combine(appdata, fileName ?? $"{guid}.xml");
+			return CrossIO.Combine(appdata, fileName ?? $"{guid}.xml");
 
 			byte[] getImage(bool small, bool toolTip)
 			{
@@ -183,7 +183,9 @@ namespace ThumbnailMaker.Handlers
 		public static string GetRoadDescription(RoadInfo road, bool signature = true)
 		{
 			if (road == null)
+			{
 				return string.Empty;
+			}
 
 			var oneWay = IsOneWay(road.Lanes);
 			var asymetrical = road.Lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards).Count() != road.Lanes.Where(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Forward).Count() && road.Lanes.Any(x => x.Type.HasFlag(LaneType.Car) && x.Direction == LaneDirection.Backwards);
@@ -379,7 +381,14 @@ namespace ThumbnailMaker.Handlers
 		public static bool IsCompatible(this LaneDecoration deco, LaneType laneClass)
 		{
 			if (laneClass != LaneType.Curb && deco == LaneDecoration.BusBay)
+			{
 				return false;
+			}
+
+			if (deco == LaneDecoration.StoppingLane)
+			{
+				return laneClass.HasAnyFlag(LaneType.Bus, LaneType.Car, LaneType.Tram, LaneType.Train, LaneType.Trolley);
+			}
 
 			foreach (var item in laneClass.GetValues())
 			{
@@ -411,49 +420,6 @@ namespace ThumbnailMaker.Handlers
 			}
 
 			return laneClass != LaneType.Empty;
-		}
-
-		public static IEnumerable<T> GetValues<T>(this T @enum) where T : Enum
-		{
-			if (@enum.Equals(default(T)))
-			{
-				yield return @enum;
-				yield break;
-			}
-
-			foreach (T value in Enum.GetValues(typeof(T)))
-			{
-				if (!value.Equals(default(T)) && @enum.HasFlag(value))
-				{
-					yield return value;
-				}
-			}
-		}
-
-		public static bool HasAnyFlag<T>(this T @enum, params T[] values) where T : Enum
-		{
-			foreach (var value in values)
-			{
-				if (@enum.HasFlag(value))
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		public static bool HasAllFlag<T>(this T @enum, params T[] values) where T : Enum
-		{
-			foreach (var value in values)
-			{
-				if (!@enum.HasFlag(value))
-				{
-					return false;
-				}
-			}
-
-			return true;
 		}
 	}
 }

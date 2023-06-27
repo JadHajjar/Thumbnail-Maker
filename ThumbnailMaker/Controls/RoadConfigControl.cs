@@ -16,11 +16,14 @@ namespace ThumbnailMaker.Controls
 {
 	public class RoadConfigControl : SlickControl, IAnimatable
 	{
+		private bool _selected;
+
 		public Bitmap Image { get; private set; }
 		public RoadInfo Road { get; private set; }
 		public string FileName { get; }
 		public int AnimatedValue { get; set; }
 		public int TargetAnimationValue { get; set; }
+		public bool Selected { get => _selected; set { _selected = value; Invalidate(); } }
 
 		public event System.EventHandler<RoadInfo> LoadConfiguration;
 
@@ -63,13 +66,29 @@ namespace ThumbnailMaker.Controls
 				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), new Rectangle(Point.Empty, new Size(Width - 1, Height - 2)), 6);
 			}
 
+			var selectedHeight = 0;
+
+			if (Selected)
+			{
+				selectedHeight = (int)e.Graphics.Measure("SELECTED", UI.Font(7F, FontStyle.Bold)).Height + Padding.Top;
+
+				e.Graphics.FillRoundedRectangle(new SolidBrush(FormDesign.Design.ActiveColor), new Rectangle(Point.Empty, new Size(Width - 1, Width - 2 + selectedHeight)).Pad(0, 10, 0, 0), 6);
+
+				e.Graphics.DrawString("SELECTED"
+					, UI.Font(7F, FontStyle.Bold)
+					, new SolidBrush(foreColor)
+					, new Rectangle(Point.Empty, new Size(Width - 1, Width - 2 + selectedHeight))
+					, new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Far });
+			}
+
 			e.Graphics.DrawString(Road.Name.Trim().Replace(" ", " ")
 				, UI.Font(7.5F, FontStyle.Bold)
 				, new SolidBrush(foreColor)
-				, new Rectangle(3, Width + 2, Width - 6, UI.Font(7.5F, FontStyle.Bold).Height.ClosestMultipleTo(Height - Width + 3))
+				, new Rectangle(3, Width + 2, Width - 6, Height - Width + 3).Pad(0, (Selected ? selectedHeight : 0),0,0).AlignToFontSize(UI.Font(7.5F, FontStyle.Bold), ContentAlignment.TopCenter)
 				, new StringFormat { Alignment = StringAlignment.Center });
 
-			Height = Width + 6 + (int)e.Graphics.Measure(Road.Name.Trim().Replace(" ", " ")
+			Height = Width + 6 + (Selected ? selectedHeight : 0) +
+				(int)e.Graphics.Measure(Road.Name.Trim().Replace(" ", " ")
 				, UI.Font(7.5F, FontStyle.Bold)
 				, Width - 6).Height;
 

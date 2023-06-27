@@ -18,7 +18,9 @@ namespace ThumbnailMaker.Controls
 
 		internal void SetRoad(RoadConfigControl roadConfigControl)
 		{
+			Clear();
 			Control = roadConfigControl;
+			Control.Selected = true;
 			Road = Control.Road;
 			Visible = true;
 			Invalidate();
@@ -27,6 +29,11 @@ namespace ThumbnailMaker.Controls
 
 		internal void Clear()
 		{
+			if (Control != null)
+			{
+				Control.Selected = false;
+			}
+
 			Control = null;
 			Road = null;
 			Visible = false;

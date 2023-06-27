@@ -57,24 +57,25 @@ namespace ThumbnailMaker
 
 			SetupType(RoadTypeControl.SelectedItem);
 
-			using (var img = new Bitmap(65 * 2, 24 * 2))
+			var size = UI.Scale(new Size(65, 24), UI.WindowsScale);
+			using (var img = new Bitmap(size.Width * 2, size.Height * 2))
 			using (var g = Graphics.FromImage(img))
 			{
 				g.SmoothingMode = SmoothingMode.AntiAlias;
-				using (var path = new Rectangle(64, 24, 64, 23).RoundedRect(5, false))
+				using (var path = new Rectangle(size.Width - 1, size.Height, size.Width - 1, size.Height - 1).RoundedRect((int)(5*UI.WindowsScale), false))
 				{
 					g.FillPath(new SolidBrush(Color.FromArgb(35, 35, 40)), path);
 				}
 
-				g.DrawImage(Properties.Resources.I_Copy.Color(Color.White), new Rectangle(7 + 64, 4 + 24, 16, 16));
-				g.DrawString("COPY", new Font(UI.FontFamily, 8.25F), Brushes.White, new Rectangle(26 + 64, 0 + 24, 35, 24), new StringFormat
+				g.DrawImage(Properties.Resources.I_Copy.Color(Color.White), new Rectangle(7 + size.Width, 4 + size.Height, 16, 16));
+				g.DrawString("COPY", new Font(UI.FontFamily, 8.25F), Brushes.White, new Rectangle(size.Width + 23, 0 + size.Height, size.Width - 23, size.Height), new StringFormat
 				{
 					LineAlignment = StringAlignment.Center,
 					Alignment = StringAlignment.Center,
 				});
-				g.DrawLine(Pens.White, 66, 26, 69, 26);
-				g.DrawLine(Pens.White, 66, 26, 66, 29);
-				g.DrawLine(Pens.White, 66, 26, 68F, 28);
+				g.DrawLine(Pens.White, size.Width + 1, size.Height + 2, size.Width + 6, size.Height + 2);
+				g.DrawLine(Pens.White, size.Width + 1, size.Height + 2, size.Width + 1, size.Height + 7);
+				g.DrawLine(Pens.White, size.Width + 1, size.Height + 2, size.Width + 5, size.Height + 6);
 
 				PB.Cursor = L_RoadDesc.Cursor = L_RoadName.Cursor = new Cursor(img.GetHicon());
 			}
@@ -183,15 +184,17 @@ namespace ThumbnailMaker
 		private void B_CopyDesc_Click(object sender, EventArgs e)
 		{
 			var roadInfo = GetRoadInfo();
+			var desc = Utilities.GetRoadDescription(roadInfo);
 
-			Clipboard.SetText(roadInfo.Description.Substring(0, Math.Min(1024, roadInfo.Description.Length)));
+			Clipboard.SetText(desc.Substring(0, Math.Min(1024, desc.Length)));
 		}
 
 		private void B_CopyRoadName_Click(object sender, EventArgs e)
 		{
 			var roadInfo = GetRoadInfo();
+			var name = Utilities.GetRoadName(roadInfo);
 
-			Clipboard.SetText(roadInfo.Name.Substring(0, Math.Min(32, roadInfo.Name.Length)));
+			Clipboard.SetText(name.Substring(0, Math.Min(32, name.Length)));
 		}
 
 		private void B_DuplicateFlip_Click(object sender, EventArgs e)
@@ -377,7 +380,7 @@ namespace ThumbnailMaker
 
 				foreach (var item in files)
 				{
-					if (File.Exists(Path.Combine(folder, item.Item1)))
+					if (CrossIO.FileExists(CrossIO.Combine(folder, item.Item1)))
 					{
 						save(item.Item1, item.Item2, item.Item3);
 
@@ -402,7 +405,7 @@ namespace ThumbnailMaker
 					{
 						DrawThumbnail(g, lanes, small, toolTip);
 
-						var FileName = Path.Combine(folder, filename);
+						var FileName = CrossIO.Combine(folder, filename.EscapeFileName());
 
 						img.Save(FileName, System.Drawing.Imaging.ImageFormat.Png);
 

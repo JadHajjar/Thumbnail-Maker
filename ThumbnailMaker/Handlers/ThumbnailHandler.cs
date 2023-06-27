@@ -491,7 +491,7 @@ namespace ThumbnailMaker.Handlers
 
 		private Image GetDecorationIcon(ThumbnailLaneInfo lane, LaneDecoration style, Rectangle rect, float scale)
 		{
-			if (style == LaneDecoration.Barrier || style == LaneDecoration.BusBay || style == LaneDecoration.Grass || style == LaneDecoration.Gravel || style == LaneDecoration.Pavement || style == LaneDecoration.Filler || style == LaneDecoration.None)
+			if (style == LaneDecoration.Barrier || style == LaneDecoration.BusBay || style == LaneDecoration.StoppingLane || style == LaneDecoration.Grass || style == LaneDecoration.Gravel || style == LaneDecoration.Pavement || style == LaneDecoration.Filler || style == LaneDecoration.None)
 			{
 				return null;
 			}

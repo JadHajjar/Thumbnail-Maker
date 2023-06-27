@@ -46,7 +46,6 @@
 			this.CB_Small.DefaultValue = false;
 			this.CB_Small.Location = new System.Drawing.Point(341, 212);
 			this.CB_Small.Name = "CB_Small";
-			this.CB_Small.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
 			this.CB_Small.Size = new System.Drawing.Size(126, 26);
 			this.CB_Small.TabIndex = 2;
 			this.CB_Small.Text = "Small Thumbnail";
@@ -61,7 +60,6 @@
 			this.CB_Tooltip.DefaultValue = false;
 			this.CB_Tooltip.Location = new System.Drawing.Point(337, 212);
 			this.CB_Tooltip.Name = "CB_Tooltip";
-			this.CB_Tooltip.Padding = new System.Windows.Forms.Padding(7, 5, 7, 5);
 			this.CB_Tooltip.Size = new System.Drawing.Size(134, 26);
 			this.CB_Tooltip.TabIndex = 3;
 			this.CB_Tooltip.Text = "Tooltip Thumbnail";
@@ -69,9 +67,6 @@
 			// 
 			// SaveThumbDialog
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(800, 450);
 			this.Controls.Add(this.CB_Tooltip);
 			this.Controls.Add(this.CB_Small);
 			this.Name = "SaveThumbDialog";
