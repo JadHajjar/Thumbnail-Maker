@@ -209,8 +209,8 @@ namespace ThumbnailMaker.Controls
 					!selectedTags.Any(x => !item.Road.Tags.Concat(item.Road.AutoTags).Any(y => y.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
 					&& !invertedTags.Any(x => item.Road.Tags.Concat(item.Road.AutoTags).Any(y => y.Equals(x, StringComparison.CurrentCultureIgnoreCase)))
 					&& (string.IsNullOrWhiteSpace(TB_Search.Text)
-					|| item.Road.Name.SearchCheck(TB_Search.Text)
-					|| item.Road.Description.SearchCheck(TB_Search.Text))
+					|| TB_Search.Text.SearchCheck(item.Road.Name)
+					|| TB_Search.Text.SearchCheck(item.Road.Description))
 					&& (RoadTypeControl.SelectedItem == RoadTypeFilter.AnyRoadType || item.Road.RoadType == (RoadType)((int)RoadTypeControl.SelectedItem - 1))
 					&& (RoadSizeControl.SelectedItem == RoadSizeFilter.AnyRoadSize || Match(item.Road, RoadSizeControl.SelectedItem));
 			}
